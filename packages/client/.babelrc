@@ -1,0 +1,15 @@
+{
+  "presets": ["stage-3"],
+  "plugins": [
+    "transform-react-jsx-source",
+    ["module-resolver", {
+      "root": ["./"],
+      "alias": {
+        "core": "../core/src",
+        "client": "./src",
+        "ecs": "./src/components/ECS",
+        "store": "./src/store"
+      }
+    }]
+  ]
+}

@@ -1,0 +1,44 @@
+[
+    {
+        "color": "#ff00ff7f",
+        "name": "animation",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ff55aaff",
+        "name": "collision",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffffaaff",
+        "name": "npc",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ff00aa00",
+        "name": "object",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffffaa00",
+        "name": "sprite",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffffffff",
+        "name": "tileExit",
+        "properties": [
+        ]
+    },
+    {
+        "color": "#ffaaaaff",
+        "name": "water",
+        "properties": [
+        ]
+    }
+]

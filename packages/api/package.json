@@ -1,0 +1,39 @@
+{
+  "name": "@mob/api",
+  "version": "0.1.0",
+  "author": "mob",
+  "description": "Mob JS Game API",
+  "license": "MIT",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "lint": "eslint --cache --ignore-path .gitignore src/**/*.js config/**/*.js",
+    "test": "mocha"
+  },
+  "dependencies": {
+    "@mob/core": "*",
+    "bcrypt": "^3.0.3",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "express-jwt": "^5.3.0",
+    "express-validation": "^1.0.2",
+    "joi": "^14.3.1",
+    "jsonwebtoken": "^8.1.0",
+    "mysql2": "^1.5.1",
+    "nodemon": "^1.12.1",
+    "sequelize": "^4.22.15",
+    "uuid": "^3.1.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "cross-env": "^5.2.0",
+    "eslint": "^4.12.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "iconv-lite": "^0.4.24",
+    "mocha": "^4.0.1",
+    "supertest": "^3.0.0",
+    "supertest-as-promised": "^4.0.2"
+  }
+}

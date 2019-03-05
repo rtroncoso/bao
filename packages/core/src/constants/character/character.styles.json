@@ -1,0 +1,25 @@
+{
+  "debug": {
+    "fill": "#77d9ff",
+    "fontSize": 11,
+    "fontFamily": "Tahoma",
+    "strokeThickness": 2,
+    "strokeColor": "#000",
+    "align": "center"
+  },
+  "name": {
+    "fill": "#fff",
+    "fontSize": 15,
+    "dropShadow": true,
+    "dropShadowAlpha": 0.6,
+    "dropShadowColor": "#000",
+    "dropShadowDistance": 2,
+    "letterSpacing": 0.2,
+    "fontFamily": "Impact, Charcoal, sans-serif",
+    "align": "center"
+  },
+  "privilegeColors": {
+    "admin": "#16b601",
+    "user": "#ffebb6"
+  }
+}

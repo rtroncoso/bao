@@ -1,0 +1,33 @@
+{
+  "name": "@mob/core",
+  "version": "0.1.0",
+  "author": "mob",
+  "description": "Mob JS Core Module",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "keywords": [
+    "es6",
+    "lodash/fp"
+  ],
+  "directories": {
+    "src": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@mob/client": "*",
+    "@mob/core": "*",
+    "@lcluber/bumpjs": "^0.5.4",
+    "intersects": "^2.5.2",
+    "lodash": "^4.17.11",
+    "pixi.js": "^4.8.6"
+  }
+}
