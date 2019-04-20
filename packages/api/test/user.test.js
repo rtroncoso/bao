@@ -4,11 +4,13 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/env/index');
 const app = require('../config/express');
 const User = require('../src/models/User');
+const { stop } = require('../index');
 
 describe('User', () => {
 
   let token = '';
 
+  after(stop);
   before(async () => {
     await User.sync({ force: true });
     await User.create({

@@ -1,5 +1,4 @@
 import { selectFilterColor, selectFilterEnabled } from 'store/app/app.selectors';
-import { utils } from 'pixi.js';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 

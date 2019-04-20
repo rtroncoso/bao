@@ -24,7 +24,7 @@ mkdir aligned
 
 **3.** Group all static graphics (not part of any animation:
 
-You can use `getStaticGraphics` from `shared/loaders/graphics/index.js`.
+You can use `getStaticGraphics` from `core/loaders/graphics/index.js`.
 
 ```
 # @{client/assets/graphics}
@@ -33,7 +33,7 @@ STATIC_GRAPHICS='1.png 11028.png 11030.png 11031.png 11032.png 14034.png 12050.p
 
 **4.** Group all animated graphics:
 
-You can use `getAnimatedGraphics` from `shared/loaders/graphics/index.js`.
+You can use `getAnimatedGraphics` from `core/loaders/graphics/index.js`.
 
 ```
 # @{client/assets/graphics}
@@ -41,9 +41,9 @@ ANIMATED_GRAPHICS='15158.png 15159.png 15164.png 15169.png 4156.png 4073.png 150
 ```
 
 
-**5.** [https://github.com/Gamefroot/Gamefroot-Texture-Packer] (GameFroot Texture Packer) commands:
+**5. [GameFroot Texture Packer](https://github.com/Gamefroot/Gamefroot-Texture-Packer)** commands:
 
-Install: `npm install -g gamefroot-texture-packer`
+**Install:** `npm install -g gamefroot-texture-packer`
 
 Packing Static Graphics:
 

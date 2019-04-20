@@ -9,7 +9,6 @@ uniform vec4 filterArea;
 uniform vec4 filterClamp;
 uniform vec2 dimensions;
 uniform vec2 camera;
-uniform vec2 velocity;
 
 uniform vec2 tileFactor;
 uniform float aspectRatio;
@@ -44,16 +43,16 @@ vec2 wavesOffset(float time, vec2 uv, vec2 scale, float timeScale) {
 }
 
 vec2 tiledUvs(vec2 uv, vec2 tf, float ar) {
-  tf.x /= ar;
-  tf.y /= ar;
-  vec2 tiledUvs = uv * tf / 5.0;
+  tf.x *= ar;
+  tf.y *= ar;
+  vec2 tiledUvs = uv * tf;
   return tiledUvs;
 }
 
 vec2 cameraCoords(vec2 coords, vec2 camera, float ar) {
-  camera.x /= ar;
-  camera.y /= ar;
-  vec2 cameraCoord = coords + camera / 2.0;
+  camera.x *= ar;
+  camera.y *= ar;
+  vec2 cameraCoord = coords + camera;
   return cameraCoord;
 }
 

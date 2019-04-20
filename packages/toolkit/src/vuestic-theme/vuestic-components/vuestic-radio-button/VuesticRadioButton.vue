@@ -34,8 +34,8 @@
 export default {
   name: 'vuestic-radio-button',
   props: {
-    value: '',
-    option: '',
+    value: String,
+    option: String,
     disabled: {
       type: Boolean,
       default: false,

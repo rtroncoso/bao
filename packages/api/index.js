@@ -9,30 +9,20 @@ const Attribute = require('./src/models/object/Attribute');
 const ObjectAttribute = require('./src/models/object/ObjectAttribute');
 const ObjectClasses = require('./src/models/object/ObjectClasses');
 const ObjectType = require('./src/models/object/ObjectType');
+const { sequelize } = require('./config/sequelize');
 
 // { force: true } will drop the table if it already exists
-// Users
-User.sync();
-
-// Assets
-Graphic.sync();
-
-// Character
-Class.sync();
-Race.sync();
-Skill.sync();
-
-// Objects
-ObjectType.sync();
-Object.sync();
-Attribute.sync();
-ObjectAttribute.sync();
-ObjectClasses.sync();
+sequelize.sync();
 
 const port = parseInt(process.env.PORT, 10) || 8000;
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`The server is running at localhost: ${port}`);
 });
 
+function stop() {
+  server.close();
+}
+
 module.exports = app;
+module.exports.stop = stop;

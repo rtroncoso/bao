@@ -37,6 +37,7 @@ const Object = sequelize.define('Object', {
 }, {
   underscored: true,
   paranoid: true,
+  tableName: 'objects'
 });
 
 Object.hasMany(ObjectAttribute, {

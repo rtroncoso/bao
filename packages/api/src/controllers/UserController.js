@@ -1,7 +1,7 @@
 const User = require('../models/User');
 
 function load(req, res, next, id) {
-  User.findById(id, { attributes: { exclude: ['password', 'refresh_token'] } }).then((user) => {
+  User.findByPk(id, { attributes: { exclude: ['password', 'refresh_token'] } }).then((user) => {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }

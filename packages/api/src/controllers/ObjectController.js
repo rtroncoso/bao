@@ -5,7 +5,7 @@ const {
 } = require('../helpers/objects');
 
 function load(req, res, next, id) {
-  Object.findById(id, { include: [Object.withAttributes] }).then((object) => {
+  Object.findByPk(id).then((object) => {
     if (!object) {
       return res.status(404).json({ error: 'Object not found' });
     }
@@ -32,7 +32,7 @@ function create(req, res) {
       req.body.attributes.map(createObjectAttribute(newObject, res));
     }
 
-    newObject = await Object.findById(newObject.id);
+    newObject = await Object.findByPk(newObject.id);
     res.status(201).json(newObject);
   }).catch((e) => {
     res.status(500).json({ error: e.message });
@@ -57,7 +57,7 @@ function list(req, res) {
   Object.findAll({
     offset: offset,
     limit: limit,
-    include: [Object.withAttributes],
+    // include: [Object.withAttributes],
   }).then((objects) => {
     res.status(200).json(objects);
   }).catch((e) => {

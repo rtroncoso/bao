@@ -39,7 +39,7 @@ class WaterShader extends Filter {
   }
 
   update(delta, camera) {
-    this.uniforms.time += delta * 0.03;
+    this.uniforms.time += delta * 0.01;
     this.uniforms.camera[0] = camera.x / camera.width;
     this.uniforms.camera[1] = camera.y / camera.height;
   }

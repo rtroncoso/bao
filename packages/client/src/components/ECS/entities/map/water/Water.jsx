@@ -6,8 +6,6 @@ import Layers from 'ecs/components/map/Layers';
 import { withWorld } from 'ecs/World';
 import Entity from 'ecs/Entity';
 
-import Controllable from 'client/components/ECS/components/character/Controllable'
-import Physic from 'client/components/ECS/components/physics/Physic'
 import WaterShader from 'client/filters/water/water';
 import { WATER_LAYER } from 'core/constants/game/Map';
 

@@ -33,7 +33,9 @@ module.exports = {
         'vuestic-directives': path.resolve('src/vuestic-theme/vuestic-directives'),
         'vuestic-theme': path.resolve('src/vuestic-theme'),
         'data': path.resolve('src/data'),
-        'vuex-store': path.resolve('src/store')
+        'vuex-store': path.resolve('src/store'),
+        'client': path.resolve('../client/src'),
+        'core': path.resolve('../core/src')
       }
     },
   },

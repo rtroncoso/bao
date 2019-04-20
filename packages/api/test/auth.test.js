@@ -1,11 +1,13 @@
 const request = require('supertest-as-promised');
 const app = require('../config/express');
-const User = require('../src/models/User');
+const User = require('../src/models/User')
+const { stop } = require('../index');
 
 describe('Auth', () => {
 
   let { token, refresh_token } = '';
 
+  after(stop);
   before(async () => {
     await User.sync({ force: true });
     await User.create({

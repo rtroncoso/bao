@@ -3,22 +3,32 @@ const assert = require('chai').assert;
 const jwt = require('jsonwebtoken');
 const config = require('../config/env');
 const app = require('../config/express');
-const User = require('../src/models/User');
+const { stop } = require('../index');
 
-describe('User', () => {
+const User = require('../src/models/User');
+const Graphic = require('../src/models/asset/Graphic');
+const Object = require('../src/models/object/Object');
+const { sequelize } = require('../config/sequelize');
+
+describe('Objects', () => {
 
   let token = '';
+  let graphic = null;
 
+  after(stop);
   before(async () => {
-    await User.sync({ force: true });
+    await sequelize.sync({ force: true });
     await User.create({
-      objectname: 'Darth Vader',
+      username: 'Darth Vader',
       password: '1234',
     });
-    await User.create({
-      objectname: 'Alf',
-      password: '1234',
+    await Object.create({
+      name: 'Espada Larga'
     });
+    await Object.create({
+      name: 'Espada Larga +1'
+    });
+    graphic = await Graphic.create();
     token = await jwt.sign({ id: 1 }, config.jwt.jwtSecret, { expiresIn: config.jwt.jwtDuration });
   });
 
@@ -40,13 +50,14 @@ describe('User', () => {
     it('It should create a new object', (done) => {
       request(app)
         .post('/objects')
+        .set('Authorization', `Bearer ${token}`)
         .send({
-          name: 'Homer J. Simpson',
-          password: '1234',
+          name: 'Espada Lazurt',
+          graphic_id: graphic.id
         })
         .expect(201)
         .then((res) => {
-          assert.equal(res.body.name, 'Homer J. Simpson');
+          assert.equal(res.body.name, 'Espada Lazurt');
           done();
         });
     })
@@ -55,23 +66,23 @@ describe('User', () => {
   describe('GET /objects/:objectId', () => {
     it('It should retrieve the object with id 1', (done) => {
       request(app)
-        .get('/objects/3')
+        .get('/objects/1')
         .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .then((res) => {
-          assert.equal(res.body.name, 'Homer J. Simpson');
+          assert.equal(res.body.name, 'Espada Larga');
           done();
         });
     });
   });
 
   describe('PUT /objects/:objectId', () => {
-    it('It should update object "Darth Vader" to "Obi Wan"', (done) => {
+    it('It should update object "Espada Larga +2" to "Espada Larga +1"', (done) => {
       request(app)
         .put('/objects/2')
         .set('Authorization', `Bearer ${token}`)
         .send({
-          name: 'Homer J. Simpson',
+          name: 'Espada Larga +1',
         })
         .expect(201, done());
     });

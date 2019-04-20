@@ -18,7 +18,7 @@ export default {
     label: {
       type: String,
     },
-    value: ''
+    value: String
   },
   data () {
     return {}

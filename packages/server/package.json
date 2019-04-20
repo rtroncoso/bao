@@ -1,13 +1,11 @@
 {
   "name": "@mob/server",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": "mob",
   "description": "Mob JS Game Server",
-  "homepage": "https://rtroncoso.com/",
   "license": "MIT",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "main": "server.js",
   "directories": {

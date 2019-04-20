@@ -4,6 +4,18 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "bs": "npm run bootstrap",
+    "bootstrap": "lerna bootstrap",
+    "prebuild": "git clean -fdx packages -e packages/*/node_modules",
+    "lint": "lerna run lint --parallel --stream",
+    "lint:ts": "yarn tslint -c tslint.json -p tsconfig-lint.json --fix",
+    "test": "cross-env NODE_ENV=testing lerna run test --stream",
+    "build:dev": "lerna run build:dev",
+    "build": "lerna run build",
+    "start:dev": "lerna run start:dev --parallel --stream",
+    "start": "lerna run start --parallel --stream"
+  },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.2.2",
@@ -45,17 +57,5 @@
     "webpack": "^4.26.1",
     "webpack-cli": "^3.0.0",
     "webpack-dev-server": "^3.0.0"
-  },
-  "scripts": {
-    "bs": "npm run bootstrap",
-    "bootstrap": "lerna bootstrap",
-    "prebuild": "git clean -fdx packages -e packages/*/node_modules",
-    "lint": "lerna run lint --parallel --stream",
-    "lint:ts": "yarn tslint -c tslint.json -p tsconfig-lint.json --fix",
-    "test": "cross-env NODE_ENV=testing jest",
-    "build:dev": "lerna run build:dev",
-    "build": "lerna run build",
-    "start:dev": "lerna run start:dev --parallel --stream",
-    "start": "lerna run start --parallel --stream"
   }
 }

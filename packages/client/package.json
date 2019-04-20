@@ -1,6 +1,6 @@
 {
   "name": "@mob/client",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": "mob",
   "description": "Mob JS Game Client",
   "homepage": "https://github.com/rtroncoso/mob#readme",
@@ -8,7 +8,6 @@
   "private": true,
   "main": "src/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint  --cache --ignore-path .gitignore src/**/*.js src/**/*.jsx",
     "webpack:hmr:prod": "cross-env NODE_ENV=production webpack-dev-server --port 2000 --open --hot --content-base dist/",
     "webpack:hmr:dev": "cross-env NODE_ENV=development webpack-dev-server --port 2000 --open --hot --content-base dist/",
@@ -18,9 +17,9 @@
     "start": "npm-run-all webpack:hmr:prod"
   },
   "dependencies": {
-    "@mob/core": "*",
     "@inlet/react-pixi": "^0.3.0",
     "@lcluber/bumpjs": "^0.5.4",
+    "@mob/core": "^1.0.0",
     "@pixi/filter-glow": "^2.7.0",
     "@pixi/polyfill": "^5.0.0-alpha.3",
     "babel-polyfill": "^6.26.0",
@@ -48,8 +47,8 @@
     "pixi.js": "^4.8.6",
     "popmotion": "^8.4.0",
     "randomstring": "^1.1.5",
-    "react": "^16.7.0-alpha.0",
-    "react-dom": "^16.7.0-alpha.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "react-redux": "^5.1.1",
     "react-router": "^4.3.1",
     "rectangle-decomposition": "^1.0.0",

@@ -3,6 +3,7 @@ const { sequelize, Sequelize } = require('../../../config/sequelize');
 const Graphic = sequelize.define('Graphic', {
   id: {
     type: Sequelize.INTEGER,
+    autoIncrement: true,
     primaryKey: true,
   },
 }, { underscored: true, paranoid: true });

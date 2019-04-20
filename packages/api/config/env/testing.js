@@ -2,7 +2,7 @@ module.exports = {
   mysql: {
     host: 'localhost',
     port: 3306,
-    database: 'jwt_test',
+    database: 'api_test',
     username: 'root',
     password: '',
   },

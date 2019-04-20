@@ -1,11 +1,11 @@
-# `@mob/shared`
+# `@mob/core`
 
 > TODO: description
 
 ## Usage
 
 ```
-const shared = require('@mob/shared');
+const core = require('@mob/core');
 
 // TODO: DEMONSTRATE API
 ```

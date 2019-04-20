@@ -17,7 +17,7 @@
 ```
 node-es6-jwt/
 │
-├── api/
+├── src/
 │   ├── controllers/
 │   │   ├── AuthController.js
 │   │   └── UserController.js
@@ -47,7 +47,7 @@ node-es6-jwt/
 ├── test/
 │   ├── auth.test.js
 │   └── user.test.js
-│   
+│
 ├── .eslintrc                     * ESLint configuration file
 ├── .gitignore                    * Example git ignore file
 ├── index.js                      * Entry point of our Node's app
@@ -70,7 +70,7 @@ I have a great introduction to JWT in one of my other repositories, click [here]
   $ sudo npm install -g n
   $ sudo n stable
   ```
-  
+
 2. Configure your database and jsonwebtoken in `config/env`. E.g.:
 
   ```javascript
@@ -90,37 +90,37 @@ I have a great introduction to JWT in one of my other repositories, click [here]
   ```
 
 3. Fork this repository and clone it
-  
+
   ```
   $ git clone https://github.com/<your-user>/node-es6-jwt
   ```
-  
-4. Navigate into the folder  
+
+4. Navigate into the folder
 
   ```
   $ cd node-es6-jwt
   ```
-  
+
 5. Install NPM dependencies
 
   ```
   $ yarn install
   ```
-  
+
 6. Run the project
 
   ```
   $ node index.js
   ```
-  
+
 7. Or use `nodemon` for live-reload
-  
+
   ```
   $ yarn start
   ```
 
   > `yarn start` will run `nodemon index.js`.
-  
+
 8. Navigate to `http://localhost:8000/api-status` in your browser to check you're seing the following response
 
   ```javascript
