@@ -1,6 +1,6 @@
 {
   "name": "@mob/client",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": "mob",
   "description": "Mob JS Game Client",
   "homepage": "https://github.com/rtroncoso/mob#readme",
@@ -18,9 +18,9 @@
     "start": "npm-run-all webpack:hmr:prod"
   },
   "dependencies": {
-    "@mob/core": "*",
     "@inlet/react-pixi": "^0.3.0",
     "@lcluber/bumpjs": "^0.5.4",
+    "@mob/core": "^1.0.0",
     "@pixi/filter-glow": "^2.7.0",
     "@pixi/polyfill": "^5.0.0-alpha.3",
     "babel-polyfill": "^6.26.0",

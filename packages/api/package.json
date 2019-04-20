@@ -1,6 +1,6 @@
 {
   "name": "@mob/api",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": "mob",
   "description": "Mob JS Game API",
   "license": "MIT",
@@ -12,7 +12,7 @@
     "test": "mocha"
   },
   "dependencies": {
-    "@mob/core": "*",
+    "@mob/core": "^1.0.0",
     "bcrypt": "^3.0.3",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
