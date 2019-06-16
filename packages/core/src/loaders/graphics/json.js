@@ -29,7 +29,7 @@ export const parseGraphic = (reducer = {}, data, id) => {
  * of graphic id's and their respective `Graphic`
  * models
  * @param data
- * @returns {MapObject.<string, Graphic>}
+ * @returns {Object.<string, Graphic>}
  */
 export const getGraphics = data => transform(data, parseGraphic);
 

@@ -52,7 +52,9 @@ vec2 tiledUvs(vec2 uv, vec2 tf, float ar) {
 vec2 cameraCoords(vec2 coords, vec2 camera, float ar) {
   camera.x *= ar;
   camera.y *= ar;
-  vec2 cameraCoord = coords + camera;
+
+  float bias = 1.69;
+  vec2 cameraCoord = bias * camera + coords;
   return cameraCoord;
 }
 

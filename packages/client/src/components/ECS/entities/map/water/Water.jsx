@@ -44,6 +44,7 @@ class Water extends Entity {
       shape.forEach(s => g.lineTo(s.x, s.y));
       g.lineTo(start.x, start.y);
     });
+    console.log(g);
     return g;
   }
 

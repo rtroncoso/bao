@@ -10,6 +10,7 @@
   "name": {
     "fill": "#fff",
     "fontSize": 15,
+    "fontWeight": "bold",
     "dropShadow": true,
     "dropShadowAlpha": 0.6,
     "dropShadowColor": "#000",

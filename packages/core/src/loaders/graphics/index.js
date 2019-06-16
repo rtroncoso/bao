@@ -45,7 +45,7 @@ export const getRegion = (graphic, frame) => {
  */
 export const getTexture = (graphic) => {
   if (!graphic || !graphic.fileName) return null;
-  const fileName = getGraphicsFileName(graphic.fileName)
+  const fileName = getGraphicsFileName(graphic.fileName);
   const frame = Texture.fromImage(fileName);
   const texture = new Texture(frame.baseTexture, getRegion(graphic, frame.frame));
   texture.baseTexture.scaleMode = SCALE_MODES.NEAREST;

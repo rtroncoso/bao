@@ -1,5 +1,6 @@
 import { Filter, Matrix } from 'pixi.js';
 
+import window from 'core/constants/game/game.window.json';
 import VERT from './water.vert';
 import FRAG from './water.frag';
 
@@ -13,10 +14,10 @@ class WaterShader extends Filter {
     this.uniforms.aspectRatio = 1.0;
 
     this.uniforms.waveTimeScale = 0.01;
-    this.uniforms.waveScale = [0.2, 0.2];
+    this.uniforms.waveScale = [0.6, 0.6];
     this.uniforms.waveAmplitude = [0.02, 0.03];
     this.uniforms.uvTimeScale = -0.003;
-    this.uniforms.uvOffsetSize = [3.7, 4.5];
+    this.uniforms.uvOffsetSize = [2.0, 3.0];
     this.uniforms.uvAmplitude = [0.08, 0.15];
     this.uniforms.mappedMatrix = new Matrix();
 
@@ -40,8 +41,8 @@ class WaterShader extends Filter {
 
   update(delta, camera) {
     this.uniforms.time += delta * 0.01;
-    this.uniforms.camera[0] = camera.x / camera.width;
-    this.uniforms.camera[1] = camera.y / camera.height;
+    this.uniforms.camera[0] = camera.x / window.width;
+    this.uniforms.camera[1] = camera.y / window.height;
   }
 }
 
