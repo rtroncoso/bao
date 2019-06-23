@@ -43,18 +43,12 @@ vec2 wavesOffset(float time, vec2 uv, vec2 scale, float timeScale) {
 }
 
 vec2 tiledUvs(vec2 uv, vec2 tf, float ar) {
-  tf.x *= ar;
-  tf.y *= ar;
-  vec2 tiledUvs = uv * tf;
+  vec2 tiledUvs = ar * tf * uv;
   return tiledUvs;
 }
 
 vec2 cameraCoords(vec2 coords, vec2 camera, float ar) {
-  camera.x *= ar;
-  camera.y *= ar;
-
-  float bias = 1.69;
-  vec2 cameraCoord = bias * camera + coords;
+  vec2 cameraCoord = camera + coords;
   return cameraCoord;
 }
 
@@ -66,10 +60,11 @@ void main(void) {
   vec2 cameraCoord = cameraCoords(clampedCoord, camera, aspectRatio);
 
   vec2 tiledUvs = tiledUvs(clampedCoord, tileFactor, aspectRatio);
+  vec2 wavesOffset = wavesOffset(time, cameraCoord, waveScale, waveTimeScale);
   vec2 offsetTextureUvs = offsetTextureUvs(time, cameraCoord, uvOffsetSize, uvTimeScale);
   vec2 textureBasedOffset = textureBasedOffset(displacementTexture, offsetTextureUvs);
-  vec2 wavesOffset = wavesOffset(time, cameraCoord, waveScale, waveTimeScale);
 
   vec2 waveCoords = tiledUvs + (textureBasedOffset * uvAmplitude) + (wavesOffset * waveAmplitude);
   gl_FragColor = texture2D(uSampler, waveCoords);
 }
+

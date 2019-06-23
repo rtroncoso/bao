@@ -1,5 +1,5 @@
-import { Sprite, withPixiApp } from '@inlet/react-pixi';
-import { Graphics, Rectangle, Texture } from 'pixi.js';
+import { Graphics, Sprite, withPixiApp } from '@inlet/react-pixi';
+import { Point, Rectangle, Texture } from 'pixi.js';
 import React from 'react';
 
 import Layers from 'ecs/components/map/Layers';
@@ -18,9 +18,8 @@ const { PIXI } = window;
 class Water extends Entity {
   constructor(props) {
     super(props);
-    this.state.shapes = props.shapes || [];
-    this.state.mask = this.buildMask(this.state.shapes);
     this.water = React.createRef();
+    this.shape = React.createRef();
 
     this.screen = new Rectangle();
     this.texture = Texture.fromImage(texture);
@@ -36,15 +35,25 @@ class Water extends Entity {
     });
   }
 
+  componentDidUpdate() { 
+    if (this.shape.current && this.props.masks !== this.state.masks) {
+      this.state.masks = this.props.masks;
+      this.state.mask = this.buildMask(this.props.masks || []);
+    }
+  }
+
   buildMask(shapes) {
-    const g = new Graphics();
-    shapes.forEach((shape) => {
-      const start = shape.shift();
-      g.moveTo(start.x, start.y);
-      shape.forEach(s => g.lineTo(s.x, s.y));
-      g.lineTo(start.x, start.y);
+    const g = this.shape.current;
+
+    shapes.forEach(shape => {
+      const path = shape.map((s) => new Point(s.x, s.y));
+      g.lineStyle(5, 0xffffff, 0.4);
+      g.beginFill(0xff0000, 0.1);
+      g.drawPolygon(path);
+      g.closePath();
+      g.endFill();
     });
-    console.log(g);
+
     return g;
   }
 
@@ -72,7 +81,11 @@ class Water extends Entity {
         <Sprite
           ref={this.water}
           texture={this.texture}
+          // mask={this.state.mask}
           filters={[shader]}
+        />
+        <Graphics
+          ref={this.shape}
         />
       </React.Fragment>
     );

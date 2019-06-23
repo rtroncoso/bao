@@ -24,8 +24,6 @@ class Viewport extends Entity {
     super(props);
     this.state.accumulatorX = 0;
     this.state.accumulatorY = 0;
-    this.directionX = randomRange(-1.0, 1.0);
-    this.directionY = randomRange(-1.0, 1.0);
 
     this.addListener(ON_PHYSICS_UPDATE, this.onPhysicsUpdate);
     this.addListener(ON_CAMERA_UPDATE, this.updateCamera);
@@ -61,9 +59,6 @@ class Viewport extends Entity {
     const oldCameraX = camera.x;
     const oldCameraY = camera.y;
 
-    if (!this.tmx) this.tmx = head(world.queryComponents([MapComponent])).mapComponent.tmx;
-    if (!this.player) this.player = head(world.queryComponents([Controllable]));
-
     if (this.player) {
       const { velocity, position: playerPosition } = this.player.physic.body;
       const targetX = playerPosition.x - (camera.width / 2);
@@ -80,12 +75,10 @@ class Viewport extends Entity {
 
     if (camera.x + camera.width >= this.tmx.width * TILE_SIZE || camera.x <= 0) {
       camera.x = oldCameraX;
-      this.directionX = -this.directionX;
     }
 
     if (camera.y + camera.height >= this.tmx.height * TILE_SIZE || camera.y <= 0) {
       camera.y = oldCameraY;
-      this.directionY = -this.directionY;
     }
   }
 
@@ -93,6 +86,11 @@ class Viewport extends Entity {
     const { entity } = this;
     const { world, width, height } = this.props;
     const { projection: camera } = entity.camera;
+
+    if (!this.map) this.map = head(world.queryComponents([MapComponent]));
+    if (!this.player) this.player = head(world.queryComponents([Controllable]));
+    if (!this.masks && this.map) this.masks = this.map.mapComponent.masks;
+    if (!this.tmx && this.map) this.tmx = this.map.mapComponent.tmx;
 
     if (
       Math.abs(this.state.accumulatorX) >= TILE_SIZE * 2 ||
@@ -117,7 +115,12 @@ class Viewport extends Entity {
   render() {
     return (
       <Container ref={this.container}>
-        <Water ref={this.waterLayer} />
+        <Water
+          ref={this.waterLayer}
+          masks={this.masks}
+          width={this.tmx && this.tmx.width * TILE_SIZE}
+          height={this.tmx && this.tmx.height * TILE_SIZE}
+        />
         {this.props.children}
       </Container>
     );

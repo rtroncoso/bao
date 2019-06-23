@@ -7,17 +7,13 @@ import styles from './AmbientFilter.scss';
 
 const AmbientFilter = (props) => {
   const defaultColor = '#9C0A3C';
-  const [color, setColor] = useState(defaultColor);
-  const [enabled, setEnabled] = useState(false);
   const colorChange = e => props.updateColor(e.target.value);
   const checkboxChange = e => props.updateEnabled(e.target.checked);
-  useEffect(() => setColor(props.color), [props.color]);
-  useEffect(() => setEnabled(props.enabled), [props.enabled]);
 
   return (
     <div className="filter" style={styles.filter}>
-      <input type="checkbox" value={enabled} onChange={checkboxChange} />
-      <input type="color" value={color} onChange={colorChange} />
+      <input type="checkbox" value={props.enabled} onChange={checkboxChange} />
+      <input type="color" value={props.color || defaultColor} onChange={colorChange} />
       <span>GLSL Color Mod</span>
     </div>
   );

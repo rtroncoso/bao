@@ -97,6 +97,8 @@ class TiledMap extends Entity {
     this.entity.mapComponent.collisions = this.collisions;
     this.entity.mapComponent.objects = this.objects;
     this.entity.mapComponent.triggers = this.triggers;
+    this.entity.mapComponent.masks = this.water.map(l => l.polygon);
+    console.log(this.entity.mapComponent.masks);
     this.entity.layers.groups = this.createLayerGroups();
   }
 
@@ -156,7 +158,7 @@ class TiledMap extends Entity {
     const sprites = this.getObjectsInViewport(this.sprites, this.spriteIdsCache, this.state.chunk, this.state.bounds);
     const objects = this.getObjectsInViewport(this.objects, this.objectIdsCache, this.state.chunk, this.state.bounds);
     const tiles = this.generateTileLayers(this.tileLayers, this.state.bounds);
-
+    
     this.renderToTarget(tiles, this.tilesLayer);
     this.renderSpriteLayers(sprites, this.spritesLayer);
     this.renderObjectLayers(objects, this.objectsLayer);
