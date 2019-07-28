@@ -1,17 +1,25 @@
-import { withPixiApp } from '@inlet/react-pixi';
+import { useApp } from '@inlet/react-pixi';
 import React from 'react';
 
 import Debug from 'ecs/components/common/Debug';
 import Controllable from 'ecs/components/character/Controllable';
-import { withWorld } from 'ecs/World';
+import { useWorld } from 'ecs/World';
 
 import Character, { CharacterFamily } from './Character';
 
 export const PlayerControllableFamily = [...CharacterFamily, Debug, Controllable];
-class Player extends Character {
-  constructor(props) {
-    super(props);
-  }
-}
+const Player = React.forwardRef((props, ref) => {
+  const world = useWorld();
+  const app = useApp();
 
-export default withWorld(withPixiApp(Player));
+  return (
+    <Character
+      {...props}
+      ref={ref}
+      app={app}
+      world={world}
+    />
+  );
+});
+
+export default Player;

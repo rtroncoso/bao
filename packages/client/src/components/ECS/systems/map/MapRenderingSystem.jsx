@@ -1,34 +1,48 @@
-import { withPixiApp } from '@inlet/react-pixi';
-import React from 'react';
+import { useApp, useTick } from '@inlet/react-pixi';
+
+import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
 
 import Layer from 'client/components/PIXI/Layers/Layer';
 import Stage from 'client/components/PIXI/Layers/Stage';
 import Layers from 'ecs/components/map/Layers';
 import System from 'ecs/System';
-import { withWorld } from 'ecs/World';
+import { useWorld } from 'ecs/World';
 
-class MapRenderingSystem extends System {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+const MapRenderingSystem = ({ children }) => {
+  const [layers, setLayers] = useState();
+  const world = useWorld();
+  const app = useApp();
 
-  update(delta) {
-    const { world } = this.props;
-    if (!this.layers) {
-      const map = world.queryComponents([Layers])[0];
-      this.setState({ layers: map.layers.groups });
-    }
-  }
+  useEffect(() => {
+    const maps = world.queryComponents([Layers]);
+    setLayers(maps[0].layers.groups);
+  }, [world]);
 
-  render() {
-    return (
-      <Stage enableSort>
-        { this.state.layers && Object.values(this.state.layers).map(l => (<Layer group={l} />)) }
-        { this.props.children }
-      </Stage>
-    );
-  }
-}
+  // useTick(delta => {
+  //   const map = world.queryComponents([Layers]);
+  //   if (map && map.length && layers !== map[0].layers.groups) {
+  //     setLayers(map.layers.groups);
+  //   }
+  // });
 
-export default withWorld(withPixiApp(MapRenderingSystem));
+  return (
+    <Stage enableSort>
+      { layers && Object.values(layers).map((l, i) => (<Layer key={i} group={l} />)) }
+      { children }
+    </Stage>
+  );
+};
+
+MapRenderingSystem.defaultProps = {
+  children: []
+};
+
+MapRenderingSystem.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.node,
+    PropTypes.array
+  ])
+};
+
+export default MapRenderingSystem;

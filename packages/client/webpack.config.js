@@ -52,12 +52,11 @@ const config = {
       verbose: false,
     }),
     new CopyWebpackPlugin([
-      { from: 'assets/audio', to: AUDIO_PATH },
-      // { from: 'assets/graphics', to: TEXTURE_PATH },
-      { from: 'assets/graphics/tilesets', to: TILESETS_PATH },
-      { from: 'assets/graphics/animations', to: ANIMATIONS_PATH },
-      { from: 'assets/init', to: INIT_PATH },
-      { from: 'assets/maps', to: MAP_PATH },
+      { from: AUDIO_PATH, to: AUDIO_PATH },
+      { from: TILESETS_PATH, to: TILESETS_PATH },
+      { from: ANIMATIONS_PATH, to: ANIMATIONS_PATH },
+      { from: INIT_PATH, to: INIT_PATH },
+      { from: MAP_PATH, to: MAP_PATH },
     ], { ignore: ['.*'] }),
     new HtmlWebpackPlugin({
       title: 'PIXI/Mob.js Starter Pack',
@@ -66,6 +65,7 @@ const config = {
       cache: true,
       hash: true,
     }),
+    new webpack.NamedModulesPlugin(),
   ],
   module: {
     rules: [
@@ -89,8 +89,8 @@ const config = {
         use: [
           {
             loader: 'babel-loader',
-            options: {
-              presets: ['react']
+            query: {
+              presets: ['@babel/env', '@babel/preset-react']
             }
           }
         ],
@@ -189,7 +189,6 @@ if (IS_PRODUCTION) {
         },
       },
     }),
-    new webpack.NamedModulesPlugin(),
   ];
   config.plugins = config.plugins.concat(devPlugins);
   config.module.rules.unshift({

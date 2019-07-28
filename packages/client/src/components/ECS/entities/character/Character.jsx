@@ -63,10 +63,11 @@ export const CLAN_OFFSET = NAME_OFFSET + 16;
 export const CharacterFamily = [OnPhysicsUpdate, Flags, Gear, Heading, Identity, Physic, Privilege];
 export const CharacterWithHealth = [...CharacterFamily, Health];
 class Character extends Entity {
-  constructor({ debug = false, ...props }) {
+  constructor(props) {
     super(props);
-
+    const { debug } = props;
     if (debug) this.entity.addComponent(Debug);
+
     this.addListener(ON_PHYSICS_UPDATE, this.onPhysicsUpdate);
     this.addListener(STOP_MOVING, this.stopMoving);
     this.addListener(MOVE_UP, this.handleMovement(NORTH));
@@ -295,8 +296,6 @@ class Character extends Entity {
 
     if (entity.hasComponent(Identity)) {
       entity.identity.name = name;
-      this.forceUpdate();
-
       setTimeout(() => this.updateTextWidth(this.name.current, NAME_OFFSET));
     }
   }
@@ -306,8 +305,6 @@ class Character extends Entity {
 
     if (entity.hasComponent(Identity)) {
       entity.identity.clan = clan;
-      this.forceUpdate();
-
       setTimeout(() => this.updateTextWidth(this.clan.current, CLAN_OFFSET));
     }
   }
@@ -432,13 +429,32 @@ class Character extends Entity {
     if (renderBody && body[direction].height <= 40) headOffsetY -= 4;
 
     const gear = [
-      renderShield === true && <Animation ref={this.shield} animation={shield[direction]} y={headOffsetY} />,
-      renderWeapon === true && <Animation ref={this.weapon} animation={weapon[direction]} y={headOffsetY} />
-    ];
-    const torso = [renderBody === true && <Animation ref={this.body} animation={body[direction]} />];
+      renderShield === true && (
+        <Animation
+          key="shield"
+          ref={this.shield}
+          animation={shield[direction]}
+          y={headOffsetY}
+        />
+      ),
+      renderWeapon === true && (
+        <Animation
+          key="weapon"
+          ref={this.weapon}
+          animation={weapon[direction]}
+          y={headOffsetY}
+        />
+      )];
+    const torso = [renderBody === true && (
+      <Animation
+        key="body"
+        ref={this.body}
+        animation={body[direction]}
+      />
+    )];
+
     const invert = direction === HEADINGS[NORTH] || direction === HEADINGS[WEST];
     const hands = invert ? gear.reverse() : gear;
-
     return renderBody && invert ? [hands[0], ...torso, hands[1]] : [...torso, ...hands];
   }
 

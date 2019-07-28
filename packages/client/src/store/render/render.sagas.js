@@ -9,9 +9,9 @@ import {
   all, call, fork, put, take
 } from 'redux-saga/effects';
 
+import { renderApp } from 'client/app';
 import { startGame } from 'store/game/game.state';
 import Store from 'store/store';
-import { renderApp } from 'client/app';
 import {
   resize, startRender, START, STOP, tick
 } from './render.state';
@@ -35,7 +35,6 @@ function renderLoop() {
     const { duration, fps } = fpsMeter;
 
     fpsMeter.tickStart();
-    // Store.dispatch(tick(duration, fps));
     renderApp();
     fpsMeter.tick();
 

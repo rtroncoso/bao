@@ -158,7 +158,7 @@ class TiledMap extends Entity {
     const sprites = this.getObjectsInViewport(this.sprites, this.spriteIdsCache, this.state.chunk, this.state.bounds);
     const objects = this.getObjectsInViewport(this.objects, this.objectIdsCache, this.state.chunk, this.state.bounds);
     const tiles = this.generateTileLayers(this.tileLayers, this.state.bounds);
-    
+
     this.renderToTarget(tiles, this.tilesLayer);
     this.renderSpriteLayers(sprites, this.spritesLayer);
     this.renderObjectLayers(objects, this.objectsLayer);

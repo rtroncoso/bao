@@ -35,7 +35,7 @@ class Water extends Entity {
     });
   }
 
-  componentDidUpdate() { 
+  componentDidUpdate() {
     if (this.shape.current && this.props.masks !== this.state.masks) {
       this.state.masks = this.props.masks;
       this.state.mask = this.buildMask(this.props.masks || []);
@@ -45,8 +45,8 @@ class Water extends Entity {
   buildMask(shapes) {
     const g = this.shape.current;
 
-    shapes.forEach(shape => {
-      const path = shape.map((s) => new Point(s.x, s.y));
+    shapes.forEach((shape) => {
+      const path = shape.map(s => new Point(s.x, s.y));
       g.lineStyle(5, 0xffffff, 0.4);
       g.beginFill(0xff0000, 0.1);
       g.drawPolygon(path);

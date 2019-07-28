@@ -64,7 +64,12 @@ class Game extends React.Component {
     this.player = React.createRef();
     this.state = {
       entities: [
-        <Player ref={this.player} tags={['player']} components={PlayerControllableFamily} />
+        <Player
+          key="player"
+          ref={this.player}
+          tags={['player']}
+          components={PlayerControllableFamily}
+        />
       ]
     };
   }
@@ -91,7 +96,11 @@ class Game extends React.Component {
       const newPlayer = React.createRef();
 
       this.state.entities.push((
-        <Player ref={newPlayer} components={CharacterFamily} />
+        <Player
+          ref={newPlayer}
+          key={this.state.entities.length}
+          components={CharacterFamily}
+        />
       ));
 
       this.forceUpdate();

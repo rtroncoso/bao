@@ -197,19 +197,17 @@ class Scene extends Entity {
 
     if (this.accumulator < FIXED_STEP) return this.accumulator += delta;
     if (delta >= MAX_DELTA) delta = MAX_DELTA;
-    // this.accumulator += delta;
 
-    while (this.accumulator >= FIXED_STEP) {
-      this.dynamic.forEach(b => b.updatePosition(FIXED_STEP));
+    while (this.accumulator > 0) {
+      const alpha = this.accumulator / delta;
       this.accumulator -= delta;
+
+      this.dynamic.forEach(b => b.updatePosition(FIXED_STEP));
+      candidates.forEach(c => c.emit(ON_PHYSICS_UPDATE, DELTA, alpha));
+      this.dynamicScene.testScene(this.staticScene);
+      this.dynamicScene.test();
     }
 
-    this.dynamicScene.testScene(this.staticScene);
-    this.dynamicScene.test();
-
-    // console.log(this.accumulator / delta);
-    const alpha = this.accumulator / delta;
-    candidates.forEach(c => c.emit(ON_PHYSICS_UPDATE, DELTA, alpha));
     return null;
   }
 
