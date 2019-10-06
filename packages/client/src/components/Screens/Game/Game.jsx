@@ -156,6 +156,7 @@ class Game extends React.Component {
                   components={ViewportFamily}
                   canvasWidth={canvasWidth}
                   canvasHeight={canvasHeight}
+                  boundsLock={false}
                   width={width}
                   height={height}
                   scale={scale}

@@ -1,1 +1,1 @@
-export default class OnPhysicsUpdate {}
+export default function OnPhysicsUpdate() {}

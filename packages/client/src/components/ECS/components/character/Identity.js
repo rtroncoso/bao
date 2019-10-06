@@ -1,6 +1,4 @@
-export default class Identity {
-  constructor() {
-    this.name = '';
-    this.clan = '';
-  }
+export default function Identity() {
+  this.name = '';
+  this.clan = '';
 }

@@ -8,6 +8,7 @@ import Entity from 'ecs/Entity';
 
 import WaterShader from 'client/filters/water/water';
 import { WATER_LAYER } from 'core/constants/game/Map';
+import { canvasWidth, canvasHeight } from 'core/constants/game/App';
 
 import texture from './water.png';
 import normal from './water_normal.png';
@@ -67,8 +68,8 @@ class Water extends Entity {
 
     this.screen.width = this.width;
     this.screen.height = this.height;
-    this.water.current.width = this.camera.width;
-    this.water.current.height = this.camera.height;
+    // this.water.current.width = canvasWidth; // this.camera.width;
+    // this.water.current.height = canvasHeight; // this.camera.height;
     this.water.current.position.x = this.camera.x;
     this.water.current.position.y = this.camera.y;
     this.state.shader.update(delta, this.camera);
@@ -81,7 +82,9 @@ class Water extends Entity {
         <Sprite
           ref={this.water}
           texture={this.texture}
-          // mask={this.state.mask}
+          width={canvasWidth}
+          height={canvasHeight}
+          mask={this.state.mask}
           filters={[shader]}
         />
         <Graphics

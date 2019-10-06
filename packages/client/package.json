@@ -9,8 +9,8 @@
   "main": "src/app.js",
   "scripts": {
     "lint": "eslint  --cache --ignore-path .gitignore src/**/*.js src/**/*.jsx",
-    "webpack:hmr:prod": "cross-env NODE_ENV=production webpack-dev-server --port 2000 --open --hot --content-base dist/",
-    "webpack:hmr:dev": "cross-env NODE_ENV=development webpack-dev-server --port 2000 --open --hot --content-base dist/",
+    "webpack:hmr:prod": "cross-env NODE_ENV=production webpack-dev-server --port 9000 --open --hot --content-base dist/",
+    "webpack:hmr:dev": "cross-env NODE_ENV=development webpack-dev-server --port 9000 --open --hot --content-base dist/",
     "build:dev": "cross-env NODE_ENV=development webpack --progress --hide-modules",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
     "start:dev": "npm-run-all webpack:hmr:dev",

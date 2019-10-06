@@ -9,7 +9,7 @@ export const selectFilterColor = createSelector(
 
 export const selectFilterEnabled = createSelector(
   selectAppState,
-  state => state.coloron
+  state => state.enabled
 );
 
 export default null;

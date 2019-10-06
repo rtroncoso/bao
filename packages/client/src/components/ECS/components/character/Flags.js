@@ -1,5 +1,3 @@
-export default class Flags {
-  constructor() {
-    this.trigger = 0;
-  }
+export default function Flags() {
+  this.trigger = 0;
 }

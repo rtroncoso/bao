@@ -9,7 +9,7 @@ export const updateFilterIsOn = createAction(FILTER_ON);
 
 export const defaultState = {
   color: '#9c0a3c',
-  coloron: false
+  enabled: false
 };
 
 export const HANDLERS = {
@@ -17,7 +17,7 @@ export const HANDLERS = {
     ...state,
     color: action.payload,
   }),
-  [FILTER_ON]: (state, action) => ({ ...state, coloron: action.payload })
+  [FILTER_ON]: (state, action) => ({ ...state, enabled: action.payload })
 };
 
 export default createReducers(defaultState, HANDLERS);

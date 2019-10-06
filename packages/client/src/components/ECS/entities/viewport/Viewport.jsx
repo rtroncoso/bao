@@ -5,6 +5,7 @@ import React from 'react';
 import head from 'lodash/fp/head';
 
 import { randomRange } from 'client/utils';
+import { canvasWidth, canvasHeight } from 'core/constants/game/App';
 import MapComponent from 'ecs/components/map/MapComponent';
 import Controllable from 'ecs/components/character/Controllable';
 import OnPhysicsUpdate from 'ecs/components/physics/OnPhysicsUpdate';
@@ -44,7 +45,7 @@ class Viewport extends Entity {
 
   updateCamera() {
     const { entity } = this;
-    const { world, canvasWidth, canvasHeight } = this.props;
+    const { world } = this.props;
     entity.camera.projection.width = canvasWidth;
     entity.camera.projection.height = canvasHeight;
 
@@ -73,12 +74,16 @@ class Viewport extends Entity {
       this.state.accumulatorY += velocity.y;
     }
 
-    if (camera.x + camera.width >= this.tmx.width * TILE_SIZE || camera.x <= 0) {
-      camera.x = oldCameraX;
-    }
+    if (this.props.boundsLock) {
+      if (camera.x + camera.width >= this.tmx.width * TILE_SIZE || camera.x <= 0) {
+        camera.x = oldCameraX;
+        this.directionX = -this.directionX;
+      }
 
-    if (camera.y + camera.height >= this.tmx.height * TILE_SIZE || camera.y <= 0) {
-      camera.y = oldCameraY;
+      if (camera.y + camera.height >= this.tmx.height * TILE_SIZE || camera.y <= 0) {
+        camera.y = oldCameraY;
+        this.directionY = -this.directionY;
+      }
     }
   }
 
@@ -105,8 +110,8 @@ class Viewport extends Entity {
     this.container.current.position.y = -camera.y;
 
     if (this.waterLayer.current) {
-      this.waterLayer.current.width = width;
-      this.waterLayer.current.height = height;
+      this.waterLayer.current.width = canvasWidth;
+      this.waterLayer.current.height = canvasHeight;
       this.waterLayer.current.camera = camera;
       this.waterLayer.current.update(delta);
     }
@@ -115,12 +120,7 @@ class Viewport extends Entity {
   render() {
     return (
       <Container ref={this.container}>
-        <Water
-          ref={this.waterLayer}
-          masks={this.masks}
-          width={this.tmx && this.tmx.width * TILE_SIZE}
-          height={this.tmx && this.tmx.height * TILE_SIZE}
-        />
+        <Water ref={this.waterLayer} />
         {this.props.children}
       </Container>
     );

@@ -1,1 +1,1 @@
-export default class Controllable {}
+export default function Controllable() {}

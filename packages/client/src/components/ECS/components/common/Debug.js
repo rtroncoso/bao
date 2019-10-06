@@ -1,1 +1,1 @@
-export default class Debug {}
+export default function Debug() {}

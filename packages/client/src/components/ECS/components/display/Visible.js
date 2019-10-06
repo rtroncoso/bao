@@ -1,1 +1,1 @@
-export default class Visible {}
+export default function Visible() {}

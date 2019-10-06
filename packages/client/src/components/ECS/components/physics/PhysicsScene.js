@@ -1,1 +1,1 @@
-export default class PhysicsScene {}
+export default function PhysicsScene() {}

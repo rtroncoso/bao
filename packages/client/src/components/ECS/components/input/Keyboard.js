@@ -1,7 +1,3 @@
-class Keyboard {
-  constructor() {
-    this.pressed = [];
-  }
+export default function Keyboard() {
+  this.pressed = [];
 }
-
-export default Keyboard;

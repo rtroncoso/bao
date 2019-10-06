@@ -1,5 +1,3 @@
-export default class Heading {
-  constructor() {
-    this.direction = 0;
-  }
+export default function Heading() {
+  this.direction = 0;
 }

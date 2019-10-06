@@ -1,5 +1,3 @@
-export default class Layers {
-  constructor() {
-    this.groups = {};
-  }
+export default function Layers() {
+  this.groups = {};
 }

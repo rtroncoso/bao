@@ -1,5 +1,3 @@
-export default class Health {
-  constructor() {
-    this.hp = 100;
-  }
+export default function Health() {
+  this.hp = 100;
 }
