@@ -1,40 +1,54 @@
 {
   "name": "@mob/api",
   "version": "1.0.0",
-  "author": "mob",
-  "description": "Mob JS Game API",
-  "license": "MIT",
-  "private": true,
-  "main": "index.js",
+  "description": "",
+  "main": "src/index.js",
   "scripts": {
-    "start": "nodemon index.js",
-    "lint": "eslint --cache --ignore-path .gitignore src/**/*.js config/**/*.js",
-    "test": "cross-env NODE_ENV=testing mocha --exit"
+    "dev": "npm run dev:watch",
+    "dev:start": "node -r esm src/index.js",
+    "dev:watch": "nodemon --exec npm run dev:start",
+    "lint": "eslint src",
+    "lint:fix": "npm run lint -- --fix",
+    "format": "prettier src/**/**",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NiMusco/argentum.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NiMusco/argentum/issues"
+  },
+  "homepage": "https://github.com/NiMusco/argentum#readme",
   "dependencies": {
-    "@mob/core": "^1.0.0",
-    "bcrypt": "^3.0.3",
-    "body-parser": "^1.18.2",
-    "express": "^4.16.2",
-    "express-jwt": "^5.3.0",
-    "express-validation": "^1.0.2",
-    "joi": "^14.3.1",
-    "jsonwebtoken": "^8.1.0",
-    "mysql2": "^1.5.1",
-    "nodemon": "^1.12.1",
-    "sequelize": "^4.22.15",
-    "uuid": "^3.1.0"
+    "bcrypt": "^4.0.1",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.0.0",
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "express-pino-logger": "^5.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "moment": "^2.24.0",
+    "mysql": "^2.18.1",
+    "pino": "^6.7.0",
+    "sha1": "^1.1.1"
   },
   "devDependencies": {
-    "browserify": "^16.2.3",
-    "chai": "^4.1.2",
-    "cross-env": "^5.2.0",
-    "eslint": "^4.12.0",
-    "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.8.0",
-    "iconv-lite": "^0.4.24",
-    "mocha": "^4.0.1",
-    "supertest": "^3.0.0",
-    "supertest-as-promised": "^4.0.2"
+    "eslint": "^6.1.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-config-standard": "^13.0.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "lint-staged": "^9.2.1",
+    "nodemon": "^1.19.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.18.2",
+    "prettier-eslint": "^9.0.0"
   }
 }
