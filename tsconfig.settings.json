@@ -1,5 +1,5 @@
 {
-  "compileOnSave": false
+  "compileOnSave": false,
   "compilerOptions": {
     "noErrorTruncation": true,
     "noImplicitAny": true,
@@ -29,7 +29,7 @@
     "allowSyntheticDefaultImports": true
   },
   "include":[
-    "src/**/*"
+    "packages/**/src/**/*"
   ],
   "exclude": [
     "node_modules",

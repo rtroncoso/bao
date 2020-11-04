@@ -18,7 +18,7 @@ export const behavior = {
    */
   applyProps: (instance, oldProps, newProps) => {
     const {
-      animationSpeed = 0.2,
+      animationSpeed = 0.1,
       alpha = 1,
       animation,
       textures,

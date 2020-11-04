@@ -26,7 +26,7 @@ export const ADD_BODY = 'add body';
 export const REMOVE_BODY = 'remove body';
 export const ON_PHYSICS_UPDATE = 'on physics update';
 export const DEFAULT_ITERATIONS = 1;
-export const FIXED_STEP = 1 / 18;
+export const FIXED_STEP = 1 / 60;
 export const MAX_DELTA = 1 / 4;
 export const DELTA = 1 / 100;
 
@@ -201,7 +201,6 @@ class Scene extends Entity {
     while (this.accumulator > 0) {
       const alpha = this.accumulator / delta;
       this.accumulator -= delta;
-
       this.dynamic.forEach(b => b.updatePosition(FIXED_STEP));
       candidates.forEach(c => c.emit(ON_PHYSICS_UPDATE, DELTA, alpha));
       this.dynamicScene.testScene(this.staticScene);

@@ -57,9 +57,9 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     const { resources } = this.props;
-    // this.legacyMap = getBinaryLayers(this.props.graphics, this.props.animations, OBJECTS, map, inf);
-    // this.map = convertLayersToTmx({ layers: this.legacyMap, resources });
-    // console.log(this.legacyMap, this.map);
+    this.legacyMap = getBinaryLayers(this.props.graphics, this.props.animations, OBJECTS, map, inf);
+    this.map = convertLayersToTmx({ layers: this.legacyMap, resources });
+    console.log(this.legacyMap, this.map);
 
     this.player = React.createRef();
     this.state = {
@@ -83,7 +83,7 @@ class Game extends React.Component {
     entity.emit(SET_HEAD, heads[317]);
     entity.emit(SET_WEAPON, weapons[65]);
     entity.emit(SET_SHIELD, shields[5]);
-    entity.emit(SET_POSITION, 50 * TILE_SIZE, 39 * TILE_SIZE);
+    entity.emit(SET_POSITION, 50, 39);
     entity.emit(SET_PRIVILEGE, roles.admin);
     this.characterSpawner();
   }
@@ -108,8 +108,8 @@ class Game extends React.Component {
         const { entity: entity2 } = newPlayer.current.state;
         const body = Math.floor(randomRange(1, 4));
         const head = Math.floor(randomRange(1, 6));
-        const x = Math.floor(randomRange(20, 50)) * TILE_SIZE;
-        const y = Math.floor(randomRange(20, 50)) * TILE_SIZE;
+        const x = Math.floor(randomRange(20, 50));
+        const y = Math.floor(randomRange(20, 50));
         entity2.emit(SET_BODY, bodies[body]);
         entity2.emit(SET_HEAD, heads[head]);
         entity2.emit(SET_POSITION, x, y);
@@ -170,8 +170,8 @@ class Game extends React.Component {
                   />
                   {entities.map(e => e)}
 
-                  {/* debug
-                  <GridRenderingSystem /> */}
+                  {/* debug */}
+                  <GridRenderingSystem />
                 </Viewport>
               </EntitiesList>
             </MapRenderingSystem>

@@ -45,7 +45,7 @@ import { calculateProjectionMatrix } from 'core/util/viewport';
 
 import 'pixi-layers';
 import 'pixi-tilemap';
-const { display, picture, tilemap } = window.PIXI;
+const { display, tilemap } = window.PIXI;
 
 export const SET_TRIGGER = 'set trigger';
 const easing = new EASE.list();
@@ -229,7 +229,7 @@ class TiledMap extends Entity {
       const sprite = this.animationsPool.pop() || new extras.AnimatedSprite([Texture.EMPTY]);
       sprite.remove = () => this.animationsPool.push(sprite);
       sprite.textures = graphic.frames.map(getTexture);
-      sprite.animationSpeed = graphic.speed;
+      sprite.animationSpeed = graphic.speed / 4;
       this.animations.push(sprite);
       sprite.gotoAndPlay(0);
       return sprite;

@@ -120,7 +120,7 @@ class Viewport extends Entity {
   render() {
     return (
       <Container ref={this.container}>
-        <Water ref={this.waterLayer} />
+        {/* <Water ref={this.waterLayer} /> */}
         {this.props.children}
       </Container>
     );

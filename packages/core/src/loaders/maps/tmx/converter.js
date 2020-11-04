@@ -672,10 +672,8 @@ export const processLayer = ({
         tilesData[tileIndex] = 0;
 
         if (animation && animation.frames.length > 0) {
-          if (!tile.isWater()) {
-            const object = makeAnimation({ graphic: animation, tile, data });
-            objects.push(object);
-          }
+          const object = makeAnimation({ graphic: animation, tile, data });
+          objects.push(object);
         }
 
         if (data) {
