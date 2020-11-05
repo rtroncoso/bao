@@ -9,7 +9,7 @@ import {
   //update
 } from './middleware'
 
-//import { getUserFromToken, isAdmin } from '../auth/middleware'
+import { getAccountFromToken } from '../accounts/middleware'
 
 const adminRouter = express.Router()
 //adminRouter.use(getUserFromToken)
@@ -21,7 +21,7 @@ adminRouter.get('/:id', findOne)
 //adminRouter.delete('/:objectId', remove)
 
 const clientRouter = express.Router()
-//clientRouter.use(getUserFromToken)
+clientRouter.use(getAccountFromToken)
 //clientRouter.use(isAdmin)
 clientRouter.get('/', find)
 //clientRouter.post('/', create)
