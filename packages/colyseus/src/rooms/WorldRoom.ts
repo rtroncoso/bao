@@ -1,15 +1,10 @@
 import { Client, Room } from 'colyseus';
 import { Dispatcher } from '@colyseus/command';
 
-import { WorldRoomState } from './schema/WorldRoomState';
-import { OnJoinCommand } from './commands/OnJoin';
-import { OnLeaveCommand } from './commands/OnLeave';
-import { OnMoveCommand } from './commands/OnMove';
-
-export type Heading = 'north' | 'east' | 'south' | 'west';
-interface MoveParameters {
-  heading: Heading;
-}
+import { WorldRoomState } from '@mob/server/schema/WorldRoomState';
+import { OnJoinCommand } from '@mob/server/commands/OnJoin';
+import { OnLeaveCommand } from '@mob/server/commands/OnLeave';
+import { MoveParameters, OnMoveCommand } from '@mob/server/commands/OnMove';
 
 export class WorldRoom extends Room {
   dispatcher = new Dispatcher(this);
@@ -19,8 +14,10 @@ export class WorldRoom extends Room {
 
     this.onMessage('move', (client, message: MoveParameters) => {
       console.log(`received message move: ${client.sessionId} ${message.heading}`);
-      const { heading } = message;
-      this.dispatcher.dispatch(new OnMoveCommand, { client, heading });
+      this.dispatcher.dispatch(new OnMoveCommand, {
+        ...message,
+        client
+      });
     });
   }
 

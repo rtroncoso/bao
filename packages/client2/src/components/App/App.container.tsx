@@ -1,4 +1,4 @@
 import { compose } from 'redux';
-import { App } from '@/components/App';
+import App from './App.component';
 
 export default compose()(App);

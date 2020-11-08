@@ -26,7 +26,7 @@ const Rectangle = PixiComponent<RectangleProps, Graphics>('Rectangle', {
   },
 })
 
-export const App = () => {
+const App = () => {
   const [client, setClient] = useState<Client | null>(null);
   const [room, setRoom] = useState<Room | null>(null);
   const [players, setPlayers] = useState<any>(null);
@@ -87,3 +87,5 @@ export const App = () => {
     </div>
   );
 }
+
+export default App;

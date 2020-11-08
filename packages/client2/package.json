@@ -6,7 +6,6 @@
     "@babel/core": "7.12.3",
     "@colyseus/schema": "^1.0.2",
     "@inlet/react-pixi": "^6.0.2",
-    "@mob/colyseus": "*",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.2",
     "@svgr/webpack": "5.4.0",
     "@testing-library/jest-dom": "^5.11.4",
@@ -63,6 +62,9 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "redux": "^4.0.5",
+    "redux-query": "^3.4.2",
+    "redux-query-interface-superagent": "^3.4.2",
+    "redux-query-react": "^3.4.2",
     "resolve": "1.18.1",
     "resolve-url-loader": "^3.1.2",
     "sass-loader": "8.0.2",
@@ -104,6 +106,7 @@
     "@types/jest": "^26.0.15",
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
+    "tsconfig-paths-webpack-plugin": "^3.3.0",
     "typescript": "^4.0.3"
   },
   "jest": {

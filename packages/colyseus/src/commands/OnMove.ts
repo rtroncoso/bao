@@ -1,8 +1,13 @@
 import { Client } from 'colyseus';
 import { Command } from '@colyseus/command';
 
-import { Heading } from '../WorldRoom';
-import { WorldRoomState } from '../schema/WorldRoomState';
+import { WorldRoomState } from '@mob/server/schema/WorldRoomState';
+
+export type Heading = 'north' | 'east' | 'south' | 'west';
+
+export interface MoveParameters {
+  heading: Heading;
+}
 
 export interface OnMoveParameters {
   client: Client;

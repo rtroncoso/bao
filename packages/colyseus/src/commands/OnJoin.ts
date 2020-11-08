@@ -1,8 +1,8 @@
 import { Client } from 'colyseus';
 import { Command } from '@colyseus/command';
 
-import { PlayerState } from '../schema/PlayerState';
-import { WorldRoomState } from '../schema/WorldRoomState';
+import { PlayerState } from '@mob/server/schema/PlayerState';
+import { WorldRoomState } from '@mob/server/schema/WorldRoomState';
 
 export interface OnJoinParameters {
   client: Client;

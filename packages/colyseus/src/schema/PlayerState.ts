@@ -8,8 +8,8 @@ export class PlayerState extends Schema {
   public name: string;
 
   @type('int32')
-  public x: number = 500;
+  public x: number = 300;
 
   @type('int32')
-  public y: number = 500;
+  public y: number = 300;
 }
