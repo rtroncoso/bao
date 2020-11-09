@@ -1,2 +1,42 @@
 {
+  "compilerOptions": {
+    "baseUrl": ".",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "downlevelIteration": true,
+    "strict": true,
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "paths": {
+      "@mob/api/*": ["../api/src/*"],
+      "@mob/api": ["../api/src"],
+      "@mob/client/*": ["../client2/src/*"],
+      "@mob/client": ["../client2/src"],
+      "@mob/core/*": ["../core/src/*"],
+      "@mob/core": ["../core/src"],
+      "@mob/server/*": ["../colyseus/src/*"],
+      "@mob/server": ["../colyseus/src"],
+      "@/*": ["./src/*"],
+      "@": ["./src"]
+    }
+  }
 }

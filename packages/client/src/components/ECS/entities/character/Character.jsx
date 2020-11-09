@@ -3,7 +3,7 @@ import { GlowFilter } from '@pixi/filter-glow';
 import { pointCircle, pointPolygon } from 'intersects';
 import React from 'react';
 import { Point } from 'pixi.js';
-import Ease from 'pixi-ease';
+import EASE from 'pixi-ease';
 import 'pixi-layers';
 
 import Circle from 'client/components/PIXI/UI/shapes/Circle';
@@ -104,7 +104,7 @@ class Character extends Entity {
     this.name = React.createRef();
     this.clan = React.createRef();
 
-    this.ease = new Ease.list();
+    this.easing = new EASE.list();
     this.bodyOffset = new Point();
     this.glow = new GlowFilter(2, 0, 0, 0xff482a);
     this.filters = [this.glow];
@@ -157,24 +157,53 @@ class Character extends Entity {
       const { entity } = this;
 
       if (entity.hasComponent(Physic)) {
+        let movement;
+        const { x, y } = entity.physic.body.position;
         switch (direction) {
         case NORTH:
           entity.physic.body.velocity.x = 0;
           entity.physic.body.velocity.y = -entity.physic.speed;
+          // if (entity.physic.target.isOrigin()) {
+          //   entity.physic.target.x = 0;
+          //   entity.physic.target.y = -1;
+          //   movement = this.easing.to(entity.physic.body.position, { y: y - TILE_SIZE }, entity.physic.body.speed);
+          // }
           break;
         case SOUTH:
           entity.physic.body.velocity.x = 0;
           entity.physic.body.velocity.y = entity.physic.speed;
+          // if (entity.physic.target.isOrigin()) {
+          //   entity.physic.target.x = 0;
+          //   entity.physic.target.y = 1;
+          //   movement = this.easing.to(entity.physic.body.position, { y: y + TILE_SIZE }, entity.physic.body.speed);
+          // }
           break;
         case WEST:
           entity.physic.body.velocity.x = -entity.physic.speed;
           entity.physic.body.velocity.y = 0;
+          // if (entity.physic.target.isOrigin()) {
+          //   entity.physic.target.x = -1;
+          //   entity.physic.target.y = 0;
+          //   movement = this.easing.to(entity.physic.body.position, { x: x - TILE_SIZE }, entity.physic.body.speed);
+          // }
           break;
         case EAST:
           entity.physic.body.velocity.x = entity.physic.speed;
           entity.physic.body.velocity.y = 0;
+          // if (entity.physic.target.isOrigin()) {
+          //   entity.physic.target.x = 1;
+          //   entity.physic.target.y = 0;
+          //   console.log(x, x + TILE_SIZE);
+          //   movement = this.easing.to(entity.physic.body.position, { x: x + TILE_SIZE }, entity.physic.body.speed);
+          // }
           break;
         default: break;
+        }
+
+        if (movement) {
+          console.log(movement, Object.keys(movement));
+          movement.once('to:done', console.log);
+          movement.once('to:done', () => entity.physic.target.set(0, 0));
         }
       }
 
@@ -204,7 +233,7 @@ class Character extends Entity {
     const { entity } = this;
 
     if (entity.hasComponent(Physic)) {
-      entity.physic.body.velocity.set(0, 0);
+      entity.physic.target.set(0, 0);
     }
 
     if (entity.hasComponent(Gear)) {
@@ -268,8 +297,10 @@ class Character extends Entity {
     }
   }
 
-  setPosition(x, y) {
+  setPosition(tileX, tileY) {
     const { entity } = this;
+    const x = (tileX * TILE_SIZE) + TILE_SIZE / 2;
+    const y = (tileY * TILE_SIZE);
 
     if (entity.hasComponent(Physic)) {
       entity.physic.body.setPosition(x, y);
@@ -383,7 +414,8 @@ class Character extends Entity {
   applyPhysics(entity, alpha) {
     if (entity.hasComponent(Physic)) {
       const { position: current } = this.container.current;
-      const { position: target } = entity.physic.body;
+      const { position } = entity.physic.body;
+      const { target } = entity.physic;
       // this.ease.to(current, { x: target.x, y: target.y }, step);
 
       // alpha *= 15.0;
@@ -391,8 +423,8 @@ class Character extends Entity {
       // const stateY = target.y * alpha + current.y * (1.0 - alpha);
       // current.x = stateX;
       // current.y = stateY;
-      current.x = target.x;
-      current.y = target.y;
+      current.x = position.x;
+      current.y = position.y;
     }
   }
 
@@ -444,7 +476,8 @@ class Character extends Entity {
           animation={weapon[direction]}
           y={headOffsetY}
         />
-      )];
+      )
+    ];
     const torso = [renderBody === true && (
       <Animation
         key="body"
@@ -501,11 +534,12 @@ class Character extends Entity {
     let debug = null;
     let collision = null;
     if (entity.hasAllComponents([Debug, Physic]) && entity.physic.body) {
-      const { body, radius } = entity.physic;
+      const { body, radius, target } = entity.physic;
       const { velocity, position } = body;
       const tilePositionX = Math.floor((position.x / TILE_SIZE) + 0.5);
       const tilePositionY = Math.floor((position.y / TILE_SIZE) + 0.5);
       const text = `
+        Target: (${target.x}, ${target.y})
         Speed: (${round(velocity.x)}, ${round(velocity.y)})
         Position: (${round(position.x)}, ${round(position.y)})
         Tile Position: (${tilePositionX}, ${tilePositionY})
@@ -552,7 +586,7 @@ class Character extends Entity {
 
   pointerOver(e) {
     const { entity } = this;
-    this.ease.to(this.glow.uniforms, { outerStrength: 1.0, innerStrength: 0.5 }, 200);
+    this.easing.to(this.glow.uniforms, { outerStrength: 1.0, innerStrength: 0.5 }, 200);
 
     if (entity.hasComponent(Debug)) {
       this.showDebug = true;
@@ -562,7 +596,7 @@ class Character extends Entity {
 
   pointerOut(e) {
     const { entity } = this;
-    this.ease.to(this.glow.uniforms, { outerStrength: 0, innerStrength: 0 }, 200);
+    this.easing.to(this.glow.uniforms, { outerStrength: 0, innerStrength: 0 }, 200);
 
     if (entity.hasComponent(Debug)) {
       this.showDebug = false;
