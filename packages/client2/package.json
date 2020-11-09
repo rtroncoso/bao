@@ -48,6 +48,8 @@
     "optimize-css-assets-webpack-plugin": "5.0.4",
     "pixi.js": "^5.3.3",
     "pnp-webpack-plugin": "1.6.4",
+    "postcss": "^8.1.6",
+    "postcss-cli": "^8.2.0",
     "postcss-flexbugs-fixes": "4.2.1",
     "postcss-loader": "3.0.0",
     "postcss-normalize": "8.0.1",
@@ -80,9 +82,10 @@
     "workbox-webpack-plugin": "5.1.4"
   },
   "scripts": {
-    "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
+    "start": "npm run watch:css && node scripts/start.js",
+    "build": "npm run watch:css && node scripts/build.js",
+    "test": "node scripts/test.js",
+    "watch:css": "npx postcss src/assets/tailwind.css -o src/assets/main.css"
   },
   "eslintConfig": {
     "extends": [
@@ -106,6 +109,8 @@
     "@types/jest": "^26.0.15",
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
+    "autoprefixer": "^10.0.1",
+    "tailwindcss": "^1.9.6",
     "tsconfig-paths-webpack-plugin": "^3.3.0",
     "typescript": "^4.0.3"
   },

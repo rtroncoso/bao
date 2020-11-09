@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
-import './index.scss';
 
+import '@mob/client/assets/main.css';
 import { AppContainer } from '@mob/client/components/App';
 
 ReactDOM.render(
