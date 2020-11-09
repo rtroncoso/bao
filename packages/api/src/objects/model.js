@@ -18,6 +18,8 @@ export const find = async ({
 
 	const objects_ids = objects.map(object => object.id);
 
+	// Attributes
+
 	var qb = new Qb();
 	qb.select('attributes.name, attributes.id, oa.value, oa.object_id');
 	qb.from('objects_attributes oa');
@@ -27,7 +29,25 @@ export const find = async ({
 	var sql = await qb.get();
 	var object_attributes = await db.executeQuery(sql);
 
+	// Classes
+
+	var qb = new Qb();
+	qb.select('classes.name, classes.id, oc.class_id, oc.object_id');
+	qb.from('objects_classes oc');
+	qb.join('classes', 'classes.id = oc.class_id', 'inner');
+	qb.where_in('oc.object_id', objects_ids);
+
+	var sql = await qb.get();
+	var object_classes = await db.executeQuery(sql);
+
+	console.log("--object_classes", object_classes);
+
+	// Response
+
 	const response = objects.map(object => {
+
+		// Attributes
+
 		var attributes = object_attributes
 		.filter(attribute => attribute.object_id === object.id)
 		.map(attribute => ({
@@ -35,9 +55,22 @@ export const find = async ({
 			name: attribute.name,
 			value: attribute.value
 		}));
+
+		object.attributes = attributes;
+
+		// Classes
+
+		var classes = object_classes
+		.filter(objclass => objclass.object_id === object.id)
+		.map(objclass => ({
+			id: objclass.id,
+			name: objclass.name
+		}));
+		
 		return {
 			...object,
-			attributes
+			attributes,
+			classes
 		}
 	});
 
