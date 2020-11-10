@@ -2,7 +2,8 @@ import db from '../db'
 import { QueryBuilder } from '../queryBuilder'
 
 export const find = async ({
-  ids
+  ids,
+  accountId
 } = {}) => {
   const qb = new QueryBuilder()
   qb.select('*')
@@ -12,9 +13,17 @@ export const find = async ({
     qb.whereIn('id', ids)
   }
 
+  if (accountId) {
+    qb.where('account_id', accountId)
+  }
+
   const charactersSql = await qb.get()
   const characters = await db.executeQuery(charactersSql)
   const charactersIds = characters.map(character => character.id)
+
+  if(!charactersIds.length){
+    throw new Error("NOT_FOUND");
+  }
 
   // Classes
 
