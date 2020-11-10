@@ -6,6 +6,7 @@ import config from './config'
 import errors from './errors'
 import { route as objects } from './objects'
 import { route as accounts } from './accounts'
+import { route as characters } from './characters'
 //import { route as auth } from './auth'
 
 let instance = null
@@ -38,6 +39,9 @@ module.exports = app => {
 
   app.use('/admin/accounts', accounts.admin)
   app.use('/client/accounts', accounts.client)
+
+  app.use('/admin/characters', characters.admin)
+  app.use('/client/characters', characters.client)
   //app.use('/admin/auth', auth.admin)
 
   app.use((err, req, res, next) => {
