@@ -17,7 +17,8 @@ export const find = async ({
 
 export const findOne = async ({
 	id,
-  username
+  username,
+  showPassword = false
 } = {}) => {
   const account = await model.findOne({
     id,
@@ -32,7 +33,9 @@ export const findOne = async ({
     accountId: id
   });
 
-  console.log("--characters", characters);
+  if(!showPassword){
+    delete account.password;
+  }
 
   return {...account, characters};
 }
@@ -42,8 +45,9 @@ export const login = async ({
   password
 } = {}) => {
 
-  const account = await model.findOne({
-    username: username.toLowerCase()
+  const account = await findOne({
+    username: username.toLowerCase(),
+    showPassword: true
   })
 
   if (!account) {
