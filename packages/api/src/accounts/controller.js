@@ -19,14 +19,14 @@ export const findOne = async ({
   username
 } = {}) => {
   const result = await model.findOne({
-  	id,
+    id,
     username
   })
 
-  if(!result){
+  if (!result) {
     throw new Error('NOT_FOUND');
   }
-  
+
   return result;
 }
 
@@ -39,11 +39,11 @@ export const login = async ({
     username: username.toLowerCase()
   })
 
-  if(!account){
+  if (!account) {
     throw new Error("NOT_FOUND");
   }
 
-  if(account.password != password){
+  if (account.password != password) {
     throw new Error("Quien sos papá?");
   }
 
@@ -56,7 +56,6 @@ export const login = async ({
 export const getAccountFromToken = async ({
   token
 } = {}) => {
-  
   return jwt.verify(token, process.env.SECRET_KEY)
 }
 

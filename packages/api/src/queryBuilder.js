@@ -1,171 +1,178 @@
-class Db {
-
+export class QueryBuilder {
   constructor() {
-    this.qb_select = [];
-    this.qb_from;
-    this.qb_where = [];
-    this.qb_order_by = [];
-    this.qb_group_by = [];
-    this.qb_limit = 0;
-    this.qb_offset = 0;
-    this.qb_join = [];
-    this.qb_con;
+    this.reset()
+    this.qbConnection
 
     //Debugging
-    this.queries = [];
+    this.queries = []
   }
 
-  select(select){
-    select = select.split(",");
+  reset() {
+    this.qbSelect = []
+    this.qbFrom
+    this.qbWhere = []
+    this.qbOrderBy = []
+    this.qbGroupBy = []
+    this.qbLimit = 0
+    this.qbOffset = 0
+    this.qbJoin = []
+  }
 
-    var i;
-    for(i = 0; i < select.length; i++) {
-      var val = select[i].trim();
-      this.qb_select.push(val);
+  select(select) {
+    select = select.split(',')
+
+    for (let i = 0; i < select.length; i++) {
+      const val = select[i].trim()
+      this.qbSelect.push(val)
     }
   }
 
-  from(from){
-    this.qb_from = from;
+  from(from) {
+    this.qbFrom = from
   }
 
-  _has_operator(str){
-    return str.match(/(<|>|!|=|\sIS NULL|\sIS NOT NULL|\sEXISTS|\sBETWEEN|\sLIKE|\sIN\s*\(|\s)/i);
+  hasOperator(str) {
+    return str.match(
+      /(<|>|!|=|\sIS NULL|\sIS NOT NULL|\sEXISTS|\sBETWEEN|\sLIKE|\sIN\s*\(|\s)/i
+    )
   }
 
-  where(key, value){
-    var where = "";
+  where(key, value) {
+    let where = ''
 
-    if(this._has_operator(key)){
-      where = key;
-    }else{
-      where = key + " = '" + value + "'";
+    if (this.hasOperator(key)) {
+      where = key
+    } else {
+      where = key + " = '" + value + "'"
     }
 
-    this.qb_where.push(where);
+    this.qbWhere.push(where)
   }
 
-  where_in(key, value, not = false){
-    not = (not) ? ' NOT' : '';
+  whereIn(key, value, not = false) {
+    not = not ? ' NOT' : ''
 
-    var values = [];
-
-    var i;
-    for(i = 0; i < value.length; i++) {
-      var val = '"' + value[i] + '"';
-      values.push(val);
+    const values = []
+    for (let i = 0; i < value.length; i++) {
+      const val = '"' + value[i] + '"'
+      values.push(val)
     }
 
-    var where = key + not + " IN(" + values.join() + ")"; 
-    this.qb_where.push(where);
+    const where = key + not + ' IN(' + values.join() + ')'
+    this.qbWhere.push(where)
   }
 
-  order_by(value, type = "ASC"){
-    var order_by = "";
-    order_by = value + " " + type;
+  orderBy(value, type = 'ASC') {
+    const orderBy = value + ' ' + type
 
-    this.qb_order_by.push(order_by);
+    this.qbOrderBy.push(orderBy)
   }
 
-  group_by(value){
-    this.qb_order_by.push(value);
+  groupBy(value) {
+    this.qbOrderBy.push(value)
   }
 
-  limit(value, offset = 0){
-    this.qb_limit = parseInt(value);
+  limit(value, offset = 0) {
+    this.qbLimit = parseInt(value)
 
-    if(offset){
-      this.qb_offset = parseInt(offset);
+    if (offset) {
+      this.qbOffset = parseInt(offset)
     }
   }
 
-  join(table, cond, type = ''){
-    if(type !== ''){
-      type = type.trim();
-      type = type.toUpperCase(type);
+  join(table, cond, type = '') {
+    if (type !== '') {
+      type = type.trim()
+      type = type.toUpperCase(type)
 
-      var types = ['LEFT', 'RIGHT', 'OUTER', 'INNER', 'LEFT OUTER', 'RIGHT OUTER'];
-      if(types.indexOf(type) == -1){  
-         type = '';
-      }else{
-        type += ' ';
+      const types = [
+        'LEFT',
+        'RIGHT',
+        'OUTER',
+        'INNER',
+        'LEFT OUTER',
+        'RIGHT OUTER'
+      ]
+      if (types.indexOf(type) == -1) {
+        type = ''
+      } else {
+        type += ' '
       }
 
       // Assemble the JOIN statement
-      var join = type + 'JOIN ' + table + ' ON ' + cond;
-      this.qb_join.push(join);
+      const join = type + 'JOIN ' + table + ' ON ' + cond
+      this.qbJoin.push(join)
     }
   }
 
-  last_query(){
-    sails.log("arr queries", this.queries);
-    var arr = this.queries;
-    return arr[arr.length - 1];
+  lastQuery() {
+    const arr = this.queries
+    return arr[arr.length - 1]
   }
 
-  count_all_results(env){
-    var $this = this;
-    return new Promise(async function(resolve, reject){
-      $this.qb_select = ["COUNT(*) as count"];
-      var response = await $this.get(env);
-      resolve(response[0].count);
-    });
+  countAllResults(env) {
+    return new Promise(async (resolve, reject) => {
+      this.qbSelect = ['COUNT(*) as count']
+      const response = await this.get(env)
+      resolve(response[0].count)
+    })
   }
 
-  get(env){
-    var $this = this;
-    return new Promise(async function(resolve, reject) {
-      var $sql = "SELECT ";
+  get(env) {
+    return new Promise(async (resolve, reject) => {
+      let $sql = 'SELECT '
 
       /* --- Select --- */
 
-      if(!$this.qb_select.length){
-        $sql += "*";
-      }else{
-        $sql += $this.qb_select.join(', ');
+      if (!this.qbSelect.length) {
+        $sql += '*'
+      } else {
+        $sql += this.qbSelect.join(', ')
       }
 
       /* --- From --- */
 
-      $sql += "\nFROM " + $this.qb_from;
+      $sql += '\nFROM ' + this.qbFrom
 
       /* --- Join --- */
 
       // Write the "JOIN" portion of the query
-      if($this.qb_join.length){
-        $sql += "\n" + $this.qb_join.join("\n");
+      if (this.qbJoin.length) {
+        $sql += '\n' + this.qbJoin.join('\n')
       }
 
       /* --- Where --- */
 
-      if($this.qb_where.length){
-        var where = $this.qb_where.join(' AND ');
-        where = where.replace(/AND\s*$/, "");
-        $sql += "\nWHERE " + where;
+      if (this.qbWhere.length) {
+        let where = this.qbWhere.join(' AND ')
+        where = where.replace(/AND\s*$/, '')
+        $sql += '\nWHERE ' + where
       }
 
       /* -- Order by -- */
-      if($this.qb_order_by.length){
-        var order_by = $this.qb_order_by.join(',');
-        $sql += "\nORDER BY " + order_by;
+      if (this.qbOrderBy.length) {
+        let orderBy = this.qbOrderBy.join(',')
+        $sql += '\nORDER BY ' + orderBy
       }
 
       /* -- Group by -- */
-      if($this.qb_group_by.length){
-        var group_by = $this.qb_group_by.join(',');
-        $sql += "\nGROUP BY " + group_by;
+      if (this.qbGroupBy.length) {
+        let groupBy = this.qbGroupBy.join(',')
+        $sql += '\nGROUP BY ' + groupBy
       }
 
       /* --- Limit --- */
 
-      if($this.qb_limit > 0){
-        $sql += "\nLIMIT " + ($this.qb_offset ? $this.qb_offset + ', ' : '') + $this.qb_limit;
+      if (this.qbLimit > 0) {
+        $sql +=
+          '\nLIMIT ' +
+          (this.qbOffset ? this.qbOffset + ', ' : '') +
+          this.qbLimit
       }
 
-      console.log($sql);
-      resolve($sql);
-    });
+      if (process.env.NODE_ENV === 'debug') console.log($sql)
+      resolve($sql)
+    })
   }
 }
 
-module.exports = Db;

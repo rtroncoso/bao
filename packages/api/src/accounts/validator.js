@@ -1,6 +1,5 @@
 
 export const validateFind = req => {
-
   const ids = req.query.ids ? req.query.ids.split(',') : null
 
   return {
@@ -9,7 +8,6 @@ export const validateFind = req => {
 }
 
 export const validateFindOne = req => {
-
   const id = req.params.id;
 
   return {
@@ -18,29 +16,27 @@ export const validateFindOne = req => {
 }
 
 export const validateLogin = req => {
+  const username = req.body.username;
+  const password = req.body.password;
 
-	const username = req.body.username;
-	const password = req.body.password;
+  if (!username || !password) {
+    throw new Error("MISSING_PARAMS");
+  }
 
-	if(!username || !password){
-		throw new Error("MISSING_PARAMS");
-	}
-
-	return {
-		username,
-		password
-	}
+  return {
+    username,
+    password
+  }
 }
 
 export const validateToken = req => {
+  const token = req.headers['x-auth'];
 
-	const token = req.headers['x-auth'];
+  if (!token) {
+    throw new Error("MISSING_PARAMS");
+  }
 
-	if(!token){
-		throw new Error("MISSING_PARAMS");
-	}
-
-	return {
-		token
-	}
+  return {
+    token
+  }
 }
