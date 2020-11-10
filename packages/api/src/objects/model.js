@@ -16,6 +16,10 @@ export const find = async ({
   const objects = await db.executeQuery(objectsSql)
   const objectIds = objects.map(object => object.id)
 
+  if(!objectIds.length){
+    throw new Error("NOT_FOUND");
+  }
+
   // Attributes
 
   qb.reset()
