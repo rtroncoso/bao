@@ -1,5 +1,6 @@
 import * as model from './model'
 import jwt from 'jsonwebtoken'
+import * as characterController from '../characters/controller'
 
 export const find = async ({
   ids,
@@ -18,16 +19,22 @@ export const findOne = async ({
 	id,
   username
 } = {}) => {
-  const result = await model.findOne({
+  const account = await model.findOne({
     id,
     username
   })
 
-  if (!result) {
+  if (!account) {
     throw new Error('NOT_FOUND');
   }
 
-  return result;
+  const characters = await characterController.find({
+    accountId: id
+  });
+
+  console.log("--characters", characters);
+
+  return {...account, characters};
 }
 
 export const login = async ({

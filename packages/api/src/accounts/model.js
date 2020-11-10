@@ -9,8 +9,6 @@ export const find = async ({
   qb.select('*');
   qb.from('accounts');
 
-  console.log("ids", ids);
-
   if (ids !== undefined) {
     qb.whereIn('id', ids);
   }
@@ -20,8 +18,13 @@ export const find = async ({
   }
 
   var sql = await qb.get();
-  const response = await db.executeQuery(sql);
-  return response;
+  const accounts = await db.executeQuery(sql);
+
+  if(!accounts.length){
+    throw new Error("NOT_FOUND");
+  }
+
+  return accounts;
 }
 
 export const findOne = async ({
