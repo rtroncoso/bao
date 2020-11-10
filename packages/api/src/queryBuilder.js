@@ -170,7 +170,7 @@ export class QueryBuilder {
           this.qbLimit
       }
 
-      if (process.env.NODE_ENV === 'debug') console.log($sql)
+      if (process.env.NODE_ENV === 'development') console.log($sql)
       resolve($sql)
     })
   }
