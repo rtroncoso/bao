@@ -1,10 +1,14 @@
 import React, { InputHTMLAttributes } from 'react';
+
+import { FormErrorStyled } from '@mob/client/components/App/App.styles';
 import InputStyled from './Input.styles';
 
-interface InputProps  extends InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps  extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   label?: string;
   placeholder?: string;
+  errors?: string;
+  touched?: boolean;
 }
 
 const Input = ({
@@ -17,6 +21,11 @@ const Input = ({
         <label htmlFor={props.name}>{label}</label>
       )}
       <InputStyled {...props} />
+      {props.errors && props.touched && (
+        <FormErrorStyled>
+          {props.errors}
+        </FormErrorStyled>
+      )}
     </React.Fragment>
   );
 }

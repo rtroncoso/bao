@@ -55,7 +55,10 @@ export const login = async ({
   }
 
   if (account.password != password) {
-    throw new Error("Quien sos papá?");
+    throw {
+      message: 'INVALID_VALUE',
+      payload: 'Quien sos papá?'
+    };
   }
 
   delete account.password;

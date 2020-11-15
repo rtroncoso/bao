@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser'
+import cors from 'cors'
 import pino from 'express-pino-logger'
 import logger from './logging'
 import config from './config'
@@ -19,6 +20,7 @@ module.exports = app => {
 
   //app.use(pino({ logger }))
 
+  app.use(cors())
   app.use(bodyParser.json({ limit: '50mb' }))
   app.use(bodyParser.raw({ limit: '50mb' }))
   app.use(

@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { BrowserRouter as Router } from "react-router-dom";
 import { Provider as ReduxQueryProvider } from 'redux-query-react';
 import { GlobalStyles } from 'twin.macro';
 import reportWebVitals from './reportWebVitals';
@@ -11,12 +12,14 @@ import store, { getQueries } from '@mob/client/store';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <ReduxQueryProvider queriesSelector={getQueries}>
-        <GlobalStyles />
-        <AppContainer />
-      </ReduxQueryProvider>
-    </Provider>
+    <Router>
+      <Provider store={store}>
+        <ReduxQueryProvider queriesSelector={getQueries}>
+          <GlobalStyles />
+          <AppContainer />
+        </ReduxQueryProvider>
+      </Provider>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );
