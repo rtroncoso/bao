@@ -27,8 +27,10 @@ export interface CharacterModel {
 
 export interface AccountModel {
   characters?: Array<CharacterModel>;
+  currentCharacterId?: number;
   email: string;
   id: number;
+  token?: string;
   username: string;
 }
 
@@ -46,8 +48,7 @@ export interface CharacterEntity {
   [key: number]: CharacterModel;
 }
 
-export interface LoginEntities {
+export interface AccountEntities {
   account?: AccountModel;
   characters?: CharacterEntity;
-  token?: string;
 }

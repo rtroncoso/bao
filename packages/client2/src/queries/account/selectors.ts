@@ -15,5 +15,13 @@ export const selectCharacters = createSelector(
 
 export const selectToken = createSelector(
   getEntities,
-  (entities) => entities.token
+  (entities) => entities.account ? entities.account.token : null
+);
+
+export const selectCurrentCharacter = createSelector(
+  selectAccount,
+  selectCharacters,
+  (account, characters) => characters.hasOwnProperty(account!.currentCharacterId as number)
+    ? characters[account!.currentCharacterId as number]
+    : null
 );

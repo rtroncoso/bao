@@ -10,10 +10,11 @@ import {
 } from 'redux-query';
 import superagentInterface from 'redux-query-interface-superagent';
 
-import { LoginEntities } from '@/queries/account';
+import { AccountEntities } from '@mob/client/queries/account';
 
 export type EntitiesState =
-  LoginEntities;
+  AccountEntities;
+
 export interface State {
   entities: EntitiesState,
   errors: ErrorsState,

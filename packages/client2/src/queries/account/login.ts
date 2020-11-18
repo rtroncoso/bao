@@ -1,10 +1,10 @@
 import { QueryConfig } from 'redux-query';
 
-import { merge, override } from '@mob/client/queries/shared';
+import { merge } from '@mob/client/queries/shared';
 import {
+  AccountEntities,
   CharacterEntity,
   CharacterModel,
-  LoginEntities,
   LoginRequestParameters,
   LoginSuccessResponse
 } from './models';
@@ -20,13 +20,14 @@ export const loginQuery = {
 
 export const transformLoginResponse = (responseBody: LoginSuccessResponse) => {
   const account = responseBody.account;
+  const token = responseBody.token;
   const characters = account.characters!
     .reduce<CharacterEntity>((acc, character: CharacterModel) => {
       acc[character.id] = character;
       return acc;
     }, {} as CharacterEntity);
-  const token = responseBody.token;
   delete account.characters;
+  account.token = token;
 
   return {
     account,
@@ -35,15 +36,14 @@ export const transformLoginResponse = (responseBody: LoginSuccessResponse) => {
   }
 };
 
-const login = (body: LoginRequestParameters): QueryConfig<LoginEntities> => {
+const login = (body: LoginRequestParameters): QueryConfig<AccountEntities> => {
   return {
     ...loginQuery,
     body,
     transform: transformLoginResponse,
     update: {
       account: merge,
-      characters: merge,
-      token: override
+      characters: merge
     },
   }
 };

@@ -74,7 +74,7 @@ export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   withRedirect({
     predicate: ({ account }) => !!account,
-    redirectUrl: '/characterSelection'
+    redirectUrl: '/characters'
   }),
 
   formEnhancer

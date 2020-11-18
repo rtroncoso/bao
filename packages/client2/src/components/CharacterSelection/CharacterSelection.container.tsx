@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { withAuthGuard } from '@mob/client/components/HigherOrder';
@@ -25,5 +26,6 @@ export interface ConnectedProps {
 
 export default compose(
   connect(mapStateToProps),
-  withAuthGuard
+  withAuthGuard,
+  withRouter
 )(CharacterSelectionComponent);

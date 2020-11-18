@@ -8,7 +8,10 @@ const InputStyled = styled.input(({ errors, touched }: InputProps) => [
   tw`transition-colors transition-shadow duration-200`,
 
   errors && touched && [
-    css`box-shadow: 0 4px 6px -1px rgba(254, 215, 215, 0.8), 0 2px 4px -1px rgba(254, 215, 215, 0.06);`
+    css`box-shadow:
+      0 4px 6px -1px ${theme('colors.red.200')},
+      0 2px 4px -1px rgba(254, 215, 215, 0.06);
+    `
   ]
 ]);
 

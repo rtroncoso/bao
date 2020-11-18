@@ -16,23 +16,23 @@ export interface OnMoveParameters {
 
 export class OnMoveCommand extends Command<WorldRoomState, OnMoveParameters> {
   execute({ client, heading }: OnMoveParameters) {
-    const player = this.state.players.get(client.sessionId);
+    const character = this.state.characters.get(client.sessionId);
 
     switch (heading) {
       case 'north': {
-        player.y -= 1;
+        character.y -= 1;
         break;
       }
       case 'east': {
-        player.x += 1;
+        character.x += 1;
         break;
       }
       case 'south': {
-        player.y += 1;
+        character.y += 1;
         break;
       }
       case 'west': {
-        player.x -= 1;
+        character.x -= 1;
         break;
       }
     }

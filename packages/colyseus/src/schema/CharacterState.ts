@@ -1,6 +1,9 @@
 import { Schema, type } from '@colyseus/schema';
 
-export class PlayerState extends Schema {
+export class CharacterState extends Schema {
+  @type('int32')
+  public id: number;
+
   @type('string')
   public sessionId: string;
 

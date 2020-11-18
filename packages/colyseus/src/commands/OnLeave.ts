@@ -9,8 +9,8 @@ export interface OnLeaveParameters {
 
 export class OnLeaveCommand extends Command<WorldRoomState, OnLeaveParameters> {
   execute({ client }: OnLeaveParameters) {
-    if (this.state.players.hasOwnProperty(client.sessionId)) {
-      this.state.players.delete(client.sessionId);
+    if (this.state.characters.hasOwnProperty(client.sessionId)) {
+      this.state.characters.delete(client.sessionId);
     }
   }
 }

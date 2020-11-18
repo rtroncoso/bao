@@ -30,19 +30,18 @@ module.exports = app => {
     })
   )
 
-  /*app.use('/healthcheck', (req, res, next) => {
+  app.use('/healthcheck', (req, res, next) => {
     res.sendStatus(200)
-  })*/
+  })
 
-
-  //ENDPOINTS
-  app.use('/admin/objects', objects.admin)
-  app.use('/client/objects', objects.client)
-
+  // ADMIN ENDPOINTS
   app.use('/admin/accounts', accounts.admin)
-  app.use('/client/accounts', accounts.client)
-
+  app.use('/admin/objects', objects.admin)
   app.use('/admin/characters', characters.admin)
+
+  // CLIENT ENDPOINTS
+  app.use('/client/objects', objects.client)
+  app.use('/client/accounts', accounts.client)
   app.use('/client/characters', characters.client)
   //app.use('/admin/auth', auth.admin)
 

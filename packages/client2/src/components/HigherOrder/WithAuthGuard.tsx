@@ -8,7 +8,7 @@ import { State } from '@mob/client/store';
 
 interface ConnectedProps {
   account?: AccountModel;
-  token?: string;
+  token?: string | null;
 }
 
 export interface WithAuthGuardOptions {

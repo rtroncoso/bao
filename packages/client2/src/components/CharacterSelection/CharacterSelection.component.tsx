@@ -1,36 +1,72 @@
-import React from 'react';
-import { RouteProps } from 'react-router-dom';
+import React, { useCallback, useState } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
 import { ContainerStyled } from '@mob/client/components/App/App.styles';
+import { Button } from '@mob/client/components/Button';
+import { CharacterModel } from '@mob/client/queries/account';
 import { ConnectedProps } from './CharacterSelection.container';
+import {
+  CharacterListStyled,
+  CharacterListItemStyled,
+  TitleStyled
+} from './CharacterSelection.styles';
 
 type CharacterSelectionProps =
   ConnectedProps &
-  Readonly<RouteProps>;
+  Readonly<RouteComponentProps>;
 
 const CharacterSelection: React.FC<CharacterSelectionProps> = ({
   account,
-  characters
+  characters,
+  history
 }) => {
+  const [currentCharacter, setCurrentCharacter] = useState<CharacterModel | null>(null);
+
+  const handleCharacterSelection = useCallback((character: CharacterModel) => {
+    setCurrentCharacter(character);
+  }, []);
+
+  const handleCharacterCreation = useCallback(() => {
+    history.push('/characters/create')
+  }, [history]);
+
+  const handleSubmit = useCallback(() => {
+    if (currentCharacter) {
+      history.push('/game', { characterId: currentCharacter.id })
+    }
+  }, [currentCharacter, history]);
+
   return (
     <ContainerStyled>
-      <h1 className="font-mono text-2xl text-center text-indigo-800 text-bold">
+      <TitleStyled>
         ¡Bienvenido, {account!.username}!
-      </h1>
-      <h2 className="text-lg text-center text-indigo-800">
-        Seleccioná un personaje
-      </h2>
-      <ul className="w-full h-full mt-6">
+      </TitleStyled>
+      <CharacterListStyled>
         {characters.map((character) => (
-          <li
+          <CharacterListItemStyled
             key={character.id}
-            className="mt-4 text-lg text-center text-gray-300 duration-200 bg-indigo-600 rounded shadow-outline cursor-pointer tbransition-colors p text-bold hover:bg-indigo-700 hover:text-gray-400 first:mt-0"
-            role="button"
+            isActive={currentCharacter && currentCharacter.id === character.id}
           >
-            {character.name}
-          </li>
+            <button
+              className="w-full h-full py-2"
+              onClick={() => handleCharacterSelection(character)}
+            >
+              {character.name}
+            </button>
+          </CharacterListItemStyled>
         ))}
-      </ul>
+      </CharacterListStyled>
+      {characters.length > 0 && (
+        <Button onClick={handleSubmit} disabled={!currentCharacter}>
+          {currentCharacter
+            ? `Ingresar con ${characters.find((character) => character.id === currentCharacter.id)!.name}`
+            : 'Seleccione un personaje'
+          }
+        </Button>
+      )}
+      <Button onClick={handleCharacterCreation}>
+        Crear personaje
+      </Button>
     </ContainerStyled>
   );
 }
