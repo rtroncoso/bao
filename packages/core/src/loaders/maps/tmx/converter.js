@@ -296,7 +296,7 @@ const optimize = (type = COLLISION_TYPE) => (list) => {
     const x = p1.x * TILE_SIZE;
     const y = p1.y * TILE_SIZE;
     const width = (p2.x - p1.x) * TILE_SIZE;
-    const height = (p2.y - p1.y) * TILE_SIZE;
+    const height = (p2.y - p1.y) * TILE_SIZE;+
     const object = makeShape({ type, x, y, width, height });
     objects.push(object);
   });

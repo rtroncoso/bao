@@ -29,8 +29,8 @@
     "paths": {
       "@mob/api/*": ["../api/src/*"],
       "@mob/api": ["../api/src"],
-      "@mob/client/*": ["../client2/src/*"],
-      "@mob/client": ["../client2/src"],
+      "@mob/client/*": ["../client/src/*"],
+      "@mob/client": ["../client/src"],
       "@mob/core/*": ["../core/src/*"],
       "@mob/core": ["../core/src"],
       "@mob/server/*": ["../colyseus/src/*"],

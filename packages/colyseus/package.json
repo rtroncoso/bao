@@ -1,8 +1,8 @@
 {
   "private": true,
   "name": "@mob/colyseus",
-  "version": "1.0.0",
-  "description": "npm init template for bootstraping an empty Colyseus project",
+  "version": "0.1.0",
+  "description": "Colyseus game server for MoB",
   "main": "lib/index.js",
   "scripts": {
     "start": "ts-node-dev -r tsconfig-paths/register src/index.ts",
@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/colyseus/create-colyseus/issues"
   },

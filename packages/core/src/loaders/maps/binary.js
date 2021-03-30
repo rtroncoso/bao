@@ -101,15 +101,17 @@ export const translateTileExits = (tiles, amount = -4) => (x, y) => {
  * @param {Array.<Graphic>} animations
  * @param {Uint8Array} mapFile
  * @param {Uint8Array} infFile
+ * @param {Object.<string, MapInfo>} datFile
+ * @param {Boolean} translateExits
  * @returns {Array.<Array.<LayeredTile>>}
  */
-export const getBinaryTiles = (graphics, animations, mapFile, infFile) => {
+export const getBinaryTiles = (graphics, animations, mapFile, infFile, datFile, translateExits = false) => {
   const buffer = new BufferAdapter(mapFile.buffer);
   const infBuffer = new BufferAdapter(infFile.buffer);
   buffer.skipBytes(HEADER_SIZE);
   infBuffer.skipBytes(INF_HEADER_SIZE);
   const tiles = mapBinaryLayers(buffer, parseBinaryTile(buffer, infBuffer));
-  iterate(translateTileExits(tiles)); // mutates tiles
+  if (translateExits) { iterate(translateTileExits(tiles)) }; // mutates tiles
   return tiles;
 };
 
@@ -121,9 +123,10 @@ export const getBinaryTiles = (graphics, animations, mapFile, infFile) => {
  * @param {Array.<MapObject>} objects
  * @param {Uint8Array} mapFile
  * @param {Uint8Array} infFile
+ * @param {Object.<string, MapInfo>} datFile
  * @returns {Array<Array<Array<Tile>>>}
  */
-export const getBinaryLayers = (graphics, animations, objects, mapFile, infFile) => {
+export const getBinaryLayers = (graphics, animations, objects, mapFile, infFile, datFile) => {
   const tiles = getBinaryTiles(graphics, animations, mapFile, infFile);
   const parse = parseTile(graphics, animations, objects);
   const parseJson = (data, layer, x, y) => {
