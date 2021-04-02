@@ -2,14 +2,13 @@ import { Container, PixiComponent, Stage, Text } from '@inlet/react-pixi';
 import { Client, Room } from 'colyseus.js';
 import { Graphics, TextStyle } from 'pixi.js';
 import React, { useCallback, useEffect, useState } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { ConnectedProps } from './Game.container';
 import { useKeyPress } from './Game.hooks';
 
 export type GameProps =
-  ConnectedProps &
-  RouteComponentProps;
+  ConnectedProps;
 
 interface RectangleProps {
   x?: number;
@@ -17,6 +16,10 @@ interface RectangleProps {
   width: number;
   height: number;
   color: number;
+}
+
+interface GameComponentState {
+  characterId: number;
 }
 
 const Rectangle = PixiComponent<RectangleProps, Graphics>('Rectangle', {
@@ -41,9 +44,9 @@ const style = new TextStyle({
 });
 
 const Game: React.FC<GameProps> = ({
-  location,
   token
 }) => {
+  const location = useLocation<GameComponentState>();
   const [client, setClient] = useState<Client | null>(null);
   const [room, setRoom] = useState<Room | null>(null);
   const [characters, setCharacters] = useState<any>(null);
@@ -66,7 +69,7 @@ const Game: React.FC<GameProps> = ({
     } catch(err) {
       console.error(`Error from server: ${JSON.stringify(err, null, 2)}`);
     }
-  }, [location.state, token]);
+  }, [location, token]);
 
   useEffect(() => {
     const connection = new Client(process.env.MOB_SERVER);
