@@ -18,7 +18,7 @@ interface RectangleProps {
   color: number;
 }
 
-interface GameComponentState {
+interface GameComponentRouterState {
   characterId: number;
 }
 
@@ -46,7 +46,7 @@ const style = new TextStyle({
 const Game: React.FC<GameProps> = ({
   token
 }) => {
-  const location = useLocation<GameComponentState>();
+  const location = useLocation<GameComponentRouterState>();
   const [client, setClient] = useState<Client | null>(null);
   const [room, setRoom] = useState<Room | null>(null);
   const [characters, setCharacters] = useState<any>(null);
