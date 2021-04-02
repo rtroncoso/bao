@@ -39,6 +39,14 @@ export class OnJoinCommand extends Command<WorldRoomState, OnJoinParameters> {
         }
       }
 
+      if (this.state.characters.get(client.sessionId)) {
+        throw {
+          code: 409,
+          message: 'USER_LOGGED_IN',
+          payload: 'ACCOUNT.CHARACTER_ID'
+        }
+      }
+
       const character = new CharacterState();
       character.id = apiCharacter.id;
       character.name = apiCharacter.name;
