@@ -18,3 +18,12 @@ export const validateFindOne = req => {
     id
   }
 }
+
+export const validateInventory = req => {
+
+  const characterId = req.params.id;
+
+  return {
+    characterId
+  }
+}

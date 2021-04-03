@@ -1,6 +1,7 @@
 import {
   validateFind,
   validateFindOne,
+  validateInventory,
 } from './validator'
 
 import * as characters from './controller'
@@ -23,6 +24,18 @@ export const findOne = async (req, res, next) => {
     const user = req.user
 
     const response = await characters.findOne({ ...params, user })
+    return res.send(response)
+  } catch (err) {
+    return next(err)
+  }
+}
+
+export const inventory = async (req, res, next) => {
+  try {
+    const params = validateInventory(req)
+    const user = req.user
+
+    const response = await characters.inventory({ ...params, user })
     return res.send(response)
   } catch (err) {
     return next(err)

@@ -4,6 +4,7 @@ import {
   //create,
   find,
   findOne,
+  inventory,
   //remove,
   //restore,
   //update
@@ -17,6 +18,7 @@ const adminRouter = express.Router()
 adminRouter.get('/', find)
 //adminRouter.post('/', create)
 adminRouter.get('/:id', findOne)
+adminRouter.get('/:id/inventory', inventory)
 //adminRouter.patch('/:objectId', update)
 //adminRouter.delete('/:objectId', remove)
 
@@ -26,6 +28,7 @@ clientRouter.use(getAccountFromToken)
 clientRouter.get('/', find)
 //clientRouter.post('/', create)
 clientRouter.get('/:id', findOne)
+clientRouter.get('/:id/inventory', inventory)
 //clientRouter.patch('/:objectId', update)
 //clientRouter.delete('/:objectId', remove)
 

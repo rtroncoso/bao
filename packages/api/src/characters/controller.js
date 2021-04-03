@@ -24,3 +24,13 @@ export const findOne = async ({
   
   return result
 }
+
+export const inventory = async ({
+  characterId
+} = {}) => {
+  const result = await ObjectModel.inventory({
+    characterId
+  })
+  
+  return result
+}
