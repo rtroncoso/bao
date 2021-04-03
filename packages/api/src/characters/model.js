@@ -1,5 +1,6 @@
 import db from '../db'
 import { QueryBuilder } from '../queryBuilder'
+import * as ObjectModel from '../objects/model'
 
 export const find = async ({
   ids,
@@ -83,4 +84,30 @@ export const findOne = async ({
 } = {}) => {
   const [result] = await find({ ids: [id] })
   return result
+}
+
+export const inventory = async ({
+  characterId,
+} = {}) => {
+  const qb = new QueryBuilder()
+  qb.select('object_id, amount')
+  qb.from('character_inventory')
+  qb.whereIn('character_id', characterId)
+
+  const inventorySql = await qb.get()
+  const inventory = await db.executeQuery(inventorySql)
+
+  //Objects
+  const objectsIds = inventory.map(obj=>obj.object_id);
+  const objects = await ObjectModel.find({ids: objectsIds});
+
+  const response = inventory.map(slot => {
+    const slotObject = objects
+    .filter(object => object.id === slot.object_id);
+    slot.object = slotObject[0];
+    delete slot.object_id;
+    return slot;
+  });
+
+  return response;
 }
