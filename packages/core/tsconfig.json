@@ -4,28 +4,23 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "dist",
-    "allowJs": true,
+    "target": "es6",
+    "module": "commonjs",
+    "strict": false,
+    "strictNullChecks": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
+    "experimentalDecorators": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react"
+    "noEmit": true
   },
   "exclude": [
     "dist",
-    ".next",
-    "out",
-    "next.config.js"
+    "out"
   ],
   "include": [
-    "src/twin.d.ts",
-    "src/next-env.d.ts",
     "**/*.js",
     "**/*.jsx",
     "**/*.ts",

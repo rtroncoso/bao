@@ -29,8 +29,6 @@
   },
   "dependencies": {
     "@lcluber/bumpjs": "^0.5.4",
-    "@mob/client": "^1.0.0",
-    "@mob/core": "^1.0.0",
     "intersects": "^2.5.2",
     "lodash": "^4.17.11",
     "pixi.js": "^4.8.6"

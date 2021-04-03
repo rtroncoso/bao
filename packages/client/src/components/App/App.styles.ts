@@ -1,12 +1,12 @@
 import tw, { styled } from 'twin.macro';
 
 const AppStyled = styled.div(() => [
-  tw`bg-gradient-to-b from-indigo-700 to-gray-900`,
+  tw`bg-gradient-to-b from-gray-300 to-gray-200`,
   tw`flex items-center justify-center w-screen h-screen`,
 ]);
 
 export const containerStyles = [
-  tw`flex flex-col items-center justify-center w-1/3 h-auto p-4 bg-gray-100 rounded-sm shadow-outline`,
+  tw`flex flex-col items-center justify-center w-1/3 h-auto p-4 bg-gray-100 rounded-sm shadow-xl`,
 ];
 
 export const ContainerStyled = styled.div(() => [

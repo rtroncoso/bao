@@ -7,7 +7,7 @@ export const OBJECT_LAYER_TYPE = 'objectgroup';
 export const IMAGE_LAYER_TYPE = 'imagelayer';
 export const GROUP_LAYER_TYPE = 'group';
 
-export class Map {
+export default class {
   constructor() {
     this.version = '1.2';
     this.tiledversion = '1.2.1';

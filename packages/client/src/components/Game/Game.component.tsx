@@ -6,7 +6,7 @@ import {
   KeyboardSystem,
   ViewportSystem,
 } from '@mob/client/components/Systems';
-
+import AppConstants from '@mob/core/constants/game/App';
 import { ConnectedProps, GameContext } from './Game.context';
 import { GameStyled, styles } from './Game.styles';
 
@@ -20,8 +20,8 @@ const Game: React.FC<GameProps> = () => {
         {value => (
           <Stage
             style={styles.canvasStyle}
-            width={1600}
-            height={900}
+            width={AppConstants.canvasWidth}
+            height={AppConstants.canvasHeight}
           >
             <GameContext.Provider value={value}>
               <KeyboardSystem />

@@ -5,7 +5,7 @@ import React, {
   useEffect
 } from 'react';
 import { connect } from 'react-redux';
-import { useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import { compose } from 'redux';
 
 import { useLocalStateReducer } from '@mob/client/hooks';
@@ -54,6 +54,7 @@ export const GameContainer = <P extends ConnectedProps>(
 ) => {
   const WithGameContext: React.FC<ConnectedProps> = (props) => {
     const { token } = props;
+    const history = useHistory();
     const location = useLocation<GameComponentRouterState>();
 
     const [state, setState, resetState] = useLocalStateReducer<GameContextState>(createInitialState());
@@ -71,7 +72,7 @@ export const GameContainer = <P extends ConnectedProps>(
         });
 
         room.onError((error: any) => { throw error });
-        room.onLeave(() => resetState());
+        room.onLeave(() => { throw { message: 'LEAVE_ROOM' } });
 
         setState({
           connected: true,
@@ -80,8 +81,9 @@ export const GameContainer = <P extends ConnectedProps>(
         });
       } catch(err) {
         console.error(`[handleJoinRoom]: Error ${JSON.stringify(err, null, 2)}`);
+        history.push('/');
       }
-    }, [location, resetState, setState, token]);
+    }, [history, location, setState, token]);
 
     const handleSendRoomMessage = useCallback((messageType, parameters) => {
       if (state.room) {
@@ -102,7 +104,7 @@ export const GameContainer = <P extends ConnectedProps>(
 
     useEffect(() => {
       handleJoinRoom();
-      return () => resetState();
+      return handleLeaveRoom;
     }, []); // eslint-disable-line
 
     const callbacks = {

@@ -6,11 +6,11 @@ import { pointPolygon } from 'intersects';
 import decompose from 'rectangle-decomposition';
 
 import { Texture } from 'pixi.js';
-import config from '@mob/client/src/config';
+import config from '@mob/client/config';
 import {
   ATLAS_COLUMNS,
   TILESET_SPRITESHEETS
-} from '@mob/core/src/constants/game/Graphics';
+} from '@mob/core/constants/game/Graphics';
 import {
   ANIMATION_TYPE,
   COLLISION_LAYER,
@@ -31,7 +31,7 @@ import {
   TRIGGER_ROOF,
   TRIGGER_TYPE,
   WATER_TYPE
-} from '@mob/core/src/constants/game/Map';
+} from '@mob/core/constants/game/Map';
 import {
   createProperty,
   findInTileSets,
@@ -39,13 +39,13 @@ import {
   getTileIndex,
   setProperty,
   ySortLayers
-} from '@mob/core/src/loaders/maps/tmx/util';
+} from '@mob/core/loaders/maps/tmx/util';
 import {
   getSpriteSheetFilePath,
   getSpriteSheetImagePath,
   getTileSetFilePath
-} from '@mob/core/src/loaders/spritesheets';
-import { getGraphicsFileName } from '@mob/core/src/loaders/util';
+} from '@mob/core/loaders/spritesheets';
+import { getGraphicsFileName } from '@mob/core/loaders/util';
 import {
   Map,
   GroupLayer,
@@ -54,7 +54,7 @@ import {
   TileLayer,
   TmxObject,
   ImageLayer,
-} from '@mob/core/src/models/data/map/Tiled';
+} from '@mob/core/models/data/map/Tiled';
 
 let lastId = 0;
 let objectId = 0;

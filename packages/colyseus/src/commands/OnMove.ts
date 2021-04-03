@@ -15,24 +15,25 @@ export interface OnMoveParameters {
 }
 
 export class OnMoveCommand extends Command<WorldRoomState, OnMoveParameters> {
+  public speed: number = 250;
   execute({ client, heading }: OnMoveParameters) {
     const character = this.state.characters.get(client.sessionId);
 
     switch (heading) {
       case 'north': {
-        character.y -= 1;
+        character.y -= this.speed * (1 / this.clock.deltaTime);
         break;
       }
       case 'east': {
-        character.x += 1;
+        character.x += this.speed * (1 / this.clock.deltaTime);
         break;
       }
       case 'south': {
-        character.y += 1;
+        character.y += this.speed * (1 / this.clock.deltaTime);
         break;
       }
       case 'west': {
-        character.x -= 1;
+        character.x -= this.speed * (1 / this.clock.deltaTime);
         break;
       }
     }
