@@ -56,34 +56,7 @@ export const GameContainer = <P extends ConnectedProps>(
     const { token } = props;
     const history = useHistory();
     const location = useLocation<GameComponentRouterState>();
-
-    const [state, setState, resetState] = useLocalStateReducer<GameContextState>(createInitialState());
-
-    const handleJoinRoom = useCallback(async () => {
-      try {
-        const client = new Client(process.env.MOB_SERVER);
-        const room = await client.joinOrCreate<WorldRoomState>(options.room, {
-          characterId: location.state.characterId,
-          token,
-        });
-
-        room.onStateChange((gameState) => {
-          setState({ gameState: gameState.toJSON() as WorldRoomState });
-        });
-
-        room.onError((error: any) => { throw error });
-        room.onLeave(() => { throw { message: 'LEAVE_ROOM' } });
-
-        setState({
-          connected: true,
-          client,
-          room
-        });
-      } catch(err) {
-        console.error(`[handleJoinRoom]: Error ${JSON.stringify(err, null, 2)}`);
-        history.push('/');
-      }
-    }, [history, location, setState, token]);
+    const [state, setState] = useLocalStateReducer<GameContextState>(createInitialState());
 
     const handleSendRoomMessage = useCallback((messageType, parameters) => {
       if (state.room) {
@@ -96,11 +69,45 @@ export const GameContainer = <P extends ConnectedProps>(
     const handleLeaveRoom = useCallback(() => {
       if (state.room) {
         state.room.leave(true);
-        return resetState();
+        return history.push('/');
       }
 
       console.warn(`[handleLeaveRoom]: trying to leave a closed room`);
-    }, [resetState, state]);
+    }, [history, state]);
+
+    const handleRoomError = useCallback((error: any) => {
+      if (error.message === 'LEAVE_ROOM') {
+        return handleLeaveRoom();
+      }
+
+      console.warn(`[handleRoomError]: unhandled room error ${JSON.stringify(error, null, 2)}`)
+    }, [handleLeaveRoom]);
+
+    const handleUpdateGameState = useCallback((gameState: WorldRoomState) => {
+      setState({ gameState });
+    }, [setState]);
+
+    const handleJoinRoom = useCallback(async () => {
+      try {
+        const client = new Client(process.env.MOB_SERVER);
+        const room = await client.joinOrCreate<WorldRoomState>(options.room, {
+          characterId: location.state.characterId,
+          token,
+        });
+
+        room.onStateChange((gameState) => handleUpdateGameState(gameState));
+        room.onError((error: any) => handleRoomError(error));
+        room.onLeave(() => handleRoomError({ message: 'LEAVE_ROOM' }));
+
+        setState({
+          connected: true,
+          client,
+          room
+        });
+      } catch(error) {
+        console.error(`[handleJoinRoom]: Error ${JSON.stringify(error, null, 2)}`);
+      }
+    }, [handleRoomError, handleUpdateGameState, location, setState, token]);
 
     useEffect(() => {
       handleJoinRoom();

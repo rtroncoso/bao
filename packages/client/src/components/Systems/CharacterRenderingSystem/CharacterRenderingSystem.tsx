@@ -2,7 +2,6 @@ import { Container, PixiComponent, Text } from '@inlet/react-pixi';
 import { Graphics } from 'pixi.js';
 import React, { useContext } from 'react';
 
-import { CharacterState } from '@mob/server/schema/CharacterState';
 import { defaultTextStyle, GameContext } from '@mob/client/components/Game';
 
 interface RectangleProps {
@@ -28,18 +27,16 @@ const Rectangle = PixiComponent<RectangleProps, Graphics>('Rectangle', {
 export const CharacterRenderingSystem: React.FC = () => {
   const { state } = useContext(GameContext);
   const { gameState } = state!;
+  const { characters } = gameState || {};
 
-  if (
-    gameState &&
-    gameState.characters &&
-    Object.values(gameState.characters).length
-  ) {
+  if (characters) {
     return (
       <React.Fragment>
-        {Object.values(gameState.characters)
-          .map((character: CharacterState) => (
+        {(Array.from(characters.entries()))
+          .map(([sessionId, character]) => (
             <Container
-              key={character.sessionId}
+              anchor={0.5}
+              key={sessionId}
               x={character.x}
               y={character.y}
             >

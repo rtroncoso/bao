@@ -7,6 +7,7 @@ import {
   ViewportSystem,
 } from '@mob/client/components/Systems';
 import AppConstants from '@mob/core/constants/game/App';
+
 import { ConnectedProps, GameContext } from './Game.context';
 import { GameStyled, styles } from './Game.styles';
 

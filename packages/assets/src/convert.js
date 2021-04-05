@@ -1,6 +1,6 @@
 import cliProgress from 'cli-progress';
 import program from 'commander';
-import core from '@mob/core/src';
+import core from '@mob/core';
 
 import packageJson from '../package.json';
 
