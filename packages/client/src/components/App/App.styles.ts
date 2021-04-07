@@ -6,7 +6,7 @@ const AppStyled = styled.div(() => [
 ]);
 
 export const containerStyles = [
-  tw`flex flex-col items-center justify-center w-1/3 h-auto p-4 bg-gray-100 rounded-sm shadow-xl`,
+  tw`flex flex-col items-center justify-center w-2/3 h-auto p-4 transition-all bg-gray-100 rounded-sm shadow-xl md:w-1/3`,
 ];
 
 export const ContainerStyled = styled.div(() => [

@@ -1,5 +1,6 @@
 import { Stage } from '@inlet/react-pixi';
 import React from 'react';
+import { ReactReduxContext } from 'react-redux';
 
 import {
   CharacterRenderingSystem,
@@ -11,30 +12,36 @@ import AppConstants from '@mob/core/constants/game/App';
 import { ConnectedProps, GameContext } from './Game.context';
 import { GameStyled, styles } from './Game.styles';
 
-export type GameProps =
+export type GameComponentProps =
   ConnectedProps;
 
-const Game: React.FC<GameProps> = () => {
+export const GameComponent: React.FC<GameComponentProps> = () => {
   return (
     <GameStyled>
-      <GameContext.Consumer>
-        {value => (
-          <Stage
-            style={styles.canvasStyle}
-            width={AppConstants.canvasWidth}
-            height={AppConstants.canvasHeight}
-          >
-            <GameContext.Provider value={value}>
-              <KeyboardSystem />
-              <ViewportSystem>
-                <CharacterRenderingSystem />
-              </ViewportSystem>
-            </GameContext.Provider>
-          </Stage>
+      <ReactReduxContext.Consumer>
+        {reduxContext => (
+          <GameContext.Consumer>
+            {gameContext => (
+              <Stage
+                style={styles.canvasStyle}
+                width={AppConstants.canvasWidth}
+                height={AppConstants.canvasHeight}
+              >
+                <ReactReduxContext.Provider value={reduxContext}>
+                  <GameContext.Provider value={gameContext}>
+                    <KeyboardSystem />
+                    <ViewportSystem>
+                      <CharacterRenderingSystem />
+                    </ViewportSystem>
+                  </GameContext.Provider>
+                </ReactReduxContext.Provider>
+              </Stage>
+            )}
+          </GameContext.Consumer>
         )}
-      </GameContext.Consumer>
+      </ReactReduxContext.Consumer>
     </GameStyled>
   );
 }
 
-export default Game;
+export default GameComponent;

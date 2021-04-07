@@ -1,7 +1,9 @@
+import { Schema } from '@colyseus/schema';
 import { Client, Room } from 'colyseus.js';
 import React, {
   createContext,
   useCallback,
+  useContext,
   useEffect
 } from 'react';
 import { connect } from 'react-redux';
@@ -29,7 +31,7 @@ export interface GameComponentRouterState {
 export interface GameContextState {
   client?: Client;
   connected: boolean;
-  gameState?: WorldRoomState;
+  serverState?: WorldRoomState;
   room?: Room<WorldRoomState>;
 }
 
@@ -47,6 +49,9 @@ export const createWorldOptions = (): GameContainerOptions => ({
 });
 
 export const GameContext = createContext<Partial<GameContextProps>>({});
+export const useGame = () => {
+  return useContext(GameContext);
+};
 
 export const GameContainer = <P extends ConnectedProps>(
   Component: React.ComponentType<P>,
@@ -56,7 +61,7 @@ export const GameContainer = <P extends ConnectedProps>(
     const { token } = props;
     const history = useHistory();
     const location = useLocation<GameComponentRouterState>();
-    const [state, setState] = useLocalStateReducer<GameContextState>(createInitialState());
+    const [state, setState, resetState] = useLocalStateReducer<GameContextState>(createInitialState());
 
     const handleSendRoomMessage = useCallback((messageType, parameters) => {
       if (state.room) {
@@ -68,23 +73,29 @@ export const GameContainer = <P extends ConnectedProps>(
 
     const handleLeaveRoom = useCallback(() => {
       if (state.room) {
+        resetState();
         state.room.leave(true);
         return history.push('/');
       }
 
       console.warn(`[handleLeaveRoom]: trying to leave a closed room`);
-    }, [history, state]);
+    }, [history, resetState, state]);
 
     const handleRoomError = useCallback((error: any) => {
       if (error.message === 'LEAVE_ROOM') {
-        return handleLeaveRoom();
+        resetState();
+        return history.push('/');
       }
 
       console.warn(`[handleRoomError]: unhandled room error ${JSON.stringify(error, null, 2)}`)
-    }, [handleLeaveRoom]);
+    }, [history, resetState]);
 
-    const handleUpdateGameState = useCallback((gameState: WorldRoomState) => {
-      setState({ gameState });
+    const handleRoomMessage = useCallback((type: string | number | Schema, message: any) => {
+      console.log(type, message);
+    }, []);
+
+    const handleUpdateserverState = useCallback((serverState: WorldRoomState) => {
+      setState({ serverState });
     }, [setState]);
 
     const handleJoinRoom = useCallback(async () => {
@@ -95,7 +106,8 @@ export const GameContainer = <P extends ConnectedProps>(
           token,
         });
 
-        room.onStateChange((gameState) => handleUpdateGameState(gameState));
+        room.onMessage('*', handleRoomMessage);
+        room.onStateChange((serverState) => handleUpdateserverState(serverState));
         room.onError((error: any) => handleRoomError(error));
         room.onLeave(() => handleRoomError({ message: 'LEAVE_ROOM' }));
 
@@ -107,7 +119,7 @@ export const GameContainer = <P extends ConnectedProps>(
       } catch(error) {
         console.error(`[handleJoinRoom]: Error ${JSON.stringify(error, null, 2)}`);
       }
-    }, [handleRoomError, handleUpdateGameState, location, setState, token]);
+    }, [handleRoomError, handleUpdateserverState, location, setState, token]);
 
     useEffect(() => {
       handleJoinRoom();

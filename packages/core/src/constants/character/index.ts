@@ -4,8 +4,8 @@ export const styles = s;
 export const roles = r;
 
 export const CHARACTER_ROLE_STYLES = {
-  [roles.user]: { ...styles.name, fill: styles.privilegeColors[roles.user] },
-  [roles.admin]: { ...styles.name, fill: styles.privilegeColors[roles.admin] }
+  [roles.user]: { ...styles.name, fill: '#ffebb6' },
+  [roles.admin]: { ...styles.name, fill: '#16b601' }
 };
 
 export default null;

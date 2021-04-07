@@ -1,21 +1,22 @@
 import { TextStyle } from 'pixi.js';
-import tw, { styled } from 'twin.macro';
+import tw, { css, styled, theme } from 'twin.macro';
+
+import { CHARACTER_ROLE_STYLES, roles } from '@mob/core/constants/character';
 
 export const defaultTextStyle = new TextStyle({
-  fontFamily: 'Arial',
-  fontWeight: 'bold',
-  fontSize: 16,
-  fill: ['#ffffff', '#00ff99'],
-  align: 'center',
-  stroke: '#4a1850',
+  ...CHARACTER_ROLE_STYLES[roles.admin]
 });
 
 export const styles = {
   canvasStyle: {
-    width: '100%'
+    width: '100%',
   },
 };
 
 export const GameStyled = styled.div(() => [
   tw`w-10/12`,
+  css`box-shadow:
+    0 4px 6px -1px ${theme('colors.indigo.800')},
+    0 2px 4px -1px rgba(254, 215, 215, 0.06);
+  `
 ]);

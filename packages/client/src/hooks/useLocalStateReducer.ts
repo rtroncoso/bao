@@ -49,13 +49,16 @@ export const defaultReducer = <S extends State>(state: S, action: DefaultActions
   }
 };
 
+export type SetStateCallback<S> = (payload: Partial<S>) => void;
+export type ResetStateCallback = () => void;
+
 export const useLocalStateReducer = <S extends State>(
   initialState: S,
   reducer = defaultReducer
-): [S, (payload: Partial<S>) => void, () => void] => {
+): [S, SetStateCallback<S>, ResetStateCallback] => {
   const [state, dispatch] = useReducer<Reducer<S, DefaultActions>>(reducer, initialState);
-  const setState = (payload: Partial<S>) => dispatch(updateState(payload));
-  const resetState = () => dispatch(clearState(initialState));
+  const setState: SetStateCallback<S> = (payload) => dispatch(updateState(payload));
+  const resetState: ResetStateCallback = () => dispatch(clearState(initialState));
 
   return [state, setState, resetState];
 };

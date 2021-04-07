@@ -1,0 +1,26 @@
+{
+  "audio": {
+    "graphics": {
+      "animations": [
+
+      ],
+      "tilesets": [
+
+      ]
+    }
+  },
+  "init": {
+    "bodies": "init/bodies.json",
+    "effects": "init/effects.json",
+    "graphics": "init/graphics.json",
+    "heads": "init/heads.json",
+    "helmets": "init/helmets.json",
+    "objects": "init/objects.json",
+    "shields": "init/shields.json",
+    "weapons": "init/weapons.json"
+  },
+  "maps": {
+    "1": "maps/1.json",
+    "34": "maps/34.json"
+  }
+}

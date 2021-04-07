@@ -3,6 +3,7 @@ import { Graphics } from 'pixi.js';
 import React, { useContext } from 'react';
 
 import { defaultTextStyle, GameContext } from '@mob/client/components/Game';
+import { TILE_SIZE } from '@mob/core/constants/game';
 
 interface RectangleProps {
   x?: number;
@@ -26,8 +27,8 @@ const Rectangle = PixiComponent<RectangleProps, Graphics>('Rectangle', {
 
 export const CharacterRenderingSystem: React.FC = () => {
   const { state } = useContext(GameContext);
-  const { gameState } = state!;
-  const { characters } = gameState || {};
+  const { serverState } = state!;
+  const { characters } = serverState || {};
 
   if (characters) {
     return (
@@ -41,12 +42,13 @@ export const CharacterRenderingSystem: React.FC = () => {
               y={character.y}
             >
               <Rectangle
-                width={100}
-                height={100}
-                color={0xff0000}
+                width={TILE_SIZE}
+                height={TILE_SIZE}
+                color={0xfa3520}
               />
               <Text
-                y={105}
+                anchor={[0.2, 0.5]}
+                y={TILE_SIZE + (TILE_SIZE / 2)}
                 text={character.name}
                 style={defaultTextStyle}
               />

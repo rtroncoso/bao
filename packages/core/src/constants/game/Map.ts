@@ -39,5 +39,3 @@ export const TRIGGER_TYPE = 'trigger';
 export const WATER_TYPE = 'water';
 export const OBJECT_TYPE = 'object';
 export const NPC_TYPE = 'npc';
-
-export default null;
