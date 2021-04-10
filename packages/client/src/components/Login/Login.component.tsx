@@ -70,7 +70,12 @@ const Login: React.FC<LoginProps> = ({
         </Button>
         {apiError && !account && !isLoading && (
           <AlertStyled className="w-full mt-8" role="alert">
-            <p className="font-bold">Usuario o contraseña inválidos</p>
+            {apiError.message === 'SYSTEM' && (
+              <p className="font-bold">Error al contactar el servidor</p>
+            )}
+            {apiError.message === 'INVALID_VALUE' && (
+              <p className="font-bold">Usuario o contraseña inválidos</p>
+            )}
           </AlertStyled>
         )}
       </FormStyled>

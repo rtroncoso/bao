@@ -107,8 +107,8 @@ export const GameContainer = <P extends ConnectedProps>(
         });
 
         room.onMessage('*', handleRoomMessage);
-        room.onStateChange((serverState) => handleUpdateserverState(serverState));
-        room.onError((error: any) => handleRoomError(error));
+        room.onStateChange(handleUpdateserverState);
+        room.onError(handleRoomError);
         room.onLeave(() => handleRoomError({ message: 'LEAVE_ROOM' }));
 
         setState({
