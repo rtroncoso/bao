@@ -1,4 +1,3 @@
-import { Schema } from '@colyseus/schema';
 import { Client, Room } from 'colyseus.js';
 import React, {
   createContext,
@@ -90,7 +89,7 @@ export const GameContainer = <P extends ConnectedProps>(
       console.warn(`[handleRoomError]: unhandled room error ${JSON.stringify(error, null, 2)}`)
     }, [history, resetState]);
 
-    const handleRoomMessage = useCallback((type: string | number | Schema, message: any) => {
+    const handleRoomMessage = useCallback((type: any, message: any) => {
       console.log(type, message);
     }, []);
 
@@ -119,7 +118,14 @@ export const GameContainer = <P extends ConnectedProps>(
       } catch(error) {
         console.error(`[handleJoinRoom]: Error ${JSON.stringify(error, null, 2)}`);
       }
-    }, [handleRoomError, handleUpdateserverState, location, setState, token]);
+    }, [
+      handleRoomError,
+      handleRoomMessage,
+      handleUpdateserverState,
+      location,
+      setState,
+      token
+    ]);
 
     useEffect(() => {
       handleJoinRoom();
