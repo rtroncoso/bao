@@ -15,6 +15,7 @@ export const loginQuery = {
   options: {
     method: 'POST'
   },
+  queryKey: 'login:POST',
   url: `${process.env.MOB_API}/client/accounts/login`,
 };
 

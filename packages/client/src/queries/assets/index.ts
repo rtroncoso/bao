@@ -1,5 +1,6 @@
 export * from './models';
 export * from './selectors';
 
-export * from './assets';
-export { default as assets } from './assets';
+export * from './bodies';
+export * from './graphics';
+export * from './manifest';

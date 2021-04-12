@@ -17,13 +17,19 @@ program
   .name('deploy')
   .usage('[global options]')
   .option('-d, --debug', 'Show additional debug info')
+  .option(
+    '-e, --environment <environment>',
+    'Environment options (staging/production)'
+  )
   .action(async (dir, cmd) => {
     try {
       const debug = program.debug || false;
+      const environment = program.environment || 'staging';
+      console.log(process.cwd());
 
       const environmentPath = path.resolve(
         process.cwd(),
-        `.env`
+        `.env.${environment}`
       );
       if (!fs.existsSync(environmentPath)) {
         throw {
@@ -44,6 +50,7 @@ program
         MOB_S3_SECRET_KEY,
         MOB_S3_REGION,
       } = process.env;
+      console.log(MOB_S3_BUCKET, MOB_S3_ACCESS_KEY, MOB_S3_SECRET_KEY, MOB_S3_REGION);
 
       const client = s3.createClient({
         maxAsyncS3: 20, // this is the default
@@ -54,7 +61,7 @@ program
         s3Options: {
           accessKeyId: MOB_S3_ACCESS_KEY,
           secretAccessKey: MOB_S3_SECRET_KEY,
-          region: MOB_S3_REGION,
+          region: MOB_S3_REGION ? MOB_S3_REGION : null,
         },
       });
 
@@ -74,7 +81,8 @@ program
       const uploader = client.uploadDir(params);
 
       uploader.on('error', function (err) {
-        throw { message: `Unable to sync: ${err.stack}` };
+        console.log(err);
+        throw err;
       });
       uploader.on('progress', function () {
         if (uploader.progressAmount === 0) {
@@ -91,13 +99,14 @@ program
         process.exit(0);
       });
     } catch (ex) {
+      console.log(ex);
       console.error(
         `\x1b[31m[deploy script] error while running deploy script:`,
-        ex.message ? ex.message : ex,
+        JSON.stringify(ex, Object.getOwnPropertyNames(ex), 2),
         '\x1b[0m'
       );
 
-      process.exit(1);
+      // process.exit(1);
     }
   });
 

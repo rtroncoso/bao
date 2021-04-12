@@ -52,7 +52,7 @@ export const useViewport = () => {
   return useContext(ViewportContext);
 };
 
-export const ViewportSystem: React.FC<ViewportProps> = (props) => {
+export const ViewportSystem: React.FC<ViewportProps> = (props: ViewportProps) => {
   const [viewportState, setViewportState] = useLocalStateReducer(createInitialViewportState());
   const viewport = useRef<PixiContainer>(null);
   const { state } = useGame();

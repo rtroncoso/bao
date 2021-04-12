@@ -11,11 +11,15 @@ import {
   queryMiddleware
 } from 'redux-query';
 import superagentInterface from 'redux-query-interface-superagent';
+import thunk from 'redux-thunk';
 
 import { AccountEntities } from '@mob/client/queries/account';
+import { AssetEntities } from '@mob/client/queries/assets';
 
 export type EntitiesState =
-  AccountEntities;
+  & AccountEntities
+  & AssetEntities
+;
 
 export interface State {
   entities: EntitiesState,
@@ -34,17 +38,18 @@ const reducer = combineReducers({
 });
 
 const persistConfig = {
+  blacklist: ['errors', 'queries'],
   key: 'root',
   storage,
 };
 
 const persistedReducer = persistReducer(persistConfig, reducer);
-
 export const store = createStore(
   persistedReducer,
   composeWithDevTools(
     applyMiddleware(
-      queryMiddleware(superagentInterface, getQueries, getEntities)
+      thunk,
+      queryMiddleware(superagentInterface, getQueries, getEntities),
     )
   )
 );

@@ -4,18 +4,21 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "dist",
+    "jsx": "react",
+    "module": "commonjs",
+    "target": "es6",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
+    "strictNullChecks": false,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react"
   },
   "exclude": [
     "dist",

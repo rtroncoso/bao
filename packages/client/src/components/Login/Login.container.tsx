@@ -35,8 +35,8 @@ export interface FormValues {
 const mapStateToProps = (state: State) => {
   return {
     account: selectAccount(state),
-    apiError: selectErrors(state, loginQuery.url),
-    isLoading: selectIsLoading(state, loginQuery.url)
+    apiError: selectErrors(state, loginQuery.queryKey),
+    isLoading: selectIsLoading(state, loginQuery.queryKey)
   };
 };
 

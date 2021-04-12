@@ -1,27 +1,17 @@
 import { createSelector } from 'reselect';
 import { getEntities } from '@mob/client/store';
 
-export const selectAccount = createSelector(
+export const selectBodies = createSelector(
   getEntities,
-  (entities) => entities.account
+  (entities) => entities.bodies
 );
 
-export const selectCharacters = createSelector(
+export const selectGraphics = createSelector(
   getEntities,
-  (entities) => entities.characters
-    ? Object.values(entities.characters)
-    : []
+  (entities) => entities.graphics
 );
 
-export const selectToken = createSelector(
+export const selectManifest = createSelector(
   getEntities,
-  (entities) => entities.account ? entities.account.token : null
-);
-
-export const selectCurrentCharacter = createSelector(
-  selectAccount,
-  selectCharacters,
-  (account, characters) => characters.hasOwnProperty(account!.currentCharacterId as number)
-    ? characters[account!.currentCharacterId as number]
-    : null
+  (entities) => entities.manifest
 );

@@ -3,6 +3,7 @@ import React from 'react';
 import { ReactReduxContext } from 'react-redux';
 
 import {
+  AssetSystem,
   CharacterRenderingSystem,
   KeyboardSystem,
   ViewportSystem,
@@ -14,6 +15,18 @@ import { GameStyled, styles } from './Game.styles';
 
 export type GameComponentProps =
   ConnectedProps;
+
+export const Systems = () => {
+  return (
+    <React.Fragment>
+      <KeyboardSystem />
+      <AssetSystem />
+      <ViewportSystem>
+        <CharacterRenderingSystem />
+      </ViewportSystem>
+    </React.Fragment>
+  );
+};
 
 export const GameComponent: React.FC<GameComponentProps> = () => {
   return (
@@ -29,10 +42,7 @@ export const GameComponent: React.FC<GameComponentProps> = () => {
               >
                 <ReactReduxContext.Provider value={reduxContext}>
                   <GameContext.Provider value={gameContext}>
-                    <KeyboardSystem />
-                    <ViewportSystem>
-                      <CharacterRenderingSystem />
-                    </ViewportSystem>
+                    <Systems />
                   </GameContext.Provider>
                 </ReactReduxContext.Provider>
               </Stage>

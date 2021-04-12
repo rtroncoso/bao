@@ -37,6 +37,7 @@ export const DebugGridSystem = () => {
       uniform sampler2D uSampler;
       uniform vec2 position;
       uniform vec2 dimensions;
+      uniform float tileSize;
       uniform float time;
 
       void main(void)
@@ -50,30 +51,31 @@ export const DebugGridSystem = () => {
 
         worldSpace.x = uvs.x + (position.x / dimensions.x);
         worldSpace.y = uvs.y + (position.y / dimensions.y);
-        tileGrid.x = fract(worldSpace.x * (dimensions.x / ${TILE_SIZE.toFixed(1)}));
-        tileGrid.y = fract(worldSpace.y * (dimensions.y / ${TILE_SIZE.toFixed(1)}));
+        tileGrid.x = fract(worldSpace.x * (dimensions.x / tileSize));
+        tileGrid.y = fract(worldSpace.y * (dimensions.y / tileSize));
 
         if (
-          (tileGrid.x <= 0.02 || tileGrid.x >= 0.98)
+          (tileGrid.x <= 0.03 || tileGrid.x >= 0.97)
         ) {
-          color.r = tileGrid.x * (sin(time * .01) * 0.5 + 0.5);
-          color.g = (tileGrid.x + tileGrid.y) * (sin(time * .01) * 0.5 + 0.5);
-          color.b = tileGrid.y * (sin(time * .01) * 0.5 + 0.5);
+          color.r = tileGrid.x * (sin(time * .03) * 0.5 + 0.5);
+          color.g = (tileGrid.x + tileGrid.y) * (sin(time * .03) * 0.5 + 0.5);
+          color.b = tileGrid.y * (sin(time * .03) * 0.5 + 0.5);
           color.r = clamp(color.r, 0.2, 0.4);
           color.g = clamp(color.g, 0.1, 0.3);
           color.b = clamp(color.b, 0.4, 0.8);
         }
         if (
-          (tileGrid.y <= 0.02 || tileGrid.y >= 0.98)
+          (tileGrid.y <= 0.03 || tileGrid.y >= 0.97)
         ) {
-          color.r = tileGrid.x + (cos(time * .01) * 0.5 + 0.5);
-          color.g = (worldSpace.x + worldSpace.y) * (cos(time * .01) * 0.5 + 0.5);
-          color.b = tileGrid.y + (cos(time * .01) * 0.5 + 0.5);
+          color.r = tileGrid.x + (cos(time * .03) * 0.5 + 0.5);
+          color.g = (worldSpace.x + worldSpace.y) * (cos(time * .03) * 0.5 + 0.5);
+          color.b = tileGrid.y + (cos(time * .03) * 0.5 + 0.5);
           color.r = clamp(color.r, 0.2, 0.4);
           color.g = clamp(color.g, 0.1, 0.3);
           color.b = clamp(color.b, 0.4, 0.8);
         }
 
+        color = color * .5;
         gl_FragColor = vec4(color, .2);
       }
     `;
@@ -81,6 +83,7 @@ export const DebugGridSystem = () => {
     try {
       const filter = new Filter(vertex, fragment);
       filter.uniforms.time = 0;
+      filter.uniforms.tileSize = TILE_SIZE.toFixed(1);
       filter.uniforms.position = [0.0, 0.0];
       filter.uniforms.dimensions = [
         viewportState.projection.width,
@@ -95,16 +98,19 @@ export const DebugGridSystem = () => {
     }
   }, []); // eslint-disable-line
 
-  useTick((delta) => {
+  useTick((delta: number) => {
     if (filter) {
       filter.uniforms.time += delta;
-      filter.uniforms.position = [
-        projection.x ? projection.x.toFixed(2) : 0,
-        projection.y ? projection.y.toFixed(2) : 0
-      ];
 
-      if (setViewportState) {
-        setViewportState({ ...viewportState });
+      const x = projection.x ? projection.x.toFixed(2) : 0;
+      const y = projection.y ? projection.y.toFixed(2) : 0;
+
+      const hasChanges =
+        filter.uniforms.position[0] !== x ||
+        filter.uniforms.position[1] !== y;
+
+      if (hasChanges) {
+        filter.uniforms.position = [x, y];
       }
     }
   });

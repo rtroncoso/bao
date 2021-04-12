@@ -67,7 +67,11 @@ export const GameContainer = <P extends ConnectedProps>(
         return state.room.send(messageType, parameters)
       }
 
-      console.warn(`[handleSendRoomMessage]: Sending message to closed room ${messageType}:${JSON.stringify(parameters, null, 2)}`);
+      console.warn(`[handleSendRoomMessage]: Sending message to closed room ${
+        messageType
+      }:${
+        JSON.stringify(parameters, Object.getOwnPropertyNames(parameters), 2)
+      }`);
     }, [state]);
 
     const handleLeaveRoom = useCallback(() => {
@@ -86,14 +90,16 @@ export const GameContainer = <P extends ConnectedProps>(
         return history.push('/');
       }
 
-      console.warn(`[handleRoomError]: unhandled room error ${JSON.stringify(error, null, 2)}`)
+      console.warn(`[handleRoomError]: unhandled room error ${
+        JSON.stringify(error, Object.getOwnPropertyNames(error), 2)
+      }`);
     }, [history, resetState]);
 
     const handleRoomMessage = useCallback((type: any, message: any) => {
       console.log(type, message);
     }, []);
 
-    const handleUpdateserverState = useCallback((serverState: WorldRoomState) => {
+    const handleUpdateServerState = useCallback((serverState: WorldRoomState) => {
       setState({ serverState });
     }, [setState]);
 
@@ -106,7 +112,7 @@ export const GameContainer = <P extends ConnectedProps>(
         });
 
         room.onMessage('*', handleRoomMessage);
-        room.onStateChange(handleUpdateserverState);
+        room.onStateChange(handleUpdateServerState);
         room.onError(handleRoomError);
         room.onLeave(() => handleRoomError({ message: 'LEAVE_ROOM' }));
 
@@ -116,12 +122,17 @@ export const GameContainer = <P extends ConnectedProps>(
           room
         });
       } catch(error) {
-        console.error(`[handleJoinRoom]: Error ${JSON.stringify(error, null, 2)}`);
+        console.error(`[handleJoinRoom]: Error ${
+          JSON.stringify(error, Object.getOwnPropertyNames(error), 2)
+        }`);
+
+        return history.push('/');
       }
     }, [
       handleRoomError,
       handleRoomMessage,
-      handleUpdateserverState,
+      handleUpdateServerState,
+      history,
       location,
       setState,
       token
