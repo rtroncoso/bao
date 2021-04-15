@@ -1,6 +1,5 @@
-import Head from '@mob/core/src/models/data/character/Head';
-
-import { parseDirectionGraphicByModel, transform } from '../util';
+import { parseDirectionGraphicByModel, transform } from '@mob/core/loaders';
+import { Head } from '@mob/core/models';
 
 /**
  * Parses JSON heads file into a key-value map

@@ -1,3 +1,5 @@
+import { Graphic } from "@mob/core/models";
+
 /**
  * Head model
  * @param {number} id
@@ -7,7 +9,13 @@
  * @param {Graphic|number} right
  * @exports Head
  */
-export default class Head {
+export class Head {
+  id: number;
+  up: Graphic | number;
+  left: Graphic | number;
+  down: Graphic | number;
+  right: Graphic | number;
+
   constructor({
     id = 0,
     up = 0,

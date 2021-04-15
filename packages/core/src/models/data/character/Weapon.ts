@@ -1,13 +1,15 @@
+import { Graphic } from "@mob/core/models";
+
 /**
  * Weapon model
- * @param {number} id
- * @param {Graphic|number} up
- * @param {Graphic|number} left
- * @param {Graphic|number} down
- * @param {Graphic|number} right
- * @exports Weapon
  */
-export default class Weapon {
+export class Weapon {
+  id: number;
+  up: Graphic | number;
+  left: Graphic | number;
+  down: Graphic | number;
+  right: Graphic | number;
+
   constructor({
     id = 0,
     up = 0,

@@ -1,27 +1,10 @@
 {
   "extends": "../../tsconfig.json",
-  "buildPath": "dist",
   "compilerOptions": {
     "baseUrl": ".",
-    "outDir": "dist",
-    "jsx": "react",
-    "module": "commonjs",
-    "target": "es6",
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "strictNullChecks": false,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
+    "outDir": "dist"
   },
   "exclude": [
-    "dist",
     ".next",
     "out",
     "next.config.js"
@@ -29,9 +12,9 @@
   "include": [
     "src/twin.d.ts",
     "src/next-env.d.ts",
-    "**/*.js",
-    "**/*.jsx",
-    "**/*.ts",
-    "**/*.tsx"
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "src/**/*.ts",
+    "src/**/*.tsx"
   ]
 }

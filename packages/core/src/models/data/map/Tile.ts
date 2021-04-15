@@ -1,25 +1,27 @@
-import { TILE_SIZE } from '@mob/core/src/constants/game/Map';
+import { TILE_SIZE } from '@mob/core/constants';
+import { Graphic, MapObject, Npc, TileExit } from '@mob/core/models';
 
 /**
  * Tile model
- * @property {Npc} npc
- * @property {MapObject} object
- * @property {TileExit} tileExit
- * @property {number} trigger
- * @property {boolean} blocked
- * @property {Graphic|number} graphic
- * @property {Graphic|number} animation
- * @property {number} offsetX
- * @property {number} offsetY
- * @property {number} layer
- * @property {number} x
- * @property {number} y
  */
-export default class Tile {
+export class Tile {
+  npc: Npc | null;
+  animation: Graphic | null;
+  graphic: Graphic | null;
+  blocked: boolean;
+  object: MapObject | null;
+  tileExit: TileExit | null;
+  trigger: number;
+  offsetX: number;
+  offsetY: number;
+  layer: number;
+  x: number;
+  y: number;
+
   constructor({
     blocked = false,
-    animation = 0,
-    graphic = 0,
+    animation = null,
+    graphic = null,
     offsetX = 0,
     offsetY = 0,
     object = null,
@@ -49,6 +51,9 @@ export default class Tile {
   }
 
   isWater() {
-    return this.animation && (this.animation.id >= 1505 && this.animation.id <= 1520);
+    return this.animation && (
+      (this.animation as Graphic).id >= 1505 &&
+      (this.animation as Graphic).id <= 1520
+    );
   }
 }

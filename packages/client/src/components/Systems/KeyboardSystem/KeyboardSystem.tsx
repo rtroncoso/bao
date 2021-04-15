@@ -13,7 +13,7 @@ export const KeyboardSystem: React.FC<KeyboardInputProps> = (props) => {
     if (state?.room) {
       callbacks.handleSendRoomMessage('input', { inputs });
     }
-  }, [inputs]);
+  }, [inputs]); // eslint-disable-line
 
   return null;
 };

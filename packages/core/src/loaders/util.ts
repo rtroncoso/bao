@@ -1,12 +1,12 @@
-import cappedTransform from 'lodash/fp/transform';
+import reduce from 'lodash/fp/reduce';
 import filter from 'lodash/fp/filter';
 import find from 'lodash/fp/find';
 import values from 'lodash/fp/values';
 
-// import config from '@mob/client';
 import {
   EAST, HEADINGS, NORTH, SOUTH, WEST,
 } from '@mob/core/constants/game';
+import { Graphic } from '@mob/core/models/data/shared';
 
 /**
  * Adds extension to fileName
@@ -34,12 +34,9 @@ export const parseKey = (key = '', keyFormat = /[^0-9.]/g) => key.replace(keyFor
 /**
  * Transforms a data array into a key-value map using
  * `process` strategy as a reducer
- * @param {Array.<*>} data
- * @param {function(*=, *, *=)} process
- * @returns {MapObject.<*, *>}
  */
 export const transform = (data, process) => (
-  cappedTransform.convert({ cap: false })(process, {})(data)
+  reduce(process, {})(data)
 );
 
 /**
@@ -49,7 +46,7 @@ export const transform = (data, process) => (
  * @returns {Graphic}
  */
 export const findAnimation = (animations, id) => (
-  find(animation => animation.id === id)(animations)
+  find((animation: Graphic) => animation.id === id)(animations)
 );
 
 /**
@@ -67,7 +64,7 @@ export const findGraphic = (graphics, id) => graphics[id];
  * @returns {Graphic}
  */
 export const findGraphicsByFileName = (graphics, fileName) => (
-  filter(graphic => graphic.fileName === fileName)(values(graphics))
+  filter((graphic: Graphic) => graphic.fileName === fileName)(values(graphics))
 );
 
 // Default animation parsing order

@@ -1,43 +1,56 @@
 import { Rectangle, SCALE_MODES, Texture } from 'pixi.js';
 
+export interface GraphicModelConstructor {
+  fileName?: string | number;
+  frames?: number[] | Graphic[];
+  height?: number;
+  id: string | number;
+  path?: string | number;
+  speed?: number;
+  textures?: Texture[];
+  width?: number;
+  x?: number;
+  y?: number;
+}
+
 /**
  * Graphic Model
- * @property {number} id
- * @property {Array.<Graphic|number>} frames
- * @property {Array.<PIXI.Texture>} textures
- * @property {string} fileName
- * @property {string} path
- * @property {number} x
- * @property {number} y
- * @property {number} width
- * @property {number} height
- * @property {number} speed
- * @property {PIXI.Rectangle} region
- * @exports Graphic
  */
-export default class Graphic {
+export class Graphic {
+  fileName: string | number;
+  frames: number[] | Graphic[];
+  height: number;
+  id: string | number;
+  path: string | number;
+  region: Rectangle;
+  speed: number;
+  textures: Texture[];
+  width: number;
+  x: number;
+  y: number;
+
   constructor({
-    id = 0,
-    frames = [],
-    textures = [],
     fileName = '',
+    frames = [],
+    height = 0,
+    id = 0,
     path = '',
+    speed = 0.0,
+    textures = [],
+    width = 0,
     x = 0,
     y = 0,
-    width = 0,
-    height = 0,
-    speed = 0.0,
-  }) {
-    this.id = id;
-    this.frames = frames;
-    this.textures = [];
+  }: GraphicModelConstructor) {
     this.fileName = fileName;
+    this.frames = frames;
+    this.height = height;
+    this.id = id;
     this.path = path;
+    this.speed = speed;
+    this.textures = textures;
+    this.width = width;
     this.x = x;
     this.y = y;
-    this.width = width;
-    this.height = height;
-    this.speed = speed;
 
     this.region = new Rectangle(this.x, this.y, this.width, this.height);
   }
@@ -45,11 +58,11 @@ export default class Graphic {
 
 /**
  * TexturedGraphic Model
- * @property {Texture} texture
- * @extends Graphic
  */
 export class TexturedGraphic extends Graphic {
-  constructor(options) {
+  private _texture: Texture;
+
+  constructor(options: GraphicModelConstructor) {
     super(options);
     this.texture = Texture.EMPTY;
   }
@@ -58,7 +71,7 @@ export class TexturedGraphic extends Graphic {
 
   get texture() {
     if (!this.isLoaded) {
-      this.texture = Texture.fromImage(this.path).clone();
+      this.texture = Texture.from(this.path as string).clone();
     }
 
     return this._texture;

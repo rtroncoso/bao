@@ -1,10 +1,11 @@
-import Tile from '@mob/core/src/models/data/map/Tile';
+import { Graphic, Tile } from '@mob/core/models';
 
 /**
  * LayeredTile model
- * @property {Graphic[]} graphics
  */
-export default class LayeredTile extends Tile {
+export class LayeredTile extends Tile {
+  graphics: Graphic[];
+
   constructor({
     graphics = [],
     ...options

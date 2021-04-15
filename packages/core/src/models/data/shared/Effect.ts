@@ -1,3 +1,5 @@
+import { Graphic } from "@mob/core/models";
+
 /**
  * Effect model
  * @param {number} id
@@ -6,7 +8,11 @@
  * @param {number} offsetY
  * @exports Effect
  */
-export default class Effect {
+export class Effect {
+  id: number;
+  animation: Graphic | number;
+  offsetX: number;
+  offsetY: number;
   constructor({
     id = 0,
     animation = 0,

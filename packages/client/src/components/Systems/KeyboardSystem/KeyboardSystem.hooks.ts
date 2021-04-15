@@ -40,7 +40,6 @@ export function usePressedKeys() {
       if (keys.indexOf(key) === -1) {
         keys.push(key);
         setKeys([...keys]);
-        console.log(keys);
       }
     }
 
@@ -61,7 +60,7 @@ export function usePressedKeys() {
       window.removeEventListener('keydown', downHandler);
       window.removeEventListener('keyup', upHandler);
     };
-  }, []);
+  }, [keys]);
 
   return keys;
 }

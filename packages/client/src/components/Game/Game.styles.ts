@@ -1,17 +1,18 @@
 import { TextStyle } from 'pixi.js';
 import tw, { css, styled, theme } from 'twin.macro';
 
-import { CHARACTER_ROLE_STYLES, roles } from '@mob/core/constants/character';
+import { CHARACTER_ROLE_STYLES, roles } from '@mob/core/constants';
 
 export const defaultTextStyle = new TextStyle({
   ...CHARACTER_ROLE_STYLES[roles.admin]
 });
 
-export const styles = {
-  canvasStyle: {
-    width: '100%',
-  },
-};
+// export const styles = {
+//   canvasStyle: {
+//     height: 'auto',
+//     width: '100%',
+//   },
+// };
 
 export const GameStyled = styled.div(() => [
   tw`w-10/12 h-auto`,

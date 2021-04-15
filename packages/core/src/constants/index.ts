@@ -1,4 +1,7 @@
 // @create-index
 
-export { default as character } from './character';
+export * from './character';
+export * from './game';
+export * from './input';
 
+export { default as character } from './character';

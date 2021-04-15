@@ -1,4 +1,3 @@
-import { Loader } from 'pixi.js';
 import React, { createContext, useCallback, useContext, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
@@ -7,16 +6,15 @@ import { SetStateCallback, useLocalStateReducer } from '@mob/client/hooks';
 import { selectToken } from '@mob/client/queries/account';
 import {
   AssetEntities,
+  loadAssets,
   selectBodies,
   selectGraphics,
   selectManifest
 } from '@mob/client/queries/assets';
-import { AppDispatch, State } from '@mob/client/store';
-import { loadAssets } from '@/queries/assets/actions';
+import { Dispatch, State } from '@mob/client/store';
 import { useApp } from '@inlet/react-pixi';
 
 export interface AssetSystemProps {
-  children?: React.ReactNode;
 }
 
 export interface AssetSystemState extends AssetEntities {
@@ -48,7 +46,7 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: AppDispatch) => (
+const mapDispatchToProps = (dispatch: Dispatch) => (
   bindActionCreators({ loadAssets }, dispatch)
 );
 
@@ -86,7 +84,7 @@ export const AssetSystem: React.FC<AssetSystemConnectedProps> = (props) => {
     <AssetSystemContext.Provider
       value={assetContext}
     >
-      {children as React.ReactElement}
+      {children}
     </AssetSystemContext.Provider>
   );
 };

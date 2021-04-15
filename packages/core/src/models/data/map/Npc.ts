@@ -1,10 +1,17 @@
 /**
  * Npc class
+ *
  * @property {number} id
+ * @property {number} map
  * @property {number} x
  * @property {number} y
  */
-export default class Npc {
+export class Npc {
+  id: number;
+  map: number;
+  x: number;
+  y: number;
+
   constructor({
     id = 0,
     x = 0,

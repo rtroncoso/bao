@@ -4,15 +4,14 @@ import flow from 'lodash/fp/flow';
 import keys from 'lodash/fp/keys';
 import range from 'lodash/fp/range';
 
-import config from '@mob/client/src/config';
 import {
   ANIMATION_SPRITESHEETS,
   ATLAS_COLUMNS,
   NORMAL_SPRITESHEETS,
   TILESET_SPRITESHEETS
-} from '@mob/core/src/constants/game/Graphics';
-import { TILE_SIZE } from '@mob/core/src/constants/game/Map';
-import { getGraphicsFileName } from '@mob/core/src/loaders/util';
+} from '@mob/core/constants/game/Graphics';
+import { TILE_SIZE } from '@mob/core/constants/game/Map';
+import { getGraphicsFileName } from '@mob/core/loaders/util';
 import { Rectangle, Texture, SCALE_MODES } from 'pixi.js';
 
 /** Frames memoization
@@ -27,7 +26,7 @@ const framesCache = {};
  * @returns {string}
  */
 export const getSpriteSheetPath =
-  (index = 0, path = '', extension = '') => `${config.texturePath}/${path}/${path}-${index}${extension}`;
+  (index = 0, path = '', extension = '') => `${path}/${path}-${index}${extension}`;
 
 /**
  * Converts sprite sheet index to absolute sprite sheet tile set path
@@ -70,7 +69,7 @@ export const spriteSheetGenerator = (amount, type, processFn) => (
  * @returns {Array.<string>}
  */
 export const getTileSetFilePaths =
-  (amount = TILESET_SPRITESHEETS) => spriteSheetGenerator(amount, config.tilesetsType, getSpriteSheetFilePath);
+  (amount = TILESET_SPRITESHEETS) => spriteSheetGenerator(amount, null, getSpriteSheetFilePath);
 
 /**
  * Generates a list of spriteSheet file paths
@@ -79,7 +78,7 @@ export const getTileSetFilePaths =
  */
 export const getTileSetNormalFilePaths =
   (amount = NORMAL_SPRITESHEETS) => spriteSheetGenerator(
-    amount, `${config.tilesetsType}-normal`, getSpriteSheetFilePath
+    amount, `${null}-normal`, getSpriteSheetFilePath
   );
 
 /**
@@ -88,7 +87,7 @@ export const getTileSetNormalFilePaths =
  * @returns {Array.<string>}
  */
 export const getTileSetImagePaths =
-  (amount = TILESET_SPRITESHEETS) => spriteSheetGenerator(amount, config.tilesetsType, getSpriteSheetImagePath);
+  (amount = TILESET_SPRITESHEETS) => spriteSheetGenerator(amount, null, getSpriteSheetImagePath);
 
 /**
  * Generates a list of spriteSheet file paths
@@ -96,7 +95,7 @@ export const getTileSetImagePaths =
  * @returns {Array.<string>}
  */
 export const getAnimationFilePaths =
-  (amount = ANIMATION_SPRITESHEETS) => spriteSheetGenerator(amount, config.animationsType, getSpriteSheetFilePath);
+  (amount = ANIMATION_SPRITESHEETS) => spriteSheetGenerator(amount, null, getSpriteSheetFilePath);
 
 /**
  * Generates a list of spriteSheet file paths
@@ -104,18 +103,17 @@ export const getAnimationFilePaths =
  * @returns {Array.<string>}
  */
 export const getAnimationImagePaths =
-  (amount = ANIMATION_SPRITESHEETS) => spriteSheetGenerator(amount, config.animationsType, getSpriteSheetImagePath);
+  (amount = ANIMATION_SPRITESHEETS) => spriteSheetGenerator(amount, null, getSpriteSheetImagePath);
 
 /**
  * Finds a graphic frame using `spriteSheet` frames data
  * @param graphic
  * @param spriteSheet
- * @param resources
  * @param tileSet
  * @returns {{ frame: any, spriteSheet: any, tileSet: any }|null}
  */
-export const findInSpriteSheet = ({ graphic, spriteSheet = {}, resources = {}, tileSet = {} }) => {
-  const { frames } = spriteSheet.data;
+export const findInSpriteSheet = ({ graphic, spriteSheet = {}, tileSet = {} }) => {
+  const { frames } = (spriteSheet as any).data;
   const key = getGraphicsFileName(graphic.fileName);
   const memoKey = `${key}:${graphic.id}`;
 
@@ -203,7 +201,7 @@ export const getAllTextures =
 export const getTileSetTextures = (
   resources,
   graphics,
-  type = config.tilesetsType,
+  type = null,
   amount = TILESET_SPRITESHEETS,
   preserveSize = false,
 ) => getAllTextures(resources, graphics, type, amount, preserveSize);
@@ -219,7 +217,7 @@ export const getTileSetTextures = (
 export const getSpriteSheetTextures = (
   resources,
   graphics,
-  type = config.tilesetsType,
+  type = null,
   amount = TILESET_SPRITESHEETS,
   preserveSize = false,
 ) => getAllTextures(resources, graphics, type, amount, preserveSize);
@@ -234,7 +232,7 @@ export const getSpriteSheetTextures = (
 export const getAnimationTextures = (
   resources,
   graphics,
-  type = config.animationsType,
+  type = null,
   amount = ANIMATION_SPRITESHEETS
 ) => getAllTextures(resources, graphics, type, amount);
 
@@ -246,7 +244,7 @@ export const getAnimationTextures = (
  * @param amount
  */
 export const getTextureAtlasTextures =
-  (resources, spriteSheets, type = config.tilesetsType, amount = TILESET_SPRITESHEETS) => {
+  (resources, spriteSheets, type = null, amount = TILESET_SPRITESHEETS) => {
     const key = s => `${s}_image`;
     const data = spriteSheets || spriteSheetGenerator(amount, type, getSpriteSheetFilePath);
     const getTextures = flow(

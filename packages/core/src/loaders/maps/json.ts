@@ -11,19 +11,46 @@ import {
   OBJECT_LAYER,
   TILE_EXIT_LAYER,
   TRIGGER_LAYER,
-} from '@mob/core/src/constants/game/Map';
-import { getDimensions } from '@mob/core/src/loaders/graphics';
-import { findAnimation, findGraphic } from '@mob/core/src/loaders/util';
-import Tile from '@mob/core/src/models/data/map/Tile';
+} from '@mob/core/constants/game/Map';
+import { getDimensions } from '@mob/core/loaders/graphics';
+import { findAnimation, findGraphic } from '@mob/core/loaders/util';
+import { Graphic, MapObject, Tile } from '@mob/core/models';
+
+export interface JsonTile {
+  [key: string]: any;
+}
+
+export interface ParseJsonTileWrapperParameters {
+  animations: Graphic[];
+  graphics: Graphic[];
+  objects: MapObject[];
+}
+
+export interface ParseJsonTileParameters<InputType> {
+  data: InputType;
+  layer: number;
+  x: number;
+  y: number;
+}
+
+export type ParseJsonTile<K, O> = (params: ParseJsonTileParameters<K>) => O;
+export type ParseJsonTileWrapper<K, O> = (params: ParseJsonTileWrapperParameters) => (
+  ParseJsonTile<K, O>
+);
 
 /**
  * Parses `Tile` model from `data` object
- * @param {Array.<number|Graphic>} graphics
- * @param {Array.<Graphic>} animations
- * @param {Array.<MapObject>} objects
- * @returns {function(d, l, x, y): Tile}
  */
-export const parseTile = (graphics, animations, objects) => (data, layer, x, y) => {
+export const parseJsonTile: ParseJsonTileWrapper<JsonTile, Tile> = ({
+  animations,
+  graphics,
+  objects,
+}: ParseJsonTileWrapperParameters) => ({
+  data,
+  layer,
+  x,
+  y
+}: ParseJsonTileParameters<JsonTile>) => {
   const { g } = data;
   let graphic = findGraphic(graphics, g[layer]);
   let dimensions = null;
@@ -45,14 +72,13 @@ export const parseTile = (graphics, animations, objects) => (data, layer, x, y) 
 
   if (data.o && layer === OBJECT_LAYER) {
     object = _.get(data, 'o');
-    const { graphicId, type } = objects.find(o => o.id === object.id);
-    if (graphicId) {
-      const objectGraphic = findGraphic(graphics, graphicId);
-      object.graphic = objectGraphic;
+    const { graphic, type } = objects.find(o => o.id === object.id);
+    if (graphic) {
+      object.graphic = graphic;
       object.type = type;
 
-      if (objectGraphic.frames.length === 0) {
-        dimensions = getDimensions(objectGraphic);
+      if (graphic.frames.length === 0) {
+        dimensions = getDimensions(graphic);
       }
     }
   }
@@ -81,54 +107,69 @@ export const parseTile = (graphics, animations, objects) => (data, layer, x, y) 
   return null;
 };
 
+export interface MapLayersParameters {
+  rows: JsonTile[][];
+  process: ParseJsonTile<JsonTile, Tile>;
+}
+
 /**
  * Maps layers from JSON format and creates `Tile` model
  * structures
- * @param row
- * @param process
- * @returns {Array.<Array.<Array.<Tile>>>}
  */
-export const mapLayers = (row, process) => range(1, MAP_LAYERS + 1).map(
-  (l) => {
-    let y = -1;
-    return map((col) => {
-      let x = -1;
-      y++;
-      return map((d) => { x++; return process(d, l, x, y); })(col);
-    })(row);
-  }
+export const mapLayers = ({ rows, process }) => (
+  range(1, MAP_LAYERS + 1).map(
+    (layer: number) => {
+      let y = -1;
+      return map((cols: JsonTile[]) => {
+        let x = -1;
+        y++;
+        return map((data: JsonTile) => {
+          x++;
+          return process({ data, layer, x, y });
+        })(cols);
+      })(rows);
+    }
+  )
 );
 
 /**
  * Parses JSON formatted `Map` structure from file
- * @param {Array.<number|Graphic>} graphics
- * @param {Array.<Graphic>} animations
- * @param {Array.<MapObject>} objects
- * @param mapFile
- * @returns {Array.<Array.<Array.<Tile>>>}
  */
-export const getMapLayers = (graphics, animations, objects, mapFile) => {
+export const getJsonLayers = ({
+  animations,
+  graphics,
+  mapFile,
+  objects,
+}) => {
   const layerData = head(values(mapFile));
-  return mapLayers(layerData, parseTile(graphics, animations, objects));
+  return mapLayers({
+    process: parseJsonTile({ graphics, animations, objects }),
+    rows: layerData,
+  });
 };
 
 /**
  * Flattens JSON formatted `Map` structure from `getMapLayers`
- * @param {Array.<number|Graphic>} graphics
- * @param {Array.<Graphic>} animations
- * @param {Array.<MapObject>} objects
- * @param mapFile
- * @returns {Array.<Tile>}
  */
-export const getFlattenedTiles = (graphics, animations, objects, mapFile) => {
+export const getFlattenedJsonTiles = ({
+  animations,
+  graphics,
+  mapFile,
+  objects,
+}) => {
   const tiles = [];
-  const layers = getMapLayers(graphics, animations, objects, mapFile);
+  const layers = getJsonLayers({
+    animations,
+    graphics,
+    mapFile,
+    objects
+  });
+
   layers.forEach((rows) => {
     rows.forEach((cols) => {
       cols.forEach(tile => tile && tiles.push(tile));
     });
   });
+
   return tiles;
 };
-
-export default getMapLayers;

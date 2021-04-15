@@ -1,14 +1,17 @@
-export default class Body {
-  /**
-   * Body model
-   * @param {number} id
-   * @param {number|Graphic} up
-   * @param {number|Graphic} left
-   * @param {number|Graphic} down
-   * @param {number|Graphic} right
-   * @param {number} headOffsetX
-   * @param {number} headOffsetY
-   */
+import { Graphic } from "@mob/core/models";
+
+/**
+ * Body model
+ */
+export class Body {
+  id: number;
+  up: Graphic | number;
+  left: Graphic | number;
+  down: Graphic | number;
+  right: Graphic | number;
+  headOffsetX: number;
+  headOffsetY: number;
+
   constructor({
     id = 0,
     up = 0,

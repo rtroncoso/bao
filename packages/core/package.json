@@ -1,27 +1,19 @@
 {
   "name": "@mob/core",
+  "description": "Mob TS Core Module",
   "version": "1.0.0",
   "author": "mob",
-  "description": "Mob JS Core Module",
   "license": "MIT",
   "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "webpack --env dev && webpack --env build && npm run test",
-    "start": "webpack --progress --colors --watch --env build",
-    "test": "mocha --require babel-register --colors ./test/*.spec.js",
-    "test:watch": "mocha --require babel-register --colors -w ./test/*.spec.js",
-    "test:cover": "cross-env NODE_ENV=test nyc mocha --require babel-register --colors test/*.js",
-    "repl": "node -i -e \"$(< ./lib/webpack-library-starter.js)\""
+    "build": "tsc --build",
+    "start": "nodemon -e ts --exec \"npm run build\""
   },
-  "keywords": [
-    "es6",
-    "lodash/fp"
-  ],
-  "directories": {
-    "src": "src",
-    "test": "__tests__"
-  },
+  "keywords": [],
   "files": [
+    "dist",
     "src"
   ],
   "publishConfig": {
@@ -30,32 +22,18 @@
   "dependencies": {
     "@lcluber/bumpjs": "^0.5.4",
     "@types/lodash": "^4.14.168",
+    "contour-2d": "^1.0.0",
     "intersects": "^2.5.2",
     "lodash": "^4.17.21",
-    "pixi.js": "^5.3.3"
+    "ndarray-pack": "^1.2.1",
+    "nodemon": "^2.0.7",
+    "pixi.js": "^5.3.3",
+    "rectangle-decomposition": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.4",
-    "@babel/preset-env": "^7.4.4",
-    "babel-eslint": "^10.0.1",
-    "babel-loader": "^8.0.5",
-    "babel-plugin-add-module-exports": "^1.0.2",
-    "babel-plugin-istanbul": "^5.1.4",
-    "babel-register": "^6.26.0",
-    "chai": "^4.2.0",
-    "create-index": "^2.4.0",
     "cross-env": "^5.2.0",
     "eslint": "5.7.0",
-    "eslint-loader": "^2.1.2",
-    "jsdom": "^15.0.0",
-    "jsdom-global": "^3.0.2",
-    "lerna-alias": "^3.0.2",
-    "mocha": "^6.1.4",
     "nyc": "^14.1.0",
-    "uglifyjs-webpack-plugin": "^2.1.2",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.2",
-    "yargs": "^13.2.2"
+    "rimraf": "^3.0.2"
   }
 }

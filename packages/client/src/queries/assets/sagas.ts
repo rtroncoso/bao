@@ -1,34 +1,27 @@
-import { all, call, fork, put, select, takeEvery } from 'redux-saga/effects';
-
-
-// import BODIES_FILE from 'client/assets/init/bodies.json';
-// import WEAPONS_FILE from 'client/assets/init/weapons.json';
-// import SHIELDS_FILE from 'client/assets/init/shields.json';
-// import EFFECTS_FILE from 'client/assets/init/effects.json';
-// import HELMETS_FILE from 'client/assets/init/helmets.json';
-// import HEADS_FILE from 'client/assets/init/heads.json';
-// import GRAPHICS_FILE from 'client/assets/init/graphics.json';
-
-import { getAnimations, getFileNames } from '@mob/core/loaders/graphics';
-import { getGraphics } from '@mob/core/loaders/graphics/json';
-// import { getBodies } from '@mob/core/loaders/bodies';
-import { loadAssets, LoadAssetsPayload } from './actions';
+import { requestAsync } from 'redux-query';
+import { all, call, fork, putResolve, select, takeEvery } from 'redux-saga/effects';
 import { Action } from 'typescript-fsa';
+
+// import { getBodies } from '@mob/core/loaders/bodies';
+// import { getFileNames } from '@mob/core/loaders/graphics';
+// import { getJsonGraphics } from '@mob/core/loaders/graphics';
+import { selectToken } from '@mob/client/queries/account';
+import { AuthorizedRequestParameters } from '@mob/client/queries/shared/models';
 // import {
-  // getAnimationFilePaths,
-  // getTileSetFilePaths,
-  // getTileSetNormalFilePaths
+//   getAnimationFilePaths,
+//   getTileSetFilePaths,
+//   getTileSetNormalFilePaths
 // } from '@mob/core/loaders/spritesheets';
 // import { getWeapons } from '@mob/core/loaders/weapons';
 // import { getShields } from '@mob/core/loaders/shields';
 // import { getEffects } from '@mob/core/loaders/effects';
 // import { getHelmets } from '@mob/core/loaders/helmets';
 // import { getHeads } from '@mob/core/loaders/heads';
+import { loadAssets, LoadAssetsPayload } from './actions';
+import { loadGraphics } from './graphics';
 import { loadManifest } from './manifest';
-import { selectToken } from '../account';
-import { GraphicsModel, ManifestModel } from './models';
-import { AuthorizedRequestParameters } from '../shared/models';
-import { requestAsync } from 'redux-query';
+import { ManifestModel } from './models';
+import { selectGraphics, selectManifest } from './selectors';
 
 // import {
 //   LOADING_COMPLETE,
@@ -80,24 +73,38 @@ import { requestAsync } from 'redux-query';
 //   loader.add([...tilesets, ...animations]);
 // }
 
-// export function* handleLoadGraphics(payload: LoadAssetsPayload) {
-//   const graphics = getGraphics(GRAPHICS_FILE);
-//   const textures = getFileNames(graphics);
-//   // console.log('before loader start', graphics, textures);
+export function* handleLoadGraphics(payload: LoadAssetsPayload) {
+  const manifest = yield select(selectManifest);
+  const token: string = yield select(selectToken);
 
-//   // yield put(updateGraphics(graphics));
-//   // yield put(updateTextures(textures));
+  try {
+    // const { loader } = payload;
+    yield putResolve(requestAsync(loadGraphics({ manifest, token })));
+    const graphics = yield select(selectGraphics);
+    // console.log(graphics);
+    // console.log(getJsonGraphics(graphics));
+    // const graphicsConverted = getJsonGraphics(graphics);
+    // const textures = getFileNames(graphics);
+    // console.log(graphics, graphicsConverted, textures);
+    // loader.add(textures);
+  } catch (error) {
+    console.log(error);
+  }
+  // console.log('before loader start', graphics, textures);
 
-//   // loader.add(textures);
-// }
+  // yield put(updateGraphics(graphics));
+  // yield put(updateTextures(textures));
+
+  // loader.add(textures);
+}
 
 export function* makeLoadManifestRequest(payload: LoadAssetsPayload) {
   const token: string = yield select(selectToken);
   const params: AuthorizedRequestParameters = ({ token });
 
   try {
-    const response: ManifestModel = yield put(requestAsync(loadManifest(params)));
-    console.log(response);
+    yield putResolve(requestAsync(loadManifest(params)));
+    yield fork(handleLoadGraphics, payload)
   } catch (error) {
     console.log(error);
   }

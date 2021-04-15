@@ -1,5 +1,3 @@
-'use strict';
-
 const path = require('path');
 const fs = require('fs');
 const getPublicUrlOrPath = require('react-dev-utils/getPublicUrlOrPath');
@@ -68,6 +66,26 @@ module.exports = {
   publicUrlOrPath,
 };
 
+// LERNA-TS SUPPORT
+module.exports.moduleFileExtensions = moduleFileExtensions;
 
+module.exports.lernaRoot = path.resolve(module.exports.appPath, '../../');
+module.exports.packagesRoot = path.join(module.exports.lernaRoot, 'packages')
+
+module.exports.appLernaModules = [];
+module.exports.allLernaModules = fs.readdirSync(module.exports.packagesRoot);
+
+const packageJson = require(module.exports.appPackageJson);
+const [, lernaRoot] = /@([A-Za-z0-9]+)\/(.*)/ig.exec(packageJson.name);
+
+fs.readdirSync(module.exports.appNodeModules).forEach(folderName => {
+  if (folderName === `@${lernaRoot}`) {
+    const fullPath = path.join(module.exports.appNodeModules, folderName);
+    fs.readdirSync(fullPath).forEach(packageName => {
+      const fullPackagePath = path.join(fullPath, packageName);
+      module.exports.appLernaModules.push(fs.realpathSync(fullPackagePath));
+    });
+  }
+});
 
 module.exports.moduleFileExtensions = moduleFileExtensions;

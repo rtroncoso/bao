@@ -10,11 +10,8 @@ import reportWebVitals from './reportWebVitals';
 
 import '@mob/client/assets/main.css';
 import { AppContainer } from '@mob/client/components/App';
-import {
-  getQueries,
-  persistor,
-  store
-} from '@mob/client/store';
+import { getQueries } from '@mob/client/queries';
+import { persistor, store } from '@mob/client/store';
 
 ReactDOM.render(
   <React.StrictMode>

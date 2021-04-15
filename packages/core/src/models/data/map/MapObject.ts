@@ -1,3 +1,5 @@
+import { Graphic } from "@mob/core/models";
+
 /**
  * MapObject class
  * @property {number} id
@@ -11,7 +13,18 @@
  * @property {number} offsetY
  * @property {number|Graphic} graphic
  */
-export default class MapObject {
+export class MapObject {
+  id: number;
+  x: number;
+  y: number;
+  type: number;
+  width: number;
+  height: number;
+  amount: number;
+  offsetX: number;
+  offsetY: number;
+  graphic: Graphic | null;
+
   constructor({
     id = 0,
     x = 0,
@@ -22,7 +35,7 @@ export default class MapObject {
     amount = 0,
     offsetX = 0,
     offsetY = 0,
-    graphic = 0,
+    graphic = null,
   }) {
     this.id = id;
     this.x = x;

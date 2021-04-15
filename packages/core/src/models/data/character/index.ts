@@ -1,6 +1,6 @@
-export { default as Body } from './Body';
-export { default as Head } from './Head';
-export { default as Helmet } from './Helmet';
-export { default as Shield } from './Shield';
-export { default as Weapon } from './Weapon';
+export * from './Body';
+export * from './Head';
+export * from './Helmet';
+export * from './Shield';
+export * from './Weapon';
 

@@ -1,13 +1,15 @@
+import { Graphic } from "@mob/core/models";
+
 /**
  * Helmet model
- * @param {number} id
- * @param {Graphic|number} up
- * @param {Graphic|number} left
- * @param {Graphic|number} down
- * @param {Graphic|number} right
- * @exports Helmet
  */
-export default class Helmet {
+export class Helmet {
+  id: number;
+  up: Graphic | number;
+  left: Graphic | number;
+  down: Graphic | number;
+  right: Graphic | number;
+
   constructor({
     id = 0,
     up = 0,

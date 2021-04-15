@@ -1,7 +1,5 @@
-import { EAST, HEADINGS, NORTH, SOUTH, WEST } from '@mob/core/src/constants/game/Game';
-import Shield from '@mob/core/src/models/data/character/Shield';
-
-import { parseDirectionAnimationByModel, transform } from '../util';
+import { parseDirectionAnimationByModel, transform } from '@mob/core/loaders';
+import { Shield } from '@mob/core/models';
 
 /**
  * Parses JSON shields file into a key-value map

@@ -1,6 +1,6 @@
 import isArray from 'lodash/fp/isArray';
-import { TILE_SIZE, TILED_MAP_SIZE } from '@mob/core/src/constants/game/Map';
-import { findInSpriteSheet } from '@mob/core/src/loaders/spritesheets';
+import { TILE_SIZE, TILED_MAP_SIZE } from '@mob/core/constants/game/Map';
+import { findInSpriteSheet } from '@mob/core/loaders/spritesheets';
 
 /**
  * Obtains 1D array index for a given x, y coordinate
@@ -133,7 +133,7 @@ export const findInTileSets = ({ graphic, tileSets = [], resources = {} }) => {
     const spriteSheet = resources[tileSet.spriteSheetSource];
 
     if (spriteSheet) {
-      const resource = findInSpriteSheet({ graphic, spriteSheet, resources, tileSet });
+      const resource = findInSpriteSheet({ graphic, spriteSheet, tileSet });
       if (resource) return resource;
     }
   }

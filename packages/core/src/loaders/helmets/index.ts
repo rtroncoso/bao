@@ -1,6 +1,5 @@
-import Helmet from '@mob/core/src/models/data/character/Helmet';
-
-import { parseDirectionGraphicByModel, transform } from '../util';
+import { parseDirectionGraphicByModel, transform } from '@mob/core/loaders';
+import { Helmet } from '@mob/core/models';
 
 /**
  * Parses JSON helmets file into a key-value map

@@ -32,7 +32,7 @@ const CharacterSelection: React.FC<CharacterSelectionProps> = ({
 
   const handleSubmit = useCallback(() => {
     if (currentCharacter) {
-      history.push('/game', { characterId: currentCharacter.id })
+      history.push('/world', { characterId: currentCharacter.id })
     }
   }, [currentCharacter, history]);
 

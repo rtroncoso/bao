@@ -2,11 +2,9 @@ import range from 'lodash/fp/range';
 
 import pack from 'ndarray-pack';
 import contour from 'contour-2d';
-import { pointPolygon } from 'intersects';
 import decompose from 'rectangle-decomposition';
 
 import { Texture } from 'pixi.js';
-import config from '@mob/client/config';
 import {
   ATLAS_COLUMNS,
   TILESET_SPRITESHEETS
@@ -37,7 +35,6 @@ import {
   findInTileSets,
   getProperty,
   getTileIndex,
-  setProperty,
   ySortLayers
 } from '@mob/core/loaders/maps/tmx/util';
 import {
@@ -47,30 +44,36 @@ import {
 } from '@mob/core/loaders/spritesheets';
 import { getGraphicsFileName } from '@mob/core/loaders/util';
 import {
-  Map,
   GroupLayer,
   ObjectLayer,
+  Tiled,
   TileSet,
   TileLayer,
   TmxObject,
   ImageLayer,
-} from '@mob/core/models/data/map/Tiled';
+  Tile,
+  Graphic,
+} from '@mob/core/models';
 
 let lastId = 0;
 let objectId = 0;
 
+const config = {
+  tilesetsType: 'tilesets'
+}
+
 /**
  * Fills an area of the map with the tiles that conform an object
  * of dimensions that are greater than TILE_SIZE
- * @param frame
- * @param tile
- * @param tilesData
- * @param tileSet
- * @returns {TileLayer|boolean}
  */
-export const makeTileLayerFromSprite = ({ frame, tile, tilesData, tileSet }) => {
+export const makeTileLayerFromSprite = ({
+  frame,
+  tile,
+  tilesData,
+  tileSet
+}) => {
   const { graphic } = tile;
-  const layerCreator = size => new Array(size).fill(0);
+  const layerCreator = (size: number) => new Array(size).fill(0);
   const nearestWidth = Math.ceil(graphic.width / TILE_SIZE);
   const nearestHeight = Math.ceil(graphic.height / TILE_SIZE);
   const offset = { x: tile.offsetX, y: tile.offsetY };
@@ -79,7 +82,9 @@ export const makeTileLayerFromSprite = ({ frame, tile, tilesData, tileSet }) => 
   const buffer = [];
 
   const createLayer = () => {
-    const layer = layerCreator(TILED_MAP_SIZE[1]).map(l => layerCreator(TILED_MAP_SIZE[0]));
+    const layer = layerCreator(TILED_MAP_SIZE[1])
+      .map(() => layerCreator(TILED_MAP_SIZE[0]));
+
     layer[tile.y][tile.x] = tile;
     return layer;
   };
@@ -116,13 +121,13 @@ export const makeTileLayerFromSprite = ({ frame, tile, tilesData, tileSet }) => 
 
 /**
  * Makes an Image Layer from a given frame and tile data
- * @param frame
- * @param tile
- * @param tileSet
- * @param visible
- * @returns {ImageLayer}
  */
-export const makeImageLayer = ({ frame, tile, tileSet, visible = true }) => {
+export const makeImageLayer = ({
+  frame,
+  tile,
+  tileSet,
+  visible = true
+}) => {
   const { graphic } = tile;
   const index = getTileIndex(frame.x, frame.y, ATLAS_COLUMNS);
   const layer = new ImageLayer();
@@ -148,17 +153,26 @@ export const makeImageLayer = ({ frame, tile, tileSet, visible = true }) => {
   return layer;
 };
 
+export interface MakeRectParameters {
+  data?: any;
+  graphic?: Graphic;
+  meta?: { [key: string]: any };
+  name?: string | number;
+  tile?: Tile;
+  type?: string;
+}
+
 /**
  * Constructs an object in TMX format
- * @param graphic
- * @param name
- * @param tile
- * @param data
- * @param type
- * @param [meta={}]
- * @returns {TmxObject}
  */
-export const makeRect = ({ graphic, name = graphic.id, tile, data, type, meta = {} }) => {
+export const makeRect = ({
+  data,
+  graphic,
+  meta = {},
+  name = graphic.id,
+  tile,
+  type,
+}: MakeRectParameters) => {
   const object = new TmxObject();
 
   object.type = type;
@@ -171,9 +185,11 @@ export const makeRect = ({ graphic, name = graphic.id, tile, data, type, meta = 
 
   if (meta) {
     if (graphic) {
-      const fileName = graphic.frames.length > 0 ? graphic.frames[0].fileName : graphic.fileName;
+      const fileName = graphic.frames.length > 0
+        ? (graphic.frames[0] as Graphic).fileName
+        : graphic.fileName;
       const fullFileName = getGraphicsFileName(fileName);
-      const texture = Texture.fromImage(fullFileName);
+      const texture = Texture.from(fullFileName);
       createProperty(object, 'graphicId', graphic.id);
       createProperty(object, 'width', texture.width);
       createProperty(object, 'height', texture.height);
@@ -199,26 +215,58 @@ export const makeRect = ({ graphic, name = graphic.id, tile, data, type, meta = 
   return object;
 };
 
-export const makeAnimation = ({ type = ANIMATION_TYPE, ...props }) => makeRect({ ...props, type });
-export const makeWater = ({ type = WATER_TYPE, ...props }) => makeRect({ ...props, type, name: '' });
-export const makeCollision = ({ type = COLLISION_TYPE, ...props }) => makeRect({ ...props, type, name: '' });
-export const makeTileExit = ({ type = TILE_EXIT_TYPE, ...props }) => makeRect({ ...props, type, name: '' });
-export const makeTrigger = ({ type = TRIGGER_TYPE, ...props }) => makeRect({ ...props, type, name: '' });
-export const makeObject = ({ type = OBJECT_TYPE, ...props }) => makeRect({ ...props, type, name: '' });
-export const makeNpc = ({ type = NPC_TYPE, ...props }) => makeRect({ ...props, type, name: '' });
-export const makeSprite = ({ type = SPRITE_TYPE, ...props }) => makeRect({ ...props, type });
+export const makeAnimation = (
+  ({ type = ANIMATION_TYPE, ...props }: MakeRectParameters) =>makeRect({ ...props, type })
+);
+
+export const makeWater = (
+  ({ type = WATER_TYPE, ...props }: MakeRectParameters) => makeRect({ ...props, type, name: '' })
+);
+
+export const makeCollision = (
+  ({ type = COLLISION_TYPE, ...props }: MakeRectParameters) => makeRect({ ...props, type, name: '' })
+);
+
+export const makeTileExit = (
+  ({ type = TILE_EXIT_TYPE, ...props }: MakeRectParameters) => makeRect({ ...props, type, name: '' })
+);
+
+export const makeTrigger = (
+  ({ type = TRIGGER_TYPE, ...props }: MakeRectParameters) => makeRect({ ...props, type, name: '' })
+);
+
+export const makeObject = (
+  ({ type = OBJECT_TYPE, ...props }: MakeRectParameters) => makeRect({ ...props, type, name: '' })
+);
+
+export const makeNpc = (
+  ({ type = NPC_TYPE, ...props }: MakeRectParameters) => makeRect({ ...props, type, name: '' })
+);
+
+export const makeSprite = (
+  ({ type = SPRITE_TYPE, ...props }: MakeRectParameters) => makeRect({ ...props, type })
+);
+
+export interface MakeShapeParameters {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  type?: string;
+  polygon?: Array<{x: number, y: number}>;
+}
 
 /**
  * Makes a collision HitBox object from rect parameters
- * @param object
- * @param x
- * @param y
- * @param width
- * @param height
- * @param type
- * @returns {TmxObject}
  */
-export const makeShape = ({ x, y, width, height, type = COLLISION_TYPE, ...extra }) => {
+export const makeShape = ({
+  x,
+  y,
+  width,
+  height,
+  type = COLLISION_TYPE,
+  polygon
+}: MakeShapeParameters) => {
   const object = new TmxObject();
   object.id = ++objectId;
   object.type = type;
@@ -227,23 +275,31 @@ export const makeShape = ({ x, y, width, height, type = COLLISION_TYPE, ...extra
   object.width = width;
   object.height = height;
 
-  if (extra.polygon) {
-    object.polygon = extra.polygon;
+  if (polygon) {
+    object.polygon = polygon;
   }
 
   return object;
 };
 
+export interface CropLayerParameters {
+  layer: Tile[][];
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}
+
 /**
  * Crops a map layer using x1, y1, x2, y2
- * @param layer
- * @param x1
- * @param y1
- * @param x2
- * @param y2
- * @returns {Array.<Tile>}
  */
-export const cropLayer = (layer, x1, y1, x2, y2) => {
+export const cropLayer = ({
+  layer,
+  x1,
+  x2,
+  y1,
+  y2
+}: CropLayerParameters) => {
   const cropped = range(y1, y2 + y1).map(y => range(x1, x2 + x1).map((x) => {
     const tile = layer[y][x];
     if (tile) {
@@ -277,18 +333,16 @@ export const cropLayer = (layer, x1, y1, x2, y2) => {
  * decomposed rectangles using `rectangle-decomposition`
  *
  * @see https://www.cise.ufl.edu/~sahni/papers/part.pdf
- * @param {string} type
- * @returns {function(list : Array.<TmxObject>) : Array.<TmxObject>}
  */
-const optimize = (type = COLLISION_TYPE) => (list) => {
-  const bitmap = range(0, TILED_MAP_SIZE[1]).map(y => range(0, TILED_MAP_SIZE[0]).map(x => 0));
-  list.forEach(c => bitmap[Math.floor(c.y / TILE_SIZE)][Math.floor(c.x / TILE_SIZE)] = 1);
+const optimize = (type = COLLISION_TYPE) => (objects: TmxObject[]) => {
+  const bitmap = range(0, TILED_MAP_SIZE[1]).map(() => range(0, TILED_MAP_SIZE[0]).map(() => 0));
+  objects.forEach(c => bitmap[Math.floor(c.y / TILE_SIZE)][Math.floor(c.x / TILE_SIZE)] = 1);
   const paths = contour(pack(bitmap), true);
   const optimized = decompose(paths, false);
+  const result: TmxObject[] = [];
   const polygons = [];
-  const objects = [];
 
-  optimized.forEach((rows) => {
+  optimized.forEach((rows: number[][]) => {
     const polygon = rows.map(vertex => ({ x: vertex[0], y: vertex[1] }));
     polygons.push(polygon);
 
@@ -296,62 +350,61 @@ const optimize = (type = COLLISION_TYPE) => (list) => {
     const x = p1.x * TILE_SIZE;
     const y = p1.y * TILE_SIZE;
     const width = (p2.x - p1.x) * TILE_SIZE;
-    const height = (p2.y - p1.y) * TILE_SIZE;+
+    const height = (p2.y - p1.y) * TILE_SIZE;
     const object = makeShape({ type, x, y, width, height });
-    objects.push(object);
+    result.push(object);
   });
 
-  return objects;
+  return result;
 };
 
 /**
  * Converts a list of TmxObject's into a list of polygonal areas
  * using contour2D
- *
- * @param {string} type
- * @returns {function(list : Array.<TmxObject>) : Array.<TmxObject>}
  */
-const optimizePolygons = (type = COLLISION_TYPE) => (list) => {
-  const bitmap = range(0, TILED_MAP_SIZE[1]).map(y => range(0, TILED_MAP_SIZE[0]).map(x => 0));
-  list.forEach(c => bitmap[Math.floor(c.y / TILE_SIZE)][Math.floor(c.x / TILE_SIZE)] = 1);
+const optimizePolygons = (type: string = COLLISION_TYPE) => (objects: TmxObject[]) => {
+  const bitmap = range(0, TILED_MAP_SIZE[1]).map(() => range(0, TILED_MAP_SIZE[0]).map(() => 0));
+  objects.forEach(c => bitmap[Math.floor(c.y / TILE_SIZE)][Math.floor(c.x / TILE_SIZE)] = 1);
   const paths = contour(pack(bitmap), true);
   const polygons = [];
-  const objects = [];
+  const optimized: TmxObject[] = [];
 
-  paths.forEach((rows) => {
+  paths.forEach((rows: number[][]) => {
     const polygon = rows.map(vertex => ({ x: vertex[0] * TILE_SIZE, y: vertex[1] * TILE_SIZE }));
     polygons.push(polygon);
 
     // const offsetX = x - Math.floor((x - TILE_SIZE) / TILE_SIZE);
     // x -= offsetX; grid alignment - not needed
     const object = makeShape({ type, polygon });
-    objects.push(object);
+    optimized.push(object);
   });
 
-  return objects;
+  return optimized;
 };
+
+export interface MakePolygonLayerParameters {
+  layers?: TileLayer[];
+  layerName?: string;
+  objectLayerName?: string;
+  layerNumber?: number;
+  process?: (tile?: Tile) => TmxObject | void;
+  postProcess?: (objects?: TmxObject[], shapes?: TmxObject[]) => TmxObject[];
+  optimizer?: (list?: TmxObject[]) => TmxObject[];
+}
 
 /**
  * Traverses all tiles from a map and creates a polygon layer
  * using optimizer and process functions
- * @param layers
- * @param layerName
- * @param objectLayerName
- * @param layerNumber
- * @param process
- * @param optimizer
- * @param post
- * @returns {GroupLayer}
  */
 export const makePolygonLayer = ({
-  layers,
   layerName,
-  objectLayerName,
   layerNumber = TILES_LAYER,
-  process = () => {},
-  postProcess = null,
+  layers,
+  objectLayerName,
   optimizer = i => i,
-}) => {
+  postProcess = null,
+  process = () => {},
+}: MakePolygonLayerParameters) => {
   const layer = new GroupLayer();
   const objects = new ObjectLayer();
   layer.name = layerName;
@@ -380,11 +433,9 @@ export const makePolygonLayer = ({
 
 /**
  * Makes a tile exit layer rectangle shapes
- * @param layers
- * @returns {GroupLayer}
  */
 export const makeTileExitsLayer = ({ layers }) => {
-  const process = (tile) => {
+  const process = (tile: Tile) => {
     if (tile && tile.tileExit) {
       const { graphic } = tile;
       const meta = { mapNumber: tile.tileExit.map };
@@ -394,22 +445,24 @@ export const makeTileExitsLayer = ({ layers }) => {
     return null;
   };
 
-  const postProcess = (objects, shapes) => objects && objects.map((c) => {
-    let tmxObject = null;
+  const postProcess = (objects: TmxObject[], shapes: TmxObject[]) => (
+    objects && objects.map((object: TmxObject) => {
+      let tmxObject = null;
 
-    // take neighboring tiles if available
-    if (c.x + TILE_SIZE < c.width) {
-      tmxObject = shapes.find(t => t.x === c.x + TILE_SIZE && t.y === c.y);
-    } else if (c.y + TILE_SIZE < c.height) {
-      tmxObject = shapes.find(t => t.x === c.x && t.y === c.y + TILE_SIZE);
-    } else {
-      tmxObject = shapes.find(t => t.x === c.x && t.y === c.y);
-    }
+      // take neighboring tiles if available
+      if (object.x + TILE_SIZE < object.width) {
+        tmxObject = shapes.find(t => t.x === object.x + TILE_SIZE && t.y === object.y);
+      } else if (object.y + TILE_SIZE < object.height) {
+        tmxObject = shapes.find(t => t.x === object.x && t.y === object.y + TILE_SIZE);
+      } else {
+        tmxObject = shapes.find(t => t.x === object.x && t.y === object.y);
+      }
 
-    const mapNumber = getProperty(tmxObject, 'mapNumber');
-    createProperty(c, 'mapNumber', mapNumber);
-    return c;
-  });
+      const mapNumber = getProperty(tmxObject, 'mapNumber');
+      createProperty(object, 'mapNumber', mapNumber);
+      return object;
+    })
+  );
 
   const layerName = 'Tile Exit Layer';
   const objectLayerName = 'Tile Exit HitBoxes';
@@ -427,11 +480,9 @@ export const makeTileExitsLayer = ({ layers }) => {
 
 /**
  * Makes a collision layer rectangle shapes
- * @param layers
- * @returns {GroupLayer}
  */
 export const makeCollisionLayer = ({ layers }) => {
-  const process = (tile) => {
+  const process = (tile: Tile) => {
     if (tile && (tile.blocked || tile.isWater())) {
       const { graphic } = tile;
       return makeCollision({ graphic, tile });
@@ -441,7 +492,7 @@ export const makeCollisionLayer = ({ layers }) => {
   };
 
   // fixes weird contour2d edge case failing for ULLA
-  const postProcess = (objects, shapes) => {
+  const postProcess = (objects: TmxObject[]) => {
     const edgeCase = objects.find(c => c.width === 1728 && c.height === 2112);
     const index = objects.indexOf(edgeCase);
 
@@ -491,11 +542,9 @@ export const makeCollisionLayer = ({ layers }) => {
 
 /**
  * Makes a water layer rectangle shapes
- * @param layers
- * @returns {GroupLayer}
  */
 export const makeWaterLayer = ({ layers }) => {
-  const process = (tile) => {
+  const process = (tile: Tile) => {
     if (tile && tile.isWater()) {
       const { graphic } = tile;
       return makeWater({ graphic, tile });
@@ -517,11 +566,9 @@ export const makeWaterLayer = ({ layers }) => {
 
 /**
  * Makes trigger layers polygon shapes
- * @param layers
- * @returns {GroupLayer}
  */
 export const makeTriggersLayer = ({ layers }) => {
-  const process = trigger => (tile) => {
+  const process = (trigger: number) => (tile: Tile) => {
     if (tile && tile.trigger === trigger) {
       const { graphic } = tile;
       const meta = { trigger: tile.trigger };
@@ -531,13 +578,15 @@ export const makeTriggersLayer = ({ layers }) => {
     return null;
   };
 
-  const postProcess = trigger => (objects, shapes) => objects && objects.map((object) => {
-    // const polygon = object.polygon.flatMap(p => [p.x, p.y]);
-    // const shape = shapes.find(s => pointPolygon(s.x, s.y, polygon));
-    // if (shape) setProperty(object, 'trigger', getProperty(shape, 'trigger'));
-    createProperty(object, 'trigger', trigger);
-    return object;
-  });
+  const postProcess = (trigger: number) => (objects: TmxObject[]) => (
+    objects && objects.map((object: TmxObject) => {
+      // const polygon = object.polygon.flatMap(p => [p.x, p.y]);
+      // const shape = shapes.find(s => pointPolygon(s.x, s.y, polygon));
+      // if (shape) setProperty(object, 'trigger', getProperty(shape, 'trigger'));
+      createProperty(object, 'trigger', trigger);
+      return object;
+    })
+  );
 
   const layerName = 'Trigger Layer';
   const objectLayerName = 'Trigger HitBoxes';
@@ -557,14 +606,20 @@ export const makeTriggersLayer = ({ layers }) => {
 
 /**
  * Makes an npc layer objects data
- * @param layers
- * @returns {GroupLayer}
  */
 export const makeNpcsLayer = ({ layers }) => {
-  const process = (tile) => {
+  const process = (tile: Tile) => {
     if (tile && tile.npc) {
       const { graphic } = tile;
-      const npc = makeNpc({ graphic, tile: { ...tile, x: tile.npc.x, y: tile.npc.y } });
+      const npc = makeNpc({
+        graphic,
+        tile: {
+          ...tile,
+          x: tile.npc.x,
+          y: tile.npc.y
+        } as Tile
+      });
+
       createProperty(npc, 'npcId', tile.npc.id);
       return npc;
     }
@@ -586,11 +641,9 @@ export const makeNpcsLayer = ({ layers }) => {
 
 /**
  * Makes an objects layer data
- * @param layers
- * @returns {GroupLayer}
  */
 export const makeObjectsLayer = ({ layers }) => {
-  const process = (tile) => {
+  const process = (tile: Tile) => {
     if (tile && tile.object) {
       const { graphic } = tile.object;
       const object = makeObject({
@@ -599,7 +652,7 @@ export const makeObjectsLayer = ({ layers }) => {
           ...tile,
           x: tile.object.x,
           y: tile.object.y,
-        }
+        } as Tile
       });
 
       createProperty(object, 'type', tile.object.type);
@@ -623,20 +676,24 @@ export const makeObjectsLayer = ({ layers }) => {
   });
 };
 
+export interface ProcessLayerParameters {
+  offset?: { x: number, y: number };
+  resources: { [key: string]: PIXI.LoaderResource };
+  tileSets: TileSet[];
+  tmx: Tiled;
+}
+
 /**
  * Handles layer parsing
- * @param resources
- * @param tileSets
- * @param offset
- * @returns {function(layer, index): GroupLayer}
  */
 export const processLayer = ({
+  offset = { x: 0, y: 0 },
   resources = {},
   tileSets = [],
-  offset = { x: 0, y: 0 },
-}) => (l, i) => {
-  const getId = id => parseFloat(Number(id).toFixed(2));
-  const tileLayer = new TileLayer();
+  tmx,
+}: ProcessLayerParameters) => (layer: Tile[][], index: number) => {
+  const getId = (id: number) => parseFloat(Number(id).toFixed(2));
+  const tileLayer = new TileLayer(tmx);
   const imageGroup = new GroupLayer();
   const objectLayer = new ObjectLayer();
   const groupLayer = new GroupLayer();
@@ -654,16 +711,16 @@ export const processLayer = ({
   tileLayer.height = height;
   tileLayer.offsetx = offset && offset.x;
   tileLayer.offsety = offset && offset.y;
-  groupLayer.name = `Layer ${getId(i) + 1}`;
-  tileLayer.name = `Tile Layer ${getId(i) + 1}`;
-  objectLayer.name = `Object Layer ${getId(i) + 1}`;
+  groupLayer.name = `Layer ${getId(index) + 1}`;
+  tileLayer.name = `Tile Layer ${getId(index) + 1}`;
+  objectLayer.name = `Object Layer ${getId(index) + 1}`;
   tileLayer.id = ++lastId;
   groupLayer.id = ++lastId;
   objectLayer.id = ++lastId;
 
   for (let y = 0; y < TILED_MAP_SIZE[1]; y++) {
     for (let x = 0; x < TILED_MAP_SIZE[0]; x++) {
-      const tile = l[y][x];
+      const tile = layer[y][x];
       const tileIndex = y * TILED_MAP_SIZE[0] + x;
       tilesData[tileIndex] = 0;
       if (tile && tile.graphic) {
@@ -671,7 +728,7 @@ export const processLayer = ({
         const data = findInTileSets({ graphic, tileSets, resources });
         tilesData[tileIndex] = 0;
 
-        if (animation && animation.frames.length > 0) {
+        if (animation && (animation as Graphic).frames.length > 0) {
           const object = makeAnimation({ graphic: animation, tile, data });
           objects.push(object);
         }
@@ -708,12 +765,12 @@ export const processLayer = ({
   let j = 1;
   while (images.length > 0) {
     const layer = images.shift();
-    layer.name = `Sprite ${i + 1}.${j++}`;
+    layer.name = `Sprite ${index + 1}.${j++}`;
     imageGroup.layers.push(layer);
     properties[layerKey].gids.push(layer.properties.gid);
   }
 
-  imageGroup.name = `Sprites Layer ${i + 1}`;
+  imageGroup.name = `Sprites Layer ${index + 1}`;
   imageGroup.layers = imageGroup.layers.sort(ySortLayers);
   createProperty(imageGroup, layerKey, JSON.stringify(properties[layerKey]));
 
@@ -722,23 +779,25 @@ export const processLayer = ({
   return groupLayer;
 };
 
+export interface ConvertLayersToTmxParameters {
+  crop: boolean;
+  layers: Tile[][][];
+  name: string;
+  number: number;
+  resources: { [key: string]: PIXI.LoaderResource; };
+}
+
 /**
  * Convert Map Layers from JSON format to TMX
- * @param layers
- * @param resources
- * @param name
- * @param number
- * @param [crop=true]
- * @returns {Map}
  */
 export const convertLayersToTmx = ({
-  layers = [],
-  resources = {},
-  number = 1,
   crop = true,
-  name = 'Map'
-}) => {
-  const tmx = new Map();
+  layers = [],
+  name = 'Map',
+  number = 1,
+  resources = {},
+}: ConvertLayersToTmxParameters) => {
+  const tmx = new Tiled();
   const tileSets = [];
   objectId = 0;
   lastId = 0;
@@ -762,11 +821,19 @@ export const convertLayersToTmx = ({
   tmx.name = `${name}${number}`;
 
   if (crop) {
-    layers = layers.map(l => cropLayer(l, MAP_BORDER_X, MAP_BORDER_Y, TILED_MAP_SIZE[0], TILED_MAP_SIZE[1]));
+    layers = layers.map(layer => (
+      cropLayer({
+        layer,
+        x1: MAP_BORDER_X,
+        y1: MAP_BORDER_Y,
+        x2: TILED_MAP_SIZE[0],
+        y2: TILED_MAP_SIZE[1]
+      })
+    ));
   }
 
   layers.forEach((l, i) => {
-    const process = processLayer({ resources, tileSets, lastId, objectId });
+    const process = processLayer({ tmx, resources, tileSets });
     tmx.layers.push(process(l, i));
   });
 
@@ -776,8 +843,6 @@ export const convertLayersToTmx = ({
   tmx.layers.push(makeTileExitsLayer({ layers }));
   tmx.layers.push(...makeTriggersLayer({ layers }));
   tmx.layers.push(makeCollisionLayer({ layers }));
-  tmx.nextlayerid = ++lastId;
-  tmx.nextobjectid = ++objectId;
   return tmx;
 };
 

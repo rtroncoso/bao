@@ -23,7 +23,6 @@ export const transformManifestResponse = (manifest: ManifestModel) => {
 export const loadManifest = ({
   token
 }: LoadManifestPayload): QueryConfig<AssetEntities> => {
-  console.log(token);
   return {
     ...loadManifestQuery,
     transform: transformManifestResponse,

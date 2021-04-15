@@ -1,54 +1,57 @@
-import Graphic, { TexturedGraphic } from '@mob/core/models/data/Graphic';
+import { getGraphicsFilePath, parseKey } from '@mob/core/loaders';
+import { TexturedGraphic } from '@mob/core/models';
 
 import map from 'lodash/fp/map';
 import mapKeys from 'lodash/fp/mapKeys';
-import transform from 'lodash/fp/transform';
+// import reduce from 'lodash/fp/reduce';
 import flow from 'lodash/fp/flow';
 import get from 'lodash/fp/get';
 
-import { getGraphicsFilePath, parseKey } from '../util';
+export interface ParseIniGraphicState {
+  [key: string]: TexturedGraphic;
+}
 
 /**
  * Parses animation frames by getting `Graphic` model
  * reference from the `reducer`
- * @param reducer
- * @returns {map}
  */
-export const parseAnimations = reducer => (
-  map(graphic => reducer[graphic])
+export const parseAnimations = (state: ParseIniGraphicState) => (
+  map((graphic: string) => state[graphic])
 );
 
 /**
  * Argentum GRH INI Parsing format:
  *
- *    Static GRH:
- *      `{numFrames}-{fileName}-{x}-{y}-{width}-{height}`
- *    Animation:
- *      `{numFrames}-{grh1}-{grh2}-{grh3}-...-{grhN}-{speed}`
- *
- * @param reducer
- * @param graphicsString
- * @param id
- * @returns {Graphic}
+ * @remarks
+ * Static GRH:
+ *   `{numFrames}-{fileName}-{x}-{y}-{width}-{height}`
+ * Animation:
+ *   `{numFrames}-{grh1}-{grh2}-{grh3}-...-{grhN}-{speed}`
  */
-export const parseGraphic = (reducer = {}, graphicsString, id) => {
+export const parseIniGraphic = (
+  state: ParseIniGraphicState,
+  graphicsString: string,
+  id: string
+): ParseIniGraphicState => {
   const props = graphicsString.split('-');
   const numFrames = parseInt(props.shift(), 10);
 
   if (numFrames > 1) {
-    const speed = props.pop() / 1800;
-    const frames = parseAnimations(reducer)(props);
-    return reducer[id] = new TexturedGraphic({
+    const speed = parseInt(props.pop(), 10) / 1800;
+    const frames = parseAnimations(state)(props);
+    state[id] = new TexturedGraphic({
       id,
       frames,
       speed,
     });
+
+    return state;
   }
 
   const [fileName, x, y, width, height] = props;
   const path = getGraphicsFilePath(fileName);
 
-  return reducer[id] = new TexturedGraphic({
+  state[id] = new TexturedGraphic({
     id,
     path,
     fileName,
@@ -57,24 +60,20 @@ export const parseGraphic = (reducer = {}, graphicsString, id) => {
     width: parseInt(width, 10),
     height: parseInt(height, 10)
   });
+
+  return state;
 };
 
 /**
  * Parses INI graphics file `file` into a key-value
  * map of graphic id's and their respective `Graphic`
  * models
- * @param file
- * @param key
- * @returns {MapObject.<string, Graphic>}
  */
-export const getGraphics = (file, key = 'Graphics') => {
+export const getIniGraphics = (file: string, key: string = 'Graphics') => {
   const data = get(key, file);
-  const uncappedTransform = transform.convert({ cap: false });
 
   return flow(
     mapKeys(parseKey),
-    uncappedTransform(parseGraphic, {})
+    // reduce(parseIniGraphic)
   )(data);
 };
-
-export default getGraphics;

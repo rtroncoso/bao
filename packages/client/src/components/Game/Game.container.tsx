@@ -1,10 +1,10 @@
 import { compose } from 'redux';
 
 import { withAuthGuard } from '@mob/client/components/HigherOrder';
-import { withGameContext } from './Game.context';
+import { ConnectedProps, withGameContext } from './Game.context';
 import Game from './Game.component';
 
-export const WorldRoomContainer = compose(
+export const WorldRoomContainer = compose<React.FC<ConnectedProps>>(
   withAuthGuard,
   withGameContext
 )(Game);

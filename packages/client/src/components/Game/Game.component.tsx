@@ -8,15 +8,16 @@ import {
   KeyboardSystem,
   ViewportSystem,
 } from '@mob/client/components/Systems';
-import AppConstants from '@mob/core/constants/game/App';
+import { App } from '@mob/core/constants';
 
 import { ConnectedProps, GameContext } from './Game.context';
-import { GameStyled, styles } from './Game.styles';
+import { GameStyled } from './Game.styles';
+import './Game.styles.css';
 
 export type GameComponentProps =
   ConnectedProps;
 
-export const Systems = () => {
+export const Systems: React.FC = () => {
   return (
     <React.Fragment>
       <KeyboardSystem />
@@ -28,6 +29,8 @@ export const Systems = () => {
   );
 };
 
+console.log(App);
+
 export const GameComponent: React.FC<GameComponentProps> = () => {
   return (
     <GameStyled>
@@ -36,9 +39,8 @@ export const GameComponent: React.FC<GameComponentProps> = () => {
           <GameContext.Consumer>
             {gameContext => (
               <Stage
-                style={styles.canvasStyle}
-                width={AppConstants.canvasWidth}
-                height={AppConstants.canvasHeight}
+                height={App.canvasHeight}
+                width={App.canvasWidth}
               >
                 <ReactReduxContext.Provider value={reduxContext}>
                   <GameContext.Provider value={gameContext}>

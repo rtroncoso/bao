@@ -6,30 +6,14 @@ import storage from 'redux-persist/lib/storage';
 import {
   entitiesReducer,
   errorsReducer,
-  ErrorsState,
   queriesReducer,
-  QueriesState,
   queryMiddleware
 } from 'redux-query';
 import superagentInterface from 'redux-query-interface-superagent';
 import createSagaMiddleware from 'redux-saga';
 
-import { AccountEntities } from '@mob/client/queries/account/models';
-import { AssetEntities } from '@mob/client/queries/assets/models';
-
-export type EntitiesState =
-  & AccountEntities
-  & AssetEntities;
-
-export interface State {
-  entities: EntitiesState,
-  errors: ErrorsState,
-  queries: QueriesState,
-}
-
-export const getEntities = (state: State) => state.entities;
-export const getErrors = (state: State) => state.errors;
-export const getQueries = (state: State) => state.queries;
+import { getEntities, getQueries } from '@mob/client/queries';
+import { querySagas } from '@mob/client/queries';
 
 const reducer = combineReducers({
   entities: entitiesReducer,
@@ -44,7 +28,7 @@ const persistConfig = {
 };
 
 export const sagaMiddleware = createSagaMiddleware();
-const persistedReducer = persistReducer(persistConfig, reducer);
+const persistedReducer = persistReducer<any>(persistConfig, reducer);
 const enhancers = composeWithDevTools(
   applyMiddleware(
     sagaMiddleware,
@@ -57,10 +41,12 @@ export const store = createStore(
   enhancers
 );
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type State = ReturnType<typeof store.getState>;
+export type Dispatch = typeof store.dispatch;
 
-export const useAppDispatch = () => useDispatch<AppDispatch>();
-export const useAppSelector = createSelectorHook<RootState>();
+export const useAppDispatch = () => useDispatch<Dispatch>();
+export const useAppSelector = createSelectorHook<State>();
 
 export const persistor = persistStore(store);
+
+sagaMiddleware.run(querySagas);

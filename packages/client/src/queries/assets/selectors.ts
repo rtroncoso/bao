@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
-import { getEntities } from '@mob/client/store';
+
+import { getEntities } from '@mob/client/queries';
 
 export const selectBodies = createSelector(
   getEntities,

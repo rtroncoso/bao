@@ -3,7 +3,7 @@ import { Graphics } from 'pixi.js';
 import React, { useContext } from 'react';
 
 import { defaultTextStyle, GameContext } from '@mob/client/components/Game';
-import { TILE_SIZE } from '@mob/core/constants/game';
+import { TILE_SIZE } from '@mob/core/constants';
 
 interface RectangleProps {
   x?: number;

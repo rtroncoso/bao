@@ -2,7 +2,7 @@ import { Loader } from 'pixi.js';
 import { actionCreatorFactory } from 'typescript-fsa';
 
 export interface LoadAssetsPayload {
-  loader: Loader
+  loader: Loader;
 }
 
 const actionCreator = actionCreatorFactory();

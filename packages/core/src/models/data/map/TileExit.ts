@@ -1,10 +1,15 @@
 /**
  * TileExit class
+ *
  * @property {number} x
  * @property {number} y
  * @property {number} map
  */
-export default class TileExit {
+export class TileExit {
+  x: number;
+  y: number;
+  map: number;
+
   constructor({
     x = 0,
     y = 0,

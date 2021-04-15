@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@mob/colyseus",
+  "name": "@mob/server",
   "version": "0.1.0",
   "description": "Colyseus game server for MoB",
   "main": "lib/index.js",

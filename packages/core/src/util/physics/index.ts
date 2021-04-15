@@ -1,7 +1,23 @@
 import { Physics as BumpPhysics } from '@lcluber/bumpjs';
+export interface CreateBodyParameters {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  mass?: number;
+  damping?: number;
+  restitution?: number;
+  type?: ShapeTypes;
+}
 
-export const RECTANGLE = 'rectangle';
-export const CIRCLE = 'circle';
+export const Shapes = {
+  CIRCLE: 'circle',
+  RECTANGLE: 'rectangle',
+}
+
+export type ShapeTypes =
+  | typeof Shapes.CIRCLE
+  | typeof Shapes.RECTANGLE;
 
 export const createBody = ({
   x,
@@ -11,7 +27,7 @@ export const createBody = ({
   mass = 0.0,
   damping = 1.0,
   restitution = 0.0,
-  type = RECTANGLE
+  type = Shapes.RECTANGLE
 }) => new BumpPhysics(
   x,
   y,
@@ -25,7 +41,16 @@ export const createBody = ({
   type
 );
 
-export const createRectangle = ({ type = RECTANGLE, ...props }) => createBody({ ...props, type });
-export const createCircle = ({ type = CIRCLE, ...props }) => createBody({ ...props, type });
+export const createRectangle = ({
+  type = Shapes.RECTANGLE,
+  ...props
+}: CreateBodyParameters) => (
+  createBody({ ...props, type })
+);
 
-export default null;
+export const createCircle = ({
+  type = Shapes.CIRCLE,
+  ...props
+}: CreateBodyParameters) => (
+  createBody({ ...props, type })
+);

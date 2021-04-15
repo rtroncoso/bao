@@ -1,7 +1,8 @@
 import { QueryConfig } from 'redux-query';
 
 import { override } from '@mob/client/queries/shared';
-import { AssetEntities, LoadGraphicsPayload, GraphicsModel } from './models';
+import { JsonGraphicsModel } from '@mob/core/loaders';
+import { AssetEntities, LoadGraphicsPayload } from './models';
 
 export const loadGraphicsQuery = {
   force: true,
@@ -11,7 +12,7 @@ export const loadGraphicsQuery = {
   queryKey: 'loadGraphics:GET',
 };
 
-export const transformGraphicsResponse = (graphics: GraphicsModel) => {
+export const transformGraphicsResponse = (graphics: JsonGraphicsModel) => {
   return {
     graphics
   };
@@ -22,7 +23,7 @@ export const loadGraphics = ({
 }: LoadGraphicsPayload): QueryConfig<AssetEntities> => {
   return {
     ...loadGraphicsQuery,
-    url: `${process.env.MOB_ASSETS}/${manifest.init.graphics}`,
+    url: `${manifest.init.graphics}`,
     transform: transformGraphicsResponse,
     update: {
       graphics: override,

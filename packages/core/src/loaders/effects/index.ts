@@ -1,5 +1,5 @@
-import Effect from '@mob/core/models/data/Effect';
-import { findAnimation, transform } from '../util';
+import { findAnimation, transform } from '@mob/core/loaders/util';
+import { Effect } from '@mob/core/models';
 
 /**
  * @see {@link parseDirectionAnimationByModel}

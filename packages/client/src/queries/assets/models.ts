@@ -1,33 +1,5 @@
 import { AuthorizedRequestParameters as AuthorizedRequestPayload } from '@mob/client/queries/shared/models';
-
-export interface BodyModel {
-  down: number;
-  headOffsetX: number;
-  headOffsetY: number;
-  id: number;
-  left: number;
-  right: number;
-  up: number;
-}
-
-export type BodiesModel = Array<number | BodyModel>;
-
-export interface GraphicModel {
-  fileName: string | number;
-  height: number;
-  id: string | number;
-  width: number;
-  x: number;
-  y: number;
-}
-
-export interface AnimatedGraphicModel {
-  frames: Array<number>;
-  id: string | number;
-  speed: number;
-}
-
-export type GraphicsModel = Array<number | GraphicModel | AnimatedGraphicModel>;
+import { JsonBodiesModel, JsonGraphicsModel } from '@mob/core/loaders';
 
 export interface ManifestModel {
   audio: {
@@ -62,7 +34,7 @@ export interface LoadGraphicsPayload extends AuthorizedRequestPayload {
 export interface LoadManifestPayload extends AuthorizedRequestPayload {}
 
 export interface AssetEntities {
-  bodies?: BodiesModel;
-  graphics?: GraphicsModel;
+  bodies?: JsonBodiesModel;
+  graphics?: JsonGraphicsModel;
   manifest?: ManifestModel;
 }
