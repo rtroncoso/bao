@@ -3,10 +3,10 @@ import filter from 'lodash/fp/filter';
 import find from 'lodash/fp/find';
 import values from 'lodash/fp/values';
 
-import config from '@mob/client/src/config';
+// import config from '@mob/client';
 import {
   EAST, HEADINGS, NORTH, SOUTH, WEST,
-} from '@mob/core/src/constants/game/Game';
+} from '@mob/core/constants/game';
 
 /**
  * Adds extension to fileName
@@ -20,7 +20,8 @@ export const getGraphicsFileName = fileName => `${fileName}.png`;
  * @param fileName
  * @returns {string}
  */
-export const getGraphicsFilePath = fileName => `${config.texturePath}/${getGraphicsFileName(fileName)}`;
+export const getGraphicsFilePath = fileName => `${getGraphicsFileName(fileName)}`;
+// export const getGraphicsFilePath = fileName => `${config.texturePath}/${getGraphicsFileName(fileName)}`;
 
 /**
  * Extrapolates from INI data `key` formatted using `keyFormat`

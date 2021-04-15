@@ -1,4 +1,4 @@
-import Graphic, { TexturedGraphic } from '@mob/core/src/models/data/Graphic';
+import Graphic, { TexturedGraphic } from '@mob/core/models/data/Graphic';
 
 import map from 'lodash/fp/map';
 import mapKeys from 'lodash/fp/mapKeys';

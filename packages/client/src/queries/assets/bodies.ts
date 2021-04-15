@@ -1,7 +1,7 @@
 import { QueryConfig } from 'redux-query';
 
 import { override } from '@mob/client/queries/shared';
-import { AssetEntities, LoadBodiesParameters, BodiesModel } from './models';
+import { AssetEntities, LoadBodiesPayload, BodiesModel } from './models';
 
 export const loadBodiesQuery = {
   force: true,
@@ -19,7 +19,7 @@ export const transformBodiesResponse = (bodies: BodiesModel) => {
 
 export const loadBodies = ({
   manifest,
-}: LoadBodiesParameters): QueryConfig<AssetEntities> => {
+}: LoadBodiesPayload): QueryConfig<AssetEntities> => {
   return {
     ...loadBodiesQuery,
     url: `${process.env.MOB_ASSETS}/${manifest.init.bodies}`,

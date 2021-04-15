@@ -29,9 +29,10 @@
   },
   "dependencies": {
     "@lcluber/bumpjs": "^0.5.4",
+    "@types/lodash": "^4.14.168",
     "intersects": "^2.5.2",
-    "lodash": "^4.17.11",
-    "pixi.js": "^4.8.6"
+    "lodash": "^4.17.21",
+    "pixi.js": "^5.3.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",

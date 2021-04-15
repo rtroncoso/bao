@@ -34,7 +34,7 @@ export interface AccountModel {
   username: string;
 }
 
-export interface LoginRequestParameters {
+export interface LoginRequestPayload {
   username: string;
   password: string;
 }

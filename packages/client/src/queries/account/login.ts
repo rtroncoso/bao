@@ -5,7 +5,7 @@ import {
   AccountEntities,
   CharacterEntity,
   CharacterModel,
-  LoginRequestParameters,
+  LoginRequestPayload,
   LoginSuccessResponse
 } from './models';
 
@@ -37,7 +37,7 @@ export const transformLoginResponse = (responseBody: LoginSuccessResponse) => {
   }
 };
 
-const login = (body: LoginRequestParameters): QueryConfig<AccountEntities> => {
+const login = (body: LoginRequestPayload): QueryConfig<AccountEntities> => {
   return {
     ...loginQuery,
     body,

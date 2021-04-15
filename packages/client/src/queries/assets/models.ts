@@ -1,4 +1,4 @@
-import { AuthorizedRequestParameters } from '@mob/client/queries/shared/models';
+import { AuthorizedRequestParameters as AuthorizedRequestPayload } from '@mob/client/queries/shared/models';
 
 export interface BodyModel {
   down: number;
@@ -52,13 +52,14 @@ export interface ManifestModel {
   };
 }
 
-export interface LoadBodiesParameters extends AuthorizedRequestParameters {
+export interface LoadBodiesPayload extends AuthorizedRequestPayload {
   manifest: ManifestModel;
 }
-export interface LoadGraphicsParameters extends AuthorizedRequestParameters {
+export interface LoadGraphicsPayload extends AuthorizedRequestPayload {
   manifest: ManifestModel;
 }
-export interface LoadManifestParameters extends AuthorizedRequestParameters {}
+
+export interface LoadManifestPayload extends AuthorizedRequestPayload {}
 
 export interface AssetEntities {
   bodies?: BodiesModel;

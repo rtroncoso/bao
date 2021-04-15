@@ -10,7 +10,7 @@ import {
   AccountModel,
   login,
   loginQuery,
-  LoginRequestParameters,
+  LoginRequestPayload,
   selectAccount
 } from '@mob/client/queries/account';
 import {
@@ -41,7 +41,7 @@ const mapStateToProps = (state: State) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  login: (body: LoginRequestParameters) => dispatch(requestAsync(login(body)))
+  login: (body: LoginRequestPayload) => dispatch(requestAsync(login(body)))
 });
 
 const validationSchema = Yup.object().shape({
@@ -65,7 +65,7 @@ const formEnhancer = withFormik<ConnectedProps, FormValues>({
     login({
       username: values.username,
       password: values.password
-    })
+    });
   }
 })
 

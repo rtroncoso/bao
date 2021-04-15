@@ -1,23 +1,19 @@
+import { Loader } from 'pixi.js';
 import React, { createContext, useCallback, useContext, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
-import { ReduxQueryDispatch, requestAsync } from 'redux-query';
 
 import { SetStateCallback, useLocalStateReducer } from '@mob/client/hooks';
 import { selectToken } from '@mob/client/queries/account';
 import {
   AssetEntities,
-  loadBodies,
-  LoadBodiesParameters,
-  loadGraphics,
-  LoadGraphicsParameters,
-  loadManifest,
-  LoadManifestParameters,
   selectBodies,
   selectGraphics,
   selectManifest
 } from '@mob/client/queries/assets';
-import { State } from '@mob/client/store';
+import { AppDispatch, State } from '@mob/client/store';
+import { loadAssets } from '@/queries/assets/actions';
+import { useApp } from '@inlet/react-pixi';
 
 export interface AssetSystemProps {
   children?: React.ReactNode;
@@ -52,18 +48,8 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: ReduxQueryDispatch) => (
-  bindActionCreators({
-    loadBodies: (body?: LoadBodiesParameters) => (
-      requestAsync(loadBodies({ ...body }))
-    ),
-    loadGraphics: (body?: LoadGraphicsParameters) => (
-      requestAsync(loadGraphics({ ...body }))
-    ),
-    loadManifest: (body?: LoadManifestParameters) => (
-      requestAsync(loadManifest({ ...body }))
-    ),
-  }, dispatch)
+const mapDispatchToProps = (dispatch: AppDispatch) => (
+  bindActionCreators({ loadAssets }, dispatch)
 );
 
 export type AssetSystemConnectedProps =
@@ -75,34 +61,21 @@ export type AssetSystemConnectedProps =
 export const AssetSystem: React.FC<AssetSystemConnectedProps> = (props) => {
   const {
     children,
-    loadBodies,
-    loadGraphics,
-    loadManifest,
-    manifest
+    loadAssets,
   } = props;
 
   const [assetState, setAssetState] = useLocalStateReducer(createInitialAssetState());
+  const app = useApp();
 
-  const loadInitsCallback = useCallback(async ({ manifest }) => {
-    const bodies = await loadBodies({ manifest });
-    const graphics = await loadGraphics({ manifest });
-    setAssetState({
-      bodies: (bodies as any).entities.bodies,
-      graphics: (graphics as any).entities.graphics
-    });
-  }, [loadBodies, loadGraphics, setAssetState]);
-
-  const loadManifestCallback = useCallback(async () => {
-    const query = await loadManifest();
-    setAssetState({
-      manifest: (query as any).entities.manifest
-    });
-    await loadInitsCallback({ manifest });
-  }, [loadInitsCallback, loadManifest, setAssetState]);
+  const loadAssetsCallback = useCallback(async () => {
+    const { loader } = app;
+    const action = loadAssets({ loader });
+    console.log(action, loader);
+  }, [app, loadAssets]);
 
   useEffect(() => {
-    loadManifestCallback();
-  }, []);
+    loadAssetsCallback();
+  }, []); // eslint-disable-line
 
   const assetContext = {
     setAssetState,
