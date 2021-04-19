@@ -1,13 +1,11 @@
-// @create-index
-
-export { default as effects } from './effects';
-export { default as heads } from './heads';
-export { default as helmets } from './helmets';
-export { default as shields } from './shields';
-export { default as weapons } from './weapons';
 
 export * from './bodies';
+export * from './effects';
 export * from './graphics';
+export * from './heads';
+export * from './helmets';
+export * from './shields';
 export * from './spritesheets';
 export * from './util';
+export * from './weapons';
 

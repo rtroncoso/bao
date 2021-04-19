@@ -75,7 +75,7 @@ export const defaultOrder = [NORTH, WEST, SOUTH, EAST].map(h => HEADINGS[h]);
  * will create a `model` instance from `props`, with
  * mapped references for cardinal directions from
  * the `graphics` map. Provides a generator function
- * for use with the {@link transform} method
+ * for use with the {@link reduce} method
  *
  * @param graphics
  * @param model
@@ -101,31 +101,34 @@ export const parseDirectionGraphicByModel = (
   )
 );
 
+export interface ParseAnimationWrapper {
+  animations: Graphic[];
+  model: any;
+  order: string[];
+}
+
 /**
  * Given an array of `animations` and a `model`, it
  * will create a `model` instance from `props`, with
  * mapped references for cardinal directions from
  * the `animations` array. Provides a generator
- * function for use with the {@link transform} method
- *
- * @param animations
- * @param model
- * @param [order]
- * @returns {function(*=, *, *=)}
+ * function for use with the {@link reduce} method
  */
 export const parseDirectionAnimationByModel = (
-  (animations, model, order = defaultOrder) => (reducer = {}, props, id) => {
-    const {
-      up, left, down, right, ...data
-    } = props;
-    const [north, west, south, east] = order;
+  (animations, model, order = defaultOrder) => (
+    (reducer = {}, props, id) => {
+      const {
+        up, left, down, right, ...data
+      } = props;
+      const [north, west, south, east] = order;
 
-    return reducer[id] = new model({
-      ...data,
-      [north]: findAnimation(animations, up),
-      [west]: findAnimation(animations, left),
-      [south]: findAnimation(animations, down),
-      [east]: findAnimation(animations, right),
-    });
-  }
+      return reducer[id] = new model({
+        ...data,
+        [north]: findAnimation(animations, up),
+        [west]: findAnimation(animations, left),
+        [south]: findAnimation(animations, down),
+        [east]: findAnimation(animations, right),
+      });
+    }
+  )
 );

@@ -14,6 +14,7 @@ export const loadManifestQuery = {
   url: `${process.env.MOB_ASSETS}/manifest.json`,
 };
 
+console.log(loadManifestQuery);
 export const transformManifestResponse = (manifest: ManifestModel) => {
   return {
     manifest

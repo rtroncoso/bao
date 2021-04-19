@@ -1,4 +1,5 @@
-import { Graphic, Tile } from '@mob/core/models';
+import { Graphic } from '@mob/core/models';
+import { Tile } from './Tile';
 
 /**
  * LayeredTile model

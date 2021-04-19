@@ -1,4 +1,4 @@
-import { Graphic } from "@mob/core/models";
+import { Graphic } from '@mob/core/models';
 
 /**
  * Weapon model

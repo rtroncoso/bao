@@ -1,5 +1,5 @@
 import { AuthorizedRequestParameters as AuthorizedRequestPayload } from '@mob/client/queries/shared/models';
-import { JsonBodiesModel, JsonGraphicsModel } from '@mob/core/loaders';
+import { Body, Graphic } from '@mob/core/models';
 
 export interface ManifestModel {
   audio: {
@@ -26,6 +26,7 @@ export interface ManifestModel {
 
 export interface LoadBodiesPayload extends AuthorizedRequestPayload {
   manifest: ManifestModel;
+  graphics: GraphicsEntityModel;
 }
 export interface LoadGraphicsPayload extends AuthorizedRequestPayload {
   manifest: ManifestModel;
@@ -33,8 +34,15 @@ export interface LoadGraphicsPayload extends AuthorizedRequestPayload {
 
 export interface LoadManifestPayload extends AuthorizedRequestPayload {}
 
+export interface GraphicsEntityModel {
+  [key: string]: Graphic;
+}
+export interface BodiesEntityModel {
+  [key: string]: Body;
+}
+
 export interface AssetEntities {
-  bodies?: JsonBodiesModel;
-  graphics?: JsonGraphicsModel;
+  bodies?: BodiesEntityModel;
+  graphics?: GraphicsEntityModel;
   manifest?: ManifestModel;
 }

@@ -161,5 +161,3 @@ export const getWaterFromObjectLayers = (layers: Array<LayerType>) => {
 
   return getObjectLayers(layers);
 };
-
-export default null;

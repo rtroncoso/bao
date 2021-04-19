@@ -845,5 +845,3 @@ export const convertLayersToTmx = ({
   tmx.layers.push(makeCollisionLayer({ layers }));
   return tmx;
 };
-
-export default null;

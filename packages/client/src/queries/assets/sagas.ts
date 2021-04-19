@@ -4,7 +4,7 @@ import { Action } from 'typescript-fsa';
 
 // import { getBodies } from '@mob/core/loaders/bodies';
 // import { getFileNames } from '@mob/core/loaders/graphics';
-// import { getJsonGraphics } from '@mob/core/loaders/graphics';
+import { getJsonGraphics } from '@mob/core/loaders/graphics';
 import { selectToken } from '@mob/client/queries/account';
 import { AuthorizedRequestParameters } from '@mob/client/queries/shared/models';
 // import {
@@ -20,7 +20,6 @@ import { AuthorizedRequestParameters } from '@mob/client/queries/shared/models';
 import { loadAssets, LoadAssetsPayload } from './actions';
 import { loadGraphics } from './graphics';
 import { loadManifest } from './manifest';
-import { ManifestModel } from './models';
 import { selectGraphics, selectManifest } from './selectors';
 
 // import {
@@ -81,8 +80,8 @@ export function* handleLoadGraphics(payload: LoadAssetsPayload) {
     // const { loader } = payload;
     yield putResolve(requestAsync(loadGraphics({ manifest, token })));
     const graphics = yield select(selectGraphics);
-    // console.log(graphics);
-    // console.log(getJsonGraphics(graphics));
+    console.log(graphics);
+    console.log(getJsonGraphics(graphics));
     // const graphicsConverted = getJsonGraphics(graphics);
     // const textures = getFileNames(graphics);
     // console.log(graphics, graphicsConverted, textures);
@@ -98,28 +97,21 @@ export function* handleLoadGraphics(payload: LoadAssetsPayload) {
   // loader.add(textures);
 }
 
-export function* makeLoadManifestRequest(payload: LoadAssetsPayload) {
+export function* handleLoadManifest(payload: LoadAssetsPayload) {
   const token: string = yield select(selectToken);
   const params: AuthorizedRequestParameters = ({ token });
 
   try {
     yield putResolve(requestAsync(loadManifest(params)));
-    yield fork(handleLoadGraphics, payload)
+    yield call(handleLoadGraphics, payload)
   } catch (error) {
     console.log(error);
   }
 }
 
-export function* handleLoadManifest(payload: LoadAssetsPayload) {
-  console.log(payload);
-  yield fork(makeLoadManifestRequest, payload);
-}
-
 export function* startLoaderSaga(payload: LoadAssetsPayload) {
   const { loader } = payload;
-  const manifest: ManifestModel = yield call(handleLoadManifest, payload);
-  // const graphics: GraphicsModel = yield call(handleLoadGraphics, payload);
-  console.log(manifest);
+  yield call(handleLoadManifest, payload);
   loader.load();
 }
 

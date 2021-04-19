@@ -1,24 +1,27 @@
-import { Graphic } from "@mob/core/models";
+import { Graphic } from '@mob/core/models';
+
+export interface EffectModelConstructor {
+  animation?: Graphic | number;
+  id?: string | number;
+  offsetX?: number;
+  offsetY?: number;
+}
 
 /**
  * Effect model
- * @param {number} id
- * @param {Graphic|number} animation
- * @param {number} offsetX
- * @param {number} offsetY
- * @exports Effect
  */
 export class Effect {
-  id: number;
+  id: string | number;
   animation: Graphic | number;
   offsetX: number;
   offsetY: number;
+
   constructor({
     id = 0,
     animation = 0,
     offsetX = 0,
     offsetY = 0
-  }) {
+  }: EffectModelConstructor) {
     this.id = id;
     this.animation = animation;
     this.offsetX = offsetX;

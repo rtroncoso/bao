@@ -1,5 +1,6 @@
-import { getGraphicsFilePath, transform } from '@mob/core/loaders/util';
+import { getGraphicsFilePath } from '@mob/core/loaders/util';
 import { Graphic } from '@mob/core/models/data/shared';
+import reduce from 'lodash/fp/reduce';
 
 export interface JsonGraphicModel {
   fileName: string | number;
@@ -29,10 +30,9 @@ export interface ParseJsonGraphicReducer {
  */
 export const parseJsonGraphic = (
   state: ParseJsonGraphicReducer,
-  data: JsonGraphicModel & AnimatedJsonGraphicModel,
-  id: string | number
+  data: JsonGraphicModel & AnimatedJsonGraphicModel
 ) => {
-  const { frames: animations = [], fileName } = data;
+  const { frames: animations = [], fileName, id } = data;
 
   if (animations.length > 0) {
     const frames = animations.map(frame => state[frame]);
@@ -60,5 +60,5 @@ export const parseJsonGraphic = (
  * of graphic id's and their respective `Graphic`
  */
 export const getJsonGraphics = (data: JsonGraphicsModel) => (
-  transform(data, parseJsonGraphic)
+  reduce<JsonGraphicsModel, ParseJsonGraphicReducer>(parseJsonGraphic, {})(data)
 );

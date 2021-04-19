@@ -67,8 +67,7 @@ export const AssetSystem: React.FC<AssetSystemConnectedProps> = (props) => {
 
   const loadAssetsCallback = useCallback(async () => {
     const { loader } = app;
-    const action = loadAssets({ loader });
-    console.log(action, loader);
+    loadAssets({ loader });
   }, [app, loadAssets]);
 
   useEffect(() => {

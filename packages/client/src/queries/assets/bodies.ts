@@ -1,8 +1,8 @@
 import { QueryConfig } from 'redux-query';
 
 import { override } from '@mob/client/queries/shared';
-import { JsonBodiesModel } from '@mob/core/loaders';
-import { AssetEntities, LoadBodiesPayload } from './models';
+import { getJsonBodies, JsonBodiesModel } from '@mob/core/loaders';
+import { AssetEntities, BodiesEntityModel, LoadBodiesPayload } from './models';
 
 export const loadBodiesQuery = {
   force: true,
@@ -12,14 +12,16 @@ export const loadBodiesQuery = {
   queryKey: 'loadBodies:GET',
 };
 
-export const transformBodiesResponse = (bodies: JsonBodiesModel) => {
+export const transformBodiesResponse = (response: JsonBodiesModel) => {
+  // const bodies = getJsonBodies(response, animations) as BodiesEntityModel;
   return {
-    bodies
+    // bodies
   };
 };
 
 export const loadBodies = ({
   manifest,
+  graphics
 }: LoadBodiesPayload): QueryConfig<AssetEntities> => {
   return {
     ...loadBodiesQuery,

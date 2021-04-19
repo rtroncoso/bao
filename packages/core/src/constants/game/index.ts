@@ -1,5 +1,3 @@
-export { default as App } from './App';
-
 export * from './App';
 export * from './Game';
 export * from './Graphics';
