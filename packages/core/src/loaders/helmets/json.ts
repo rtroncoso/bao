@@ -17,7 +17,7 @@ export interface JsonHelmetModel {
 export type JsonHelmetsModel = Array<number | JsonHelmetModel>;
 
 export interface JsonHelmetState {
-  [key: string]: Helmet
+  [key: string]: Helmet;
 }
 
 /**

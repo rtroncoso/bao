@@ -28,8 +28,8 @@ export const getJsonShields = (data: JsonShieldsModel, animations: Graphic[]) =>
     JsonShieldState
   >(
     parseDirectionAnimationByModel<
-    JsonShieldModel,
-    JsonShieldState
+      JsonShieldModel,
+      JsonShieldState
     >({ animations, Model: Shield }),
     {}
   )(data);

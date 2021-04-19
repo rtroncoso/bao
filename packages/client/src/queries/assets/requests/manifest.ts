@@ -1,7 +1,7 @@
 import { QueryConfig } from 'redux-query';
 
 import { merge } from '@mob/client/queries/shared';
-import { AssetEntities, LoadManifestPayload, ManifestModel } from './models';
+import { AssetEntities, LoadManifestPayload, ManifestModel } from '../models';
 
 export const loadManifestQuery = {
   cache: false,

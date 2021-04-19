@@ -12,6 +12,11 @@ export const selectBodies = createSelector(
   (entities) => entities.bodies
 );
 
+export const selectHeads = createSelector(
+  getEntities,
+  (entities) => entities.heads
+);
+
 export const selectGraphics = createSelector(
   getEntities,
   (entities) => entities.graphics

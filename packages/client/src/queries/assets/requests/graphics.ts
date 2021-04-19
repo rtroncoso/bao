@@ -7,7 +7,7 @@ import {
   JsonGraphicsModel
 } from '@mob/core/loaders';
 
-import { AssetEntities, LoadGraphicsPayload } from './models';
+import { AssetEntities, LoadGraphicsPayload } from '../models';
 
 export const loadGraphicsQuery = {
   force: true,

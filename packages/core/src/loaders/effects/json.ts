@@ -11,11 +11,15 @@ export interface JsonEffectModel {
 
 export type JsonEffectsModel = Array<JsonEffectModel | number>;
 
+export interface JsonEffectState {
+  [key: string]: Effect;
+}
+
 /**
  * @see {@link parseDirectionAnimationByModel}
  */
 export const parseEffectAnimation = (animations: Graphic[]) => (
-  (state = {}, data: JsonEffectModel) => {
+  (state: JsonEffectState, data: JsonEffectModel) => {
     const animation = findAnimation({ animations, id: data.id });
     state[data.id] = new Effect({ ...data, animation });
 
@@ -29,5 +33,11 @@ export const parseEffectAnimation = (animations: Graphic[]) => (
  * models
  */
 export const getJsonEffects = (data: JsonEffectsModel, animations: Graphic[]) => (
-  reduce(parseEffectAnimation(animations))(data)
+  reduce<
+    JsonEffectsModel,
+    JsonEffectState
+  >(
+    parseEffectAnimation(animations),
+    {}
+  )(data)
 );

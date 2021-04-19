@@ -4,12 +4,19 @@ import { Action } from 'typescript-fsa';
 
 import { selectToken } from '@mob/client/queries/account';
 import { loadAssets } from './actions';
-import { loadBodies } from './bodies';
-import { loadGraphics } from './graphics';
-import { loadManifest } from './manifest';
+import {
+  loadBodies,
+  loadEffects,
+  loadGraphics,
+  loadHeads,
+  loadHelmets,
+  loadManifest,
+  loadShields,
+  loadWeapons
+} from './requests';
 import {
   LoadAssetsPayload,
-  LoadBodiesPayload,
+  LoadResourcePayload,
   LoadGraphicsPayload,
   LoadManifestPayload
 } from './models';
@@ -52,9 +59,49 @@ import {
 //   loader.add([...tilesets, ...animations]);
 // }
 
-export function* handleLoadBodies(payload: LoadBodiesPayload) {
+export function* handleLoadHeads(payload: LoadResourcePayload) {
+  try {
+    yield putResolve(requestAsync(loadHeads(payload)));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function* handleLoadEffects(payload: LoadResourcePayload) {
+  try {
+    yield putResolve(requestAsync(loadEffects(payload)));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function* handleLoadHelmets(payload: LoadResourcePayload) {
+  try {
+    yield putResolve(requestAsync(loadHelmets(payload)));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function* handleLoadBodies(payload: LoadResourcePayload) {
   try {
     yield putResolve(requestAsync(loadBodies(payload)));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function* handleLoadShields(payload: LoadResourcePayload) {
+  try {
+    yield putResolve(requestAsync(loadShields(payload)));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function* handleLoadWeapons(payload: LoadResourcePayload) {
+  try {
+    yield putResolve(requestAsync(loadWeapons(payload)));
   } catch (error) {
     console.log(error);
   }
@@ -65,8 +112,20 @@ export function* handleLoadGraphics(payload: LoadGraphicsPayload) {
     yield putResolve(requestAsync(loadGraphics(payload)));
     const graphics = yield select(selectGraphics);
     const animations = yield select(selectAnimations);
+    const params: LoadResourcePayload = {
+      ...payload,
+      animations,
+      graphics
+    }
 
-    yield call(handleLoadBodies, { ...payload, animations, graphics });
+    yield all([
+      call(handleLoadBodies, params),
+      call(handleLoadEffects, params),
+      call(handleLoadHeads, params),
+      call(handleLoadHelmets, params),
+      call(handleLoadShields, params),
+      call(handleLoadWeapons, params),
+    ]);
   } catch (error) {
     console.log(error);
   }
@@ -80,9 +139,7 @@ export function* handleLoadManifest(payload: LoadAssetsPayload) {
     yield putResolve(requestAsync(loadManifest(params)));
     const manifest = yield select(selectManifest);
 
-    yield all([
-      call(handleLoadGraphics, { ...params, manifest })
-    ]);
+    yield call(handleLoadGraphics, { ...params, manifest })
   } catch (error) {
     console.log(error);
   }

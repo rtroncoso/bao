@@ -1,7 +1,15 @@
 import { Loader } from 'pixi.js';
 
-import { AuthorizedRequestParameters as AuthorizedRequestPayload } from '@mob/client/queries/shared/models';
-import { Body, Graphic } from '@mob/core/models';
+import { AuthorizedRequestPayload } from '@mob/client/queries/shared/models';
+import {
+  Body,
+  Effect,
+  Graphic,
+  Head,
+  Helmet,
+  Shield,
+  Weapon
+} from '@mob/core/models';
 
 export interface ManifestModel {
   audio: {
@@ -28,12 +36,17 @@ export interface ManifestModel {
 
 export type AnimationsEntityModel = Array<Graphic>;
 
-export interface GraphicsEntityModel {
-  [key: string]: Graphic;
+export interface ResourceEntityModel<T> {
+  [key: string]: T;
 }
-export interface BodiesEntityModel {
-  [key: string]: Body;
-}
+
+export interface GraphicsEntityModel extends ResourceEntityModel<Graphic> {}
+export interface BodiesEntityModel extends ResourceEntityModel<Body> {}
+export interface EffectsEntityModel extends ResourceEntityModel<Effect> {}
+export interface HelmetsEntityModel extends ResourceEntityModel<Helmet> {}
+export interface HeadsEntityModel extends ResourceEntityModel<Head> {}
+export interface ShieldsEntityModel extends ResourceEntityModel<Shield> {}
+export interface WeaponsEntityModel extends ResourceEntityModel<Weapon> {}
 
 export interface LoadAssetsPayload extends AuthorizedRequestPayload {
   loader: Loader;
@@ -41,18 +54,24 @@ export interface LoadAssetsPayload extends AuthorizedRequestPayload {
 
 export interface LoadManifestPayload extends LoadAssetsPayload {}
 
-export interface LoadBodiesPayload extends LoadManifestPayload {
-  animations: AnimationsEntityModel;
-  graphics: GraphicsEntityModel;
+export interface LoadGraphicsPayload extends LoadAssetsPayload {
   manifest: ManifestModel;
 }
-export interface LoadGraphicsPayload extends LoadAssetsPayload {
+
+export interface LoadResourcePayload extends LoadManifestPayload {
+  animations: AnimationsEntityModel;
+  graphics: GraphicsEntityModel;
   manifest: ManifestModel;
 }
 
 export interface AssetEntities {
   animations?: AnimationsEntityModel;
   bodies?: BodiesEntityModel;
+  effects?: EffectsEntityModel;
   graphics?: GraphicsEntityModel;
+  heads?: HeadsEntityModel
+  helmets?: HelmetsEntityModel
   manifest?: ManifestModel;
+  shields?: ShieldsEntityModel;
+  weapons?: WeaponsEntityModel;
 }

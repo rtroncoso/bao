@@ -1,3 +1,3 @@
-export interface AuthorizedRequestParameters {
+export interface AuthorizedRequestPayload {
   token?: string;
 }
