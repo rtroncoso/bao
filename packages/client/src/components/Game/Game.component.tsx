@@ -29,8 +29,6 @@ export const Systems: React.FC = () => {
   );
 };
 
-console.log(App);
-
 export const GameComponent: React.FC<GameComponentProps> = () => {
   return (
     <GameStyled>

@@ -1,20 +1,20 @@
-import { parseDirectionAnimationByModel, transform } from '@mob/core/loaders';
+import { DirectionAnimationData, parseDirectionAnimationByModel } from '@mob/core/loaders';
 import { Body, Graphic } from '@mob/core/models';
 import reduce from 'lodash/fp/reduce';
 
-export interface JsonBodyModel {
-  down: number;
+export interface JsonBodyModel extends DirectionAnimationData {
+  down: string | number;
   headOffsetX: number;
   headOffsetY: number;
-  id: number;
-  left: number;
-  right: number;
-  up: number;
+  id: string | number;
+  left: string | number;
+  right: string | number;
+  up: string | number;
 }
 
 export type JsonBodiesModel = Array<number | JsonBodyModel>;
 
-export interface ParseJsonBodyReducer {
+export interface JsonBodyState {
   [key: string]: Body;
 }
 
@@ -23,10 +23,14 @@ export interface ParseJsonBodyReducer {
  * of body id's and their respective `Body`
  */
 export const getJsonBodies = (data: JsonBodiesModel, animations: Graphic[]) => (
-  {}// reduce<
-  //   JsonBodiesModel,
-  //   ParseJsonBodyReducer
-  // >(
-  //   parseDirectionAnimationByModel(animations, Body)
-  // )(data)
+  reduce<
+    JsonBodiesModel,
+    JsonBodyState
+  >(
+    parseDirectionAnimationByModel<
+      JsonBodyModel,
+      JsonBodyState
+    >({ animations, Model: Body }),
+    {}
+  )(data)
 );

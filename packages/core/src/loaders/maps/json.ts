@@ -12,7 +12,7 @@ import {
   TILE_EXIT_LAYER,
   TRIGGER_LAYER,
 } from '@mob/core/constants/game/Map';
-import { getDimensions } from '@mob/core/loaders/graphics';
+import { getDimensions, JsonGraphicState } from '@mob/core/loaders/graphics';
 import { findAnimation, findGraphic } from '@mob/core/loaders/util';
 import { Graphic, MapObject, Tile } from '@mob/core/models';
 
@@ -22,7 +22,7 @@ export interface JsonTile {
 
 export interface ParseJsonTileWrapperParameters {
   animations: Graphic[];
-  graphics: Graphic[];
+  graphics: JsonGraphicState;
   objects: MapObject[];
 }
 
@@ -52,7 +52,7 @@ export const parseJsonTile: ParseJsonTileWrapper<JsonTile, Tile> = ({
   y
 }: ParseJsonTileParameters<JsonTile>) => {
   const { g } = data;
-  let graphic = findGraphic(graphics, g[layer]);
+  let graphic = findGraphic({ graphics, id: g[layer] });
   let dimensions = null;
   let animation = null;
   let trigger = null;
@@ -63,7 +63,7 @@ export const parseJsonTile: ParseJsonTileWrapper<JsonTile, Tile> = ({
 
   if (graphic) {
     if (graphic.frames.length > 0) {
-      animation = findAnimation(animations, g[layer]);
+      animation = findAnimation({ animations, id: g[layer] });
       graphic = _.get(animation, 'frames.0');
     }
 

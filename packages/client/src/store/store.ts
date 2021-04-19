@@ -22,7 +22,13 @@ const reducer = combineReducers({
 });
 
 const persistConfig = {
-  blacklist: ['errors', 'queries'],
+  blacklist: [
+    'entities.animations',
+    'entities.graphics',
+    'entities.manifest',
+    'errors',
+    'queries'
+  ],
   key: 'root',
   storage,
 };

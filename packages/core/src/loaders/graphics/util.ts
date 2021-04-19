@@ -71,8 +71,8 @@ export const getDimensions = (graphic: Graphic) => {
  * Create array of textures for each frame in `Graphic` instance
  */
 export const parseAnimation = (animation: Graphic) => {
-  const getTextures = flow(reject(isUndefined), map(getTexture));
-  animation.textures = getTextures(animation.frames);
+  // const getTextures = flow(reject(isUndefined), map(getTexture));
+  // animation.textures = getTextures(animation.frames);
 
   return animation;
 };
@@ -94,24 +94,38 @@ export const getAnimations = (graphics: Graphic[]) => {
  * `Graphic` frames
  */
 export const getAnimationFrames = (
-  flatMap((animation: Graphic) => animation.frames.map(g => g))
+  flatMap((animation: Graphic) => animation.frames as Graphic[])
 );
+
+export interface GetStaticGraphicsParameters {
+  diff: boolean;
+  graphics: Graphic[];
+}
 
 /**
  * Gets all graphics that are not referenced in any animation
  */
-export const getStaticGraphics = (graphics: Graphic[], diff = true) => {
+export const getStaticGraphics = ({
+  graphics,
+  diff
+}: GetStaticGraphicsParameters) => {
   const animations = getAnimations(graphics);
   const frames = getAnimationFrames(animations);
   const staticGraphics = difference(values(graphics));
   return diff ? staticGraphics(frames) : frames;
 };
 
+export interface GetAnimatedGraphicsParameters {
+  graphics: Graphic[];
+}
+
 /**
  * Gets all animated graphics
  */
-export const getAnimatedGraphics = (graphics: Graphic[]) => (
-  getStaticGraphics(graphics, false)
+export const getAnimatedGraphics = ({
+  graphics
+}: GetAnimatedGraphicsParameters) => (
+  getStaticGraphics({ graphics, diff: false })
 );
 
 

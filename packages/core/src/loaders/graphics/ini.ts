@@ -33,12 +33,12 @@ export const parseIniGraphic = (
   graphicsString: string,
   id: string
 ): ParseIniGraphicState => {
-  const props = graphicsString.split('-');
-  const numFrames = parseInt(props.shift(), 10);
+  const data = graphicsString.split('-');
+  const numFrames = parseInt(data.shift(), 10);
 
   if (numFrames > 1) {
-    const speed = parseInt(props.pop(), 10) / 1800;
-    const frames = parseAnimations(state)(props);
+    const speed = parseInt(data.pop(), 10) / 1800;
+    const frames = parseAnimations(state)(data);
     state[id] = new TexturedGraphic({
       id,
       frames,
@@ -48,7 +48,7 @@ export const parseIniGraphic = (
     return state;
   }
 
-  const [fileName, x, y, width, height] = props;
+  const [fileName, x, y, width, height] = data;
   const path = getGraphicsFilePath(fileName);
 
   state[id] = new TexturedGraphic({

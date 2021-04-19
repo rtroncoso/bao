@@ -14,8 +14,7 @@ import { TILE_SIZE } from '@mob/core/constants/game/Map';
 import { getGraphicsFileName } from '@mob/core/loaders/util';
 import { Rectangle, Texture, SCALE_MODES } from 'pixi.js';
 
-/** Frames memoization
- *  @type {{}} */
+/** Frames memoization */
 const framesCache = {};
 
 /**

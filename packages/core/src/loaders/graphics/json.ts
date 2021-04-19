@@ -19,7 +19,7 @@ export interface AnimatedJsonGraphicModel {
 
 export type JsonGraphicsModel = Array<number | JsonGraphicModel | AnimatedJsonGraphicModel>;
 
-export interface ParseJsonGraphicReducer {
+export interface JsonGraphicState {
   [key: string]: Graphic;
 }
 
@@ -29,7 +29,7 @@ export interface ParseJsonGraphicReducer {
  * animations
  */
 export const parseJsonGraphic = (
-  state: ParseJsonGraphicReducer,
+  state: JsonGraphicState,
   data: JsonGraphicModel & AnimatedJsonGraphicModel
 ) => {
   const { frames: animations = [], fileName, id } = data;
@@ -60,5 +60,5 @@ export const parseJsonGraphic = (
  * of graphic id's and their respective `Graphic`
  */
 export const getJsonGraphics = (data: JsonGraphicsModel) => (
-  reduce<JsonGraphicsModel, ParseJsonGraphicReducer>(parseJsonGraphic, {})(data)
+  reduce<JsonGraphicsModel, JsonGraphicState>(parseJsonGraphic, {})(data)
 );

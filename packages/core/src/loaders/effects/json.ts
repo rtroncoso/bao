@@ -1,5 +1,6 @@
-import { findAnimation, transform } from '@mob/core/loaders/util';
+import { findAnimation } from '@mob/core/loaders/util';
 import { Effect, Graphic } from '@mob/core/models';
+import reduce from 'lodash/fp/reduce';
 
 export interface JsonEffectModel {
   animation?: string | number;
@@ -14,9 +15,9 @@ export type JsonEffectsModel = Array<JsonEffectModel | number>;
  * @see {@link parseDirectionAnimationByModel}
  */
 export const parseEffectAnimation = (animations: Graphic[]) => (
-  (state = {}, data: JsonEffectModel, id: string) => {
-    const animation = findAnimation(animations, id);
-    state[id] = new Effect({ ...data, animation });
+  (state = {}, data: JsonEffectModel) => {
+    const animation = findAnimation({ animations, id: data.id });
+    state[data.id] = new Effect({ ...data, animation });
 
     return state;
   }
@@ -28,5 +29,5 @@ export const parseEffectAnimation = (animations: Graphic[]) => (
  * models
  */
 export const getJsonEffects = (data: JsonEffectsModel, animations: Graphic[]) => (
-  transform(data, parseEffectAnimation(animations))
+  reduce(parseEffectAnimation(animations))(data)
 );

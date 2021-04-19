@@ -2,6 +2,11 @@ import { createSelector } from 'reselect';
 
 import { getEntities } from '@mob/client/queries';
 
+export const selectAnimations = createSelector(
+  getEntities,
+  (entities) => entities.animations
+);
+
 export const selectBodies = createSelector(
   getEntities,
   (entities) => entities.bodies

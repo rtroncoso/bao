@@ -1,4 +1,3 @@
-import reduce from 'lodash/fp/reduce';
 import filter from 'lodash/fp/filter';
 import find from 'lodash/fp/find';
 import values from 'lodash/fp/values';
@@ -7,68 +6,89 @@ import {
   EAST, HEADINGS, NORTH, SOUTH, WEST,
 } from '@mob/core/constants/game';
 import { Graphic } from '@mob/core/models/data/shared';
+import { JsonGraphicState } from './graphics';
 
 /**
  * Adds extension to fileName
- * @param fileName
- * @returns {string}
  */
-export const getGraphicsFileName = fileName => `${fileName}.png`;
+export const getGraphicsFileName = (fileName: string | number) => (
+  `${fileName}.png`
+);
 
 /**
  * Converts file name to absolute texture path
- * @param fileName
- * @returns {string}
  */
-export const getGraphicsFilePath = fileName => `${getGraphicsFileName(fileName)}`;
-// export const getGraphicsFilePath = fileName => `${config.texturePath}/${getGraphicsFileName(fileName)}`;
+export const getGraphicsFilePath = (fileName: string | number) => (
+  `${getGraphicsFileName(fileName)}`
+);
 
 /**
  * Extrapolates from INI data `key` formatted using `keyFormat`
- * @param key
- * @param keyFormat
- * @returns {string}
  */
-export const parseKey = (key = '', keyFormat = /[^0-9.]/g) => key.replace(keyFormat, '');
-
-/**
- * Transforms a data array into a key-value map using
- * `process` strategy as a reducer
- */
-export const transform = (data, process) => (
-  reduce(process, {})(data)
+export const parseKey = (key: string = '', keyFormat: RegExp = /[^0-9.]/g) => (
+  key.replace(keyFormat, '')
 );
+
+export interface FindAnimationParameters {
+  animations: Graphic[];
+  id: string | number;
+}
 
 /**
  * Finds an animation by `id` property in an animations array
- * @param id
- * @param animations
- * @returns {Graphic}
  */
-export const findAnimation = (animations, id) => (
+export const findAnimation = ({
+  animations,
+  id
+}: FindAnimationParameters) => (
   find((animation: Graphic) => animation.id === id)(animations)
 );
 
+export interface FindGraphicParameters {
+  graphics: JsonGraphicState;
+  id: string | number;
+}
 /**
  * Finds a graphic by `id` property in a graphics object
- * @param id
- * @param graphics
- * @returns {Graphic}
  */
-export const findGraphic = (graphics, id) => graphics[id];
+export const findGraphic = ({
+  graphics,
+  id
+}: FindGraphicParameters) => (
+  graphics[id]
+);
+
+export interface FindGraphicsByFileNameParameters {
+  fileName: string | number;
+  graphics: JsonGraphicState;
+}
 
 /**
  * Finds a graphic by `fileName` property in a graphics object
- * @param fileName
- * @param graphics
- * @returns {Graphic}
  */
-export const findGraphicsByFileName = (graphics, fileName) => (
+export const findGraphicsByFileName = ({
+  fileName,
+  graphics
+}: FindGraphicsByFileNameParameters) => (
   filter((graphic: Graphic) => graphic.fileName === fileName)(values(graphics))
 );
 
-// Default animation parsing order
+/** Default animation parsing order */
 export const defaultOrder = [NORTH, WEST, SOUTH, EAST].map(h => HEADINGS[h]);
+
+export interface ParseDirectionGraphicWrapper {
+  graphics: JsonGraphicState;
+  Model: any;
+  order?: string[];
+}
+
+export interface DirectionGraphicData {
+  id: string | number;
+  up: string | number;
+  left: string | number;
+  down: string | number;
+  right: string | number;
+}
 
 /**
  * Given a map of `graphics` and a `model`, it
@@ -76,35 +96,46 @@ export const defaultOrder = [NORTH, WEST, SOUTH, EAST].map(h => HEADINGS[h]);
  * mapped references for cardinal directions from
  * the `graphics` map. Provides a generator function
  * for use with the {@link reduce} method
- *
- * @param graphics
- * @param model
- * @param [order]
- * @returns {function(*=, *, *=)}
  */
-export const parseDirectionGraphicByModel = (
-  (graphics, model, order = defaultOrder) => (
-    (reducer = {}, props, id) => {
-      const {
-        up, left, down, right, ...data
-      } = props;
-      const [north, west, south, east] = order;
+export const parseDirectionGraphicByModel = <D extends DirectionGraphicData, S>({
+  graphics,
+  Model,
+  order = defaultOrder
+}: ParseDirectionGraphicWrapper) => (
+  (state: S, data: D) => {
+    const {
+      id,
+      up,
+      left,
+      down,
+      right,
+    } = data;
 
-      return reducer[id] = new model({
-        ...data,
-        [north]: findGraphic(graphics, up),
-        [west]: findGraphic(graphics, left),
-        [south]: findGraphic(graphics, down),
-        [east]: findGraphic(graphics, right),
-      });
-    }
-  )
+    const [north, west, south, east] = order;
+    state[id] = new Model({
+      ...data,
+      [north]: findGraphic({ graphics, id: up }),
+      [west]: findGraphic({ graphics, id: left }),
+      [south]: findGraphic({ graphics, id: down }),
+      [east]: findGraphic({ graphics, id: right }),
+    });
+
+    return state;
+  }
 );
 
-export interface ParseAnimationWrapper {
+export interface ParseDirectionAnimationWrapper {
   animations: Graphic[];
-  model: any;
-  order: string[];
+  Model: any;
+  order?: string[];
+}
+
+export interface DirectionAnimationData {
+  id: string | number;
+  up: string | number;
+  left: string | number;
+  down: string | number;
+  right: string | number;
 }
 
 /**
@@ -114,21 +145,29 @@ export interface ParseAnimationWrapper {
  * the `animations` array. Provides a generator
  * function for use with the {@link reduce} method
  */
-export const parseDirectionAnimationByModel = (
-  (animations, model, order = defaultOrder) => (
-    (reducer = {}, props, id) => {
-      const {
-        up, left, down, right, ...data
-      } = props;
-      const [north, west, south, east] = order;
+export const parseDirectionAnimationByModel = <D extends DirectionAnimationData, S>({
+  animations,
+  Model,
+  order = defaultOrder
+}: ParseDirectionAnimationWrapper) => (
+  (state: S, data: D) => {
+    const {
+      down,
+      id,
+      left,
+      right,
+      up,
+    } = data;
 
-      return reducer[id] = new model({
-        ...data,
-        [north]: findAnimation(animations, up),
-        [west]: findAnimation(animations, left),
-        [south]: findAnimation(animations, down),
-        [east]: findAnimation(animations, right),
-      });
-    }
-  )
+    const [north, west, south, east] = order;
+    state[id] = new Model({
+      ...data,
+      [north]: findAnimation({ animations, id: up }),
+      [west]: findAnimation({ animations, id: left }),
+      [south]: findAnimation({ animations, id: down}),
+      [east]: findAnimation({ animations, id: right }),
+    });
+
+    return state;
+  }
 );

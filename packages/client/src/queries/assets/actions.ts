@@ -1,9 +1,5 @@
-import { Loader } from 'pixi.js';
 import { actionCreatorFactory } from 'typescript-fsa';
-
-export interface LoadAssetsPayload {
-  loader: Loader;
-}
+import { LoadAssetsPayload } from './models';
 
 const actionCreator = actionCreatorFactory();
 

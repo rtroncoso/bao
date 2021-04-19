@@ -2,42 +2,22 @@ import { requestAsync } from 'redux-query';
 import { all, call, fork, putResolve, select, takeEvery } from 'redux-saga/effects';
 import { Action } from 'typescript-fsa';
 
-// import { getBodies } from '@mob/core/loaders/bodies';
-// import { getFileNames } from '@mob/core/loaders/graphics';
-import { getJsonGraphics } from '@mob/core/loaders/graphics';
 import { selectToken } from '@mob/client/queries/account';
-import { AuthorizedRequestParameters } from '@mob/client/queries/shared/models';
-// import {
-//   getAnimationFilePaths,
-//   getTileSetFilePaths,
-//   getTileSetNormalFilePaths
-// } from '@mob/core/loaders/spritesheets';
-// import { getWeapons } from '@mob/core/loaders/weapons';
-// import { getShields } from '@mob/core/loaders/shields';
-// import { getEffects } from '@mob/core/loaders/effects';
-// import { getHelmets } from '@mob/core/loaders/helmets';
-// import { getHeads } from '@mob/core/loaders/heads';
-import { loadAssets, LoadAssetsPayload } from './actions';
+import { loadAssets } from './actions';
+import { loadBodies } from './bodies';
 import { loadGraphics } from './graphics';
 import { loadManifest } from './manifest';
-import { selectGraphics, selectManifest } from './selectors';
-
-// import {
-//   LOADING_COMPLETE,
-//   LOADING_START,
-//   updateAnimations,
-//   updateBodies,
-//   updateEffects,
-//   updateGraphics,
-//   updateHeads,
-//   updateHelmets,
-//   updateResources,
-//   updateShields,
-//   updateSpriteSheets,
-//   updateTextures,
-//   updateWeapons
-// } from 'store/asset/asset.state';
-// import { selectGraphics } from './selectors';
+import {
+  LoadAssetsPayload,
+  LoadBodiesPayload,
+  LoadGraphicsPayload,
+  LoadManifestPayload
+} from './models';
+import {
+  selectAnimations,
+  selectGraphics,
+  selectManifest
+} from './selectors';
 
 // export function* handleLoaderCallback() {
 //   const { payload: resources } = yield take(LOADING_COMPLETE);
@@ -72,38 +52,37 @@ import { selectGraphics, selectManifest } from './selectors';
 //   loader.add([...tilesets, ...animations]);
 // }
 
-export function* handleLoadGraphics(payload: LoadAssetsPayload) {
-  const manifest = yield select(selectManifest);
-  const token: string = yield select(selectToken);
-
+export function* handleLoadBodies(payload: LoadBodiesPayload) {
   try {
-    // const { loader } = payload;
-    yield putResolve(requestAsync(loadGraphics({ manifest, token })));
-    const graphics = yield select(selectGraphics);
-    console.log(graphics);
-    console.log(getJsonGraphics(graphics));
-    // const graphicsConverted = getJsonGraphics(graphics);
-    // const textures = getFileNames(graphics);
-    // console.log(graphics, graphicsConverted, textures);
-    // loader.add(textures);
+    yield putResolve(requestAsync(loadBodies(payload)));
   } catch (error) {
     console.log(error);
   }
-  // console.log('before loader start', graphics, textures);
+}
 
-  // yield put(updateGraphics(graphics));
-  // yield put(updateTextures(textures));
+export function* handleLoadGraphics(payload: LoadGraphicsPayload) {
+  try {
+    yield putResolve(requestAsync(loadGraphics(payload)));
+    const graphics = yield select(selectGraphics);
+    const animations = yield select(selectAnimations);
 
-  // loader.add(textures);
+    yield call(handleLoadBodies, { ...payload, animations, graphics });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export function* handleLoadManifest(payload: LoadAssetsPayload) {
   const token: string = yield select(selectToken);
-  const params: AuthorizedRequestParameters = ({ token });
+  const params: LoadManifestPayload = ({ ...payload, token });
 
   try {
     yield putResolve(requestAsync(loadManifest(params)));
-    yield call(handleLoadGraphics, payload)
+    const manifest = yield select(selectManifest);
+
+    yield all([
+      call(handleLoadGraphics, { ...params, manifest })
+    ]);
   } catch (error) {
     console.log(error);
   }

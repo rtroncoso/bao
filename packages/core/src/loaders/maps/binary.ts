@@ -1,5 +1,6 @@
 import range from 'lodash/fp/range';
 import { HEADER_SIZE, INF_HEADER_SIZE, MAP_SIZE } from '@mob/core/constants/game/Map';
+import { JsonGraphicState } from '@mob/core/loaders/graphics';
 import { parseJsonTile, mapLayers, JsonTile } from '@mob/core/loaders/maps/json';
 import {
   Graphic,
@@ -94,9 +95,9 @@ export const translateTileExits = (tiles: LayeredTile[][], amount: number = -4) 
 );
 
 export interface GetBinaryTilesParameters {
-  animations: Array<Graphic>;
+  animations: Graphic[];
   datFile: string;
-  graphics: Array<Graphic>;
+  graphics: JsonGraphicState;
   infFile: Uint8Array;
   mapFile: Uint8Array;
   translateExits?: boolean;
@@ -123,9 +124,9 @@ export const getBinaryTiles = ({
 };
 
 export interface GetBinaryLayersParameters {
-  animations: Array<Graphic>;
+  animations: Graphic[];
   datFile: string;
-  graphics: Array<Graphic>;
+  graphics: JsonGraphicState;
   infFile: Uint8Array;
   mapFile: Uint8Array;
   objects: MapObject[];
@@ -175,9 +176,9 @@ export const getBinaryLayers = ({
 
 
 export interface GetFlattenedTilesParameters {
-  animations: Array<Graphic>;
+  animations: Graphic[];
   datFile: string;
-  graphics: Array<Graphic>;
+  graphics: JsonGraphicState;
   infFile: Uint8Array;
   mapFile: Uint8Array;
 }
