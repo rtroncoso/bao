@@ -30,7 +30,7 @@ export interface ManifestModel {
   };
   textures: {
     animations: Array<string>;
-    graphics: Array<string>;
+    tilesets: Array<string>;
   };
 }
 

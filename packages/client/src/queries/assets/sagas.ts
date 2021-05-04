@@ -5,6 +5,12 @@ import { Action } from 'typescript-fsa';
 import { selectToken } from '@mob/client/queries/account';
 import { loadAssets } from './actions';
 import {
+  LoadAssetsPayload,
+  LoadResourcePayload,
+  LoadGraphicsPayload,
+  LoadManifestPayload
+} from './models';
+import {
   loadBodies,
   loadEffects,
   loadGraphics,
@@ -14,12 +20,6 @@ import {
   loadShields,
   loadWeapons
 } from './requests';
-import {
-  LoadAssetsPayload,
-  LoadResourcePayload,
-  LoadGraphicsPayload,
-  LoadManifestPayload
-} from './models';
 import {
   selectAnimations,
   selectGraphics,
@@ -63,7 +63,7 @@ export function* handleLoadHeads(payload: LoadResourcePayload) {
   try {
     yield putResolve(requestAsync(loadHeads(payload)));
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -71,7 +71,7 @@ export function* handleLoadEffects(payload: LoadResourcePayload) {
   try {
     yield putResolve(requestAsync(loadEffects(payload)));
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -79,7 +79,7 @@ export function* handleLoadHelmets(payload: LoadResourcePayload) {
   try {
     yield putResolve(requestAsync(loadHelmets(payload)));
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -87,7 +87,7 @@ export function* handleLoadBodies(payload: LoadResourcePayload) {
   try {
     yield putResolve(requestAsync(loadBodies(payload)));
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -95,7 +95,7 @@ export function* handleLoadShields(payload: LoadResourcePayload) {
   try {
     yield putResolve(requestAsync(loadShields(payload)));
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -103,7 +103,27 @@ export function* handleLoadWeapons(payload: LoadResourcePayload) {
   try {
     yield putResolve(requestAsync(loadWeapons(payload)));
   } catch (error) {
-    console.log(error);
+    console.error(error);
+  }
+}
+
+export function handleLoadSpritesheets(payload: LoadResourcePayload) {
+  const spritesheetExtensions = ['png', 'json'];
+  const {
+    loader,
+    manifest
+  } = payload;
+
+  for (const tileset of manifest.textures.tilesets) {
+    for (const extension of spritesheetExtensions) {
+      loader.add(`${process.env.MOB_ASSETS}/${tileset}.${extension}`);
+    }
+  }
+
+  for (const animation of manifest.textures.animations) {
+    for (const extension of spritesheetExtensions) {
+      loader.add(`${process.env.MOB_ASSETS}/${animation}.${extension}`);
+    }
   }
 }
 
@@ -116,7 +136,7 @@ export function* handleLoadGraphics(payload: LoadGraphicsPayload) {
       ...payload,
       animations,
       graphics
-    }
+    };
 
     yield all([
       call(handleLoadBodies, params),
@@ -127,7 +147,7 @@ export function* handleLoadGraphics(payload: LoadGraphicsPayload) {
       call(handleLoadWeapons, params),
     ]);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -141,13 +161,14 @@ export function* handleLoadManifest(payload: LoadAssetsPayload) {
 
     yield call(handleLoadGraphics, { ...params, manifest })
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
 export function* startLoaderSaga(payload: LoadAssetsPayload) {
   const { loader } = payload;
   yield call(handleLoadManifest, payload);
+  console.log('Everything loaded');
   loader.load();
 }
 
