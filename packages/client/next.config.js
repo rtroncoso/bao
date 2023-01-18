@@ -28,7 +28,7 @@ const config = {
 };
 
 module.exports = compose(
-  // withTM(['@mob/core']),
+  withTM(['@mob/core']),
   withPWA({
     disable: prod ? false : true,
     dest: 'public'

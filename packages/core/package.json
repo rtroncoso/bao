@@ -1,31 +1,23 @@
 {
   "name": "@mob/core",
+  "description": "Mob TS Core Module",
   "version": "1.0.0",
   "author": "mob",
-  "description": "Mob JS Core Module",
   "license": "MIT",
   "private": true,
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "dev": "npm run start",
-    "start": "nodemon --exec tsc",
+    "start": "nodemon --watch src --exec tsc",
     "test": "mocha --require babel-register --colors ./test/*.spec.js",
     "test:watch": "mocha --require babel-register --colors -w ./test/*.spec.js",
     "test:cover": "cross-env NODE_ENV=test nyc mocha --require babel-register --colors test/*.js"
   },
-  "keywords": [
-    "es6",
-    "lodash/fp"
-  ],
-  "directories": {
-    "dist": "dist",
-    "src": "src",
-    "test": "__tests__"
-  },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "publishConfig": {
     "access": "public"
@@ -40,22 +32,10 @@
     "rectangle-decomposition": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.20.7",
-    "@babel/core": "^7.20.12",
-    "@babel/preset-env": "^7.20.2",
-    "babel-eslint": "^10.1.0",
-    "babel-loader": "^9.1.2",
-    "babel-plugin-add-module-exports": "^1.0.4",
-    "babel-plugin-istanbul": "^6.1.1",
-    "babel-register": "^6.26.0",
     "chai": "^4.2.0",
-    "create-index": "^2.4.0",
     "cross-env": "^5.2.0",
     "eslint": "^8.32.0",
     "eslint-loader": "^4.0.2",
-    "jsdom": "^15.0.0",
-    "jsdom-global": "^3.0.2",
-    "lerna-alias": "^3.0.2",
     "mocha": "^6.1.4",
     "nodemon": "^1.19.1",
     "nyc": "^14.1.0",

@@ -1,19 +1,32 @@
-export function getFlattenedLayers(layers: any): Array<TileLayer | ObjectLayer | GroupLayer | ImageLayer>;
-export function getFlattenedLayersFromTmx(tmx: any): Array<TileLayer | ObjectLayer | GroupLayer | ImageLayer>;
-export function getFilteredLayersFromTmx({ tmx, type, visible }: {
-    tmx: any;
-    type: any;
-    visible: any;
-}): Array<TileLayer | ObjectLayer | GroupLayer | ImageLayer>;
-export function getImageLayersFromTmx(tmx: any): any[];
-export function getGroupLayersFromTmx(tmx: any): any[];
-export function getObjectLayersFromTmx(tmx: any): any[];
-export function getTileLayersFromTmx(tmx: any): Array<TileLayer>;
-export function getObjectsFromObjectLayers(layers: any): any;
-export function getSpritesFromObjectLayers(layers: any): any;
-export function getCollisionsFromObjectLayers(layers: any): any;
-export function getTriggersFromObjectLayers(layers: any): any;
-export function getWaterFromObjectLayers(layers: any): any;
-declare const _default: any;
-export default _default;
+import { GroupLayer, ImageLayer, ObjectLayer, TileLayer, Tiled } from '@mob/core/models';
+type LayerType = TileLayer & ObjectLayer & GroupLayer & ImageLayer;
+/**
+ * Groups all TMX layers in one array
+ */
+export declare const getFlattenedLayers: (layers: Array<LayerType>) => any;
+/**
+ * Groups all TMX layers in one array from tmx
+ */
+export declare const getFlattenedLayersFromTmx: (tmx: Tiled) => any;
+/**
+ * Filters TMX layers by a layer type
+ */
+export declare const getFilteredLayersFromTmx: ({ tmx, type, visible }: {
+    tmx: Tiled;
+    type: string;
+    visible: boolean;
+}) => any;
+export declare const getImageLayersFromTmx: (tmx: Tiled) => any;
+export declare const getGroupLayersFromTmx: (tmx: Tiled) => any;
+export declare const getObjectLayersFromTmx: (tmx: Tiled) => any;
+/**
+ * Parse and append `usedTileSets` property into tile layers from TMX
+ */
+export declare const getTileLayersFromTmx: (tmx: Tiled) => any;
+export declare const getObjectsFromObjectLayers: (layers: Array<LayerType>) => any;
+export declare const getSpritesFromObjectLayers: (layers: Array<LayerType>) => any;
+export declare const getCollisionsFromObjectLayers: (layers: Array<LayerType>) => any;
+export declare const getTriggersFromObjectLayers: (layers: Array<LayerType>) => any;
+export declare const getWaterFromObjectLayers: (layers: Array<LayerType>) => any;
+export {};
 //# sourceMappingURL=getters.d.ts.map

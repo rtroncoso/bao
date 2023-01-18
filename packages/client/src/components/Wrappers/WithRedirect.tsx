@@ -1,5 +1,5 @@
 import { NextRouter, withRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export interface WithRedirectOptions<P> {
   predicate: (props: P) => boolean;
@@ -14,10 +14,11 @@ const withRedirect =
   <P extends object>(options: WithRedirectOptions<P>) =>
   (Component: React.ComponentType<P>) => {
     const WithRedirectWrapper: React.FC<P & WithRedirectProps> = (props) => {
-      if (typeof window !== undefined && options.predicate(props)) {
-        props.router.replace(options.redirectUrl, null, { shallow: true });
-        return null;
-      }
+      useEffect(() => {
+        if (options.predicate(props)) {
+          props.router?.replace(options.redirectUrl, null, { shallow: true });
+        }
+      }, [props]);
 
       return <Component {...props} />;
     };

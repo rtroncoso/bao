@@ -1,2 +1,2 @@
-export { default as Keyboard } from "./Keyboard.js";
+export * from './Keyboard';
 //# sourceMappingURL=index.d.ts.map

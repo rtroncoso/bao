@@ -1,16 +1,17 @@
 {
   "extends": "../../tsconfig.json",
-  "exclude": [
-    ".next",
-    "dist",
-    "out",
-  ],
-  "include": ["src/**/*.js"],
   "compilerOptions": {
-    "allowJs": true,
-    "declaration": true,
-    "emitDeclarationOnly": true,
+    "baseUrl": ".",
     "outDir": "dist",
-    "declarationMap": true
-  }
+    "declaration": true
+  },
+  "exclude": [
+    "dist"
+  ],
+  "include": [
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ]
 }

@@ -1,14 +1,15 @@
 /**
  * Interfaces for use with Tiled TMX formats
  */
-export const TILE_LAYER_TYPE: "tilelayer";
-export const OBJECT_LAYER_TYPE: "objectgroup";
-export const IMAGE_LAYER_TYPE: "imagelayer";
-export const GROUP_LAYER_TYPE: "group";
-export class Map {
+export declare const TILE_LAYER_TYPE = "tilelayer";
+export declare const OBJECT_LAYER_TYPE = "objectgroup";
+export declare const IMAGE_LAYER_TYPE = "imagelayer";
+export declare const GROUP_LAYER_TYPE = "group";
+export declare class Tiled {
     version: string;
     tiledversion: string;
     orientation: string;
+    name: string;
     infinite: boolean;
     width: number;
     height: number;
@@ -18,21 +19,26 @@ export class Map {
     layers: any[];
     properties: any[];
     tilesets: any[];
+    constructor();
 }
-export class TileSet {
+export declare class TileSet {
     firstgid: number;
-    source: string;
+    imagePath: string;
     name: string;
+    source: string;
+    spriteSheetSource: string;
+    constructor();
     mergeTo(other: any): void;
 }
-export class Image {
+export declare class Image {
     format: any;
     source: string;
     trans: any;
     width: number;
     height: number;
+    constructor();
 }
-export class Tile {
+export declare class TmxTile {
     id: number;
     terrain: any[];
     probability: any;
@@ -40,21 +46,30 @@ export class Tile {
     animations: any[];
     objectGroups: any[];
     image: any;
+    constructor();
 }
-export class TileLayer {
-    constructor(map: any);
-    map: any;
+export declare class TileLayer {
+    id: number;
+    map: Tiled;
     type: string;
-    name: any;
+    name: string;
     opacity: number;
     visible: boolean;
+    data: number[];
     properties: any[];
     offsety: number;
     offsetx: number;
+    tiles: any;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    constructor(map: any);
     tileAt(x: any, y: any): any;
     setTileAt(x: any, y: any, tile: any): void;
 }
-export class ObjectLayer {
+export declare class ObjectLayer {
+    id: number;
     type: string;
     drawOrder: string;
     name: any;
@@ -65,8 +80,12 @@ export class ObjectLayer {
     objects: any[];
     offsetx: number;
     offsety: number;
+    x: number;
+    y: number;
+    constructor();
 }
-export class ImageLayer {
+export declare class ImageLayer {
+    id: number;
     type: string;
     name: any;
     x: number;
@@ -77,18 +96,20 @@ export class ImageLayer {
     image: any;
     offsetx: number;
     offsety: number;
+    constructor();
 }
-export class GroupLayer {
-    id: any;
+export declare class GroupLayer {
+    id: number;
     type: string;
-    name: any;
+    name: string;
     opacity: number;
     visible: boolean;
     layers: any[];
     x: number;
     y: number;
+    constructor();
 }
-export class TmxObject {
+export declare class TmxObject {
     name: any;
     type: any;
     x: number;
@@ -102,10 +123,12 @@ export class TmxObject {
     ellipse: boolean;
     polygon: any;
     polyline: any;
+    constructor();
 }
-export class Terrain {
+export declare class Terrain {
     name: string;
     tile: number;
     properties: any[];
+    constructor();
 }
 //# sourceMappingURL=Tiled.d.ts.map

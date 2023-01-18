@@ -8,7 +8,7 @@ import { withRedirect } from '@mob/client/components/Wrappers';
 import {
   login,
   loginQuery,
-  LoginRequestParameters,
+  LoginRequestPayload,
   selectAccount
 } from '@mob/client/queries/account';
 import { selectErrors, selectIsLoading } from '@mob/client/queries/shared';
@@ -23,13 +23,13 @@ export interface FormValues {
 const mapStateToProps = (state: State) => {
   return {
     account: selectAccount(state),
-    apiError: selectErrors(state, loginQuery.url),
-    isLoading: selectIsLoading(state, loginQuery.url)
+    apiError: selectErrors(state, loginQuery.queryKey),
+    isLoading: selectIsLoading(state, loginQuery.queryKey)
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  login: (body: LoginRequestParameters) => dispatch(requestAsync(login(body)))
+  login: (body: LoginRequestPayload) => dispatch(requestAsync(login(body)))
 });
 
 export type LoginConnectedProps = ReturnType<typeof mapStateToProps> &

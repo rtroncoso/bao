@@ -1,13 +1,13 @@
+import { Graphic } from '@mob/core/models';
 /**
  * Helmet model
- * @param {number} id
- * @param {Graphic|number} up
- * @param {Graphic|number} left
- * @param {Graphic|number} down
- * @param {Graphic|number} right
- * @exports Helmet
  */
-export default class Helmet {
+export declare class Helmet {
+    id: number;
+    up: Graphic | number;
+    left: Graphic | number;
+    down: Graphic | number;
+    right: Graphic | number;
     constructor({ id, up, left, down, right, }: {
         id?: number;
         up?: number;
@@ -15,10 +15,5 @@ export default class Helmet {
         down?: number;
         right?: number;
     });
-    id: number;
-    up: number;
-    left: number;
-    down: number;
-    right: number;
 }
 //# sourceMappingURL=Helmet.d.ts.map

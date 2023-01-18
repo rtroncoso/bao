@@ -1,1 +1,1 @@
-{"version":3,"file":"LayeredTile.d.ts","sourceRoot":"","sources":["../../../../src/models/data/map/LayeredTile.js"],"names":[],"mappings":"AAEA;;;GAGG;AACH;IACE;;;OAMC;IADC,gBAAwB;CAE3B"}
+{"version":3,"file":"LayeredTile.d.ts","sourceRoot":"","sources":["../../../../src/models/data/map/LayeredTile.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,MAAM,kBAAkB,CAAC;AAC3C,OAAO,EAAE,IAAI,EAAE,MAAM,QAAQ,CAAC;AAE9B;;GAEG;AACH,qBAAa,WAAY,SAAQ,IAAI;IACnC,QAAQ,EAAE,OAAO,EAAE,CAAC;gBAER,EACV,QAAa,EACb,GAAG,OAAO,EACX;;;KAAA;CAIF"}

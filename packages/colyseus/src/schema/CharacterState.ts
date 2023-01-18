@@ -1,18 +1,21 @@
-import { Schema, type } from '@colyseus/schema';
+import { ArraySchema, Schema, type } from '@colyseus/schema';
 
 export class CharacterState extends Schema {
   @type('int32')
-  public id: number;
+  public id?: number;
 
   @type('string')
-  public sessionId: string;
+  public sessionId?: string;
 
   @type('string')
-  public name: string;
+  public name?: string;
 
-  @type('int32')
-  public x = 300;
+  @type('float32')
+  public x = 0;
 
-  @type('int32')
-  public y = 300;
+  @type('float32')
+  public y = 0;
+
+  @type(['string'])
+  public inputs = new ArraySchema<string>();
 }

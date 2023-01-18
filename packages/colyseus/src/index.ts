@@ -18,9 +18,12 @@ app.use(express.json());
 
 const server = http.createServer(app);
 const gameServer = new Server({
-  server
+  server,
+  pingInterval: 2000,
+  pingMaxRetries: 15
 });
 
+// gameServer.simulateLatency(50);
 gameServer.define('world', WorldRoom);
 
 app.use('/colyseus', monitor());

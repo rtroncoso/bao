@@ -1,21 +1,23 @@
-export default class Body {
-    /**
-     * Body model
-     * @param {number} [id]
-     * @param {number|Graphic} [up]
-     * @param {number|Graphic} [left]
-     * @param {number|Graphic} [down]
-     * @param {number|Graphic} [right]
-     * @param {number} [headOffsetX]
-     * @param {number} [headOffsetY]
-     */
-    constructor({ id, up, left, down, right, headOffsetX, headOffsetY }?: number);
-    id: any;
-    up: any;
-    left: any;
-    down: any;
-    right: any;
-    headOffsetX: any;
-    headOffsetY: any;
+import { Graphic } from '@mob/core/models';
+/**
+ * Body model
+ */
+export declare class Body {
+    id: number;
+    up: Graphic | number;
+    left: Graphic | number;
+    down: Graphic | number;
+    right: Graphic | number;
+    headOffsetX: number;
+    headOffsetY: number;
+    constructor({ id, up, left, down, right, headOffsetX, headOffsetY }: {
+        id?: number;
+        up?: number;
+        left?: number;
+        down?: number;
+        right?: number;
+        headOffsetX?: number;
+        headOffsetY?: number;
+    });
 }
 //# sourceMappingURL=Body.d.ts.map

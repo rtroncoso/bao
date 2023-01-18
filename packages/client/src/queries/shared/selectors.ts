@@ -1,31 +1,37 @@
 import { ResponseBody } from 'redux-query';
-import { getErrors, getQueries, State } from '@mob/client/store';
 
-export const selectErrors = (state: State, url: string, method = 'GET') => {
+import { State } from '@mob/client/store';
+import { getErrors, getQueries } from '@mob/client/queries';
+
+export const selectErrors = (state: State, queryKey: string) => {
   const errors = getErrors(state);
 
-  return Object.entries(errors).reduce<ResponseBody | null>((acc, entry) => {
+  return Object.entries(errors).reduce<ResponseBody | null>((state, entry) => {
     const [key, value] = entry;
-    const { url: matchedUrl } = JSON.parse(key);
-    if (url === matchedUrl) {
-      acc = value.responseBody;
-      return acc;
+
+    if (queryKey === key) {
+      state = value.responseBody;
+      return state;
     }
 
-    return acc;
+    return state;
   }, null);
 };
 
-export const selectIsLoading = (state: State, url: string, method = 'GET') => {
+export const selectIsLoading = (state: State, queryKey: string) => {
   const queries = getQueries(state);
-  return Object.entries(queries).reduce<boolean>((acc, entry) => {
+  return Object.entries(queries).reduce<boolean>((state, entry) => {
     const [key, value] = entry;
-    const { url: matchedUrl } = JSON.parse(key);
-    if (url === matchedUrl && value.isPending && !value.isFinished) {
-      acc = true;
-      return acc;
+
+    if (queryKey === key && value.isPending && !value.isFinished) {
+      state = true;
+      return state;
     }
 
-    return acc;
+    return state;
   }, false);
+};
+
+export const selectIsLoadingMany = (state: State, keys: string[]) => {
+  return keys.some((key) => selectIsLoading(state, key));
 };

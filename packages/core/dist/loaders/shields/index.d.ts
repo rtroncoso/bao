@@ -1,3 +1,2 @@
-export function getShields(data: any, animations: any): MapObject<string, Shield>;
-export default getShields;
+export * from './json';
 //# sourceMappingURL=index.d.ts.map

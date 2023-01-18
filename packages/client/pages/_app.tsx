@@ -1,11 +1,12 @@
 import { AppProps as NextAppProps } from 'next/app';
 import React from 'react';
 import { Provider } from 'react-redux';
-// import { PersistGate } from 'redux-persist/integration/react';
+import { PersistGate } from 'redux-persist/integration/react';
 
 import '@mob/client/assets/tailwind.css';
+import '@mob/client/assets/canvas.css';
 import { AppContainer } from '@mob/client/components/App';
-import store from '@mob/client/store';
+import { store, persistor } from '@mob/client/store';
 
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
@@ -20,11 +21,11 @@ const AppEntrypoint = (props: AppProps) => {
 
   return typeof window !== 'undefined' ? (
     <Provider store={store}>
-      {/* <PersistGate loading={null} persistor={persistor}> */}
-      <AppContainer {...props} {...pageProps}>
-        <Component {...pageProps} err={err} />
-      </AppContainer>
-      {/* </PersistGate> */}
+      <PersistGate loading={null} persistor={persistor}>
+        <AppContainer {...props} {...pageProps}>
+          <Component {...pageProps} err={err} />
+        </AppContainer>
+      </PersistGate>
     </Provider>
   ) : (
     <Provider store={store}>

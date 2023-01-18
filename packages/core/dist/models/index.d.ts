@@ -1,2 +1,2 @@
-export * from "./data";
+export * from './data';
 //# sourceMappingURL=index.d.ts.map

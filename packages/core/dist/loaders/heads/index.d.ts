@@ -1,3 +1,2 @@
-export function getHeads(data: any, graphics: any): MapObject<string, Head>;
-export default getHeads;
+export * from './json';
 //# sourceMappingURL=index.d.ts.map

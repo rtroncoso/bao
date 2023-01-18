@@ -25,13 +25,17 @@ const withAuthGuard = <P extends object>(
   options: WithAuthGuardOptions
 ) => {
   const WithAuthGuardWrapper: React.FC<ConnectedProps> = (props) => {
-    if (typeof window !== undefined && (!props.account || !props.token)) {
-      props.router.replace((options && options.redirectUrl) || '/login', null, {
-        shallow: true
-      });
-
-      return null;
-    }
+    useEffect(() => {
+      if (!props.account || !props.token) {
+        props.router?.replace(
+          (options && options.redirectUrl) || '/login',
+          null,
+          {
+            shallow: true
+          }
+        );
+      }
+    }, [props]);
 
     return <Component {...(props as P)} />;
   };

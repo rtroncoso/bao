@@ -1,23 +1,24 @@
+import { Graphic, MapObject, Npc, TileExit } from '@mob/core/models';
 /**
  * Tile model
- * @property {Npc} npc
- * @property {MapObject} object
- * @property {TileExit} tileExit
- * @property {number} trigger
- * @property {boolean} blocked
- * @property {Graphic|number} graphic
- * @property {Graphic|number} animation
- * @property {number} offsetX
- * @property {number} offsetY
- * @property {number} layer
- * @property {number} x
- * @property {number} y
  */
-export default class Tile {
+export declare class Tile {
+    npc: Npc | null;
+    animation: Graphic | null;
+    graphic: Graphic | null;
+    blocked: boolean;
+    object: MapObject | null;
+    tileExit: TileExit | null;
+    trigger: number;
+    offsetX: number;
+    offsetY: number;
+    layer: number;
+    x: number;
+    y: number;
     constructor({ blocked, animation, graphic, offsetX, offsetY, object, npc, tileExit, trigger, layer, x, y }: {
         blocked?: boolean;
-        animation?: number;
-        graphic?: number;
+        animation?: any;
+        graphic?: any;
         offsetX?: number;
         offsetY?: number;
         object?: any;
@@ -28,18 +29,6 @@ export default class Tile {
         x?: number;
         y?: number;
     });
-    npc: any;
-    animation: number;
-    graphic: number;
-    blocked: boolean;
-    object: any;
-    tileExit: any;
-    trigger: number;
-    offsetX: number;
-    offsetY: number;
-    layer: number;
-    x: number;
-    y: number;
     toScreen(): {
         x: number;
         y: number;

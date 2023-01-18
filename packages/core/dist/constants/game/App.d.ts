@@ -1,10 +1,11 @@
-export const canvasWidth: number;
-export const canvasHeight: number;
-declare namespace _default {
-    export { canvasWidth };
-    export { canvasHeight };
-    export { window };
-}
-export default _default;
-import window from "./game.window.json";
+export declare const canvasWidth: number;
+export declare const canvasHeight: number;
+export declare const App: {
+    canvasWidth: number;
+    canvasHeight: number;
+    window: {
+        width: number;
+        height: number;
+    };
+};
 //# sourceMappingURL=App.d.ts.map

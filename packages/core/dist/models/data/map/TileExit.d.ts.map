@@ -1,1 +1,1 @@
-{"version":3,"file":"TileExit.d.ts","sourceRoot":"","sources":["../../../../src/models/data/map/TileExit.js"],"names":[],"mappings":"AAAA;;;;;GAKG;AACH;IACE;;;;OAQC;IAHC,UAAU;IACV,UAAU;IACV,YAAc;CAEjB"}
+{"version":3,"file":"TileExit.d.ts","sourceRoot":"","sources":["../../../../src/models/data/map/TileExit.ts"],"names":[],"mappings":"AAAA;;GAEG;AACH,qBAAa,QAAQ;IACnB,CAAC,EAAE,MAAM,CAAC;IACV,CAAC,EAAE,MAAM,CAAC;IACV,GAAG,EAAE,MAAM,CAAC;gBAEA,EACV,CAAK,EACL,CAAK,EACL,GAAO,GACR;;;;KAAA;CAKF"}

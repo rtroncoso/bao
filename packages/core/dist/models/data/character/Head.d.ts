@@ -1,3 +1,4 @@
+import { Graphic } from '@mob/core/models';
 /**
  * Head model
  * @param {number} id
@@ -7,7 +8,12 @@
  * @param {Graphic|number} right
  * @exports Head
  */
-export default class Head {
+export declare class Head {
+    id: number;
+    up: Graphic | number;
+    left: Graphic | number;
+    down: Graphic | number;
+    right: Graphic | number;
     constructor({ id, up, left, down, right, }: {
         id?: number;
         up?: number;
@@ -15,10 +21,5 @@ export default class Head {
         down?: number;
         right?: number;
     });
-    id: number;
-    up: number;
-    left: number;
-    down: number;
-    right: number;
 }
 //# sourceMappingURL=Head.d.ts.map

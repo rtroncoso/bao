@@ -5,7 +5,7 @@ import {
   AccountEntities,
   CharacterEntity,
   CharacterModel,
-  LoginRequestParameters,
+  LoginRequestPayload,
   LoginSuccessResponse
 } from './models';
 
@@ -15,6 +15,7 @@ export const loginQuery = {
   options: {
     method: 'POST'
   },
+  queryKey: 'login:POST',
   url: `${process.env.NEXT_PUBLIC_MOB_API}/accounts/login`
 };
 
@@ -38,7 +39,7 @@ export const transformLoginResponse = (responseBody: LoginSuccessResponse) => {
   };
 };
 
-const login = (body: LoginRequestParameters): QueryConfig<AccountEntities> => {
+const login = (body: LoginRequestPayload): QueryConfig<AccountEntities> => {
   return {
     ...loginQuery,
     body,

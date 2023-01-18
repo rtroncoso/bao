@@ -10,14 +10,12 @@
   "name": {
     "fill": "#fff",
     "fontSize": 15,
-    "fontWeight": "bold",
     "dropShadow": true,
     "dropShadowAlpha": 0.6,
     "dropShadowColor": "#000",
     "dropShadowDistance": 2,
     "letterSpacing": 0.2,
-    "fontFamily": "Impact, Charcoal, sans-serif",
-    "align": "center"
+    "fontFamily": "Impact, Charcoal, sans-serif"
   },
   "privilegeColors": {
     "admin": "#16b601",

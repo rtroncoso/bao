@@ -32,7 +32,7 @@ const CharacterSelection: React.FC<CharacterSelectionProps> = ({
   const handleSubmit = useCallback(() => {
     if (currentCharacter) {
       router.push({
-        pathname: '/game',
+        pathname: '/world',
         query: { characterId: currentCharacter.id }
       });
     }

@@ -28,7 +28,7 @@ const Login: React.FC<LoginProps> = ({
   touched,
   values
 }) => {
-  const graphic = new Graphic();
+  const graphic = new Graphic({ id: 0 });
   console.log(graphic);
   return (
     <LoginStyled>
@@ -72,7 +72,12 @@ const Login: React.FC<LoginProps> = ({
         </Button>
         {apiError && !account && !isLoading && (
           <AlertStyled className="w-full mt-8" role="alert">
-            <p className="font-bold">Usuario o contraseña inválidos</p>
+            {apiError.message === 'SYSTEM' && (
+              <p className="font-bold">Error al conectar con el servidor</p>
+            )}
+            {apiError.message === 'INVALID_VALUE' && (
+              <p className="font-bold">Usuario o contraseña inválidos</p>
+            )}
           </AlertStyled>
         )}
       </FormStyled>

@@ -1,5 +1,4 @@
-export function calculateProjectionMatrix(tmx: any, camera: any, culling: any): Rectangle;
-declare const _default: any;
-export default _default;
-import { Rectangle } from ".pnpm/@pixi+math@6.5.8/node_modules/@pixi/math";
+import { Rectangle } from 'pixi.js';
+import { Tiled } from '@mob/core/models';
+export declare const calculateProjectionMatrix: (tmx: Tiled, camera: Rectangle, culling: number) => Rectangle;
 //# sourceMappingURL=index.d.ts.map

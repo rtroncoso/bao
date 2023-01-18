@@ -54,7 +54,7 @@ export const login = async ({
     throw new Error("NOT_FOUND");
   }
 
-  if (account.password != password) {
+  if (account.password !== password) {
     throw {
       message: 'INVALID_VALUE',
       payload: 'Quien sos papá?'
