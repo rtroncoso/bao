@@ -8,7 +8,7 @@ export function useKeyPress(targetKey: string) {
       if (key === targetKey) {
         setKeyPressed(true);
       }
-    }
+    };
 
     const upHandler = ({ key }: { key: string }) => {
       if (key === targetKey) {

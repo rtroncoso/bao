@@ -1,5 +1,5 @@
-import { EAST, HEADINGS, NORTH, SOUTH, WEST } from '@mob/core/src/constants/game/Game';
-import Shield from '@mob/core/src/models/data/character/Shield';
+import { EAST, HEADINGS, NORTH, SOUTH, WEST } from '@mob/core/constants/game/Game';
+import Shield from '@mob/core/models/data/character/Shield';
 
 import { parseDirectionAnimationByModel, transform } from '../util';
 

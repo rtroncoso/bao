@@ -1,7 +1,7 @@
 import { Client } from 'colyseus';
 import { Command } from '@colyseus/command';
 
-import { WorldRoomState } from '@mob/server/schema/WorldRoomState';
+import { WorldRoom } from 'src/rooms/WorldRoom';
 
 export type Heading = 'north' | 'east' | 'south' | 'west';
 
@@ -14,7 +14,7 @@ export interface OnMoveParameters {
   heading: Heading;
 }
 
-export class OnMoveCommand extends Command<WorldRoomState, OnMoveParameters> {
+export class OnMoveCommand extends Command<WorldRoom, OnMoveParameters> {
   execute({ client, heading }: OnMoveParameters) {
     const character = this.state.characters.get(client.sessionId);
 

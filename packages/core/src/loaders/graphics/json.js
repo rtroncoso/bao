@@ -1,4 +1,4 @@
-import Graphic, { TexturedGraphic } from '@mob/core/src/models/data/Graphic';
+import Graphic, { TexturedGraphic } from '@mob/core/models/data/Graphic';
 
 import { getGraphicsFilePath, transform } from '../util';
 

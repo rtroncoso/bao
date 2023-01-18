@@ -3,10 +3,12 @@ import filter from 'lodash/fp/filter';
 import find from 'lodash/fp/find';
 import values from 'lodash/fp/values';
 
-import config from '@mob/client/src/config';
 import {
   EAST, HEADINGS, NORTH, SOUTH, WEST,
-} from '@mob/core/src/constants/game/Game';
+} from '@mob/core/constants/game/Game';
+
+// TODO: FIXME
+const config = {};
 
 /**
  * Adds extension to fileName

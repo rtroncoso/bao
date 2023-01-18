@@ -1,46 +1,46 @@
+import { useRouter } from 'next/router';
 import React, { useCallback, useState } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 
 import { ContainerStyled } from '@mob/client/components/App/App.styles';
 import { Button } from '@mob/client/components/Button';
 import { CharacterModel } from '@mob/client/queries/account';
-import { ConnectedProps } from './CharacterSelection.container';
+import { CharacterSelectionConnectedProps } from './CharacterSelection.container';
 import {
   CharacterListStyled,
   CharacterListItemStyled,
   TitleStyled
 } from './CharacterSelection.styles';
 
-type CharacterSelectionProps =
-  ConnectedProps &
-  Readonly<RouteComponentProps>;
+type CharacterSelectionProps = CharacterSelectionConnectedProps;
 
 const CharacterSelection: React.FC<CharacterSelectionProps> = ({
   account,
-  characters,
-  history
+  characters
 }) => {
-  const [currentCharacter, setCurrentCharacter] = useState<CharacterModel | null>(null);
+  const router = useRouter();
+  const [currentCharacter, setCurrentCharacter] =
+    useState<CharacterModel | null>(null);
 
   const handleCharacterSelection = useCallback((character: CharacterModel) => {
     setCurrentCharacter(character);
   }, []);
 
   const handleCharacterCreation = useCallback(() => {
-    history.push('/characters/create')
-  }, [history]);
+    router.push('/characters/create');
+  }, [router]);
 
   const handleSubmit = useCallback(() => {
     if (currentCharacter) {
-      history.push('/game', { characterId: currentCharacter.id })
+      router.push({
+        pathname: '/game',
+        query: { characterId: currentCharacter.id }
+      });
     }
-  }, [currentCharacter, history]);
+  }, [currentCharacter, router]);
 
   return (
     <ContainerStyled>
-      <TitleStyled>
-        ¡Bienvenido, {account!.username}!
-      </TitleStyled>
+      <TitleStyled>¡Bienvenido, {account?.username}!</TitleStyled>
       <CharacterListStyled>
         {characters.map((character) => (
           <CharacterListItemStyled
@@ -59,16 +59,17 @@ const CharacterSelection: React.FC<CharacterSelectionProps> = ({
       {characters.length > 0 && (
         <Button onClick={handleSubmit} disabled={!currentCharacter}>
           {currentCharacter
-            ? `Ingresar con ${characters.find((character) => character.id === currentCharacter.id)!.name}`
-            : 'Seleccione un personaje'
-          }
+            ? `Ingresar con ${
+                characters.find(
+                  (character) => character.id === currentCharacter.id
+                )?.name
+              }`
+            : 'Seleccione un personaje'}
         </Button>
       )}
-      <Button onClick={handleCharacterCreation}>
-        Crear personaje
-      </Button>
+      <Button onClick={handleCharacterCreation}>Crear personaje</Button>
     </ContainerStyled>
   );
-}
+};
 
 export default CharacterSelection;

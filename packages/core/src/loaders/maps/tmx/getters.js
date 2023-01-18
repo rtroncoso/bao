@@ -6,11 +6,11 @@ import {
   TILE_SIZE,
   TRIGGER_TYPE,
   WATER_TYPE
-} from '@mob/core/src/constants/game/Map';
-import { HIDDEN_OBJECTS } from '@mob/core/src/constants/game/Object';
-import { createProperty, getProperty } from '@mob/core/src/loaders/maps/tmx/util';
-import { GROUP_LAYER_TYPE, IMAGE_LAYER_TYPE, OBJECT_LAYER_TYPE, TILE_LAYER_TYPE } from '@mob/core/src/models/data/map/Tiled';
-import { createRectangle } from '@mob/core/src/util/physics';
+} from '@mob/core/constants/game/Map';
+import { HIDDEN_OBJECTS } from '@mob/core/constants/game/Object';
+import { createProperty, getProperty } from '@mob/core/loaders/maps/tmx/util';
+import { GROUP_LAYER_TYPE, IMAGE_LAYER_TYPE, OBJECT_LAYER_TYPE, TILE_LAYER_TYPE } from '@mob/core/models/data/map/Tiled';
+import { createRectangle } from '@mob/core/util/physics';
 
 import each from 'lodash/fp/each';
 import filter from 'lodash/fp/filter';

@@ -1,4 +1,4 @@
-import Tile from '@mob/core/src/models/data/map/Tile';
+import Tile from '@mob/core/models/data/map/Tile';
 
 /**
  * LayeredTile model

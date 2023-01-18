@@ -4,17 +4,18 @@ import flow from 'lodash/fp/flow';
 import keys from 'lodash/fp/keys';
 import range from 'lodash/fp/range';
 
-import config from '@mob/client/src/config';
 import {
   ANIMATION_SPRITESHEETS,
   ATLAS_COLUMNS,
   NORMAL_SPRITESHEETS,
   TILESET_SPRITESHEETS
-} from '@mob/core/src/constants/game/Graphics';
-import { TILE_SIZE } from '@mob/core/src/constants/game/Map';
-import { getGraphicsFileName } from '@mob/core/src/loaders/util';
+} from '@mob/core/constants/game/Graphics';
+import { TILE_SIZE } from '@mob/core/constants/game/Map';
+import { getGraphicsFileName } from '@mob/core/loaders/util';
 import { Rectangle, Texture, SCALE_MODES } from 'pixi.js';
 
+// TODO: FIXME
+const config = {};
 /** Frames memoization
  *  @type {{}} */
 const framesCache = {};

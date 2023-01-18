@@ -1,7 +1,7 @@
 {
   "name": "@mob/assets",
   "version": "0.1.0",
-  "description": "Centralo Marketing Site",
+  "description": "Mob Assets Repository",
   "main": "index.js",
   "private": true,
   "repository": {
@@ -22,7 +22,7 @@
   "dependencies": {
     "cli-progress": "^3.8.2",
     "commander": "^6.0.0",
-    "dotenv": "^8.2.0",
+    "dotenv": "^16.0.3",
     "esm": "^3.2.25",
     "s3": "^4.4.0"
   }

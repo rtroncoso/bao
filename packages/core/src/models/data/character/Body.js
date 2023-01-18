@@ -1,13 +1,13 @@
 export default class Body {
   /**
    * Body model
-   * @param {number} id
-   * @param {number|Graphic} up
-   * @param {number|Graphic} left
-   * @param {number|Graphic} down
-   * @param {number|Graphic} right
-   * @param {number} headOffsetX
-   * @param {number} headOffsetY
+   * @param {number} [id]
+   * @param {number|Graphic} [up]
+   * @param {number|Graphic} [left]
+   * @param {number|Graphic} [down]
+   * @param {number|Graphic} [right]
+   * @param {number} [headOffsetX]
+   * @param {number} [headOffsetY]
    */
   constructor({
     id = 0,

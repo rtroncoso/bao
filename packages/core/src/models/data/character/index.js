@@ -1,5 +1,3 @@
-// @create-index
-
 export { default as Body } from './Body.js';
 export { default as Head } from './Head.js';
 export { default as Helmet } from './Helmet.js';

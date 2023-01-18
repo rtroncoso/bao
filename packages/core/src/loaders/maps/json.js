@@ -11,10 +11,10 @@ import {
   OBJECT_LAYER,
   TILE_EXIT_LAYER,
   TRIGGER_LAYER,
-} from '@mob/core/src/constants/game/Map';
-import { getDimensions } from '@mob/core/src/loaders/graphics';
-import { findAnimation, findGraphic } from '@mob/core/src/loaders/util';
-import Tile from '@mob/core/src/models/data/map/Tile';
+} from '@mob/core/constants/game/Map';
+import { getDimensions } from '@mob/core/loaders/graphics';
+import { findAnimation, findGraphic } from '@mob/core/loaders/util';
+import Tile from '@mob/core/models/data/map/Tile';
 
 /**
  * Parses `Tile` model from `data` object

@@ -1,5 +1,3 @@
-// @create-index
-
 export { default as LayeredTile } from './LayeredTile.js';
 export { default as MapObject } from './MapObject.js';
 export { default as Npc } from './Npc.js';

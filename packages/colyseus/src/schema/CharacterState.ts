@@ -11,8 +11,8 @@ export class CharacterState extends Schema {
   public name: string;
 
   @type('int32')
-  public x: number = 300;
+  public x = 300;
 
   @type('int32')
-  public y: number = 300;
+  public y = 300;
 }

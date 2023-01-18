@@ -5,9 +5,11 @@
   "description": "Colyseus game server for MoB",
   "main": "lib/index.js",
   "scripts": {
+    "dev": "npm run start",
     "start": "ts-node-dev -r tsconfig-paths/register src/index.ts",
     "loadtest": "colyseus-loadtest loadtest/example.ts --room my_room --numClients 2",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prettier": "prettier -w \"src/**/*.{js,ts,jsx,tsx}\""
   },
   "author": "",
   "license": "MIT",
@@ -18,22 +20,25 @@
   "devDependencies": {
     "@colyseus/loadtest": "^0.13.1",
     "@types/cors": "^2.8.6",
-    "@types/express": "^4.17.1",
-    "ts-node": "^8.1.0",
-    "ts-node-dev": "^1.0.0-pre.63",
-    "tsconfig-paths": "^3.9.0",
-    "typescript": "^3.4.5"
+    "@types/express": "^4.17.15",
+    "nodemon": "^1.19.1",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.1.2",
+    "typescript": "^4.9.4"
   },
   "dependencies": {
-    "@colyseus/command": "^0.1.6",
-    "@colyseus/monitor": "^0.12.2",
-    "@colyseus/social": "^0.10.9",
+    "@colyseus/command": "^0.2.1",
+    "@colyseus/monitor": "^0.14.22",
+    "@colyseus/schema": "^1.0.45",
+    "@colyseus/social": "^0.11.7",
+    "@mob/core": "workspace:*",
     "@types/jsonwebtoken": "^8.5.0",
     "axios": "^0.21.0",
-    "colyseus": "^0.14.0",
+    "colyseus": "^0.14.24",
     "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "express": "^4.16.4",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
     "express-jwt": "^5.3.1",
     "jsonwebtoken": "^8.5.1"
   }

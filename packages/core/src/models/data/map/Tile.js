@@ -1,4 +1,4 @@
-import { TILE_SIZE } from '@mob/core/src/constants/game/Map';
+import { TILE_SIZE } from '@mob/core/constants/game/Map';
 
 /**
  * Tile model

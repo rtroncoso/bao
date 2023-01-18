@@ -12,13 +12,12 @@ import superagentInterface from 'redux-query-interface-superagent';
 
 import { AccountEntities } from '@mob/client/queries/account';
 
-export type EntitiesState =
-  AccountEntities;
+export type EntitiesState = AccountEntities;
 
 export interface State {
-  entities: EntitiesState,
-  errors: ErrorsState,
-  queries: QueriesState
+  entities: EntitiesState;
+  errors: ErrorsState;
+  queries: QueriesState;
 }
 
 export const getEntities = (state: State) => state.entities;
@@ -28,7 +27,7 @@ export const getQueries = (state: State) => state.queries;
 const reducer = combineReducers({
   entities: entitiesReducer,
   errors: errorsReducer,
-  queries: queriesReducer,
+  queries: queriesReducer
 });
 
 const store = createStore(

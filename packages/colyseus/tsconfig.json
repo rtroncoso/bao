@@ -19,9 +19,5 @@
   "exclude": [
     "dist",
     "out"
-  ],
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
   ]
 }

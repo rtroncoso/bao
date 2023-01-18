@@ -7,6 +7,4 @@ import App from './App.component';
 const mapStateToProps = (state: State) => {
   return {};
 };
-export default compose(
-  connect(mapStateToProps)
-)(App);
+export default compose(connect(mapStateToProps))(App);

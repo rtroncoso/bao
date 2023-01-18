@@ -27,7 +27,7 @@ export default class Graphic {
     width = 0,
     height = 0,
     speed = 0.0,
-  }) {
+  } = {}) {
     this.id = id;
     this.frames = frames;
     this.textures = [];
@@ -49,7 +49,7 @@ export default class Graphic {
  * @extends Graphic
  */
 export class TexturedGraphic extends Graphic {
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
     this.texture = Texture.EMPTY;
   }

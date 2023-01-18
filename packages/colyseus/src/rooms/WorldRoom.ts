@@ -17,15 +17,21 @@ export class WorldRoom extends Room {
     this.setState(new WorldRoomState());
 
     this.onMessage('move', (client, message: MoveParameters) => {
-      console.log(`received message move: ${client.sessionId} ${message.heading}`);
-      this.dispatcher.dispatch(new OnMoveCommand, {
+      console.log(
+        `received message move: ${client.sessionId} ${message.heading}`
+      );
+      this.dispatcher.dispatch(new OnMoveCommand(), {
         ...message,
         client
       });
     });
   }
 
-  public async onAuth(client: Client, options: any, request: http.IncomingMessage) {
+  public async onAuth(
+    client: Client,
+    options: any,
+    request: http.IncomingMessage
+  ) {
     console.log(`onAuth: ${client.sessionId}, ${client.id}`);
     return this.authService.authenticate(client, options, request);
   }

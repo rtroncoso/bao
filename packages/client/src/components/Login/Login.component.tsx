@@ -1,8 +1,7 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import { FormikProps } from 'formik';
 import React from 'react';
-import { RouteProps } from 'react-router-dom';
 
 import {
   AlertStyled,
@@ -12,13 +11,11 @@ import {
 import { Button } from '@mob/client/components/Button';
 import { Input } from '@mob/client/components/Input';
 
-import { ConnectedProps, FormValues } from './Login.container';
+import { LoginConnectedProps, FormValues } from './Login.container';
 import LoginStyled from './Login.styles';
+import { Graphic } from '@mob/core';
 
-type LoginProps =
-  ConnectedProps &
-  FormikProps<FormValues> &
-  Readonly<RouteProps>;
+type LoginProps = LoginConnectedProps & FormikProps<FormValues>;
 
 const Login: React.FC<LoginProps> = ({
   account,
@@ -29,13 +26,18 @@ const Login: React.FC<LoginProps> = ({
   isLoading,
   apiError,
   touched,
-  values,
+  values
 }) => {
+  const graphic = new Graphic();
+  console.log(graphic);
   return (
     <LoginStyled>
       {isLoading && (
         <div className="fixed top-0 left-0 z-50 block w-full h-full bg-white opacity-75">
-          <span className="relative block w-0 h-0 mx-auto my-0 text-indigo-800 opacity-75 top-1/2" style={{ top: '50%' }}>
+          <span
+            className="relative block w-0 h-0 mx-auto my-0 text-indigo-800 opacity-75 top-1/2"
+            style={{ top: '50%' }}
+          >
             <FontAwesomeIcon icon={faCircleNotch} size="5x" spin />
           </span>
         </div>
@@ -76,6 +78,6 @@ const Login: React.FC<LoginProps> = ({
       </FormStyled>
     </LoginStyled>
   );
-}
+};
 
 export default Login;

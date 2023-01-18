@@ -1,4 +1,4 @@
-import Head from '@mob/core/src/models/data/character/Head';
+import Head from '@mob/core/models/data/character/Head';
 
 import { parseDirectionGraphicByModel, transform } from '../util';
 

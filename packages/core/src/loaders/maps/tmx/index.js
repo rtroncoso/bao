@@ -1,6 +1,4 @@
-// @create-index
-
-export { default as converter } from './converter.js';
-export { default as getters } from './getters.js';
-export { default as util } from './util.js';
+export * from './converter';
+export * from './getters';
+export * from './util';
 

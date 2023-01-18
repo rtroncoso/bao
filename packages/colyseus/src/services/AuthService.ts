@@ -10,7 +10,11 @@ export class AuthService {
     this.room = room;
   }
 
-  public async authenticate(client: Client, options: any, request: http.IncomingMessage) {
+  public async authenticate(
+    client: Client,
+    options: any,
+    request: http.IncomingMessage
+  ) {
     const account = this.validateToken(options.token);
     options.account = account;
     return account;

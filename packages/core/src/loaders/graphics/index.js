@@ -12,8 +12,8 @@ import reject from 'lodash/fp/reject';
 import tap from 'lodash/fp/tap';
 import uniqBy from 'lodash/fp/uniqBy';
 import values from 'lodash/fp/values';
-import { TILE_SIZE } from '@mob/core/src/constants/game/Map';
-import { getGraphicsFileName } from '@mob/core/src/loaders/util';
+import { TILE_SIZE } from '@mob/core/constants/game/Map';
+import { getGraphicsFileName } from '@mob/core/loaders/util';
 
 /**
  * Determines if a graphic is an animation

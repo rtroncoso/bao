@@ -1,4 +1,4 @@
-import Helmet from '@mob/core/src/models/data/character/Helmet';
+import Helmet from '@mob/core/models/data/character/Helmet';
 
 import { parseDirectionGraphicByModel, transform } from '../util';
 

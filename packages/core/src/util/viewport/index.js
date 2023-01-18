@@ -1,5 +1,5 @@
 import { Rectangle } from 'pixi.js';
-import { TILE_SIZE } from '@mob/core/src/constants/game/Map';
+import { TILE_SIZE } from '@mob/core/constants/game/Map';
 
 export const calculateProjectionMatrix = (tmx, camera, culling) => {
   const bounds = new Rectangle();

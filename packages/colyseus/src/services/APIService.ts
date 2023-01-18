@@ -13,13 +13,10 @@ export abstract class APIService {
   protected authToken: string | null = null;
   protected readonly instance: AxiosInstance;
 
-  public constructor({
-    authToken,
-    baseURL
-  }: APIServiceOptions = {}) {
+  public constructor({ authToken, baseURL }: APIServiceOptions = {}) {
     this.authToken = authToken || process.env.JWT_TOKEN;
     this.instance = axios.create({
-      baseURL: baseURL || process.env.MOB_API,
+      baseURL: baseURL || process.env.MOB_API
     });
 
     this._initializeRequestInterceptor();

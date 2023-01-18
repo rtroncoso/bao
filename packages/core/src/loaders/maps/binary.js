@@ -1,11 +1,11 @@
 import range from 'lodash/fp/range';
-import { HEADER_SIZE, INF_HEADER_SIZE, MAP_SIZE } from '@mob/core/src/constants/game/Map';
-import { parseTile, mapLayers } from '@mob/core/src/loaders/maps/json';
-import LayeredTile from '@mob/core/src/models/data/map/LayeredTile';
-import Npc from '@mob/core/src/models/data/map/Npc';
-import TileExit from '@mob/core/src/models/data/map/TileExit';
-import MapObject from '@mob/core/src/models/data/map/MapObject';
-import BufferAdapter from '@mob/core/src/util/BufferAdapter';
+import { HEADER_SIZE, INF_HEADER_SIZE, MAP_SIZE } from '@mob/core/constants/game/Map';
+import { parseTile, mapLayers } from '@mob/core/loaders/maps/json';
+import LayeredTile from '@mob/core/models/data/map/LayeredTile';
+import Npc from '@mob/core/models/data/map/Npc';
+import TileExit from '@mob/core/models/data/map/TileExit';
+import MapObject from '@mob/core/models/data/map/MapObject';
+import BufferAdapter from '@mob/core/util/BufferAdapter';
 
 /**
  * Parses basic & inf tile data from buffers

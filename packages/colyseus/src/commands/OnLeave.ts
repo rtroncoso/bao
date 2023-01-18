@@ -1,15 +1,20 @@
 import { Client } from 'colyseus';
 import { Command } from '@colyseus/command';
 
-import { WorldRoomState } from '@mob/server/schema/WorldRoomState';
+import { WorldRoom } from 'src/rooms/WorldRoom';
 
 export interface OnLeaveParameters {
   client: Client;
 }
 
-export class OnLeaveCommand extends Command<WorldRoomState, OnLeaveParameters> {
+export class OnLeaveCommand extends Command<WorldRoom, OnLeaveParameters> {
   execute({ client }: OnLeaveParameters) {
-    if (this.state.characters.hasOwnProperty(client.sessionId)) {
+    if (
+      Object.prototype.hasOwnProperty.call(
+        this.state.characters,
+        client.sessionId
+      )
+    ) {
       this.state.characters.delete(client.sessionId);
     }
   }

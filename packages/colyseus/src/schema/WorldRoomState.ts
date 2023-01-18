@@ -1,4 +1,4 @@
-import { MapSchema, Schema, type } from "@colyseus/schema";
+import { MapSchema, Schema, type } from '@colyseus/schema';
 import { CharacterState } from './CharacterState';
 import { MapState } from './MapState';
 

@@ -1,4 +1,4 @@
-import Body from '@mob/core/src/models/data/character/Body';
+import Body from '@mob/core/models/data/character/Body';
 
 import { parseDirectionAnimationByModel, transform } from '../util';
 

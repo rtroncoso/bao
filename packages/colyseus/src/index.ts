@@ -4,12 +4,12 @@ import cors from 'cors';
 import express from 'express';
 import * as dotenv from 'dotenv';
 import http from 'http';
-import path from 'path'
+import path from 'path';
 
 import { WorldRoom } from './rooms/WorldRoom';
 
-const envPath = process.env.ENV_PATH || process.cwd()
-dotenv.config({ path: path.resolve(envPath, '.env') })
+const envPath = process.env.ENV_PATH || process.cwd();
+dotenv.config({ path: path.resolve(envPath, '.env') });
 const port = Number(process.env.PORT || 2567);
 const app = express();
 

@@ -1,6 +1,6 @@
-import { HEADINGS, EAST, NORTH, SOUTH, WEST } from '@mob/core/src/constants/game/Game';
-import { parseDirectionAnimationByModel, transform } from '@mob/core/src/loaders/util';
-import Weapon from '@mob/core/src/models/data/character/Weapon';
+import { HEADINGS, EAST, NORTH, SOUTH, WEST } from '@mob/core/constants/game/Game';
+import { parseDirectionAnimationByModel, transform } from '@mob/core/loaders/util';
+import Weapon from '@mob/core/models/data/character/Weapon';
 
 /**
  * Parses JSON weapons file into a key-value map

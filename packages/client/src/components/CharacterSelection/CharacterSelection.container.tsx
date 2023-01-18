@@ -1,8 +1,7 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
-import { withAuthGuard } from '@mob/client/components/HigherOrder';
+import { withAuthGuard } from '@mob/client/components/Wrappers';
 import {
   AccountModel,
   CharacterModel,
@@ -19,13 +18,11 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-export interface ConnectedProps {
-  account?: AccountModel;
-  characters: Array<CharacterModel>;
-}
+export type CharacterSelectionConnectedProps = ReturnType<
+  typeof mapStateToProps
+>;
 
 export default compose(
   connect(mapStateToProps),
-  withAuthGuard,
-  withRouter
+  withAuthGuard
 )(CharacterSelectionComponent);

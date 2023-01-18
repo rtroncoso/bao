@@ -5,58 +5,60 @@
   "description": "Mob JS Core Module",
   "license": "MIT",
   "private": true,
+  "main": "src/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "webpack --env dev && webpack --env build && npm run test",
-    "start": "webpack --progress --colors --watch --env dev",
+    "build": "tsc",
+    "dev": "npm run start",
+    "start": "nodemon --exec tsc",
     "test": "mocha --require babel-register --colors ./test/*.spec.js",
     "test:watch": "mocha --require babel-register --colors -w ./test/*.spec.js",
-    "test:cover": "cross-env NODE_ENV=test nyc mocha --require babel-register --colors test/*.js",
-    "repl": "node -i -e \"$(< ./lib/webpack-library-starter.js)\""
+    "test:cover": "cross-env NODE_ENV=test nyc mocha --require babel-register --colors test/*.js"
   },
   "keywords": [
     "es6",
     "lodash/fp"
   ],
   "directories": {
+    "dist": "dist",
     "src": "src",
     "test": "__tests__"
   },
   "files": [
-    "src"
+    "dist"
   ],
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
     "@lcluber/bumpjs": "^0.5.4",
-    "@mob/client": "^1.0.0",
-    "@mob/core": "^1.0.0",
+    "contour-2d": "^1.0.0",
     "intersects": "^2.5.2",
-    "lodash": "^4.17.11",
-    "pixi.js": "^4.8.6"
+    "lodash": "^4.17.21",
+    "ndarray-pack": "^1.2.1",
+    "pixi.js": "^6.0.0",
+    "rectangle-decomposition": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.4",
-    "@babel/preset-env": "^7.4.4",
-    "babel-eslint": "^10.0.1",
-    "babel-loader": "^8.0.5",
-    "babel-plugin-add-module-exports": "^1.0.2",
-    "babel-plugin-istanbul": "^5.1.4",
+    "@babel/cli": "^7.20.7",
+    "@babel/core": "^7.20.12",
+    "@babel/preset-env": "^7.20.2",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^9.1.2",
+    "babel-plugin-add-module-exports": "^1.0.4",
+    "babel-plugin-istanbul": "^6.1.1",
     "babel-register": "^6.26.0",
     "chai": "^4.2.0",
     "create-index": "^2.4.0",
     "cross-env": "^5.2.0",
-    "eslint": "5.7.0",
-    "eslint-loader": "^2.1.2",
+    "eslint": "^8.32.0",
+    "eslint-loader": "^4.0.2",
     "jsdom": "^15.0.0",
     "jsdom-global": "^3.0.2",
     "lerna-alias": "^3.0.2",
     "mocha": "^6.1.4",
+    "nodemon": "^1.19.1",
     "nyc": "^14.1.0",
-    "uglifyjs-webpack-plugin": "^2.1.2",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.2",
     "yargs": "^13.2.2"
   }
 }

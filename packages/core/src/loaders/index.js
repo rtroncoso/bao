@@ -1,12 +1,11 @@
-// @create-index
-
-export { default as bodies } from './bodies';
-export { default as effects } from './effects';
-export { default as graphics } from './graphics';
-export { default as heads } from './heads';
-export { default as helmets } from './helmets';
-export { default as shields } from './shields';
-export { default as spritesheets } from './spritesheets';
-export { default as util } from './util.js';
-export { default as weapons } from './weapons';
+export * as BodyLoader from './bodies';
+export * as EffectLoader from './effects';
+export * as GraphicLoader from './graphics';
+export * as HeadLoader from './heads';
+export * as HelmetLoader from './helmets';
+export * as MapLoader from './maps';
+export * as ShieldLoader from './shields';
+export * as SpritesheetLoader from './spritesheets';
+export * as LoaderUtil from './util';
+export * as WepaonLoader from './weapons';
 

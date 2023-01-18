@@ -15,17 +15,19 @@ export const loginQuery = {
   options: {
     method: 'POST'
   },
-  url: `${process.env.MOB_API}/client/accounts/login`,
+  url: `${process.env.NEXT_PUBLIC_MOB_API}/accounts/login`
 };
 
 export const transformLoginResponse = (responseBody: LoginSuccessResponse) => {
   const account = responseBody.account;
   const token = responseBody.token;
-  const characters = account.characters!
-    .reduce<CharacterEntity>((acc, character: CharacterModel) => {
+  const characters = account.characters?.reduce<CharacterEntity>(
+    (acc, character: CharacterModel) => {
       acc[character.id] = character;
       return acc;
-    }, {} as CharacterEntity);
+    },
+    {}
+  );
   delete account.characters;
   account.token = token;
 
@@ -33,7 +35,7 @@ export const transformLoginResponse = (responseBody: LoginSuccessResponse) => {
     account,
     characters,
     token
-  }
+  };
 };
 
 const login = (body: LoginRequestParameters): QueryConfig<AccountEntities> => {
@@ -44,8 +46,8 @@ const login = (body: LoginRequestParameters): QueryConfig<AccountEntities> => {
     update: {
       account: merge,
       characters: merge
-    },
-  }
+    }
+  };
 };
 
 export default login;

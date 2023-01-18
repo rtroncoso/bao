@@ -1,4 +1,4 @@
-import Effect from '@mob/core/src/models/data/Effect';
+import Effect from '@mob/core/models/data/Effect';
 import { findAnimation, transform } from '../util';
 
 /**
