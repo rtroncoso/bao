@@ -8,8 +8,13 @@
 # testing
 /coverage
 
-# next.js 
+# next.js
 .next
+
+# next-pwa
+**/public/workbox-*.js
+**/public/sw.js
+**/public/worker-*.js
 
 # misc
 .DS_Store

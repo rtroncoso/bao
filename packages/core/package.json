@@ -8,9 +8,10 @@
   "main": "src/index.ts",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "clean": "rimraf dist",
     "dev": "npm run start",
-    "start": "nodemon --watch src --exec tsc",
+    "build": "npm run clean && tsc",
+    "start": "nodemon --watch src --exec npm run build",
     "test": "mocha --require babel-register --colors ./test/*.spec.js",
     "test:watch": "mocha --require babel-register --colors -w ./test/*.spec.js",
     "test:cover": "cross-env NODE_ENV=test nyc mocha --require babel-register --colors test/*.js"
@@ -35,10 +36,10 @@
     "chai": "^4.2.0",
     "cross-env": "^5.2.0",
     "eslint": "^8.32.0",
-    "eslint-loader": "^4.0.2",
     "mocha": "^6.1.4",
     "nodemon": "^1.19.1",
     "nyc": "^14.1.0",
+    "rimraf": "^4.1.1",
     "yargs": "^13.2.2"
   }
 }

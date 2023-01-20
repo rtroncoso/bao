@@ -30,8 +30,9 @@ export class OnJoinCommand extends Command<WorldRoom, OnJoinParameters> {
 
       const account = await this.accountService.findOne(options.account.id);
       const apiCharacter = (account.characters || []).find(
-        (c: any) => c.id === options.characterId
+        (c: any) => c.id === parseInt(options.characterId as string, 10)
       );
+      console.log(account, options, apiCharacter);
 
       if (!apiCharacter) {
         throw {
@@ -54,10 +55,13 @@ export class OnJoinCommand extends Command<WorldRoom, OnJoinParameters> {
       character.name = apiCharacter.name;
       character.sessionId = client.sessionId;
       this.state.characters.set(client.sessionId, character);
+      console.log(character);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new ServerError(parseInt(error.code, 10) || 500, error.message);
       }
+
+      throw new ServerError(error.code, error.message);
     }
   }
 }

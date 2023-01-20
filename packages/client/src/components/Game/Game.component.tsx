@@ -28,6 +28,8 @@ export const Systems: React.FC = () => {
 };
 
 export const GameComponent: React.FC<GameComponentProps> = () => {
+  if (typeof window === undefined) return null;
+
   return (
     <GameStyled>
       <ReactReduxContext.Consumer>

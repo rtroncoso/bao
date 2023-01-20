@@ -74,8 +74,6 @@ const plugins = [
 
 module.exports = {
   content: [
-    '../../packages/client/**/*.{js,ts,jsx,tsx}',
-    '../../packages/core/**/*.{js,ts,jsx,tsx}',
     './src/**/*.{js,ts,jsx,tsx}',
     './pages/**/*.{js,ts,jsx,tsx}',
     './public/index.html'

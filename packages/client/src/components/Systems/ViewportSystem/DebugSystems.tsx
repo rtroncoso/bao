@@ -93,7 +93,7 @@ export const DebugGridSystem = () => {
     } catch (error) {
       callbacks.handleLeaveRoom(error);
     }
-  }, []); // eslint-disable-line
+  }, []);
 
   useTick((delta: number) => {
     if (filter) {
@@ -133,6 +133,7 @@ export const DebugGridSystem = () => {
 export const DebugTextSystem: React.FC = () => {
   const { viewportState } = useViewport();
   const { currentCharacter } = viewportState;
+  console.log(currentCharacter);
 
   return (
     currentCharacter && (

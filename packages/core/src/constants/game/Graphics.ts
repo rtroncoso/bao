@@ -1,4 +1,4 @@
-import { TILE_SIZE } from '@mob/core/constants/game';
+import { TILE_SIZE } from './Map';
 
 export const NORMAL_SPRITESHEETS = 2;
 export const TILESET_SPRITESHEETS = 22;

@@ -13,7 +13,6 @@ import { Input } from '@mob/client/components/Input';
 
 import { LoginConnectedProps, FormValues } from './Login.container';
 import LoginStyled from './Login.styles';
-import { Graphic } from '@mob/core';
 
 type LoginProps = LoginConnectedProps & FormikProps<FormValues>;
 
@@ -28,8 +27,6 @@ const Login: React.FC<LoginProps> = ({
   touched,
   values
 }) => {
-  const graphic = new Graphic({ id: 0 });
-  console.log(graphic);
   return (
     <LoginStyled>
       {isLoading && (

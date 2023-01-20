@@ -1,17 +1,16 @@
 const { compose } = require('@reduxjs/toolkit');
 const withPWA = require('next-pwa');
 const withTM = require('next-transpile-modules');
+const withTwin = require('./lib/withTwin.js')
 
 const prod = process.env.NODE_ENV === 'production';
 
+/** @type {import('next').NextConfig} */
 const config = {
-  compiler: {
-    styledComponents: true
-  },
-  images: {
-    domains: []
-  },
   reactStrictMode: true,
+  compiler: {
+    styledComponents: true,
+  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback.fs = false;
@@ -28,6 +27,7 @@ const config = {
 };
 
 module.exports = compose(
+  withTwin,
   withTM(['@mob/core']),
   withPWA({
     disable: prod ? false : true,
