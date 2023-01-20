@@ -11,6 +11,9 @@
 # next.js
 .next
 
+# lib
+!lib
+
 # next-pwa
 **/public/workbox-*.js
 **/public/sw.js
