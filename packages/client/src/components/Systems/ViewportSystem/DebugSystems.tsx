@@ -117,6 +117,7 @@ export const DebugGridSystem = () => {
         filters={[viewportState.filter]}
         draw={(g) => {
           g.clear();
+          g.beginFill(0x000);
           g.drawRect(
             viewportState.projection.x,
             viewportState.projection.y,
@@ -133,7 +134,6 @@ export const DebugGridSystem = () => {
 export const DebugTextSystem: React.FC = () => {
   const { viewportState } = useViewport();
   const { currentCharacter } = viewportState;
-  console.log(currentCharacter);
 
   return (
     currentCharacter && (

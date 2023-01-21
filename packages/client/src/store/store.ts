@@ -26,6 +26,12 @@ const persistConfig = {
     'entities.animations',
     'entities.graphics',
     'entities.manifest',
+    'entities.bodies',
+    'entities.effects',
+    'entities.heads',
+    'entities.helmets',
+    'entities.shields',
+    'entities.weapons',
     'errors',
     'queries'
   ],

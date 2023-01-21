@@ -100,13 +100,13 @@ importers:
       '@fortawesome/react-fontawesome': ^0.1.12
       '@inlet/react-pixi': ^6.8.0
       '@mob/core': workspace:*
+      '@pixi/assets': ^6.3.1
       '@pixi/constants': ^6.3.1
       '@pixi/core': ^6.3.1
       '@pixi/display': ^6.3.1
       '@pixi/extensions': ^6.3.1
       '@pixi/filter-alpha': ^6.3.1
       '@pixi/filter-blur': ^6.3.1
-      '@pixi/loaders': ^6.3.1
       '@pixi/math': ^6.3.1
       '@pixi/runner': ^6.3.1
       '@pixi/settings': ^6.3.1
@@ -199,13 +199,13 @@ importers:
       '@fortawesome/react-fontawesome': 0.1.19_6uk63tqcq2kfmhhlivxd3orcjq
       '@inlet/react-pixi': 6.8.0_jscvkqii6emt2bytxeadjnvpsi
       '@mob/core': link:../core
+      '@pixi/assets': 6.5.8_mefptrzz3gnrukhpputzebs52m
       '@pixi/constants': 6.5.8
       '@pixi/core': 6.5.8_plvhmba5imzl5ocyxvgulib4y4
       '@pixi/display': 6.5.8_iuuj35lwfm7xh3uibmbysjulzi
       '@pixi/extensions': 6.5.8
       '@pixi/filter-alpha': 6.5.8_@pixi+core@6.5.8
       '@pixi/filter-blur': 6.5.8_ruze7uo4dqey55gax24ufeqa5m
-      '@pixi/loaders': 6.5.8_6ckrlwn7winopwhi64blk5ppm4
       '@pixi/math': 6.5.8
       '@pixi/runner': 6.5.8
       '@pixi/settings': 6.5.8_@pixi+constants@6.5.8
@@ -2766,6 +2766,25 @@ packages:
       '@pixi/utils': 6.5.8_qeualvkmgwo4nudflomrx2dohe
     dev: false
 
+  /@pixi/assets/6.5.8_mefptrzz3gnrukhpputzebs52m:
+    resolution: {integrity: sha512-I7murs87QfrX8u4gA1ZS7l0Hh2U+r/HUU4nfp+8QZfyimkfJdtNU3zTnnLKIfCGb8bAYuZImP7KVI4xFe7boVA==}
+    peerDependencies:
+      '@pixi/basis': 6.5.8
+      '@pixi/compressed-textures': 6.5.8
+      '@pixi/constants': 6.5.8
+      '@pixi/core': 6.5.8
+      '@pixi/settings': 6.5.8
+      '@pixi/spritesheet': 6.5.8
+      '@pixi/text-bitmap': 6.5.8
+      '@pixi/utils': 6.5.8
+    dependencies:
+      '@pixi/constants': 6.5.8
+      '@pixi/core': 6.5.8_plvhmba5imzl5ocyxvgulib4y4
+      '@pixi/settings': 6.5.8_@pixi+constants@6.5.8
+      '@pixi/utils': 6.5.8_qeualvkmgwo4nudflomrx2dohe
+      '@types/css-font-loading-module': 0.0.7
+    dev: false
+
   /@pixi/compressed-textures/6.5.8_6sccgft4tfscgy6lbpvpmi22cq:
     resolution: {integrity: sha512-nW74kcvdEoe4a2U7Ekx4egqdH1tYKC2kCOZxKWYcUARqz26tS0ddwSRyIs05In6EChmXHXGy/MtShdueMH38TA==}
     peerDependencies:
@@ -3980,6 +3999,10 @@ packages:
     dependencies:
       '@types/node': 14.18.36
     dev: true
+
+  /@types/css-font-loading-module/0.0.7:
+    resolution: {integrity: sha512-nl09VhutdjINdWyXxHWN/w9zlNCfr60JUqJbd24YXUuCwgeL0TpFSdElCwb6cxfB6ybE19Gjj4g0jsgkXxKv1Q==}
+    dev: false
 
   /@types/earcut/2.1.1:
     resolution: {integrity: sha512-w8oigUCDjElRHRRrMvn/spybSMyX8MTkKA5Dv+tS1IE/TgmNZPqUYtvYBXGY8cieSE66gm+szeK+bnbxC2xHTQ==}
