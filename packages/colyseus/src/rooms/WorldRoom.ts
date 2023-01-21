@@ -9,6 +9,8 @@ import { OnLeaveCommand } from '@mob/server/commands/OnLeave';
 import { AuthService } from '@mob/server/services/AuthService';
 import { WorldRoomState } from '@mob/server/schema/WorldRoomState';
 import { MovementSystem } from '@mob/server/systems';
+import { CharacterState } from '@/schema/CharacterState';
+import { ArraySchema, MapSchema } from '@colyseus/schema';
 
 export class WorldRoom extends Room {
   movementSystem: MovementSystem;
@@ -25,6 +27,22 @@ export class WorldRoom extends Room {
         client
       });
     });
+
+    const characters = new MapSchema<CharacterState>();
+    new Array(100).fill(0).forEach(() => {
+      function randomIntFromInterval(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+      }
+      const character = new CharacterState();
+      character.sessionId = (Math.random() + 1).toString(36).substring(7);
+      character.name = (Math.random() + 1).toString(36).substring(7);
+      character.x = randomIntFromInterval(-1000, 1000);
+      character.y = randomIntFromInterval(-1000, 1000);
+      characters.set(character.sessionId, character);
+    });
+
+    this.state.characters = characters;
+    console.log(this.state);
   }
 
   public async onAuth(

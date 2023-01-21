@@ -1,4 +1,3 @@
-import { Physics as BumpPhysics } from '@lcluber/bumpjs';
 export interface CreateBodyParameters {
   x: number;
   y: number;
@@ -28,18 +27,18 @@ export const createBody = ({
   damping = 1.0,
   restitution = 0.0,
   type = Shapes.RECTANGLE
-}) => new BumpPhysics(
+}) => ({
   x,
   y,
-  0,
-  0,
+  velocityX: 0,
+  velocityY: 0,
   width,
   height,
   mass,
   damping,
   restitution,
   type
-);
+});
 
 export const createRectangle = ({
   type = Shapes.RECTANGLE,

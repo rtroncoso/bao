@@ -1,3 +1,4 @@
+import { TilePosition } from '@/schema/MapState';
 import { ArraySchema, Schema, type } from '@colyseus/schema';
 
 export class CharacterState extends Schema {
@@ -9,6 +10,18 @@ export class CharacterState extends Schema {
 
   @type('string')
   public name?: string;
+
+  @type('uint8')
+  public heading = 0;
+
+  @type(TilePosition)
+  public tile = new TilePosition();
+
+  @type(TilePosition)
+  public targetTile?: TilePosition = null;
+
+  @type('boolean')
+  public isMoving = false;
 
   @type('float32')
   public x = 0;

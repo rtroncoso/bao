@@ -37,14 +37,14 @@ export function usePressedKeys() {
     };
 
     const downHandler = ({ key }: { key: string }) => {
-      if (keys.indexOf(key) === -1) {
-        keys.push(key);
+      if (keys.indexOf(key.toLowerCase()) === -1) {
+        keys.push(key.toLowerCase());
         setKeys([...keys]);
       }
     };
 
     const upHandler = ({ key }: { key: string }) => {
-      const index = keys.indexOf(key);
+      const index = keys.indexOf(key.toLowerCase());
       if (index !== -1) {
         keys.splice(index, 1);
         setKeys([...keys]);
