@@ -34,5 +34,5 @@ clientRouter.get('/:id/inventory', inventory)
 
 export default {
   admin: adminRouter,
-  client: clientRouter
+  client: clientRouter,
 }

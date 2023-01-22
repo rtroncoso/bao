@@ -2,23 +2,21 @@ import * as ObjectModel from './model'
 
 export const find = async ({
   ids,
-  //name,
-  //transaction,
-  //user
+  // name,
+  // transaction,
+  // user
 } = {}) => {
   const result = await ObjectModel.find({
-    ids
+    ids,
   })
 
   return result
 }
 
-export const findOne = async ({
-	id
-} = {}) => {
+export const findOne = async ({ id } = {}) => {
   const result = await ObjectModel.findOne({
-  	id
+    id,
   })
-  
+
   return result
 }

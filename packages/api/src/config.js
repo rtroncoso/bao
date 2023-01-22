@@ -6,7 +6,7 @@ dotenv.config({ path: path.resolve(envPath, '.env') })
 
 const app = {
   rootDir: `${__dirname}/src`,
-  port: process.env.PORT || 3000
+  port: process.env.PORT || 3000,
 }
 
 const db = {
@@ -15,8 +15,9 @@ const db = {
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
   user: process.env.DB_USER,
-};
+}
 
 export default {
-  app, db
+  app,
+  db,
 }

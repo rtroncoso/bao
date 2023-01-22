@@ -2,7 +2,7 @@ import {
   validateFind,
   validateFindOne,
   validateLogin,
-  validateToken
+  validateToken,
 } from './validator'
 
 import * as accounts from './controller'
@@ -46,15 +46,14 @@ export const login = async (req, res, next) => {
 export const getAccountFromToken = async (req, res, next) => {
   try {
     const params = validateToken(req)
-    const accountFromToken = await accounts.getAccountFromToken({ ...params})
-    const account = await accounts.findOne({id: accountFromToken.id})
+    const accountFromToken = await accounts.getAccountFromToken({ ...params })
+    const account = await accounts.findOne({ id: accountFromToken.id })
 
-    req.account = account;
-    next();
+    req.account = account
+    next()
   } catch (err) {
-
-    if(err.name == 'JsonWebTokenError'){
-      return next(new Error("NOT_AUTHORIZED"));
+    if (err.name == 'JsonWebTokenError') {
+      return next(new Error('NOT_AUTHORIZED'))
     }
 
     next(err)

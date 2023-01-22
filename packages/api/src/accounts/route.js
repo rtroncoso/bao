@@ -1,9 +1,5 @@
 import express from 'express'
-import {
-  find,
-  findOne,
-  login
-} from './middleware'
+import { find, findOne, login } from './middleware'
 
 //import { getUserFromToken, isAdmin } from '../auth/middleware'
 
@@ -18,5 +14,5 @@ clientRouter.post('/login', login)
 
 export default {
   admin: adminRouter,
-  client: clientRouter
+  client: clientRouter,
 }

@@ -1,42 +1,41 @@
-
-export const validateFind = req => {
+export const validateFind = (req) => {
   const ids = req.query.ids ? req.query.ids.split(',') : null
 
   return {
-    ids
+    ids,
   }
 }
 
-export const validateFindOne = req => {
-  const id = req.params.id;
+export const validateFindOne = (req) => {
+  const id = req.params.id
 
   return {
-    id
+    id,
   }
 }
 
-export const validateLogin = req => {
-  const username = req.body.username;
-  const password = req.body.password;
+export const validateLogin = (req) => {
+  const username = req.body.username
+  const password = req.body.password
 
   if (!username || !password) {
-    throw new Error("MISSING_PARAMS");
+    throw new Error('MISSING_PARAMS')
   }
 
   return {
     username,
-    password
+    password,
   }
 }
 
-export const validateToken = req => {
-  const token = req.headers['x-auth'];
+export const validateToken = (req) => {
+  const token = req.headers['x-auth']
 
   if (!token) {
-    throw new Error("MISSING_PARAMS");
+    throw new Error('MISSING_PARAMS')
   }
 
   return {
-    token
+    token,
   }
 }

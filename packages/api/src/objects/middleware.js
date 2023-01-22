@@ -1,7 +1,4 @@
-import {
-  validateFind,
-  validateFindOne,
-} from './validator'
+import { validateFind, validateFindOne } from './validator'
 
 import * as objects from './controller'
 

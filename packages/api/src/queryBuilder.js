@@ -91,7 +91,7 @@ export class QueryBuilder {
         'OUTER',
         'INNER',
         'LEFT OUTER',
-        'RIGHT OUTER'
+        'RIGHT OUTER',
       ]
       if (types.indexOf(type) == -1) {
         type = ''
@@ -175,4 +175,3 @@ export class QueryBuilder {
     })
   }
 }
-

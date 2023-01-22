@@ -5,11 +5,11 @@ const pool = mysql.createPool(config.db)
 
 async function connect(cb) {
   return new Promise((resolve, reject) => {
-    pool.on('connection', function(connection) {
-      connection.on('error', function(err) {
+    pool.on('connection', function (connection) {
+      connection.on('error', function (err) {
         //logger.error('MySQL error event', err)
       })
-      connection.on('close', function(err) {
+      connection.on('close', function (err) {
         //logger.warn('MySQL close event', err)
       })
     })
@@ -64,5 +64,5 @@ async function execSP(spName, params) {
 export default {
   connect,
   executeQuery,
-  execSP
+  execSP,
 }

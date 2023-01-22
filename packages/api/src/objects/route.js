@@ -31,5 +31,5 @@ clientRouter.get('/:id', findOne)
 
 export default {
   admin: adminRouter,
-  client: clientRouter
+  client: clientRouter,
 }

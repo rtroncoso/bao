@@ -22,16 +22,14 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@mob/api/*": ["../api/src/*"],
-      "@mob/api": ["../api/src"],
-      "@mob/client/*": ["../client/src/*"],
-      "@mob/client": ["../client/src"],
-      "@mob/core/*": ["../core/src/*"],
-      "@mob/core": ["../core/src"],
-      "@mob/server/*": ["../colyseus/src/*"],
-      "@mob/server": ["../colyseus/src"],
-      "@/*": ["./src/*"],
-      "@": ["./src"]
+      "@mob/client*": ["../../packages/client/src*"],
+      "@mob/server*": ["../../packages/colyseus/src*"],
+      "@mob/core*": ["../../packages/core/dist*"],
+      "@*": [
+        "../../packages/client/src*",
+        "../../packages/core/dist*",
+        "../../packages/colyseus/src*"
+      ]
     }
   }
 }

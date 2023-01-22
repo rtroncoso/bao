@@ -1,8 +1,4 @@
-import {
-  validateFind,
-  validateFindOne,
-  validateInventory,
-} from './validator'
+import { validateFind, validateFindOne, validateInventory } from './validator'
 
 import * as characters from './controller'
 

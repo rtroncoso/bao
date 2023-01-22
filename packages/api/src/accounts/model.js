@@ -1,42 +1,36 @@
 import db from '../db'
 import { QueryBuilder } from '../queryBuilder'
 
-export const find = async ({
-  ids,
-  username
-} = {}) => {
-  var qb = new QueryBuilder();
-  qb.select('*');
-  qb.from('accounts');
+export const find = async ({ ids, username } = {}) => {
+  var qb = new QueryBuilder()
+  qb.select('*')
+  qb.from('accounts')
 
   if (ids !== undefined) {
-    qb.whereIn('id', ids);
+    qb.whereIn('id', ids)
   }
 
   if (username) {
-    qb.where('username', username);
+    qb.where('username', username)
   }
 
-  var sql = await qb.get();
-  const accounts = await db.executeQuery(sql);
+  var sql = await qb.get()
+  const accounts = await db.executeQuery(sql)
 
-  if(!accounts.length){
-    throw new Error("NOT_FOUND");
+  if (!accounts.length) {
+    throw new Error('NOT_FOUND')
   }
 
-  return accounts;
+  return accounts
 }
 
-export const findOne = async ({
-  id,
-  username
-} = {}) => {
-  const ids = id ? [id] : undefined;
+export const findOne = async ({ id, username } = {}) => {
+  const ids = id ? [id] : undefined
 
   const [result] = await find({
     ids,
-    username
-  });
+    username,
+  })
 
-  return result;
+  return result
 }

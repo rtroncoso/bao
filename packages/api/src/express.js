@@ -14,7 +14,7 @@ let instance = null
 
 export default () => instance
 
-module.exports = app => {
+module.exports = (app) => {
   instance = app
   app.set('port', config.app.port)
 
@@ -26,7 +26,7 @@ module.exports = app => {
   app.use(
     bodyParser.urlencoded({
       limit: '50mb',
-      extended: true
+      extended: true,
     })
   )
 
@@ -49,7 +49,7 @@ module.exports = app => {
     const error =
       errors[err.message] ||
       Object.assign(errors.UNEXPECTED_ERROR, {
-        variables: { details: err.message }
+        variables: { details: err.message },
       })
 
     res.status(error.code)
@@ -58,13 +58,13 @@ module.exports = app => {
         ? {
             message: error.message,
             payload: err.payload || error.payload,
-            variables: err.variables || error.variables
+            variables: err.variables || error.variables,
           }
         : {
             message: error.message,
             payload: err.payload || error.payload,
             variables: err.variables || error.variables,
-            stack: err.stack
+            stack: err.stack,
           }
     )
   })
