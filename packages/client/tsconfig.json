@@ -13,7 +13,7 @@
     "next.config.js"
   ],
   "include": [
-    "src/mob-core.d.ts",
+    "src/bao-core.d.ts",
     "src/twin.d.ts",
     "src/next-env.d.ts",
     "src/react-app-env.d.ts",

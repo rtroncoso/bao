@@ -1,6 +1,6 @@
 import { ErrorsState, QueriesState } from 'redux-query';
 
-import { AccountEntities } from '@mob/client/queries/account';
+import { AccountEntities } from '@bao/client/queries/account';
 import { AssetEntities } from './assets';
 
 export type EntitiesState = AccountEntities & AssetEntities;

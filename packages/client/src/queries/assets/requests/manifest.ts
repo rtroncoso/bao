@@ -1,6 +1,6 @@
 import { QueryConfig } from 'redux-query';
 
-import { merge } from '@mob/client/queries/shared';
+import { merge } from '@bao/client/queries/shared';
 import { AssetEntities, LoadManifestPayload, ManifestModel } from '../models';
 
 export const loadManifestQuery = {
@@ -11,7 +11,7 @@ export const loadManifestQuery = {
     method: 'GET'
   },
   queryKey: 'loadManifest:GET',
-  url: `${process.env.NEXT_PUBLIC_MOB_ASSETS}/manifest.json`
+  url: `${process.env.NEXT_PUBLIC_BAO_ASSETS}/manifest.json`
 };
 
 export const transformManifestResponse = (manifest: ManifestModel) => {

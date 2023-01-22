@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
 import React, { useCallback, useState } from 'react';
 
-import { ContainerStyled } from '@mob/client/components/App/App.styles';
-import { Button } from '@mob/client/components/Button';
-import { CharacterModel } from '@mob/client/queries/account';
+import { ContainerStyled } from '@bao/client/components/App/App.styles';
+import { Button } from '@bao/client/components/Button';
+import { CharacterModel } from '@bao/client/queries/account';
 import { CharacterSelectionConnectedProps } from './CharacterSelection.container';
 import {
   CharacterListStyled,

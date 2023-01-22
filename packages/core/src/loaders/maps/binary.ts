@@ -1,15 +1,15 @@
 import range from 'lodash/fp/range';
-import { HEADER_SIZE, INF_HEADER_SIZE, MAP_SIZE } from '@mob/core/constants/game/Map';
-import { JsonGraphicState } from '@mob/core/loaders/graphics';
-import { parseJsonTile, mapLayers, JsonTile } from '@mob/core/loaders/maps/json';
+import { HEADER_SIZE, INF_HEADER_SIZE, MAP_SIZE } from '@bao/core/constants/game/Map';
+import { JsonGraphicState } from '@bao/core/loaders/graphics';
+import { parseJsonTile, mapLayers, JsonTile } from '@bao/core/loaders/maps/json';
 import {
   Graphic,
   LayeredTile,
   MapObject,
   Npc,
   TileExit
-} from '@mob/core/models';
-import { BufferAdapter } from '@mob/core/util';
+} from '@bao/core/models';
+import { BufferAdapter } from '@bao/core/util';
 
 /**
  * Parses basic & inf tile data from buffers

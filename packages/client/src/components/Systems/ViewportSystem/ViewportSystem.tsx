@@ -2,10 +2,10 @@ import { Container, useTick } from '@inlet/react-pixi';
 import { Container as PixiContainer, Filter } from 'pixi.js';
 import React, { createContext, useContext, useRef } from 'react';
 
-import { useGame } from '@mob/client/components/Game';
-import { SetStateCallback, useLocalStateReducer } from '@mob/client/hooks';
-import { App } from '@mob/core/constants/game';
-import { CharacterState } from '@mob/server/schema/CharacterState';
+import { useGame } from '@bao/client/components/Game';
+import { SetStateCallback, useLocalStateReducer } from '@bao/client/hooks';
+import { App } from '@bao/core/constants/game';
+import { CharacterState } from '@bao/server/schema/CharacterState';
 import { DebugGridSystem, DebugTextSystem } from './DebugSystems';
 
 export interface ViewportProps {

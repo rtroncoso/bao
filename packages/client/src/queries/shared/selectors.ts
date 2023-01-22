@@ -1,7 +1,7 @@
 import { ResponseBody } from 'redux-query';
 
-import { State } from '@mob/client/store';
-import { getErrors, getQueries } from '@mob/client/queries';
+import { State } from '@bao/client/store';
+import { getErrors, getQueries } from '@bao/client/queries';
 
 export const selectErrors = (state: State, queryKey: string) => {
   const errors = getErrors(state);

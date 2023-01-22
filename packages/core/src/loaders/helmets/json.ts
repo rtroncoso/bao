@@ -3,8 +3,8 @@ import { reduce } from 'lodash/fp';
 import {
   JsonGraphicState,
   parseDirectionGraphicByModel
-} from '@mob/core/loaders';
-import { Helmet } from '@mob/core/models';
+} from '@bao/core/loaders';
+import { Helmet } from '@bao/core/models';
 
 export interface JsonHelmetModel {
   down: number;

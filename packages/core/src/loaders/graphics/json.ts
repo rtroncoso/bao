@@ -1,5 +1,5 @@
-import { getGraphicsFilePath } from '@mob/core/loaders/util';
-import { Graphic } from '@mob/core/models/data/shared';
+import { getGraphicsFilePath } from '@bao/core/loaders/util';
+import { Graphic } from '@bao/core/models/data/shared';
 import reduce from 'lodash/fp/reduce';
 
 export interface JsonGraphicModel {

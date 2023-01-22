@@ -1,5 +1,5 @@
-import { findAnimation } from '@mob/core/loaders/util';
-import { Effect, Graphic } from '@mob/core/models';
+import { findAnimation } from '@bao/core/loaders/util';
+import { Effect, Graphic } from '@bao/core/models';
 import reduce from 'lodash/fp/reduce';
 
 export interface JsonEffectModel {

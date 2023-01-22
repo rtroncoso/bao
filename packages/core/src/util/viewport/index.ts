@@ -1,7 +1,7 @@
 import { Rectangle } from 'pixi.js';
 
-import { TILE_SIZE } from '@mob/core/constants';
-import { Tiled } from '@mob/core/models';
+import { TILE_SIZE } from '@bao/core/constants';
+import { Tiled } from '@bao/core/models';
 
 export const calculateProjectionMatrix = (tmx: Tiled, camera: Rectangle, culling: number) => {
   const bounds = new Rectangle();

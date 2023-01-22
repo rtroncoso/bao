@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `mob`
+-- Base de datos: `bao`
 --
 
 -- --------------------------------------------------------
@@ -49,7 +49,7 @@ CREATE TABLE `characters` (
 --
 
 INSERT INTO `characters` (`id`, `accountId`, `name`, `classId`, `raceId`, `body`, `head`, `helmet`, `shield`, `weapon`, `genre`, `world`, `x`, `y`) VALUES
-(1, 1, 'OzMuye', 7, 2, 1, 1, NULL, NULL, NULL, 1, 1, 0, 0);
+(1, 1, 'Beta Tester', 7, 2, 1, 1, NULL, NULL, NULL, 1, 1, 0, 0);
 
 --
 -- Índices para tablas volcadas

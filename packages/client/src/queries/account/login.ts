@@ -1,6 +1,6 @@
 import { QueryConfig } from 'redux-query';
 
-import { merge } from '@mob/client/queries/shared';
+import { merge } from '@bao/client/queries/shared';
 import {
   AccountEntities,
   CharacterEntity,
@@ -16,7 +16,7 @@ export const loginQuery = {
     method: 'POST'
   },
   queryKey: 'login:POST',
-  url: `${process.env.NEXT_PUBLIC_MOB_API}/accounts/login`
+  url: `${process.env.NEXT_PUBLIC_BAO_API}/accounts/login`
 };
 
 export const transformLoginResponse = (responseBody: LoginSuccessResponse) => {

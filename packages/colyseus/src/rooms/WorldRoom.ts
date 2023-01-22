@@ -3,15 +3,15 @@ import http from 'http';
 import { Client, Room } from 'colyseus';
 import { Dispatcher } from '@colyseus/command';
 
-import { OnJoinCommand } from '@mob/server/commands/OnJoin';
-import { InputParameters, OnInputCommand } from '@mob/server/commands/OnInput';
-import { OnLeaveCommand } from '@mob/server/commands/OnLeave';
-import { AuthService } from '@mob/server/services/AuthService';
-import { WorldRoomState } from '@mob/server/schema/WorldRoomState';
-import { MovementSystem } from '@mob/server/systems';
+import { OnJoinCommand } from '@bao/server/commands/OnJoin';
+import { InputParameters, OnInputCommand } from '@bao/server/commands/OnInput';
+import { OnLeaveCommand } from '@bao/server/commands/OnLeave';
+import { AuthService } from '@bao/server/services/AuthService';
+import { WorldRoomState } from '@bao/server/schema/WorldRoomState';
+import { MovementSystem } from '@bao/server/systems';
 import { CharacterState } from '@/schema/CharacterState';
 import { ArraySchema } from '@colyseus/schema';
-import { TILE_SIZE } from '@mob/core';
+import { TILE_SIZE } from '@bao/core';
 
 export class WorldRoom extends Room<WorldRoomState> {
   movementSystem: MovementSystem;

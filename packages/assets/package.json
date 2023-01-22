@@ -1,19 +1,19 @@
 {
-  "name": "@mob/assets",
+  "name": "@bao/assets",
   "version": "0.1.0",
-  "description": "Mob Assets Repository",
+  "description": "Bao Assets Repository",
   "main": "index.js",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rtroncoso/mob.git"
+    "url": "git+https://github.com/rtroncoso/bao.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/rtroncoso/mob/issues"
+    "url": "https://github.com/rtroncoso/bao/issues"
   },
-  "homepage": "https://github.com/rtroncoso/mob#readme",
+  "homepage": "https://github.com/rtroncoso/bao#readme",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "staging": "./scripts/deploy.sh --environment staging",

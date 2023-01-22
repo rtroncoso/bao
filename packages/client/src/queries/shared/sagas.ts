@@ -1,6 +1,6 @@
 import { all, fork } from 'redux-saga/effects';
 
-import { assetSagas } from '@mob/client/queries/assets';
+import { assetSagas } from '@bao/client/queries/assets';
 
 export function* querySagas() {
   yield all([fork(assetSagas)]);

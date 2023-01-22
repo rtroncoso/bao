@@ -1,5 +1,5 @@
-import { Heading, TILE_SIZE } from '@mob/core';
-import { CharacterState } from '@mob/server/schema/CharacterState';
+import { Heading, TILE_SIZE } from '@bao/core';
+import { CharacterState } from '@bao/server/schema/CharacterState';
 import { TilePosition } from '@/schema/MapState';
 import { WorldRoom } from 'src/rooms/WorldRoom';
 

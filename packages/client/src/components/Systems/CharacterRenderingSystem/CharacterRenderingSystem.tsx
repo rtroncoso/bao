@@ -2,8 +2,8 @@ import { Container, PixiComponent, Text } from '@inlet/react-pixi';
 import { Graphics } from 'pixi.js';
 import React, { useContext } from 'react';
 
-import { defaultTextStyle, GameContext } from '@mob/client/components/Game';
-import { TILE_SIZE } from '@mob/core';
+import { defaultTextStyle, GameContext } from '@bao/client/components/Game';
+import { TILE_SIZE } from '@bao/core';
 
 interface RectangleProps {
   x?: number;

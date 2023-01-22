@@ -4,15 +4,15 @@ import { compose, Dispatch } from 'redux';
 import { requestAsync } from 'redux-query';
 import * as Yup from 'yup';
 
-import { withRedirect } from '@mob/client/components/Wrappers';
+import { withRedirect } from '@bao/client/components/Wrappers';
 import {
   login,
   loginQuery,
   LoginRequestPayload,
   selectAccount
-} from '@mob/client/queries/account';
-import { selectErrors, selectIsLoading } from '@mob/client/queries/shared';
-import { State } from '@mob/client/store';
+} from '@bao/client/queries/account';
+import { selectErrors, selectIsLoading } from '@bao/client/queries/shared';
+import { State } from '@bao/client/store';
 import Login from './Login.component';
 
 export interface FormValues {

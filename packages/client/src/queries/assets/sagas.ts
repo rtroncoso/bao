@@ -9,7 +9,7 @@ import {
 } from 'redux-saga/effects';
 import { Action } from 'typescript-fsa';
 
-import { selectToken } from '@mob/client/queries/account';
+import { selectToken } from '@bao/client/queries/account';
 import { loadAssets } from './actions';
 import {
   LoadAssetsPayload,
@@ -117,7 +117,7 @@ export function handleLoadSpritesheets(payload: LoadResourcePayload) {
   for (const tileset of manifest.textures.tilesets) {
     for (const extension of spritesheetExtensions) {
       loader.add(
-        `${process.env.NEXT_PUBLIC_MOB_ASSETS}/${tileset}.${extension}`
+        `${process.env.NEXT_PUBLIC_BAO_ASSETS}/${tileset}.${extension}`
       );
     }
   }
@@ -125,7 +125,7 @@ export function handleLoadSpritesheets(payload: LoadResourcePayload) {
   for (const animation of manifest.textures.animations) {
     for (const extension of spritesheetExtensions) {
       loader.add(
-        `${process.env.NEXT_PUBLIC_MOB_ASSETS}/${animation}.${extension}`
+        `${process.env.NEXT_PUBLIC_BAO_ASSETS}/${animation}.${extension}`
       );
     }
   }

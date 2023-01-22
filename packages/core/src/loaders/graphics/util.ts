@@ -13,9 +13,9 @@ import tap from 'lodash/fp/tap';
 import uniqBy from 'lodash/fp/uniqBy';
 import values from 'lodash/fp/values';
 
-import { TILE_SIZE } from '@mob/core/constants/game/Map';
-import { Graphic } from '@mob/core/models';
-import { getGraphicsFileName } from '@mob/core/loaders/util';
+import { TILE_SIZE } from '@bao/core/constants/game/Map';
+import { Graphic } from '@bao/core/models';
+import { getGraphicsFileName } from '@bao/core/loaders/util';
 
 export interface RegionFrame {
   x: number;

@@ -11,10 +11,10 @@ import {
   OBJECT_LAYER,
   TILE_EXIT_LAYER,
   TRIGGER_LAYER,
-} from '@mob/core/constants/game/Map';
-import { getDimensions, JsonGraphicState } from '@mob/core/loaders/graphics';
-import { findAnimation, findGraphic } from '@mob/core/loaders/util';
-import { Graphic, MapObject, Tile } from '@mob/core/models';
+} from '@bao/core/constants/game/Map';
+import { getDimensions, JsonGraphicState } from '@bao/core/loaders/graphics';
+import { findAnimation, findGraphic } from '@bao/core/loaders/util';
+import { Graphic, MapObject, Tile } from '@bao/core/models';
 
 export interface JsonTile {
   [key: string]: any;

@@ -1,14 +1,14 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
-import { withAuthGuard } from '@mob/client/components/Wrappers';
+import { withAuthGuard } from '@bao/client/components/Wrappers';
 import {
   AccountModel,
   CharacterModel,
   selectAccount,
   selectCharacters
-} from '@mob/client/queries/account';
-import { State } from '@mob/client/store';
+} from '@bao/client/queries/account';
+import { State } from '@bao/client/store';
 import CharacterSelectionComponent from './CharacterSelection.component';
 
 const mapStateToProps = (state: State) => {

@@ -3,10 +3,10 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
-import '@mob/client/assets/tailwind.css';
-import '@mob/client/assets/canvas.css';
-import { AppContainer } from '@mob/client/components/App';
-import { store, persistor } from '@mob/client/store';
+import '@bao/client/assets/tailwind.css';
+import '@bao/client/assets/canvas.css';
+import { AppContainer } from '@bao/client/components/App';
+import { store, persistor } from '@bao/client/store';
 
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';

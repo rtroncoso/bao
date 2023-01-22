@@ -45,12 +45,12 @@ program
       });
 
       const {
-        MOB_S3_BUCKET,
-        MOB_S3_ACCESS_KEY,
-        MOB_S3_SECRET_KEY,
-        MOB_S3_REGION,
+        BAO_S3_BUCKET,
+        BAO_S3_ACCESS_KEY,
+        BAO_S3_SECRET_KEY,
+        BAO_S3_REGION,
       } = process.env;
-      console.log(MOB_S3_BUCKET, MOB_S3_ACCESS_KEY, MOB_S3_SECRET_KEY, MOB_S3_REGION);
+      console.log(BAO_S3_BUCKET, BAO_S3_ACCESS_KEY, BAO_S3_SECRET_KEY, BAO_S3_REGION);
 
       const client = s3.createClient({
         maxAsyncS3: 20, // this is the default
@@ -59,9 +59,9 @@ program
         multipartUploadThreshold: 20971520, // this is the default (20 MB)
         multipartUploadSize: 15728640, // this is the default (15 MB)
         s3Options: {
-          accessKeyId: MOB_S3_ACCESS_KEY,
-          secretAccessKey: MOB_S3_SECRET_KEY,
-          region: MOB_S3_REGION ? MOB_S3_REGION : null,
+          accessKeyId: BAO_S3_ACCESS_KEY,
+          secretAccessKey: BAO_S3_SECRET_KEY,
+          region: BAO_S3_REGION ? BAO_S3_REGION : null,
         },
       });
 
@@ -71,7 +71,7 @@ program
         // that have no corresponding local file.
 
         s3Params: {
-          Bucket: MOB_S3_BUCKET,
+          Bucket: BAO_S3_BUCKET,
           Prefix: '',
           // other options supported by putObject, except Body and ContentLength.
           // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property

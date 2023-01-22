@@ -1,7 +1,7 @@
-// import { HEADINGS, EAST, NORTH, SOUTH, WEST } from '@mob/core/constants/game/Game';
+// import { HEADINGS, EAST, NORTH, SOUTH, WEST } from '@bao/core/constants/game/Game';
 import reduce from 'lodash/fp/reduce';
-import { parseDirectionAnimationByModel } from '@mob/core/loaders';
-import { Graphic, Weapon } from '@mob/core/models';
+import { parseDirectionAnimationByModel } from '@bao/core/loaders';
+import { Graphic, Weapon } from '@bao/core/models';
 
 export interface JsonWeaponModel {
   down: number;
