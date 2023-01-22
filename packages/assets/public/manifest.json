@@ -1,0 +1,57 @@
+{
+  "audio": {},
+  "init": {
+    "bodies": "init/bodies.json",
+    "effects": "init/effects.json",
+    "graphics": "init/graphics.json",
+    "heads": "init/heads.json",
+    "helmets": "init/helmets.json",
+    "objects": "init/objects.json",
+    "shields": "init/shields.json",
+    "weapons": "init/weapons.json"
+  },
+  "maps": {
+    "1": "maps/1.json",
+    "34": "maps/34.json"
+  },
+  "textures": {
+    "animations": [
+      "textures/animations/animations-1",
+      "textures/animations/animations-2",
+      "textures/animations/animations-3",
+      "textures/animations/animations-4",
+      "textures/animations/animations-5",
+      "textures/animations/animations-6",
+      "textures/animations/animations-7",
+      "textures/animations/animations-8",
+      "textures/animations/animations-9",
+      "textures/animations/animations-10",
+      "textures/animations/animations-11",
+      "textures/animations/animations-12"
+    ],
+    "tilesets": [
+      "textures/tilesets/tilesets-1",
+      "textures/tilesets/tilesets-2",
+      "textures/tilesets/tilesets-3",
+      "textures/tilesets/tilesets-4",
+      "textures/tilesets/tilesets-5",
+      "textures/tilesets/tilesets-6",
+      "textures/tilesets/tilesets-7",
+      "textures/tilesets/tilesets-8",
+      "textures/tilesets/tilesets-9",
+      "textures/tilesets/tilesets-10",
+      "textures/tilesets/tilesets-11",
+      "textures/tilesets/tilesets-12",
+      "textures/tilesets/tilesets-13",
+      "textures/tilesets/tilesets-14",
+      "textures/tilesets/tilesets-15",
+      "textures/tilesets/tilesets-16",
+      "textures/tilesets/tilesets-17",
+      "textures/tilesets/tilesets-18",
+      "textures/tilesets/tilesets-19",
+      "textures/tilesets/tilesets-20",
+      "textures/tilesets/tilesets-21",
+      "textures/tilesets/tilesets-22"
+    ]
+  }
+}

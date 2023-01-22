@@ -1,0 +1,27 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "noEmit": true,
+    "incremental": true,
+    "jsx": "preserve"
+  },
+  "exclude": [
+    ".next",
+    "out",
+    "next.config.js"
+  ],
+  "include": [
+    "src/mob-core.d.ts",
+    "src/twin.d.ts",
+    "src/next-env.d.ts",
+    "src/react-app-env.d.ts",
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "pages/**/*.ts",
+    "pages/**/*.tsx"
+  ]
+}

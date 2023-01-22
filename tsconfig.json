@@ -1,2 +1,38 @@
 {
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "jsx": "react",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "isolatedModules": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strictFunctionTypes": false,
+    "strictPropertyInitialization": false,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@mob/client*": ["../../packages/client/src*"],
+      "@mob/client": ["../../packages/client/src"],
+      "@mob/server*": ["../../packages/colyseus/src*"],
+      "@mob/server": ["../../packages/colyseus/src"],
+      "@mob/core*": ["../../packages/core/src*"],
+      "@mob/core": ["../../packages/core/src"],
+      "@*": [
+        "../../packages/client/src*",
+        "../../packages/colyseus/src*",
+        "../../packages/core/src*"
+      ]
+    }
+  }
 }

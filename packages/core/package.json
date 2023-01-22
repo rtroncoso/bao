@@ -1,21 +1,23 @@
 {
   "name": "@mob/core",
+  "description": "Mob TS Core Module",
   "version": "1.0.0",
   "author": "mob",
-  "description": "Mob JS Core Module",
   "license": "MIT",
   "private": true,
+  "main": "src/index.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
-  },
-  "keywords": [
-    "es6",
-    "lodash/fp"
-  ],
-  "directories": {
-    "src": "src",
-    "test": "__tests__"
+    "clean": "rimraf dist",
+    "dev": "npm run start",
+    "build": "npm run clean && tsc",
+    "start": "nodemon --watch src --exec npm run build",
+    "test": "mocha --require babel-register --colors ./test/*.spec.js",
+    "test:watch": "mocha --require babel-register --colors -w ./test/*.spec.js",
+    "test:cover": "cross-env NODE_ENV=test nyc mocha --require babel-register --colors test/*.js"
   },
   "files": [
+    "dist",
     "src"
   ],
   "publishConfig": {
@@ -23,10 +25,21 @@
   },
   "dependencies": {
     "@lcluber/bumpjs": "^0.5.4",
-    "@mob/client": "^1.0.0",
-    "@mob/core": "^1.0.0",
+    "contour-2d": "^1.0.0",
     "intersects": "^2.5.2",
-    "lodash": "^4.17.11",
-    "pixi.js": "^4.8.6"
+    "lodash": "^4.17.21",
+    "ndarray-pack": "^1.2.1",
+    "pixi.js": "^6.0.0",
+    "rectangle-decomposition": "^1.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "cross-env": "^5.2.0",
+    "eslint": "^8.32.0",
+    "mocha": "^6.1.4",
+    "nodemon": "^1.19.1",
+    "nyc": "^14.1.0",
+    "rimraf": "^4.1.1",
+    "yargs": "^13.2.2"
   }
 }
