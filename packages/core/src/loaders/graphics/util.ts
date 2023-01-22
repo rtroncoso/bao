@@ -80,7 +80,7 @@ export const parseAnimation = (animation: Graphic) => {
 /**
  * Filter animations from graphics list
  */
-export const getAnimations = (graphics: Graphic[]) => {
+export const getAnimations = (graphics: Graphic[]): Graphic[] => {
   const animations = flow(
     filter(isAnimation),
     map(parseAnimation)

@@ -59,6 +59,6 @@ export const parseJsonGraphic = (
  * Parses JSON graphics file into a key-value map
  * of graphic id's and their respective `Graphic`
  */
-export const getJsonGraphics = (data: JsonGraphicsModel) => (
+export const getJsonGraphics = (data: JsonGraphicsModel): JsonGraphicState => (
   reduce<JsonGraphicsModel, JsonGraphicState>(parseJsonGraphic, {})(data)
 );

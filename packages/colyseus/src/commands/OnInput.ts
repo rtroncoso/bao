@@ -16,7 +16,7 @@ export interface OnInputParameters {
 export class OnInputCommand extends Command<WorldRoom, OnInputParameters> {
   execute({ client, inputs }: OnInputParameters) {
     console.log(`received message input: ${client.sessionId} ${inputs}`);
-    const character = this.state.characters.get(client.sessionId);
+    const character = this.state.getCharacter(client.sessionId);
     if (character) {
       character.inputs = new ArraySchema(...inputs);
     }

@@ -10,10 +10,10 @@ import { AuthService } from '@mob/server/services/AuthService';
 import { WorldRoomState } from '@mob/server/schema/WorldRoomState';
 import { MovementSystem } from '@mob/server/systems';
 import { CharacterState } from '@/schema/CharacterState';
-import { MapSchema } from '@colyseus/schema';
+import { ArraySchema } from '@colyseus/schema';
 import { TILE_SIZE } from '@mob/core';
 
-export class WorldRoom extends Room {
+export class WorldRoom extends Room<WorldRoomState> {
   movementSystem: MovementSystem;
   authService: AuthService = new AuthService(this);
   dispatcher = new Dispatcher(this);
@@ -21,6 +21,7 @@ export class WorldRoom extends Room {
   public onCreate(options: any) {
     this.setState(new WorldRoomState());
     this.movementSystem = new MovementSystem(this);
+    this.setSimulationInterval(this.update);
 
     this.onMessage('input', (client, message: InputParameters) => {
       this.dispatcher.dispatch(new OnInputCommand(), {
@@ -29,29 +30,41 @@ export class WorldRoom extends Room {
       });
     });
 
-    const characters = new MapSchema<CharacterState>();
-    new Array(50).fill(0).forEach(() => {
-      function randomIntFromInterval(min, max) {
-        return Math.floor(Math.random() * (max - min + 1) + min);
-      }
-      const character = new CharacterState();
-      character.sessionId = (Math.random() + 1).toString(36).substring(7);
-      character.name = (Math.random() + 1).toString(36).substring(7);
-      character.x = Math.floor(randomIntFromInterval(-20, 20) * TILE_SIZE);
-      character.y = Math.floor(randomIntFromInterval(-20, 20) * TILE_SIZE);
-      characters.set(character.sessionId, character);
-    });
-    new Array(10).fill(0).forEach((_, i) => {
-      const character = new CharacterState();
-      character.sessionId = (Math.random() + 1).toString(36).substring(7);
-      character.name = (Math.random() + 1).toString(36).substring(7);
-      character.x = Math.floor(i * TILE_SIZE);
-      character.y = Math.floor(10 * TILE_SIZE);
-      characters.set(character.sessionId, character);
-    });
+    const characters = new ArraySchema<CharacterState>(
+      ...new Array(10).fill(0).map(() => {
+        function randomIntFromInterval(min, max) {
+          return Math.floor(Math.random() * (max - min + 1) + min);
+        }
+        const character = new CharacterState();
+        character.sessionId = (Math.random() + 1).toString(36).substring(7);
+        character.name = (Math.random() + 1).toString(36).substring(7);
+        character.x = Math.floor(randomIntFromInterval(-20, 20) * TILE_SIZE);
+        character.y = Math.floor(randomIntFromInterval(-20, 20) * TILE_SIZE);
+        return character;
+      }),
+      ...new Array(10).fill(0).map((_, i) => {
+        const character = new CharacterState();
+        character.sessionId = (Math.random() + 1).toString(36).substring(7);
+        character.name = (Math.random() + 1).toString(36).substring(7);
+        character.x = Math.floor(i * TILE_SIZE);
+        character.y = Math.floor(10 * TILE_SIZE);
+
+        this.clock.setInterval(() => {
+          character.inputs = character.inputs.includes('w')
+            ? new ArraySchema('s')
+            : new ArraySchema('w');
+        }, 500);
+
+        return character;
+      })
+    );
 
     this.state.characters = characters;
   }
+
+  public update = (deltaTime: number) => {
+    this.movementSystem.update(deltaTime);
+  };
 
   public async onAuth(
     client: Client,

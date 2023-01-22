@@ -66,9 +66,9 @@ export const ViewportSystem: React.FC<ViewportProps> = (
 
   useTick(() => {
     if (serverState && room) {
-      const currentCharacter = serverState.characters.has(room.sessionId)
-        ? serverState.characters.get(room.sessionId)
-        : null;
+      const currentCharacter = serverState.characters.find(
+        (character) => character.sessionId === room.sessionId
+      );
 
       if (currentCharacter) {
         const x = currentCharacter.x - viewportState.projection.width / 2;

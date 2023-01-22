@@ -133,6 +133,7 @@ export function handleLoadSpritesheets(payload: LoadResourcePayload) {
 
 export function* handleLoadGraphics(payload: LoadGraphicsPayload) {
   try {
+    const { loader } = payload;
     yield putResolve(requestAsync(loadGraphics(payload)));
     const graphics = yield select(selectGraphics);
     const animations = yield select(selectAnimations);
@@ -143,6 +144,7 @@ export function* handleLoadGraphics(payload: LoadGraphicsPayload) {
     };
 
     yield all([
+      call(handleLoadSpritesheets, params),
       call(handleLoadBodies, params),
       call(handleLoadEffects, params),
       call(handleLoadHeads, params),
@@ -150,6 +152,8 @@ export function* handleLoadGraphics(payload: LoadGraphicsPayload) {
       call(handleLoadShields, params),
       call(handleLoadWeapons, params)
     ]);
+
+    loader.load();
   } catch (error) {
     console.error(error);
   }

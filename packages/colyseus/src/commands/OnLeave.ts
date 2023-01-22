@@ -15,7 +15,13 @@ export class OnLeaveCommand extends Command<WorldRoom, OnLeaveParameters> {
         client.sessionId
       )
     ) {
-      this.state.characters.delete(client.sessionId);
+      const index = this.state.characters.findIndex(
+        (character) => character.sessionId === client.sessionId
+      );
+
+      if (index !== -1) {
+        this.state.characters.splice(index);
+      }
     }
   }
 }
