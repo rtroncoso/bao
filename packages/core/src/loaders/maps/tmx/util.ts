@@ -1,6 +1,6 @@
 import isArray from 'lodash/fp/isArray';
-import { TILE_SIZE, TILED_MAP_SIZE } from '@mob/core/constants/game/Map';
-import { findInSpriteSheet } from '@mob/core/loaders/spritesheets';
+import { TILE_SIZE, TILED_MAP_SIZE } from '@bao/core/constants/game/Map';
+import { findInSpriteSheet } from '@bao/core/loaders/spritesheets';
 
 /**
  * Obtains 1D array index for a given x, y coordinate

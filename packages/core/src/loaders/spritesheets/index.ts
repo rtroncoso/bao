@@ -9,9 +9,9 @@ import {
   ATLAS_COLUMNS,
   NORMAL_SPRITESHEETS,
   TILESET_SPRITESHEETS
-} from '@mob/core/constants/game/Graphics';
-import { TILE_SIZE } from '@mob/core/constants/game/Map';
-import { getGraphicsFileName } from '@mob/core/loaders/util';
+} from '@bao/core/constants/game/Graphics';
+import { TILE_SIZE } from '@bao/core/constants/game/Map';
+import { getGraphicsFileName } from '@bao/core/loaders/util';
 import { Rectangle, Texture, SCALE_MODES } from 'pixi.js';
 
 /** Frames memoization */

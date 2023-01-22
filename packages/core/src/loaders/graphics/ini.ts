@@ -1,5 +1,5 @@
-import { getGraphicsFilePath, parseKey } from '@mob/core/loaders';
-import { TexturedGraphic } from '@mob/core/models';
+import { getGraphicsFilePath, parseKey } from '@bao/core/loaders';
+import { TexturedGraphic } from '@bao/core/models';
 
 import map from 'lodash/fp/map';
 import mapKeys from 'lodash/fp/mapKeys';

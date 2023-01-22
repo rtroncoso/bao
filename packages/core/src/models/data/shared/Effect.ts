@@ -1,4 +1,4 @@
-import { Graphic } from '@mob/core/models';
+import { Graphic } from '@bao/core/models';
 
 export interface EffectModelConstructor {
   animation?: Graphic | number;

@@ -6,9 +6,9 @@ import {
   TILE_SIZE,
   TRIGGER_TYPE,
   WATER_TYPE
-} from '@mob/core/constants/game/Map';
-import { HIDDEN_OBJECTS } from '@mob/core/constants/game/Object';
-import { createProperty, getProperty } from '@mob/core/loaders/maps/tmx/util';
+} from '@bao/core/constants/game/Map';
+import { HIDDEN_OBJECTS } from '@bao/core/constants/game/Object';
+import { createProperty, getProperty } from '@bao/core/loaders/maps/tmx/util';
 import {
   GroupLayer,
   ImageLayer,
@@ -21,8 +21,8 @@ import {
   TILE_LAYER_TYPE,
   TmxObject,
   Tiled
-} from '@mob/core/models';
-import { createRectangle } from '@mob/core/util/physics';
+} from '@bao/core/models';
+import { createRectangle } from '@bao/core/util/physics';
 
 import each from 'lodash/fp/each';
 import filter from 'lodash/fp/filter';
@@ -102,7 +102,7 @@ export const getTileLayersFromTmx = (tmx: Tiled) => {
   return getTileLayers(layers);
 };
 
-export const getObjectsFromObjectLayers = (layers: Array<LayerType>) => {
+export const getObjectsFrobaojectLayers = (layers: Array<LayerType>) => {
   const getObjectLayers = flow(
     flatMap((layer: LayerType) => layer.objects.filter(
       (object: TmxObject) => (
@@ -115,7 +115,7 @@ export const getObjectsFromObjectLayers = (layers: Array<LayerType>) => {
   return getObjectLayers(layers);
 };
 
-export const getSpritesFromObjectLayers = (layers: Array<LayerType>) => {
+export const getSpritesFrobaojectLayers = (layers: Array<LayerType>) => {
   const getObjectLayers = flow(
     flatMap((layer: LayerType) => layer.objects.filter(
       object => object.type === SPRITE_TYPE || object.type === ANIMATION_TYPE
@@ -125,7 +125,7 @@ export const getSpritesFromObjectLayers = (layers: Array<LayerType>) => {
   return getObjectLayers(layers);
 };
 
-export const getCollisionsFromObjectLayers = (layers: Array<LayerType>) => {
+export const getCollisionsFrobaojectLayers = (layers: Array<LayerType>) => {
   const getObjectLayers = flow(
     flatMap((layer: LayerType) => (
       layer.objects.filter(object => object.type === COLLISION_TYPE))
@@ -141,7 +141,7 @@ export const getCollisionsFromObjectLayers = (layers: Array<LayerType>) => {
   return getObjectLayers(layers);
 };
 
-export const getTriggersFromObjectLayers = (layers: Array<LayerType>) => {
+export const getTriggersFrobaojectLayers = (layers: Array<LayerType>) => {
   const getObjectLayers = flow(
     flatMap((layer: LayerType) => layer.objects.filter(
       object => object.type === TRIGGER_TYPE)
@@ -151,7 +151,7 @@ export const getTriggersFromObjectLayers = (layers: Array<LayerType>) => {
   return getObjectLayers(layers);
 };
 
-export const getWaterFromObjectLayers = (layers: Array<LayerType>) => {
+export const getWaterFrobaojectLayers = (layers: Array<LayerType>) => {
   const getObjectLayers = flow(
     flatMap((layer: LayerType) => layer.objects.filter(
       object => object.type === WATER_TYPE)

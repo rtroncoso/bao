@@ -1,6 +1,6 @@
 import { compose } from 'redux';
 
-import { withAuthGuard } from '@mob/client/components/Wrappers';
+import { withAuthGuard } from '@bao/client/components/Wrappers';
 import { GameConnectedProps, withGameContext } from './Game.context';
 import Game from './Game.component';
 

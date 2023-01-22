@@ -1,7 +1,7 @@
 import { QueryConfig } from 'redux-query';
 
-import { override } from '@mob/client/queries/shared';
-import { getJsonShields, JsonShieldsModel } from '@mob/core/loaders';
+import { override } from '@bao/client/queries/shared';
+import { getJsonShields, JsonShieldsModel } from '@bao/core/loaders';
 import { AssetEntities, LoadResourcePayload } from '../models';
 
 export const loadShieldsQuery = {
@@ -28,7 +28,7 @@ export const loadShields = ({
 }: LoadResourcePayload): QueryConfig<AssetEntities> => {
   return {
     ...loadShieldsQuery,
-    url: `${process.env.NEXT_PUBLIC_MOB_ASSETS}/${manifest.init.shields}`,
+    url: `${process.env.NEXT_PUBLIC_BAO_ASSETS}/${manifest.init.shields}`,
     transform: transformShieldsResponse({ animations, graphics }),
     update: {
       shields: override

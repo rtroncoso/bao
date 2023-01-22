@@ -1,8 +1,8 @@
 {
   "private": true,
-  "name": "@mob/server",
+  "name": "@bao/server",
   "version": "0.1.0",
-  "description": "Colyseus game server for MoB",
+  "description": "Colyseus game server for BAO",
   "main": "lib/index.js",
   "scripts": {
     "dev": "npm run start",
@@ -33,7 +33,7 @@
     "@colyseus/monitor": "^0.14.22",
     "@colyseus/schema": "^1.0.45",
     "@colyseus/social": "^0.11.7",
-    "@mob/core": "workspace:*",
+    "@bao/core": "workspace:*",
     "@types/jsonwebtoken": "^8.5.0",
     "axios": "^0.21.0",
     "colyseus": "^0.14.24",

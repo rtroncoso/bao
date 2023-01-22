@@ -1,8 +1,8 @@
 {
-  "name": "@mob/core",
-  "description": "Mob TS Core Module",
+  "name": "@bao/core",
+  "description": "BAO TS Core Module",
   "version": "1.0.0",
-  "author": "mob",
+  "author": "bao",
   "license": "MIT",
   "private": true,
   "main": "src/index.ts",

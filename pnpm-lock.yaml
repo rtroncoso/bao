@@ -17,6 +17,7 @@ importers:
       bcrypt: ^4.0.1
       body-parser: ^1.19.0
       cors: ^2.8.5
+      crypto: ^1.0.1
       dotenv: ^16.0.3
       eslint: ^8.32.0
       eslint-config-prettier: ^8.6.0
@@ -45,6 +46,7 @@ importers:
       bcrypt: 4.0.1
       body-parser: 1.20.1
       cors: 2.8.5
+      crypto: 1.0.1
       dotenv: 16.0.3
       esm: 3.2.25
       express: 4.18.2
@@ -90,6 +92,7 @@ importers:
       '@babel/core': ^7.20.12
       '@babel/plugin-syntax-flow': ^7.14.5
       '@babel/plugin-transform-react-jsx': ^7.14.9
+      '@bao/core': workspace:*
       '@colyseus/schema': ^1.0.2
       '@emotion/css': ^11.7.1
       '@emotion/react': ^11.7.1
@@ -99,7 +102,6 @@ importers:
       '@fortawesome/free-solid-svg-icons': ^5.15.1
       '@fortawesome/react-fontawesome': ^0.1.12
       '@inlet/react-pixi': ^6.8.0
-      '@mob/core': workspace:*
       '@pixi/assets': ^6.3.1
       '@pixi/constants': ^6.3.1
       '@pixi/core': ^6.3.1
@@ -193,12 +195,12 @@ importers:
       webpack: ^5.74.0
       yup: ^0.29.3
     dependencies:
+      '@bao/core': link:../core
       '@colyseus/schema': 1.0.45
       '@fortawesome/fontawesome-svg-core': 1.2.36
       '@fortawesome/free-solid-svg-icons': 5.15.4
       '@fortawesome/react-fontawesome': 0.1.19_6uk63tqcq2kfmhhlivxd3orcjq
       '@inlet/react-pixi': 6.8.0_jscvkqii6emt2bytxeadjnvpsi
-      '@mob/core': link:../core
       '@pixi/assets': 6.5.8_mefptrzz3gnrukhpputzebs52m
       '@pixi/constants': 6.5.8
       '@pixi/core': 6.5.8_plvhmba5imzl5ocyxvgulib4y4
@@ -302,12 +304,12 @@ importers:
 
   packages/colyseus:
     specifiers:
+      '@bao/core': workspace:*
       '@colyseus/command': ^0.2.1
       '@colyseus/loadtest': ^0.13.1
       '@colyseus/monitor': ^0.14.22
       '@colyseus/schema': ^1.0.45
       '@colyseus/social': ^0.11.7
-      '@mob/core': workspace:*
       '@types/cors': ^2.8.6
       '@types/express': ^4.17.15
       '@types/jsonwebtoken': ^8.5.0
@@ -327,11 +329,11 @@ importers:
       tsconfig-paths: ^4.1.2
       typescript: ^4.9.4
     dependencies:
+      '@bao/core': link:../core
       '@colyseus/command': 0.2.1_colyseus@0.14.24
       '@colyseus/monitor': 0.14.22
       '@colyseus/schema': 1.0.45
       '@colyseus/social': 0.11.7_kxpqndzhlgcpw636wvn6y2v4by
-      '@mob/core': link:../core
       '@types/jsonwebtoken': 8.5.9
       axios: 0.21.4
       colyseus: 0.14.24
@@ -6376,6 +6378,11 @@ packages:
   /crypto-random-string/2.0.0:
     resolution: {integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==}
     engines: {node: '>=8'}
+
+  /crypto/1.0.1:
+    resolution: {integrity: sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==}
+    deprecated: This package is no longer supported. It's now a built-in Node module. If you've depended on crypto, you should switch to the one that's built-in.
+    dev: false
 
   /css-blank-pseudo/0.1.4:
     resolution: {integrity: sha512-LHz35Hr83dnFeipc7oqFDmsjHdljj3TQtxGGiNWSOsTLIAubSm4TEz8qCaKFpk7idaQ1GfWscF4E6mgpBysA1w==}

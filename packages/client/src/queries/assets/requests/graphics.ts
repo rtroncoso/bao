@@ -1,11 +1,11 @@
 import { QueryConfig } from 'redux-query';
 
-import { override } from '@mob/client/queries/shared';
+import { override } from '@bao/client/queries/shared';
 import {
   getAnimations,
   getJsonGraphics,
   JsonGraphicsModel
-} from '@mob/core/loaders';
+} from '@bao/core/loaders';
 
 import { AssetEntities, LoadGraphicsPayload } from '../models';
 
@@ -32,7 +32,7 @@ export const loadGraphics = ({
 }: LoadGraphicsPayload): QueryConfig<AssetEntities> => {
   return {
     ...loadGraphicsQuery,
-    url: `${process.env.NEXT_PUBLIC_MOB_ASSETS}/${manifest.init.graphics}`,
+    url: `${process.env.NEXT_PUBLIC_BAO_ASSETS}/${manifest.init.graphics}`,
     transform: transformGraphicsResponse,
     update: {
       animations: override,

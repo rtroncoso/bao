@@ -1,8 +1,8 @@
 import { Client, ServerError } from 'colyseus';
 import { Command } from '@colyseus/command';
 
-import { CharacterState } from '@mob/server/schema/CharacterState';
-import { AccountService } from '@mob/server/services/AccountService';
+import { CharacterState } from '@bao/server/schema/CharacterState';
+import { AccountService } from '@bao/server/services/AccountService';
 import { WorldRoom } from 'src/rooms/WorldRoom';
 import axios, { AxiosError } from 'axios';
 
@@ -41,7 +41,7 @@ export class OnJoinCommand extends Command<WorldRoom, OnJoinParameters> {
         };
       }
 
-      if (this.state.characters.get(client.sessionId)) {
+      if (this.state.getCharacter(client.sessionId)) {
         throw {
           code: 409,
           message: 'USER_LOGGED_IN',
@@ -54,7 +54,7 @@ export class OnJoinCommand extends Command<WorldRoom, OnJoinParameters> {
       character.id = apiCharacter.id;
       character.name = apiCharacter.name;
       character.sessionId = client.sessionId;
-      this.state.characters.set(client.sessionId, character);
+      this.state.characters.push(character);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new ServerError(parseInt(error.code, 10) || 500, error.message);

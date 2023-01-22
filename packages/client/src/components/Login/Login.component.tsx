@@ -7,9 +7,9 @@ import {
   AlertStyled,
   FormStyled,
   FormTitleStyled
-} from '@mob/client/components/App/App.styles';
-import { Button } from '@mob/client/components/Button';
-import { Input } from '@mob/client/components/Input';
+} from '@bao/client/components/App/App.styles';
+import { Button } from '@bao/client/components/Button';
+import { Input } from '@bao/client/components/Input';
 
 import { LoginConnectedProps, FormValues } from './Login.container';
 import LoginStyled from './Login.styles';

@@ -1,7 +1,7 @@
 import { QueryConfig } from 'redux-query';
 
-import { override } from '@mob/client/queries/shared';
-import { getJsonWeapons, JsonWeaponsModel } from '@mob/core/loaders';
+import { override } from '@bao/client/queries/shared';
+import { getJsonWeapons, JsonWeaponsModel } from '@bao/core/loaders';
 import { AssetEntities, LoadResourcePayload } from '../models';
 
 export const loadWeaponsQuery = {
@@ -28,7 +28,7 @@ export const loadWeapons = ({
 }: LoadResourcePayload): QueryConfig<AssetEntities> => {
   return {
     ...loadWeaponsQuery,
-    url: `${process.env.NEXT_PUBLIC_MOB_ASSETS}/${manifest.init.weapons}`,
+    url: `${process.env.NEXT_PUBLIC_BAO_ASSETS}/${manifest.init.weapons}`,
     transform: transformWeaponsResponse({ animations, graphics }),
     update: {
       weapons: override

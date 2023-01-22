@@ -22,12 +22,12 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@mob/client*": ["../../packages/client/src*"],
-      "@mob/client": ["../../packages/client/src"],
-      "@mob/server*": ["../../packages/colyseus/src*"],
-      "@mob/server": ["../../packages/colyseus/src"],
-      "@mob/core*": ["../../packages/core/src*"],
-      "@mob/core": ["../../packages/core/src"],
+      "@bao/client*": ["../../packages/client/src*"],
+      "@bao/client": ["../../packages/client/src"],
+      "@bao/server*": ["../../packages/colyseus/src*"],
+      "@bao/server": ["../../packages/colyseus/src"],
+      "@bao/core*": ["../../packages/core/src*"],
+      "@bao/core": ["../../packages/core/src"],
       "@*": [
         "../../packages/client/src*",
         "../../packages/colyseus/src*",

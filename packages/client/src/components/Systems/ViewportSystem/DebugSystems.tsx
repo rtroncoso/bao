@@ -2,8 +2,8 @@ import { Graphics, Text, useTick } from '@inlet/react-pixi';
 import { Filter } from 'pixi.js';
 import React, { useEffect } from 'react';
 
-import { defaultTextStyle, useGame } from '@mob/client/components/Game';
-import { TILE_SIZE } from '@mob/core/constants/game';
+import { defaultTextStyle, useGame } from '@bao/client/components/Game';
+import { TILE_SIZE } from '@bao/core/constants/game';
 import { useViewport } from './ViewportSystem';
 
 export const DebugGridSystem = () => {

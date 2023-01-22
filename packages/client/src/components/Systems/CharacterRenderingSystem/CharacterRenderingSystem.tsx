@@ -2,8 +2,8 @@ import { Container, PixiComponent, Text } from '@inlet/react-pixi';
 import { Graphics } from 'pixi.js';
 import React, { useContext } from 'react';
 
-import { defaultTextStyle, GameContext } from '@mob/client/components/Game';
-import { TILE_SIZE } from '@mob/core';
+import { defaultTextStyle, GameContext } from '@bao/client/components/Game';
+import { TILE_SIZE } from '@bao/core';
 
 interface RectangleProps {
   x?: number;
@@ -33,16 +33,17 @@ export const CharacterRenderingSystem: React.FC = () => {
   if (characters) {
     return (
       <React.Fragment>
-        {Array.from(characters.entries()).map(([sessionId, character]) => (
+        {characters.map((character) => (
           <Container
             anchor={0.5}
-            key={sessionId}
+            key={character.sessionId}
             x={character.x}
             y={character.y}
           >
             <Rectangle width={TILE_SIZE} height={TILE_SIZE} color={0xfa3520} />
             <Text
-              anchor={[0.2, 0.5]}
+              anchor={[0.5, 0.5]}
+              x={TILE_SIZE / 2}
               y={TILE_SIZE + TILE_SIZE / 2}
               text={character.name}
               style={defaultTextStyle}

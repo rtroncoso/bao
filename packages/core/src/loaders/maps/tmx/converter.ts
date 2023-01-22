@@ -8,7 +8,7 @@ import { LoaderResource, Texture } from 'pixi.js';
 import {
   ATLAS_COLUMNS,
   TILESET_SPRITESHEETS
-} from '@mob/core/constants/game/Graphics';
+} from '@bao/core/constants/game/Graphics';
 import {
   ANIMATION_TYPE,
   COLLISION_LAYER,
@@ -29,20 +29,20 @@ import {
   TRIGGER_ROOF,
   TRIGGER_TYPE,
   WATER_TYPE
-} from '@mob/core/constants/game/Map';
+} from '@bao/core/constants/game/Map';
 import {
   createProperty,
   findInTileSets,
   getProperty,
   getTileIndex,
   ySortLayers
-} from '@mob/core/loaders/maps/tmx/util';
+} from '@bao/core/loaders/maps/tmx/util';
 import {
   getSpriteSheetFilePath,
   getSpriteSheetImagePath,
   getTileSetFilePath
-} from '@mob/core/loaders/spritesheets';
-import { getGraphicsFileName } from '@mob/core/loaders/util';
+} from '@bao/core/loaders/spritesheets';
+import { getGraphicsFileName } from '@bao/core/loaders/util';
 import {
   GroupLayer,
   ObjectLayer,
@@ -53,7 +53,7 @@ import {
   ImageLayer,
   Tile,
   Graphic,
-} from '@mob/core/models';
+} from '@bao/core/models';
 
 let lastId = 0;
 let objectId = 0;

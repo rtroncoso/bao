@@ -16,7 +16,7 @@ export abstract class APIService {
   public constructor({ authToken, baseURL }: APIServiceOptions = {}) {
     this.authToken = authToken || process.env.JWT_TOKEN;
     this.instance = axios.create({
-      baseURL: baseURL || process.env.MOB_API
+      baseURL: baseURL || process.env.BAO_API
     });
 
     this._initializeRequestInterceptor();

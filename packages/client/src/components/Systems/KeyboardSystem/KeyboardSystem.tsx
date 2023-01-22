@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 
-import { GameContext } from '@mob/client/components/Game';
+import { GameContext } from '@bao/client/components/Game';
 import { usePressedKeys } from './KeyboardSystem.hooks';
 
 export interface KeyboardInputProps {}

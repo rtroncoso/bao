@@ -1,7 +1,7 @@
 import { QueryConfig } from 'redux-query';
 
-import { override } from '@mob/client/queries/shared';
-import { getJsonHelmets, JsonHelmetsModel } from '@mob/core/loaders';
+import { override } from '@bao/client/queries/shared';
+import { getJsonHelmets, JsonHelmetsModel } from '@bao/core/loaders';
 import { AssetEntities, LoadResourcePayload } from '../models';
 
 export const loadHelmetsQuery = {
@@ -28,7 +28,7 @@ export const loadHelmets = ({
 }: LoadResourcePayload): QueryConfig<AssetEntities> => {
   return {
     ...loadHelmetsQuery,
-    url: `${process.env.NEXT_PUBLIC_MOB_ASSETS}/${manifest.init.helmets}`,
+    url: `${process.env.NEXT_PUBLIC_BAO_ASSETS}/${manifest.init.helmets}`,
     transform: transformHelmetsResponse({ animations, graphics }),
     update: {
       helmets: override

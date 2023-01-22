@@ -7,16 +7,16 @@ import React, {
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 
-import { SetStateCallback, useLocalStateReducer } from '@mob/client/hooks';
-import { selectToken } from '@mob/client/queries/account';
+import { SetStateCallback, useLocalStateReducer } from '@bao/client/hooks';
+import { selectToken } from '@bao/client/queries/account';
 import {
   AssetEntities,
   loadAssets,
   selectBodies,
   selectGraphics,
   selectManifest
-} from '@mob/client/queries/assets';
-import { Dispatch, State } from '@mob/client/store';
+} from '@bao/client/queries/assets';
+import { Dispatch, State } from '@bao/client/store';
 import { useApp } from '@inlet/react-pixi';
 
 export type AssetSystemProps = object;

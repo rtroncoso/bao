@@ -1,5 +1,5 @@
-import { TILE_SIZE } from '@mob/core/constants';
-import { Graphic, MapObject, Npc, TileExit } from '@mob/core/models';
+import { TILE_SIZE } from '@bao/core/constants';
+import { Graphic, MapObject, Npc, TileExit } from '@bao/core/models';
 
 /**
  * Tile model

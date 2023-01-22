@@ -1,6 +1,6 @@
 import reduce from 'lodash/fp/reduce';
-import { parseDirectionAnimationByModel } from '@mob/core/loaders/util';
-import { Graphic, Shield } from '@mob/core/models';
+import { parseDirectionAnimationByModel } from '@bao/core/loaders/util';
+import { Graphic, Shield } from '@bao/core/models';
 
 export interface JsonShieldModel {
   down: number;

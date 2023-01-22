@@ -1,6 +1,6 @@
 import { Loader } from 'pixi.js';
 
-import { AuthorizedRequestPayload } from '@mob/client/queries/shared/models';
+import { AuthorizedRequestPayload } from '@bao/client/queries/shared/models';
 import {
   Body,
   Effect,
@@ -9,7 +9,7 @@ import {
   Helmet,
   Shield,
   Weapon
-} from '@mob/core/models';
+} from '@bao/core/models';
 
 export interface ManifestModel {
   audio: {

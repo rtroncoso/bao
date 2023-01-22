@@ -1,7 +1,7 @@
 import { QueryConfig } from 'redux-query';
 
-import { override } from '@mob/client/queries/shared';
-import { getJsonHeads, JsonHeadsModel } from '@mob/core/loaders';
+import { override } from '@bao/client/queries/shared';
+import { getJsonHeads, JsonHeadsModel } from '@bao/core/loaders';
 import { AssetEntities, LoadResourcePayload } from '../models';
 
 export const loadHeadsQuery = {
@@ -28,7 +28,7 @@ export const loadHeads = ({
 }: LoadResourcePayload): QueryConfig<AssetEntities> => {
   return {
     ...loadHeadsQuery,
-    url: `${process.env.NEXT_PUBLIC_MOB_ASSETS}/${manifest.init.heads}`,
+    url: `${process.env.NEXT_PUBLIC_BAO_ASSETS}/${manifest.init.heads}`,
     transform: transformHeadsResponse({ animations, graphics }),
     update: {
       heads: override

@@ -1,6 +1,6 @@
 import React, { InputHTMLAttributes } from 'react';
 
-import { FormErrorStyled } from '@mob/client/components/App/App.styles';
+import { FormErrorStyled } from '@bao/client/components/App/App.styles';
 import InputStyled from './Input.styles';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {

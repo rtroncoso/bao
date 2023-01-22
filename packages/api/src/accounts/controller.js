@@ -49,7 +49,7 @@ export const login = async ({ username, password } = {}) => {
   if (account.password !== password) {
     throw {
       message: 'INVALID_VALUE',
-      payload: 'Quien sos papá?',
+      payload: 'ACCOUNT.PASSWORD',
     }
   }
 

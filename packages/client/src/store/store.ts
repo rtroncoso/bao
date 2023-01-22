@@ -12,8 +12,8 @@ import {
 import superagentInterface from 'redux-query-interface-superagent';
 import createSagaMiddleware from 'redux-saga';
 
-import { getEntities, getQueries } from '@mob/client/queries';
-import { querySagas } from '@mob/client/queries';
+import { getEntities, getQueries } from '@bao/client/queries';
+import { querySagas } from '@bao/client/queries';
 
 const reducer = combineReducers({
   entities: entitiesReducer,

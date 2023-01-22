@@ -4,8 +4,8 @@ import {
   DirectionGraphicData,
   JsonGraphicState,
   parseDirectionGraphicByModel
-} from '@mob/core/loaders';
-import { Head } from '@mob/core/models';
+} from '@bao/core/loaders';
+import { Head } from '@bao/core/models';
 
 export interface JsonHeadModel extends DirectionGraphicData {
   down: number;

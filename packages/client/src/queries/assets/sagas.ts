@@ -9,7 +9,7 @@ import {
 } from 'redux-saga/effects';
 import { Action } from 'typescript-fsa';
 
-import { selectToken } from '@mob/client/queries/account';
+import { selectToken } from '@bao/client/queries/account';
 import { loadAssets } from './actions';
 import {
   LoadAssetsPayload,
@@ -117,7 +117,7 @@ export function handleLoadSpritesheets(payload: LoadResourcePayload) {
   for (const tileset of manifest.textures.tilesets) {
     for (const extension of spritesheetExtensions) {
       loader.add(
-        `${process.env.NEXT_PUBLIC_MOB_ASSETS}/${tileset}.${extension}`
+        `${process.env.NEXT_PUBLIC_BAO_ASSETS}/${tileset}.${extension}`
       );
     }
   }
@@ -125,7 +125,7 @@ export function handleLoadSpritesheets(payload: LoadResourcePayload) {
   for (const animation of manifest.textures.animations) {
     for (const extension of spritesheetExtensions) {
       loader.add(
-        `${process.env.NEXT_PUBLIC_MOB_ASSETS}/${animation}.${extension}`
+        `${process.env.NEXT_PUBLIC_BAO_ASSETS}/${animation}.${extension}`
       );
     }
   }
@@ -133,6 +133,7 @@ export function handleLoadSpritesheets(payload: LoadResourcePayload) {
 
 export function* handleLoadGraphics(payload: LoadGraphicsPayload) {
   try {
+    const { loader } = payload;
     yield putResolve(requestAsync(loadGraphics(payload)));
     const graphics = yield select(selectGraphics);
     const animations = yield select(selectAnimations);
@@ -143,6 +144,7 @@ export function* handleLoadGraphics(payload: LoadGraphicsPayload) {
     };
 
     yield all([
+      call(handleLoadSpritesheets, params),
       call(handleLoadBodies, params),
       call(handleLoadEffects, params),
       call(handleLoadHeads, params),
@@ -150,6 +152,8 @@ export function* handleLoadGraphics(payload: LoadGraphicsPayload) {
       call(handleLoadShields, params),
       call(handleLoadWeapons, params)
     ]);
+
+    loader.load();
   } catch (error) {
     console.error(error);
   }

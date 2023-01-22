@@ -1,5 +1,5 @@
-import { DirectionAnimationData, parseDirectionAnimationByModel } from '@mob/core/loaders';
-import { Body, Graphic } from '@mob/core/models';
+import { DirectionAnimationData, parseDirectionAnimationByModel } from '@bao/core/loaders';
+import { Body, Graphic } from '@bao/core/models';
 import reduce from 'lodash/fp/reduce';
 
 export interface JsonBodyModel extends DirectionAnimationData {

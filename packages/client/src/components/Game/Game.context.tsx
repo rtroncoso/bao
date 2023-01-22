@@ -9,11 +9,11 @@ import React, {
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
-import { useLocalStateReducer } from '@mob/client/hooks';
-import { selectToken } from '@mob/client/queries/account';
-import { State } from '@mob/client/store';
+import { useLocalStateReducer } from '@bao/client/hooks';
+import { selectToken } from '@bao/client/queries/account';
+import { State } from '@bao/client/store';
 
-import { WorldRoomState } from '@mob/server/schema/WorldRoomState';
+import { WorldRoomState } from '@bao/server/schema/WorldRoomState';
 
 export interface GameConnectedProps {
   token?: string | null;
@@ -122,7 +122,7 @@ export const GameContainer = <P extends GameConnectedProps>(
 
     const handleJoinRoom = useCallback(async () => {
       try {
-        const client = new Client(process.env.NEXT_PUBLIC_MOB_SERVER);
+        const client = new Client(process.env.NEXT_PUBLIC_BAO_SERVER);
         const room = await client.joinOrCreate<WorldRoomState>(options.room, {
           characterId: router.query.characterId,
           token

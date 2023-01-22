@@ -7,8 +7,8 @@ import {
   CharacterRenderingSystem,
   KeyboardSystem,
   ViewportSystem
-} from '@mob/client/components/Systems';
-import { App } from '@mob/core/constants';
+} from '@bao/client/components/Systems';
+import { App } from '@bao/core/constants';
 
 import { GameConnectedProps, GameContext } from './Game.context';
 import { GameStyled } from './Game.styles';

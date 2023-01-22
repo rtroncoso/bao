@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-import { getEntities } from '@mob/client/queries';
+import { getEntities } from '@bao/client/queries';
 
 export const selectAccount = createSelector(
   getEntities,

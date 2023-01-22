@@ -6,8 +6,8 @@ import {
   AccountModel,
   selectAccount,
   selectToken
-} from '@mob/client/queries/account';
-import { State } from '@mob/client/store';
+} from '@bao/client/queries/account';
+import { State } from '@bao/client/store';
 import { NextRouter, withRouter } from 'next/router';
 
 interface ConnectedProps {

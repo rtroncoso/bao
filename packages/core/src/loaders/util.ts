@@ -4,8 +4,8 @@ import values from 'lodash/fp/values';
 
 import {
   EAST, HEADINGS, NORTH, SOUTH, WEST,
-} from '@mob/core/constants/game';
-import { Graphic } from '@mob/core/models/data/shared';
+} from '@bao/core/constants/game';
+import { Graphic } from '@bao/core/models/data/shared';
 import { JsonGraphicState } from './graphics';
 
 /**

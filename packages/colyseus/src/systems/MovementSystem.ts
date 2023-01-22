@@ -1,17 +1,14 @@
-import { Room } from 'colyseus';
-
-import { Heading, TILE_SIZE } from '@mob/core';
-import { CharacterState } from '@mob/server/schema/CharacterState';
+import { Heading, TILE_SIZE } from '@bao/core';
+import { CharacterState } from '@bao/server/schema/CharacterState';
 import { TilePosition } from '@/schema/MapState';
+import { WorldRoom } from 'src/rooms/WorldRoom';
 
 export class MovementSystem {
-  protected room: Room;
-  protected speed = 128;
+  protected room: WorldRoom;
   protected blockedTiles: Array<[string, TilePosition]> = [];
 
-  constructor(room: Room) {
+  constructor(room: WorldRoom) {
     this.room = room;
-    this.room.setSimulationInterval(this.update);
   }
 
   private getCharacterHeading(key: string) {
@@ -105,10 +102,10 @@ export class MovementSystem {
     }
   }
 
-  public update = (deltaTime: number) => {
+  public update(deltaTime: number) {
     const { state } = this.room;
     state.characters.forEach((character: CharacterState) => {
-      const speed = this.speed * (1 / deltaTime);
+      const speed = character.speed * (1 / deltaTime);
       const inputs = character.inputs.filter((key) =>
         ['a', 'd', 'w', 's'].includes(key)
       );
@@ -152,5 +149,5 @@ export class MovementSystem {
         this.blockedTiles.push([character.sessionId, character.tile]);
       }
     });
-  };
+  }
 }
