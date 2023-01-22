@@ -12,7 +12,7 @@ export const find = async ({ ids, accountId } = {}) => {
   }
 
   if (accountId) {
-    qb.where('account_id', accountId)
+    qb.where('accountId', accountId)
   }
 
   const charactersSql = await qb.get()
@@ -28,7 +28,7 @@ export const find = async ({ ids, accountId } = {}) => {
   qb.reset()
   qb.select('classes.name, classes.id, characters.id AS characterId')
   qb.from('classes')
-  qb.join('characters', 'classes.id = characters.class_id', 'inner')
+  qb.join('characters', 'classes.id = characters.classId', 'inner')
   qb.whereIn('characters.id', charactersIds)
 
   const characterClassesSql = await qb.get()
@@ -39,7 +39,7 @@ export const find = async ({ ids, accountId } = {}) => {
   qb.reset()
   qb.select('races.name, races.id, characters.id AS characterId')
   qb.from('races')
-  qb.join('characters', 'races.id = characters.race_id', 'inner')
+  qb.join('characters', 'races.id = characters.raceId', 'inner')
   qb.whereIn('characters.id', charactersIds)
 
   const characterRacesSql = await qb.get()
@@ -63,8 +63,8 @@ export const find = async ({ ids, accountId } = {}) => {
         name: race.name,
       }))
 
-    delete character.class_id
-    delete character.race_id
+    delete character.classId
+    delete character.raceId
 
     return {
       ...character,
@@ -83,21 +83,21 @@ export const findOne = async ({ id } = {}) => {
 
 export const inventory = async ({ characterId } = {}) => {
   const qb = new QueryBuilder()
-  qb.select('object_id, amount')
+  qb.select('objectId, amount')
   qb.from('character_inventory')
-  qb.whereIn('character_id', characterId)
+  qb.whereIn('characterId', characterId)
 
   const inventorySql = await qb.get()
   const inventory = await db.executeQuery(inventorySql)
 
-  //Objects
-  const objectsIds = inventory.map((obj) => obj.object_id)
+  // Objects
+  const objectsIds = inventory.map((obj) => obj.objectId)
   const objects = await ObjectModel.find({ ids: objectsIds })
 
   const response = inventory.map((slot) => {
-    const slotObject = objects.filter((object) => object.id === slot.object_id)
+    const slotObject = objects.filter((object) => object.id === slot.objectId)
     slot.object = slotObject[0]
-    delete slot.object_id
+    delete slot.objectId
     return slot
   })
 

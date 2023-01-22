@@ -52,7 +52,7 @@ export const getAccountFromToken = async (req, res, next) => {
     req.account = account
     next()
   } catch (err) {
-    if (err.name == 'JsonWebTokenError') {
+    if (err.name === 'JsonWebTokenError') {
       return next(new Error('NOT_AUTHORIZED'))
     }
 

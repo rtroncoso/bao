@@ -49,15 +49,15 @@ INSERT INTO `accounts` (`id`, `username`, `email`, `password`) VALUES
 --
 
 CREATE TABLE `animations` (
-  `animation_id` int(11) NOT NULL,
-  `graphic_id` int(11) NOT NULL
+  `animationId` int(11) NOT NULL,
+  `graphicId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `animations`
 --
 
-INSERT INTO `animations` (`animation_id`, `graphic_id`) VALUES
+INSERT INTO `animations` (`animationId`, `graphicId`) VALUES
 (25, 15),
 (25, 16),
 (25, 17),
@@ -4279,7 +4279,7 @@ INSERT INTO `animations` (`animation_id`, `graphic_id`) VALUES
 (10193, 10188),
 (10193, 10189),
 (10242, 10194);
-INSERT INTO `animations` (`animation_id`, `graphic_id`) VALUES
+INSERT INTO `animations` (`animationId`, `graphicId`) VALUES
 (10242, 10195),
 (10242, 10196),
 (10242, 10197),
@@ -7846,7 +7846,7 @@ INSERT INTO `animations` (`animation_id`, `graphic_id`) VALUES
 (15299, 15277),
 (15299, 15278),
 (15299, 15279);
-INSERT INTO `animations` (`animation_id`, `graphic_id`) VALUES
+INSERT INTO `animations` (`animationId`, `graphicId`) VALUES
 (15299, 15280),
 (15299, 15281),
 (15299, 15282),
@@ -11413,7 +11413,7 @@ INSERT INTO `animations` (`animation_id`, `graphic_id`) VALUES
 (20857, 20844),
 (20857, 20845),
 (20858, 20846);
-INSERT INTO `animations` (`animation_id`, `graphic_id`) VALUES
+INSERT INTO `animations` (`animationId`, `graphicId`) VALUES
 (20858, 20847),
 (20858, 20848),
 (20858, 20849),
@@ -37199,8 +37199,8 @@ INSERT INTO `graphics` (`id`, `frames`, `image`, `x`, `y`, `width`, `height`, `s
 CREATE TABLE `objects` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `object_type_id` int(11) NOT NULL,
-  `graphic_id` int(11) NOT NULL,
+  `object_typeId` int(11) NOT NULL,
+  `graphicId` int(11) NOT NULL,
   `description` varchar(511) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -37208,7 +37208,7 @@ CREATE TABLE `objects` (
 -- Volcado de datos para la tabla `objects`
 --
 
-INSERT INTO `objects` (`id`, `name`, `object_type_id`, `graphic_id`, `description`) VALUES
+INSERT INTO `objects` (`id`, `name`, `object_typeId`, `graphicId`, `description`) VALUES
 (1, 'Manzana Roja', 1, 506, NULL),
 (2, 'Espada Larga', 2, 504, NULL),
 (3, 'Hacha', 2, 505, NULL),
@@ -38265,8 +38265,8 @@ INSERT INTO `objects` (`id`, `name`, `object_type_id`, `graphic_id`, `descriptio
 --
 
 CREATE TABLE `objects_attributes` (
-  `object_id` int(11) NOT NULL,
-  `attribute_id` int(11) NOT NULL,
+  `objectId` int(11) NOT NULL,
+  `attributeId` int(11) NOT NULL,
   `value` varchar(511) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -38274,7 +38274,7 @@ CREATE TABLE `objects_attributes` (
 -- Volcado de datos para la tabla `objects_attributes`
 --
 
-INSERT INTO `objects_attributes` (`object_id`, `attribute_id`, `value`) VALUES
+INSERT INTO `objects_attributes` (`objectId`, `attributeId`, `value`) VALUES
 (1, 1, '0'),
 (1, 2, '10'),
 (1, 3, '2'),
@@ -41558,7 +41558,7 @@ INSERT INTO `objects_attributes` (`object_id`, `attribute_id`, `value`) VALUES
 (585, 1, '1'),
 (585, 13, '1'),
 (585, 14, '0');
-INSERT INTO `objects_attributes` (`object_id`, `attribute_id`, `value`) VALUES
+INSERT INTO `objects_attributes` (`objectId`, `attributeId`, `value`) VALUES
 (585, 15, '584'),
 (585, 16, '585'),
 (585, 17, '586'),
@@ -44001,15 +44001,15 @@ INSERT INTO `objects_attributes` (`object_id`, `attribute_id`, `value`) VALUES
 --
 
 CREATE TABLE `objects_classes` (
-  `object_id` int(11) NOT NULL,
-  `class_id` int(11) NOT NULL
+  `objectId` int(11) NOT NULL,
+  `classId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `objects_classes`
 --
 
-INSERT INTO `objects_classes` (`object_id`, `class_id`) VALUES
+INSERT INTO `objects_classes` (`objectId`, `classId`) VALUES
 (2, 2),
 (2, 3),
 (2, 4),
@@ -44866,7 +44866,7 @@ ALTER TABLE `accounts`
 -- Indices de la tabla `animations`
 --
 ALTER TABLE `animations`
-  ADD KEY `graphic_id` (`graphic_id`);
+  ADD KEY `graphicId` (`graphicId`);
 
 --
 -- Indices de la tabla `attributes`
@@ -44896,15 +44896,15 @@ ALTER TABLE `objects`
 -- Indices de la tabla `objects_attributes`
 --
 ALTER TABLE `objects_attributes`
-  ADD PRIMARY KEY (`object_id`,`attribute_id`),
-  ADD KEY `objects_attributes_ibfk_2` (`attribute_id`);
+  ADD PRIMARY KEY (`objectId`,`attributeId`),
+  ADD KEY `objects_attributes_ibfk_2` (`attributeId`);
 
 --
 -- Indices de la tabla `objects_classes`
 --
 ALTER TABLE `objects_classes`
-  ADD KEY `objects_classes_ibfk_1` (`object_id`),
-  ADD KEY `objects_classes_ibfk_2` (`class_id`);
+  ADD KEY `objects_classes_ibfk_1` (`objectId`),
+  ADD KEY `objects_classes_ibfk_2` (`classId`);
 
 --
 -- Indices de la tabla `objects_types`
@@ -44998,21 +44998,21 @@ ALTER TABLE `users`
 -- Filtros para la tabla `animations`
 --
 ALTER TABLE `animations`
-  ADD CONSTRAINT `animations_ibfk_1` FOREIGN KEY (`graphic_id`) REFERENCES `graphics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `animations_ibfk_1` FOREIGN KEY (`graphicId`) REFERENCES `graphics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `objects_attributes`
 --
 ALTER TABLE `objects_attributes`
-  ADD CONSTRAINT `objects_attributes_ibfk_1` FOREIGN KEY (`object_id`) REFERENCES `objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `objects_attributes_ibfk_2` FOREIGN KEY (`attribute_id`) REFERENCES `attributes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `objects_attributes_ibfk_1` FOREIGN KEY (`objectId`) REFERENCES `objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `objects_attributes_ibfk_2` FOREIGN KEY (`attributeId`) REFERENCES `attributes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `objects_classes`
 --
 ALTER TABLE `objects_classes`
-  ADD CONSTRAINT `objects_classes_ibfk_1` FOREIGN KEY (`object_id`) REFERENCES `objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `objects_classes_ibfk_2` FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `objects_classes_ibfk_1` FOREIGN KEY (`objectId`) REFERENCES `objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `objects_classes_ibfk_2` FOREIGN KEY (`classId`) REFERENCES `classes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

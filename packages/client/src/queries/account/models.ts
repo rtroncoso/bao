@@ -9,7 +9,7 @@ export interface RaceModel {
 }
 
 export interface CharacterModel {
-  account_id: number;
+  accountId: number;
   body: number;
   class: Array<ClassModel>;
   genre: number;

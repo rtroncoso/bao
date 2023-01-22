@@ -21,12 +21,10 @@ export const find = async ({ ids } = {}) => {
   // Attributes
 
   qb.reset()
-  qb.select(
-    'attributes.name, attributes.id, oa.value, oa.object_id AS objectId'
-  )
+  qb.select('attributes.name, attributes.id, oa.value, oa.objectId AS objectId')
   qb.from('objects_attributes oa')
-  qb.join('attributes', 'attributes.id = oa.attribute_id', 'inner')
-  qb.whereIn('oa.object_id', objectIds)
+  qb.join('attributes', 'attributes.id = oa.attributeId', 'inner')
+  qb.whereIn('oa.objectId', objectIds)
 
   const objectAttributesSql = await qb.get()
   const objectAttributes = await db.executeQuery(objectAttributesSql)
@@ -35,16 +33,16 @@ export const find = async ({ ids } = {}) => {
 
   qb.reset()
   qb.select(
-    'classes.name, classes.id, oc.class_id AS classId, oc.object_id AS objectId'
+    'classes.name, classes.id, oc.classId AS classId, oc.objectId AS objectId'
   )
   qb.from('objects_classes oc')
-  qb.join('classes', 'classes.id = oc.class_id', 'inner')
-  qb.whereIn('oc.object_id', objectIds)
+  qb.join('classes', 'classes.id = oc.classId', 'inner')
+  qb.whereIn('oc.objectId', objectIds)
 
   const objectClassesSql = await qb.get()
   const objectClasses = await db.executeQuery(objectClassesSql)
 
-  //console.log("--objectClasses", objectClasses)
+  // console.log("--objectClasses", objectClasses)
 
   // Response
   const response = objects.map((object) => {

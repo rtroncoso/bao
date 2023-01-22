@@ -10,7 +10,8 @@ import { AuthService } from '@mob/server/services/AuthService';
 import { WorldRoomState } from '@mob/server/schema/WorldRoomState';
 import { MovementSystem } from '@mob/server/systems';
 import { CharacterState } from '@/schema/CharacterState';
-import { ArraySchema, MapSchema } from '@colyseus/schema';
+import { MapSchema } from '@colyseus/schema';
+import { TILE_SIZE } from '@mob/core';
 
 export class WorldRoom extends Room {
   movementSystem: MovementSystem;
@@ -29,20 +30,27 @@ export class WorldRoom extends Room {
     });
 
     const characters = new MapSchema<CharacterState>();
-    new Array(100).fill(0).forEach(() => {
+    new Array(50).fill(0).forEach(() => {
       function randomIntFromInterval(min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
       }
       const character = new CharacterState();
       character.sessionId = (Math.random() + 1).toString(36).substring(7);
       character.name = (Math.random() + 1).toString(36).substring(7);
-      character.x = randomIntFromInterval(-1000, 1000);
-      character.y = randomIntFromInterval(-1000, 1000);
+      character.x = Math.floor(randomIntFromInterval(-20, 20) * TILE_SIZE);
+      character.y = Math.floor(randomIntFromInterval(-20, 20) * TILE_SIZE);
+      characters.set(character.sessionId, character);
+    });
+    new Array(10).fill(0).forEach((_, i) => {
+      const character = new CharacterState();
+      character.sessionId = (Math.random() + 1).toString(36).substring(7);
+      character.name = (Math.random() + 1).toString(36).substring(7);
+      character.x = Math.floor(i * TILE_SIZE);
+      character.y = Math.floor(10 * TILE_SIZE);
       characters.set(character.sessionId, character);
     });
 
     this.state.characters = characters;
-    console.log(this.state);
   }
 
   public async onAuth(

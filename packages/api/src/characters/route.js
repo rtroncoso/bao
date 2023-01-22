@@ -1,36 +1,24 @@
 import express from 'express'
 import {
-  //active,
-  //create,
+  // active,
+  // create,
   find,
   findOne,
   inventory,
-  //remove,
-  //restore,
-  //update
+  // remove,
+  // restore,
+  // update
 } from './middleware'
 
 import { getAccountFromToken } from '../accounts/middleware'
 
 const adminRouter = express.Router()
-//adminRouter.use(getUserFromToken)
-//adminRouter.use(isAdmin)
 adminRouter.get('/', find)
-//adminRouter.post('/', create)
 adminRouter.get('/:id', findOne)
 adminRouter.get('/:id/inventory', inventory)
-//adminRouter.patch('/:objectId', update)
-//adminRouter.delete('/:objectId', remove)
 
 const clientRouter = express.Router()
 clientRouter.use(getAccountFromToken)
-//clientRouter.use(isAdmin)
-clientRouter.get('/', find)
-//clientRouter.post('/', create)
-clientRouter.get('/:id', findOne)
-clientRouter.get('/:id/inventory', inventory)
-//clientRouter.patch('/:objectId', update)
-//clientRouter.delete('/:objectId', remove)
 
 export default {
   admin: adminRouter,

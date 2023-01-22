@@ -50,6 +50,7 @@ export class OnJoinCommand extends Command<WorldRoom, OnJoinParameters> {
       }
 
       const character = new CharacterState();
+      console.log(apiCharacter);
       character.id = apiCharacter.id;
       character.name = apiCharacter.name;
       character.sessionId = client.sessionId;

@@ -39,7 +39,7 @@ export function usePressedKeys() {
     const downHandler = ({ key }: { key: string }) => {
       if (keys.indexOf(key.toLowerCase()) === -1) {
         keys.push(key.toLowerCase());
-        setKeys([...keys]);
+        setKeys([...keys.reverse()]);
       }
     };
 
@@ -47,7 +47,7 @@ export function usePressedKeys() {
       const index = keys.indexOf(key.toLowerCase());
       if (index !== -1) {
         keys.splice(index, 1);
-        setKeys([...keys]);
+        setKeys([...keys.reverse()]);
       }
     };
 

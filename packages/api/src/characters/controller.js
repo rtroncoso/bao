@@ -3,9 +3,9 @@ import * as ObjectModel from './model'
 export const find = async ({
   ids,
   accountId,
-  //name,
-  //transaction,
-  //user
+  // name,
+  // transaction,
+  // user
 } = {}) => {
   const result = await ObjectModel.find({
     ids,

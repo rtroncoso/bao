@@ -2,7 +2,7 @@ import db from '../db'
 import { QueryBuilder } from '../queryBuilder'
 
 export const find = async ({ ids, username } = {}) => {
-  var qb = new QueryBuilder()
+  const qb = new QueryBuilder()
   qb.select('*')
   qb.from('accounts')
 
@@ -14,7 +14,7 @@ export const find = async ({ ids, username } = {}) => {
     qb.where('username', username)
   }
 
-  var sql = await qb.get()
+  const sql = await qb.get()
   const accounts = await db.executeQuery(sql)
 
   if (!accounts.length) {

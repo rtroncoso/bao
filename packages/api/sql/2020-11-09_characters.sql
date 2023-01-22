@@ -29,10 +29,10 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `characters` (
   `id` int(11) NOT NULL,
-  `account_id` int(11) NOT NULL,
+  `accountId` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `class_id` int(11) NOT NULL,
-  `race_id` int(11) NOT NULL,
+  `classId` int(11) NOT NULL,
+  `raceId` int(11) NOT NULL,
   `body` int(11) NOT NULL,
   `head` int(11) NOT NULL,
   `helmet` int(11) DEFAULT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE `characters` (
 -- Volcado de datos para la tabla `characters`
 --
 
-INSERT INTO `characters` (`id`, `account_id`, `name`, `class_id`, `race_id`, `body`, `head`, `helmet`, `shield`, `weapon`, `genre`, `world`, `x`, `y`) VALUES
+INSERT INTO `characters` (`id`, `accountId`, `name`, `classId`, `raceId`, `body`, `head`, `helmet`, `shield`, `weapon`, `genre`, `world`, `x`, `y`) VALUES
 (1, 1, 'OzMuye', 7, 2, 1, 1, NULL, NULL, NULL, 1, 1, 0, 0);
 
 --
@@ -60,9 +60,9 @@ INSERT INTO `characters` (`id`, `account_id`, `name`, `class_id`, `race_id`, `bo
 --
 ALTER TABLE `characters`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `account_id` (`account_id`),
-  ADD KEY `class_id` (`class_id`),
-  ADD KEY `race_id` (`race_id`);
+  ADD KEY `accountId` (`accountId`),
+  ADD KEY `classId` (`classId`),
+  ADD KEY `raceId` (`raceId`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -82,9 +82,9 @@ ALTER TABLE `characters`
 -- Filtros para la tabla `characters`
 --
 ALTER TABLE `characters`
-  ADD CONSTRAINT `characters_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `characters_ibfk_2` FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `characters_ibfk_3` FOREIGN KEY (`race_id`) REFERENCES `races` (`id`);
+  ADD CONSTRAINT `characters_ibfk_1` FOREIGN KEY (`accountId`) REFERENCES `accounts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `characters_ibfk_2` FOREIGN KEY (`classId`) REFERENCES `classes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `characters_ibfk_3` FOREIGN KEY (`raceId`) REFERENCES `races` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
