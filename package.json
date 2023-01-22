@@ -1,6 +1,7 @@
 {
-	"name": "mob",
-	"private": true,
+  "name": "mob",
+  "version": "1.0.1",
+  "private": true,
   "scripts": {
     "lint": "turbo run lint",
     "test": "cross-env NODE_ENV=testing turbo run test",
@@ -9,10 +10,10 @@
     "dev": "turbo run dev",
     "format": "turbo run prettier"
   },
-	"devDependencies": {
-		"cross-env": "^5.2.0",
-		"turbo": "^1.7.0",
-		"typescript": "^4.9.4"
-	},
-	"packageManager": "pnpm@7.11.0"
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "turbo": "^1.7.0",
+    "typescript": "^4.9.4"
+  },
+  "packageManager": "pnpm@7.11.0"
 }
