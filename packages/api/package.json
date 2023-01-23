@@ -4,11 +4,11 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "dev": "npm run start",
-    "start": "nodemon --exec node -r esm src/index.js",
+    "dev": "nodemon --exec pnpm run start",
+    "start": "node -r esm src/index.js",
     "start:sa": "node -r esm src/index.js",
     "lint": "eslint src",
-    "lint:fix": "npm run lint -- --fix",
+    "lint:fix": "pnpm run lint -- --fix",
     "format": "prettier src/**/**",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "prettier -w \"src/**/*.{js,ts,jsx,tsx}\""

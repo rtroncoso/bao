@@ -1,15 +1,15 @@
 export class QueryBuilder {
   constructor() {
     this.reset()
-    this.qbConnection
+    this.qbConnection = null
 
-    //Debugging
+    // Debugging
     this.queries = []
   }
 
   reset() {
     this.qbSelect = []
-    this.qbFrom
+    this.qbFrom = ''
     this.qbWhere = []
     this.qbOrderBy = []
     this.qbGroupBy = []
@@ -93,7 +93,7 @@ export class QueryBuilder {
         'LEFT OUTER',
         'RIGHT OUTER',
       ]
-      if (types.indexOf(type) == -1) {
+      if (types.indexOf(type) === -1) {
         type = ''
       } else {
         type += ' '
@@ -110,68 +110,62 @@ export class QueryBuilder {
     return arr[arr.length - 1]
   }
 
-  countAllResults(env) {
-    return new Promise(async (resolve, reject) => {
-      this.qbSelect = ['COUNT(*) as count']
-      const response = await this.get(env)
-      resolve(response[0].count)
-    })
+  countAllResults() {
+    this.qbSelect = ['COUNT(*) as count']
+    const [result] = this.get()
+    return result.count
   }
 
-  get(env) {
-    return new Promise(async (resolve, reject) => {
-      let $sql = 'SELECT '
+  get() {
+    let $sql = 'SELECT '
 
-      /* --- Select --- */
+    /* --- Select --- */
 
-      if (!this.qbSelect.length) {
-        $sql += '*'
-      } else {
-        $sql += this.qbSelect.join(', ')
-      }
+    if (!this.qbSelect.length) {
+      $sql += '*'
+    } else {
+      $sql += this.qbSelect.join(', ')
+    }
 
-      /* --- From --- */
+    /* --- From --- */
 
-      $sql += '\nFROM ' + this.qbFrom
+    $sql += '\nFROM ' + this.qbFrom
 
-      /* --- Join --- */
+    /* --- Join --- */
 
-      // Write the "JOIN" portion of the query
-      if (this.qbJoin.length) {
-        $sql += '\n' + this.qbJoin.join('\n')
-      }
+    // Write the "JOIN" portion of the query
+    if (this.qbJoin.length) {
+      $sql += '\n' + this.qbJoin.join('\n')
+    }
 
-      /* --- Where --- */
+    /* --- Where --- */
 
-      if (this.qbWhere.length) {
-        let where = this.qbWhere.join(' AND ')
-        where = where.replace(/AND\s*$/, '')
-        $sql += '\nWHERE ' + where
-      }
+    if (this.qbWhere.length) {
+      let where = this.qbWhere.join(' AND ')
+      where = where.replace(/AND\s*$/, '')
+      $sql += '\nWHERE ' + where
+    }
 
-      /* -- Order by -- */
-      if (this.qbOrderBy.length) {
-        let orderBy = this.qbOrderBy.join(',')
-        $sql += '\nORDER BY ' + orderBy
-      }
+    /* -- Order by -- */
+    if (this.qbOrderBy.length) {
+      const orderBy = this.qbOrderBy.join(',')
+      $sql += '\nORDER BY ' + orderBy
+    }
 
-      /* -- Group by -- */
-      if (this.qbGroupBy.length) {
-        let groupBy = this.qbGroupBy.join(',')
-        $sql += '\nGROUP BY ' + groupBy
-      }
+    /* -- Group by -- */
+    if (this.qbGroupBy.length) {
+      const groupBy = this.qbGroupBy.join(',')
+      $sql += '\nGROUP BY ' + groupBy
+    }
 
-      /* --- Limit --- */
+    /* --- Limit --- */
 
-      if (this.qbLimit > 0) {
-        $sql +=
-          '\nLIMIT ' +
-          (this.qbOffset ? this.qbOffset + ', ' : '') +
-          this.qbLimit
-      }
+    if (this.qbLimit > 0) {
+      $sql +=
+        '\nLIMIT ' + (this.qbOffset ? this.qbOffset + ', ' : '') + this.qbLimit
+    }
 
-      if (process.env.NODE_ENV === 'development') console.log($sql)
-      resolve($sql)
-    })
+    if (process.env.NODE_ENV === 'development') console.log($sql)
+    return $sql
   }
 }

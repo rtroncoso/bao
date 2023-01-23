@@ -11,6 +11,26 @@ export class MovementSystem {
     this.room = room;
   }
 
+  public blockTile(tile: TilePosition, character: CharacterState) {
+    this.blockedTiles.push([character.sessionId, tile]);
+    return (this.blockedTiles = [...new Set(this.blockedTiles)]);
+  }
+
+  public unblockTile(tile: TilePosition, character: CharacterState) {
+    const index = this.findBlockedTileIndex(tile, character.sessionId);
+    if (index) this.blockedTiles.splice(index);
+    return this.blockedTiles;
+  }
+
+  private findBlockedTileIndex(tile: TilePosition, excludeSessionId?: string) {
+    return this.blockedTiles.findIndex(
+      ([sessionId, blockedTile]) =>
+        sessionId !== excludeSessionId &&
+        blockedTile.x === tile.x &&
+        blockedTile.y === tile.y
+    );
+  }
+
   private getCharacterHeading(key: string) {
     return key === 's'
       ? Heading.SOUTH
@@ -39,18 +59,10 @@ export class MovementSystem {
     );
   }
 
-  private findBlockedTileIndex(tile: TilePosition, excludeSessionId?: string) {
-    return this.blockedTiles.findIndex(
-      ([sessionId, blockedTile]) =>
-        sessionId !== excludeSessionId &&
-        blockedTile.x === tile.x &&
-        blockedTile.y === tile.y
-    );
-  }
-
   private handleStopMovement(character: CharacterState) {
     const stopMovement = () => {
       if (this.isTileBlocked(character.targetTile, character.sessionId)) {
+        this.blockTile(character.tile, character);
         character.x = character.tile.x * TILE_SIZE;
         character.y = character.tile.y * TILE_SIZE;
         character.isMoving = false;
@@ -58,16 +70,11 @@ export class MovementSystem {
         return;
       }
 
+      this.unblockTile(character.tile, character);
       character.x = character.targetTile.x * TILE_SIZE;
       character.y = character.targetTile.y * TILE_SIZE;
       character.isMoving = false;
       character.targetTile = null;
-
-      const index = this.findBlockedTileIndex(
-        character.tile,
-        character.sessionId
-      );
-      if (index) this.blockedTiles.splice(index);
     };
 
     if (
@@ -126,27 +133,43 @@ export class MovementSystem {
         }
       }
 
-      if (character.isMoving) {
+      if (character.isMoving && character.targetTile) {
         const direction = this.getCharacterDirection(character.heading);
         const velocity = {
           x: speed * direction.x,
           y: speed * direction.y
         };
 
-        character.x += velocity.x;
-        character.y += velocity.y;
+        const x = character.x + velocity.x;
+        const y = character.y + velocity.y;
+        const tile = new TilePosition({
+          x: Math.floor(x / TILE_SIZE),
+          y: Math.floor(y / TILE_SIZE)
+        });
+
+        if (!this.isTileBlocked(tile, character.sessionId)) {
+          character.x = x;
+          character.y = y;
+        } else {
+          this.blockTile(character.tile, character);
+          character.x = character.tile.x * TILE_SIZE;
+          character.y = character.tile.y * TILE_SIZE;
+          character.isMoving = false;
+          character.targetTile = null;
+          return;
+        }
       }
 
       this.handleStopMovement(character);
 
       if (character.tile.x !== Math.floor(character.x / TILE_SIZE)) {
         character.tile.x = Math.floor(character.x / TILE_SIZE);
-        this.blockedTiles.push([character.sessionId, character.tile]);
+        this.blockTile(character.tile, character);
       }
 
       if (character.tile.y !== Math.floor(character.y / TILE_SIZE)) {
         character.tile.y = Math.floor(character.y / TILE_SIZE);
-        this.blockedTiles.push([character.sessionId, character.tile]);
+        this.blockTile(character.tile, character);
       }
     });
   }

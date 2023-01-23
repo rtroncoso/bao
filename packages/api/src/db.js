@@ -7,10 +7,10 @@ async function connect(cb) {
   return new Promise((resolve, reject) => {
     pool.on('connection', function (connection) {
       connection.on('error', function (err) {
-        //logger.error('MySQL error event', err)
+        console.error('MySQL error event', err)
       })
       connection.on('close', function (err) {
-        //logger.warn('MySQL close event', err)
+        console.warn('MySQL close event', err)
       })
     })
     resolve()
@@ -18,7 +18,7 @@ async function connect(cb) {
 }
 
 async function executeQuery(query) {
-  //logger.debug(`query: `, query)
+  // logger.debug(`query: `, query)
   return new Promise((resolve, reject) => {
     try {
       pool.query(query, (e, r, f) => {
@@ -26,7 +26,7 @@ async function executeQuery(query) {
           return reject(e)
         }
 
-        //logger.debug(r,f)
+        // logger.debug(r,f)
         resolve(r)
       })
     } catch (ex) {
@@ -38,16 +38,16 @@ async function executeQuery(query) {
 async function execSP(spName, params) {
   return new Promise((resolve, reject) => {
     try {
-      const paramPlaceHolder = ''
+      let paramPlaceHolder = ''
       if (params && params.length) {
-        for (const i = 0; i < params.length; i++) {
+        for (let i = 0; i < params.length; i++) {
           paramPlaceHolder += '?,'
         }
       }
       if (paramPlaceHolder.length) {
         paramPlaceHolder = paramPlaceHolder.slice(0, -1)
       }
-      logger.debug('final SP call', `CALL ${spName}(${params})`)
+      // logger.debug('final SP call', `CALL ${spName}(${params})`)
       pool.query(`CALL ${spName}(${paramPlaceHolder})`, params, (e, r, f) => {
         if (e) {
           return reject(e)

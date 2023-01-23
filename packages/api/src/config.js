@@ -6,7 +6,7 @@ dotenv.config({ path: path.resolve(envPath, '.env') })
 
 const app = {
   rootDir: `${__dirname}/src`,
-  port: process.env.PORT || 3000,
+  port: process.env.PORT || 9000,
 }
 
 const db = {

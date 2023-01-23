@@ -128,6 +128,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.37.0
       '@typescript-eslint/parser': ^5.37.0
       autoprefixer: ^10.4.11
+      babel-plugin-macros: ^3.1.0
       bfj: ^7.0.2
       camelcase: ^6.1.0
       colyseus.js: ^0.14.0
@@ -227,7 +228,7 @@ importers:
       fs-extra: 9.1.0
       hex-rgb: 4.3.0
       localforage: 1.10.0
-      next: 12.1.6_jiuppbrrdpqsioctsbaxdlfu4e
+      next: 12.1.6_vzd3d6irctqcpwaf2lggst7oam
       next-pwa: 5.6.0_xar45q2dk63klapq7erhubvxym
       next-transpile-modules: 9.1.0
       pixi-ease: 3.0.7_pixi.js@6.5.8
@@ -288,6 +289,7 @@ importers:
       '@typescript-eslint/eslint-plugin': 5.48.2_caon6io6stgpr7lz2rtbhekxqy
       '@typescript-eslint/parser': 5.48.2_7uibuqfxkfaozanbtbziikiqje
       autoprefixer: 10.4.13_postcss@8.4.21
+      babel-plugin-macros: 3.1.0
       csstype: 3.1.1
       eslint: 8.32.0
       eslint-config-next: 12.3.4_7uibuqfxkfaozanbtbziikiqje
@@ -11912,7 +11914,7 @@ packages:
       babel-loader: 8.3.0_la66t7xldg4uecmyawueag5wkm
       clean-webpack-plugin: 4.0.0_webpack@5.75.0
       globby: 11.1.0
-      next: 12.1.6_jiuppbrrdpqsioctsbaxdlfu4e
+      next: 12.1.6_vzd3d6irctqcpwaf2lggst7oam
       terser-webpack-plugin: 5.3.6_webpack@5.75.0
       workbox-webpack-plugin: 6.5.4_webpack@5.75.0
       workbox-window: 6.5.4
@@ -11934,7 +11936,7 @@ packages:
       escalade: 3.1.1
     dev: false
 
-  /next/12.1.6_jiuppbrrdpqsioctsbaxdlfu4e:
+  /next/12.1.6_vzd3d6irctqcpwaf2lggst7oam:
     resolution: {integrity: sha512-cebwKxL3/DhNKfg9tPZDQmbRKjueqykHHbgaoG4VBRH3AHQJ2HO0dbKFiS1hPhe1/qgc2d/hFeadsbPicmLD+A==}
     engines: {node: '>=12.22.0'}
     hasBin: true
@@ -11957,7 +11959,7 @@ packages:
       postcss: 8.4.5
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      styled-jsx: 5.0.2_64k6h7xsf5jw26ymy7ush5uuyi
+      styled-jsx: 5.0.2_rfza2tf2j77l6zsdvgobauutg4
     optionalDependencies:
       '@next/swc-android-arm-eabi': 12.1.6
       '@next/swc-android-arm64': 12.1.6
@@ -16099,7 +16101,7 @@ packages:
       supports-color: 5.5.0
     dev: false
 
-  /styled-jsx/5.0.2_64k6h7xsf5jw26ymy7ush5uuyi:
+  /styled-jsx/5.0.2_rfza2tf2j77l6zsdvgobauutg4:
     resolution: {integrity: sha512-LqPQrbBh3egD57NBcHET4qcgshPks+yblyhPlH2GY8oaDgKs8SK4C3dBh3oSJjgzJ3G5t1SYEZGHkP+QEpX9EQ==}
     engines: {node: '>= 12.0.0'}
     peerDependencies:
@@ -16113,6 +16115,7 @@ packages:
         optional: true
     dependencies:
       '@babel/core': 7.20.12
+      babel-plugin-macros: 3.1.0
       react: 17.0.2
     dev: false
 

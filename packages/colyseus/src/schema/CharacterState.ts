@@ -15,7 +15,7 @@ export class CharacterState extends Schema {
   public heading = 0;
 
   @type('uint8')
-  public speed = 32;
+  public speed = 64;
 
   @type(TilePosition)
   public tile = new TilePosition();

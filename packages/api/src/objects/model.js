@@ -10,7 +10,7 @@ export const find = async ({ ids } = {}) => {
     qb.whereIn('id', ids)
   }
 
-  const objectsSql = await qb.get()
+  const objectsSql = qb.get()
   const objects = await db.executeQuery(objectsSql)
   const objectIds = objects.map((object) => object.id)
 
@@ -26,7 +26,7 @@ export const find = async ({ ids } = {}) => {
   qb.join('attributes', 'attributes.id = oa.attributeId', 'inner')
   qb.whereIn('oa.objectId', objectIds)
 
-  const objectAttributesSql = await qb.get()
+  const objectAttributesSql = qb.get()
   const objectAttributes = await db.executeQuery(objectAttributesSql)
 
   // Classes
@@ -39,7 +39,7 @@ export const find = async ({ ids } = {}) => {
   qb.join('classes', 'classes.id = oc.classId', 'inner')
   qb.whereIn('oc.objectId', objectIds)
 
-  const objectClassesSql = await qb.get()
+  const objectClassesSql = qb.get()
   const objectClasses = await db.executeQuery(objectClassesSql)
 
   // console.log("--objectClasses", objectClasses)

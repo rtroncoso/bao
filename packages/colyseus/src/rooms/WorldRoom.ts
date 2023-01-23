@@ -31,7 +31,7 @@ export class WorldRoom extends Room<WorldRoomState> {
     });
 
     const characters = new ArraySchema<CharacterState>(
-      ...new Array(10).fill(0).map(() => {
+      ...new Array(50).fill(0).map(() => {
         function randomIntFromInterval(min, max) {
           return Math.floor(Math.random() * (max - min + 1) + min);
         }
@@ -58,6 +58,26 @@ export class WorldRoom extends Room<WorldRoomState> {
         return character;
       })
     );
+
+    this.clock.setTimeout(() => {
+      characters.push(
+        ...new Array(10).fill(0).map((_, i) => {
+          const character = new CharacterState();
+          character.sessionId = (Math.random() + 1).toString(36).substring(7);
+          character.name = (Math.random() + 1).toString(36).substring(7);
+          character.x = Math.floor(i * TILE_SIZE);
+          character.y = Math.floor(5 * TILE_SIZE);
+
+          this.clock.setInterval(() => {
+            character.inputs = character.inputs.includes('w')
+              ? new ArraySchema('s')
+              : new ArraySchema('w');
+          }, 500);
+
+          return character;
+        })
+      );
+    }, 500);
 
     this.state.characters = characters;
   }
