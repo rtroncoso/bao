@@ -84,6 +84,7 @@ export class MovementSystem {
     ) {
       stopMovement();
     }
+
     if (
       character.isMoving &&
       character.heading === Heading.EAST &&

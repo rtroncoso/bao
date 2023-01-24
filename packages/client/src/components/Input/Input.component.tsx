@@ -11,16 +11,18 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   touched?: boolean;
 }
 
-const Input = ({ label, ...props }: InputProps) => {
-  return (
-    <React.Fragment>
-      {label && <label htmlFor={props.name}>{label}</label>}
-      <InputStyled {...props} />
-      {props.errors && props.touched && (
-        <FormErrorStyled>{props.errors}</FormErrorStyled>
-      )}
-    </React.Fragment>
-  );
-};
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ label, ...props }, ref) => {
+    return (
+      <React.Fragment>
+        {label && <label htmlFor={props.name}>{label}</label>}
+        <InputStyled ref={ref} {...props} />
+        {props.errors && props.touched && (
+          <FormErrorStyled>{props.errors}</FormErrorStyled>
+        )}
+      </React.Fragment>
+    );
+  }
+);
 
 export default Input;
