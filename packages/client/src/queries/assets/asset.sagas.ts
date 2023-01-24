@@ -10,13 +10,13 @@ import {
 import { Action } from 'typescript-fsa';
 
 import { selectToken } from '@bao/client/queries/account';
-import { loadAssets } from './actions';
+import { loadAssets } from './asset.actions';
 import {
   LoadAssetsPayload,
   LoadResourcePayload,
   LoadGraphicsPayload,
   LoadManifestPayload
-} from './models';
+} from './asset.model';
 import {
   loadBodies,
   loadEffects,
@@ -27,40 +27,11 @@ import {
   loadShields,
   loadWeapons
 } from './requests';
-import { selectAnimations, selectGraphics, selectManifest } from './selectors';
-
-// export function* handleLoaderCallback() {
-//   const { payload: resources } = yield take(LOADING_COMPLETE);
-//   const graphics = yield select(selectGraphics);
-//   const animations = getAnimations(graphics);
-//   const bodies = getBodies(BODIES_FILE, animations);
-//   const weapons = getWeapons(WEAPONS_FILE, animations);
-//   const shields = getShields(SHIELDS_FILE, animations);
-//   const effects = getEffects(EFFECTS_FILE, animations);
-//   const helmets = getHelmets(HELMETS_FILE, graphics);
-//   const heads = getHeads(HEADS_FILE, graphics);
-
-//   // const graphicFiles = getFileNames(getStaticGraphics(graphics));
-//   // const animationFiles = getFileNames(getAnimatedGraphics(graphics));
-//   // console.log(graphicFiles, animationFiles);
-//   yield put(updateResources(resources));
-//   yield put(updateAnimations(animations));
-//   yield put(updateBodies(bodies));
-//   yield put(updateWeapons(weapons));
-//   yield put(updateShields(shields));
-//   yield put(updateEffects(effects));
-//   yield put(updateHelmets(helmets));
-//   yield put(updateHeads(heads));
-//   yield put(push(GAME_PATH));
-// }
-
-// export function* loadSpriteSheets(loader) {
-//   const tilesets = getTileSetFilePaths();
-//   const animations = getAnimationFilePaths();
-
-//   yield put(updateSpriteSheets({ tilesets, animations }));
-//   loader.add([...tilesets, ...animations]);
-// }
+import {
+  selectAnimations,
+  selectGraphics,
+  selectManifest
+} from './asset.selectors';
 
 export function* handleLoadHeads(payload: LoadResourcePayload) {
   try {

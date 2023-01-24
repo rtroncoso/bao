@@ -1,6 +1,6 @@
 import { Loader } from 'pixi.js';
 
-import { AuthorizedRequestPayload } from '@bao/client/queries/shared/models';
+import { AuthorizedRequestPayload } from 'src/queries/shared/shared.model';
 import {
   Body,
   Effect,

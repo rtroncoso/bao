@@ -103,15 +103,23 @@ importers:
       '@fortawesome/react-fontawesome': ^0.1.12
       '@inlet/react-pixi': ^6.8.0
       '@pixi/assets': ^6.3.1
+      '@pixi/basis': ^6.5.8
+      '@pixi/compressed-textures': ^6.5.8
       '@pixi/constants': ^6.3.1
       '@pixi/core': ^6.3.1
       '@pixi/display': ^6.3.1
       '@pixi/extensions': ^6.3.1
       '@pixi/filter-alpha': ^6.3.1
       '@pixi/filter-blur': ^6.3.1
+      '@pixi/loaders': ^6.5.8
       '@pixi/math': ^6.3.1
+      '@pixi/mesh': ^6.5.8
       '@pixi/runner': ^6.3.1
       '@pixi/settings': ^6.3.1
+      '@pixi/sprite': ^6.5.8
+      '@pixi/spritesheet': ^6.5.8
+      '@pixi/text': ^6.5.8
+      '@pixi/text-bitmap': ^6.5.8
       '@pixi/ticker': ^6.3.1
       '@pixi/utils': ^6.3.1
       '@reduxjs/toolkit': ^1.9.1
@@ -147,6 +155,7 @@ importers:
       eslint-plugin-prettier: ^4.2.1
       eslint-plugin-react: ^7.31.8
       eslint-plugin-react-hooks: ^4.2.0
+      flatted: ^3.2.7
       formik: ^2.2.4
       fs-extra: ^9.0.1
       hex-rgb: ^4.2.0
@@ -202,16 +211,24 @@ importers:
       '@fortawesome/free-solid-svg-icons': 5.15.4
       '@fortawesome/react-fontawesome': 0.1.19_6uk63tqcq2kfmhhlivxd3orcjq
       '@inlet/react-pixi': 6.8.0_jscvkqii6emt2bytxeadjnvpsi
-      '@pixi/assets': 6.5.8_mefptrzz3gnrukhpputzebs52m
+      '@pixi/assets': 6.5.8_dzk636b5ltu3g45yh5ywwvtjv4
+      '@pixi/basis': 6.5.8_wuwne4bteruscecui4tzo73cey
+      '@pixi/compressed-textures': 6.5.8_6sccgft4tfscgy6lbpvpmi22cq
       '@pixi/constants': 6.5.8
       '@pixi/core': 6.5.8_plvhmba5imzl5ocyxvgulib4y4
       '@pixi/display': 6.5.8_iuuj35lwfm7xh3uibmbysjulzi
       '@pixi/extensions': 6.5.8
       '@pixi/filter-alpha': 6.5.8_@pixi+core@6.5.8
       '@pixi/filter-blur': 6.5.8_ruze7uo4dqey55gax24ufeqa5m
+      '@pixi/loaders': 6.5.8_6ckrlwn7winopwhi64blk5ppm4
       '@pixi/math': 6.5.8
+      '@pixi/mesh': 6.5.8_poghtwf5oajarq6x6mmmgv75aq
       '@pixi/runner': 6.5.8
       '@pixi/settings': 6.5.8_@pixi+constants@6.5.8
+      '@pixi/sprite': 6.5.8_poghtwf5oajarq6x6mmmgv75aq
+      '@pixi/spritesheet': 6.5.8_2new7s3bwoq663fyskxojqmqje
+      '@pixi/text': 6.5.8_rchdcn53vupaz2z4tvbarrbwzu
+      '@pixi/text-bitmap': 6.5.8_o23izqiuhhojiiog57u4nm6dfu
       '@pixi/ticker': 6.5.8_oxn5cjk4xypux6aqhdb4byth2a
       '@pixi/utils': 6.5.8_qeualvkmgwo4nudflomrx2dohe
       '@reduxjs/toolkit': 1.9.1_csuupx2mfbspdz76fkecdgkise
@@ -224,6 +241,7 @@ importers:
       dotenv: 16.0.3
       dotenv-expand: 10.0.0
       ecsy: 0.4.2
+      flatted: 3.2.7
       formik: 2.2.9_react@17.0.2
       fs-extra: 9.1.0
       hex-rgb: 4.3.0
@@ -2772,7 +2790,7 @@ packages:
       '@pixi/utils': 6.5.8_qeualvkmgwo4nudflomrx2dohe
     dev: false
 
-  /@pixi/assets/6.5.8_mefptrzz3gnrukhpputzebs52m:
+  /@pixi/assets/6.5.8_dzk636b5ltu3g45yh5ywwvtjv4:
     resolution: {integrity: sha512-I7murs87QfrX8u4gA1ZS7l0Hh2U+r/HUU4nfp+8QZfyimkfJdtNU3zTnnLKIfCGb8bAYuZImP7KVI4xFe7boVA==}
     peerDependencies:
       '@pixi/basis': 6.5.8
@@ -2784,11 +2802,33 @@ packages:
       '@pixi/text-bitmap': 6.5.8
       '@pixi/utils': 6.5.8
     dependencies:
+      '@pixi/basis': 6.5.8_wuwne4bteruscecui4tzo73cey
+      '@pixi/compressed-textures': 6.5.8_6sccgft4tfscgy6lbpvpmi22cq
       '@pixi/constants': 6.5.8
       '@pixi/core': 6.5.8_plvhmba5imzl5ocyxvgulib4y4
       '@pixi/settings': 6.5.8_@pixi+constants@6.5.8
+      '@pixi/spritesheet': 6.5.8_2new7s3bwoq663fyskxojqmqje
+      '@pixi/text-bitmap': 6.5.8_o23izqiuhhojiiog57u4nm6dfu
       '@pixi/utils': 6.5.8_qeualvkmgwo4nudflomrx2dohe
       '@types/css-font-loading-module': 0.0.7
+    dev: false
+
+  /@pixi/basis/6.5.8_wuwne4bteruscecui4tzo73cey:
+    resolution: {integrity: sha512-j4j08fZsdg8b3F1Cs1cE478m6aVk6ix53pTrv+kxq0Givl3ctO+wwWEU07BFAuvsGGySKrhAEt4vmz78cRK9KQ==}
+    peerDependencies:
+      '@pixi/compressed-textures': 6.5.8
+      '@pixi/constants': 6.5.8
+      '@pixi/core': 6.5.8
+      '@pixi/loaders': 6.5.8
+      '@pixi/runner': 6.5.8
+      '@pixi/settings': 6.5.8
+    dependencies:
+      '@pixi/compressed-textures': 6.5.8_6sccgft4tfscgy6lbpvpmi22cq
+      '@pixi/constants': 6.5.8
+      '@pixi/core': 6.5.8_plvhmba5imzl5ocyxvgulib4y4
+      '@pixi/loaders': 6.5.8_6ckrlwn7winopwhi64blk5ppm4
+      '@pixi/runner': 6.5.8
+      '@pixi/settings': 6.5.8_@pixi+constants@6.5.8
     dev: false
 
   /@pixi/compressed-textures/6.5.8_6sccgft4tfscgy6lbpvpmi22cq:

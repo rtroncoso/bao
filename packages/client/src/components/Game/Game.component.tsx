@@ -1,6 +1,6 @@
 import { Stage } from '@inlet/react-pixi';
 import React, { useContext } from 'react';
-import { ReactReduxContext } from 'react-redux';
+import { Provider, ReactReduxContext } from 'react-redux';
 
 import {
   AssetSystem,
@@ -17,29 +17,28 @@ export type GameComponentProps = GameConnectedProps;
 
 export const Systems: React.FC = () => {
   return (
-    <React.Fragment>
+    <AssetSystem>
       <KeyboardSystem />
-      <AssetSystem />
       <ViewportSystem>
         <CharacterRenderingSystem />
       </ViewportSystem>
-    </React.Fragment>
+    </AssetSystem>
   );
 };
 
 export const GameComponent: React.FC<GameComponentProps> = () => {
   if (typeof window === undefined) return null;
-  const reduxContext = useContext(ReactReduxContext);
   const gameContext = useContext(GameContext);
+  const reduxContext = useContext(ReactReduxContext);
 
   return (
     <GameStyled>
       <Stage height={App.canvasHeight} width={App.canvasWidth}>
-        <ReactReduxContext.Provider value={reduxContext}>
+        <Provider store={reduxContext.store}>
           <GameContext.Provider value={gameContext}>
             <Systems />
           </GameContext.Provider>
-        </ReactReduxContext.Provider>
+        </Provider>
       </Stage>
     </GameStyled>
   );

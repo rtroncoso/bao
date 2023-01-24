@@ -7,7 +7,7 @@ import {
   JsonGraphicsModel
 } from '@bao/core/loaders';
 
-import { AssetEntities, LoadGraphicsPayload } from '../models';
+import { AssetEntities, LoadGraphicsPayload } from '../asset.model';
 
 export const loadGraphicsQuery = {
   force: true,

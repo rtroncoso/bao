@@ -22,7 +22,7 @@ export interface JsonBodyState {
  * Parses JSON bodies file into a key-value map
  * of body id's and their respective `Body`
  */
-export const getJsonBodies = (data: JsonBodiesModel, animations: Graphic[]) => (
+export const getJsonBodies = (data: JsonBodiesModel, animations: Graphic[]): JsonBodyState => (
   reduce<
     JsonBodiesModel,
     JsonBodyState

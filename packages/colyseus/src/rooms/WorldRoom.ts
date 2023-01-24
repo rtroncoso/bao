@@ -40,6 +40,8 @@ export class WorldRoom extends Room<WorldRoomState> {
         character.name = (Math.random() + 1).toString(36).substring(7);
         character.x = Math.floor(randomIntFromInterval(-20, 20) * TILE_SIZE);
         character.y = Math.floor(randomIntFromInterval(-20, 20) * TILE_SIZE);
+        character.bodyId = 2;
+        character.headId = 5;
         return character;
       }),
       ...new Array(10).fill(0).map((_, i) => {
@@ -48,6 +50,8 @@ export class WorldRoom extends Room<WorldRoomState> {
         character.name = (Math.random() + 1).toString(36).substring(7);
         character.x = Math.floor(i * TILE_SIZE);
         character.y = Math.floor(10 * TILE_SIZE);
+        character.bodyId = 3;
+        character.headId = 4;
 
         this.clock.setInterval(() => {
           character.inputs = character.inputs.includes('w')
@@ -63,6 +67,8 @@ export class WorldRoom extends Room<WorldRoomState> {
         character.name = (Math.random() + 1).toString(36).substring(7);
         character.x = Math.floor(i * TILE_SIZE);
         character.y = Math.floor(7 * TILE_SIZE);
+        character.bodyId = 23;
+        character.headId = 2;
 
         this.clock.setInterval(() => {
           character.inputs = character.inputs.includes('s')

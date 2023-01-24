@@ -2,7 +2,7 @@ import { QueryConfig } from 'redux-query';
 
 import { override } from '@bao/client/queries/shared';
 import { getJsonHeads, JsonHeadsModel } from '@bao/core/loaders';
-import { AssetEntities, LoadResourcePayload } from '../models';
+import { AssetEntities, LoadResourcePayload } from '../asset.model';
 
 export const loadHeadsQuery = {
   force: true,

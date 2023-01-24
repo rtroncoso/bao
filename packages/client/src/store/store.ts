@@ -1,8 +1,9 @@
+import { parse, stringify } from 'flatted';
+import storage from 'localforage';
 import { createSelectorHook, useDispatch } from 'react-redux';
 import { applyMiddleware, createStore, combineReducers } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'localforage';
+import { persistStore, persistReducer, createTransform } from 'redux-persist';
 import {
   entitiesReducer,
   errorsReducer,
@@ -21,7 +22,13 @@ const reducer = combineReducers({
   queries: queriesReducer
 });
 
+export const transformCircular = createTransform(
+  (inboundState, key) => stringify(inboundState),
+  (outboundState, key) => parse(outboundState)
+);
+
 const persistConfig = {
+  storage,
   blacklist: [
     'entities.animations',
     'entities.graphics',
@@ -36,7 +43,7 @@ const persistConfig = {
     'queries'
   ],
   key: 'root',
-  storage
+  transforms: [transformCircular]
 };
 
 export const sagaMiddleware = createSagaMiddleware();

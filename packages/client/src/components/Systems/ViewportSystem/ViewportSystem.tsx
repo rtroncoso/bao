@@ -107,8 +107,8 @@ export const ViewportSystem: React.FC<ViewportProps> = (
           y={-viewportState.projection.y}
         >
           <DebugGridSystem />
-          <DebugTextSystem />
           {children as React.ReactElement}
+          <DebugTextSystem />
         </Container>
       )}
     </ViewportContext.Provider>

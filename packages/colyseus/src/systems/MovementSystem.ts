@@ -59,7 +59,7 @@ export class MovementSystem {
     );
   }
 
-  private handleStopMovement(character: CharacterState) {
+  private handleStopMovement(character: CharacterState, inputs: string[]) {
     const stopMovement = () => {
       if (this.isTileBlocked(character.targetTile, character.sessionId)) {
         this.blockTile(character.tile, character);
@@ -73,8 +73,25 @@ export class MovementSystem {
       this.unblockTile(character.tile, character);
       character.x = character.targetTile.x * TILE_SIZE;
       character.y = character.targetTile.y * TILE_SIZE;
-      character.isMoving = false;
-      character.targetTile = null;
+
+      const [key] = inputs;
+      const heading: Heading = key && this.getCharacterHeading(key);
+      const direction = this.getCharacterDirection(heading);
+      const targetTile = new TilePosition({
+        x: character.targetTile.x + direction.x,
+        y: character.targetTile.y + direction.y
+      });
+
+      if (
+        heading === character.heading &&
+        !this.isTileBlocked(targetTile, character.sessionId)
+      ) {
+        character.targetTile = targetTile;
+      } else {
+        this.blockTile(character.tile, character);
+        character.isMoving = false;
+        character.targetTile = null;
+      }
     };
 
     if (
@@ -114,7 +131,7 @@ export class MovementSystem {
     const { state } = this.room;
     state.characters.forEach((character: CharacterState) => {
       const speed = character.speed * (1 / deltaTime);
-      const inputs = character.inputs.filter((key) =>
+      const inputs: string[] = character.inputs.filter((key) =>
         ['a', 'd', 'w', 's'].includes(key)
       );
 
@@ -161,7 +178,7 @@ export class MovementSystem {
         }
       }
 
-      this.handleStopMovement(character);
+      this.handleStopMovement(character, inputs);
 
       if (character.tile.x !== Math.floor(character.x / TILE_SIZE)) {
         character.tile.x = Math.floor(character.x / TILE_SIZE);
