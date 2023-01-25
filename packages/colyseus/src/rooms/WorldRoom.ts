@@ -12,7 +12,6 @@ import { MovementSystem } from '@bao/server/systems';
 import { CharacterState } from '@/schema/CharacterState';
 import { ArraySchema } from '@colyseus/schema';
 import { TILE_SIZE } from '@bao/core';
-import { TilePosition } from 'src/schema/MapState';
 
 export class WorldRoom extends Room<WorldRoomState> {
   movementSystem: MovementSystem;

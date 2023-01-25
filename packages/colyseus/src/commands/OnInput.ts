@@ -1,7 +1,6 @@
 import { Client } from 'colyseus';
 import { Command } from '@colyseus/command';
 import { ArraySchema } from '@colyseus/schema';
-
 import { WorldRoom } from '@/rooms/WorldRoom';
 
 export interface InputParameters {

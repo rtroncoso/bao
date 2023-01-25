@@ -1,7 +1,7 @@
 import { Heading, TILE_SIZE } from '@bao/core';
 import { CharacterState } from '@bao/server/schema/CharacterState';
 import { TilePosition } from '@/schema/MapState';
-import { WorldRoom } from 'src/rooms/WorldRoom';
+import { WorldRoom } from '@/rooms/WorldRoom';
 
 export interface BlockedTile {
   tile: TilePosition;

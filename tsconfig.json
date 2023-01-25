@@ -28,10 +28,10 @@
       "@bao/server": ["../../packages/colyseus/src"],
       "@bao/core*": ["../../packages/core/src*"],
       "@bao/core": ["../../packages/core/src"],
-      "@*": [
-        "../../packages/client/src*",
-        "../../packages/colyseus/src*",
-        "../../packages/core/src*"
+      "@/*": [
+        "../../packages/client/src/*",
+        "../../packages/colyseus/src/*",
+        "../../packages/core/src/*"
       ]
     }
   }

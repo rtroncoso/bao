@@ -91,7 +91,7 @@ export const DebugGridSystem = () => {
         setViewportState({ filter });
       }
     } catch (error) {
-      callbacks.handleLeaveRoom(error);
+      callbacks.leaveRoom(error);
     }
   }, []);
 

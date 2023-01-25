@@ -37,7 +37,7 @@ export interface GameContextState {
 export interface GameContextProps {
   callbacks: {
     joinRoom: () => Promise<boolean>;
-    leaveRoom: () => void;
+    leaveRoom: (error?: Error) => void;
     updateServerState: (updater: (draft: GameContextState) => void) => void;
     sendRoomMessage: (messageType: any, parameters: any) => void;
   };
@@ -84,16 +84,23 @@ export const GameContainer = <P extends GameConnectedProps>(
       [state]
     );
 
-    const handleLeaveRoom = useCallback(() => {
-      if (state.room) {
-        resetState();
-        state.room.leave(true);
-        router.push('/');
-        return;
-      }
+    const handleLeaveRoom = useCallback(
+      (error?: Error) => {
+        console.error(
+          `[handleLeaveRoom]: exiting room with error "${error.message}"`
+        );
 
-      console.warn(`[handleLeaveRoom]: trying to leave a closed room`);
-    }, [router, resetState, state]);
+        if (state.room) {
+          resetState();
+          state.room.leave(true);
+          router.push('/');
+          return;
+        }
+
+        console.warn(`[handleLeaveRoom]: trying to leave a closed room`);
+      },
+      [router, resetState, state]
+    );
 
     const handleRoomError = useCallback(
       (error: any) => {

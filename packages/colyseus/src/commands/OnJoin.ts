@@ -3,7 +3,7 @@ import { Command } from '@colyseus/command';
 
 import { CharacterState } from '@bao/server/schema/CharacterState';
 import { AccountService } from '@bao/server/services/AccountService';
-import { WorldRoom } from 'src/rooms/WorldRoom';
+import { WorldRoom } from '@/rooms/WorldRoom';
 import axios, { AxiosError } from 'axios';
 
 export interface OnJoinOptions {
