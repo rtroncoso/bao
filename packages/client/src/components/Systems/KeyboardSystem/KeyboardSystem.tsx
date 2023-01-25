@@ -11,7 +11,7 @@ export const KeyboardSystem: React.FC<KeyboardInputProps> = (props) => {
 
   useEffect(() => {
     if (state?.room) {
-      callbacks.handleSendRoomMessage('input', { inputs });
+      callbacks.sendRoomMessage('input', { inputs });
     }
   }, [inputs]);
 

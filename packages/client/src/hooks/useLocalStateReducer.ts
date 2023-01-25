@@ -1,4 +1,5 @@
 import { Reducer, useReducer } from 'react';
+import { produce } from 'immer';
 
 export const UPDATE = 'update';
 export const RESET = 'reset';
@@ -26,11 +27,11 @@ export type ActionTypes = Action.UPDATE | Action.RESET;
 
 export type DefaultActions = UpdateStateAction | ResetStateAction;
 
-export const updateState = (payload: any): UpdateStateAction => ({
+export const updateStateAction = (payload: any): UpdateStateAction => ({
   payload,
   type: Action.UPDATE
 });
-export const clearState = (payload: any): ResetStateAction => ({
+export const clearStateAction = (payload: any): ResetStateAction => ({
   payload,
   type: Action.RESET
 });
@@ -54,21 +55,30 @@ export const defaultReducer = <S extends LocalReducerState>(
   }
 };
 
-export type SetStateCallback<S> = (payload: Partial<S>) => void;
+export type SetStateCallback<S extends LocalReducerState> = (
+  payload: Partial<S>
+) => void;
+
+export type UpdateStateCallback<S extends LocalReducerState> = (
+  updater: (draft: S) => void
+) => void;
 export type ResetStateCallback = () => void;
 
 export const useLocalStateReducer = <S extends LocalReducerState>(
   initialState: S,
   reducer = defaultReducer
-): [S, SetStateCallback<S>, ResetStateCallback] => {
+): [S, SetStateCallback<S>, ResetStateCallback, UpdateStateCallback<S>] => {
   const [state, dispatch] = useReducer<Reducer<S, DefaultActions>>(
     reducer,
     initialState
   );
-  const setState: SetStateCallback<S> = (payload) =>
-    dispatch(updateState(payload));
-  const resetState: ResetStateCallback = () =>
-    dispatch(clearState(initialState));
 
-  return [state, setState, resetState];
+  const setState: SetStateCallback<S> = (payload) =>
+    dispatch(updateStateAction(payload));
+  const updateState: UpdateStateCallback<S> = (updater) =>
+    dispatch(updateStateAction(produce(state, updater)));
+  const resetState: ResetStateCallback = () =>
+    dispatch(clearStateAction(initialState));
+
+  return [state, setState, resetState, updateState];
 };

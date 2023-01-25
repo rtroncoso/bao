@@ -1,14 +1,15 @@
 import { Container, Sprite, Text, useTick } from '@inlet/react-pixi';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 import { getTexture, Graphic, TexturedGraphic, TILE_SIZE } from '@bao/core';
 import { CharacterState } from '@bao/server/schema/CharacterState';
-import { defaultTextStyle } from 'src/components/Game';
+import { defaultTextStyle, GameContext } from 'src/components/Game';
 import { Animation, Rectangle } from 'src/components/Pixi';
 import { HEADINGS } from '@bao/core';
 import { useSelector } from 'react-redux';
 import { selectBodies, selectHeads } from 'src/queries';
 import { AnimatedSprite, Point } from 'pixi.js';
+import { MovementSystem } from '@bao/server/systems';
 
 export interface CharacterProps {
   character: CharacterState;
@@ -49,6 +50,7 @@ export const Character = ({ character }: CharacterProps) => {
     if (character.isMoving && !bodyRef.current?.playing) {
       bodyRef.current?.gotoAndPlay(0);
     }
+
     if (!character.isMoving) {
       bodyRef.current?.gotoAndStop(0);
     }

@@ -35,7 +35,12 @@ export interface GameContextState {
 }
 
 export interface GameContextProps {
-  callbacks: any;
+  callbacks: {
+    joinRoom: () => Promise<boolean>;
+    leaveRoom: () => void;
+    updateServerState: (updater: (draft: GameContextState) => void) => void;
+    sendRoomMessage: (messageType: any, parameters: any) => void;
+  };
   state: GameContextState;
 }
 
@@ -59,7 +64,7 @@ export const GameContainer = <P extends GameConnectedProps>(
   const WithGameContext: React.FC<GameConnectedProps> = (props) => {
     const { token } = props;
     const router = useRouter();
-    const [state, setState, resetState] =
+    const [state, setState, resetState, updateState] =
       useLocalStateReducer<GameContextState>(createInitialState());
 
     const handleSendRoomMessage = useCallback(
@@ -113,9 +118,19 @@ export const GameContainer = <P extends GameConnectedProps>(
       console.log(type, message);
     }, []);
 
-    const handleUpdateServerState = useCallback(
+    const handleSetServerState = useCallback(
       (serverState: WorldRoomState) => {
         setState({ serverState });
+      },
+      [setState]
+    );
+
+    const handleUpdateServerState = useCallback(
+      (updater: Parameters<typeof updateState>[0]) => {
+        updateState(updater);
+        updateState((state) => {
+          state.serverState.characters;
+        });
       },
       [setState]
     );
@@ -129,7 +144,7 @@ export const GameContainer = <P extends GameConnectedProps>(
         });
 
         room.onMessage('*', handleRoomMessage);
-        room.onStateChange(handleUpdateServerState);
+        room.onStateChange(handleSetServerState);
         room.onError(handleRoomError);
         room.onLeave(() => handleRoomError({ message: 'LEAVE_ROOM' }));
 
@@ -152,7 +167,7 @@ export const GameContainer = <P extends GameConnectedProps>(
     }, [
       handleRoomError,
       handleRoomMessage,
-      handleUpdateServerState,
+      handleSetServerState,
       setState,
       token
     ]);
@@ -163,9 +178,10 @@ export const GameContainer = <P extends GameConnectedProps>(
     }, []);
 
     const callbacks = {
-      handleJoinRoom,
-      handleLeaveRoom,
-      handleSendRoomMessage
+      joinRoom: handleJoinRoom,
+      leaveRoom: handleLeaveRoom,
+      updateServerState: handleUpdateServerState,
+      sendRoomMessage: handleSendRoomMessage
     };
 
     return (

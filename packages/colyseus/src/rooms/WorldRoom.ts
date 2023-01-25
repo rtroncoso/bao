@@ -12,6 +12,7 @@ import { MovementSystem } from '@bao/server/systems';
 import { CharacterState } from '@/schema/CharacterState';
 import { ArraySchema } from '@colyseus/schema';
 import { TILE_SIZE } from '@bao/core';
+import { TilePosition } from 'src/schema/MapState';
 
 export class WorldRoom extends Room<WorldRoomState> {
   movementSystem: MovementSystem;
@@ -31,25 +32,28 @@ export class WorldRoom extends Room<WorldRoomState> {
     });
 
     const characters = new ArraySchema<CharacterState>(
-      ...new Array(50).fill(0).map(() => {
+      ...new Array(100).fill(0).map(() => {
         function randomIntFromInterval(min, max) {
           return Math.floor(Math.random() * (max - min + 1) + min);
         }
         const character = new CharacterState();
         character.sessionId = (Math.random() + 1).toString(36).substring(7);
         character.name = (Math.random() + 1).toString(36).substring(7);
-        character.x = Math.floor(randomIntFromInterval(-20, 20) * TILE_SIZE);
-        character.y = Math.floor(randomIntFromInterval(-20, 20) * TILE_SIZE);
+        character.x = character.tile.x * TILE_SIZE;
+        character.y = character.tile.y * TILE_SIZE;
         character.bodyId = 2;
         character.headId = 5;
+        character.moveTo(
+          randomIntFromInterval(-20, 20),
+          randomIntFromInterval(-20, 20)
+        );
         return character;
       }),
       ...new Array(10).fill(0).map((_, i) => {
         const character = new CharacterState();
         character.sessionId = (Math.random() + 1).toString(36).substring(7);
         character.name = (Math.random() + 1).toString(36).substring(7);
-        character.x = Math.floor(i * TILE_SIZE);
-        character.y = Math.floor(10 * TILE_SIZE);
+        character.moveTo(i, 10);
         character.bodyId = 3;
         character.headId = 4;
 
@@ -65,8 +69,7 @@ export class WorldRoom extends Room<WorldRoomState> {
         const character = new CharacterState();
         character.sessionId = (Math.random() + 1).toString(36).substring(7);
         character.name = (Math.random() + 1).toString(36).substring(7);
-        character.x = Math.floor(i * TILE_SIZE);
-        character.y = Math.floor(7 * TILE_SIZE);
+        character.moveTo(i, 7);
         character.bodyId = 23;
         character.headId = 2;
 

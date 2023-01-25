@@ -1,5 +1,6 @@
 import { TilePosition } from '@/schema/MapState';
 import { ArraySchema, Schema, type } from '@colyseus/schema';
+import { TILE_SIZE } from '@bao/core';
 
 export class CharacterState extends Schema {
   @type('int32')
@@ -40,4 +41,25 @@ export class CharacterState extends Schema {
 
   @type(['string'])
   public inputs = new ArraySchema<string>();
+
+  moveTo(person: TilePosition): void;
+  moveTo(x: number, y: number): void;
+
+  moveTo(...args: unknown[]) {
+    const [tile] = args;
+    const [x, y] = args;
+
+    if (tile instanceof TilePosition) {
+      this.tile.x = tile.x;
+      this.tile.y = tile.y;
+    }
+
+    if (typeof x === 'number' && typeof y === 'number') {
+      this.tile.x = x;
+      this.tile.y = y;
+    }
+
+    this.x = this.tile.x * TILE_SIZE;
+    this.y = this.tile.y * TILE_SIZE;
+  }
 }
