@@ -9,6 +9,7 @@ import {
   Texture,
   DisplayObject
 } from 'pixi.js';
+import { boxPolygon, pointPolygon } from 'intersects';
 import { CompositeTilemap } from '@pixi/tilemap';
 
 import each from 'lodash/fp/each';
@@ -45,22 +46,28 @@ import {
   TILES_LAYER,
   DETAILS_LAYER,
   ENTITIES_LAYER,
-  TileLayer
+  TileLayer,
+  TRIGGER_ROOF,
+  UPPER_LAYER
 } from '@bao/core';
 import { Container, useApp } from '@inlet/react-pixi';
 import { selectAnimations, selectGraphics, selectManifest } from 'src/queries';
 import { useMapContext, useViewportContext } from 'src/components/Systems';
+import { polygon } from 'src/utils';
+import { Ease } from 'pixi-ease';
+import { Water } from './Water';
 
 export const ANIMATIONS_POOL_SIZE = 2000;
 export const SPRITES_POOL_SIZE = 3000;
 export type SpritesCache = { [key: string]: Sprite | AnimatedSprite };
+const easing = new Ease({});
 
 export const TiledMap: React.FC = () => {
   const { loader } = useApp();
   const graphics = useSelector(selectGraphics);
   const animations = useSelector(selectAnimations);
   const manifest = useSelector(selectManifest);
-  const { objects, sprites, tileLayers, tmx } = useMemo(() => {
+  const { objects, sprites, tileLayers, triggers, tmx } = useMemo(() => {
     // const legacyMap = getBinaryLayers({
     //   graphics,
     //   animations,
@@ -96,6 +103,7 @@ export const TiledMap: React.FC = () => {
   const { viewportState } = useViewportContext();
   const { mapState } = useMapContext();
 
+  const [currentTrigger, setCurrentTrigger] = useState();
   const [objectsCache, setObjectsCache] = useState<SpritesCache>({});
   const [spritesCache, setSpritesCache] = useState<SpritesCache>({});
 
@@ -192,7 +200,7 @@ export const TiledMap: React.FC = () => {
     sprite.position.set(x, y);
     const group = mapState.groups[layerNumber];
     if (group) sprite.parentGroup = group;
-    sprite.accessibleType = layer.type;
+    sprite.accessibleType = `${layerNumber}`;
 
     return sprite;
   };
@@ -286,17 +294,100 @@ export const TiledMap: React.FC = () => {
     viewportState.currentCharacter?.tile.y
   ]);
 
+  const getTriggerFromLayer = (trigger) => {
+    return trigger ? getProperty(trigger, 'trigger') : null;
+  };
+
+  const hasTrigger = (trigger) => {
+    const number = getTriggerFromLayer(trigger);
+    return number ? trigger === number : false;
+  };
+
+  const setTrigger = (trigger) => {
+    setCurrentTrigger(getTriggerFromLayer(trigger));
+    handleTrigger(trigger);
+  };
+
+  const handleTrigger = (trigger) => {
+    const number = getTriggerFromLayer(trigger);
+    const hideRoofs = flow(
+      filter<Sprite>((sprite) => sprite.accessibleType === `${UPPER_LAYER}`),
+      filter<Sprite>((sprite) =>
+        boxPolygon(
+          sprite.position.x,
+          sprite.position.y,
+          sprite.width,
+          sprite.height,
+          polygon(trigger.polygon),
+          0.1
+        )
+      ),
+      each<Sprite>((sprite) =>
+        easing.add(sprite, { alpha: 0.0 }, { duration: 500 })
+      )
+    );
+    const showRoofs = flow(
+      filter<Sprite>((sprite) => sprite.accessibleType === `${UPPER_LAYER}`),
+      each<Sprite>((sprite) =>
+        easing.add(sprite, { alpha: 1.0 }, { duration: 500 })
+      )
+    );
+
+    switch (number) {
+      case TRIGGER_ROOF:
+        hideRoofs(spritesLayer.current.children);
+        break;
+      default:
+        showRoofs(spritesLayer.current.children);
+        break;
+    }
+  };
+
+  useEffect(() => {
+    let triggered = false;
+    const tile = viewportState.currentCharacter?.tile;
+    const x = tile?.x * TILE_SIZE;
+    const y = tile?.y * TILE_SIZE;
+
+    triggers.forEach((trigger) => {
+      if (
+        pointPolygon(
+          x + TILE_SIZE / 2,
+          y + TILE_SIZE / 2,
+          polygon(trigger.polygon)
+        )
+      ) {
+        if (!hasTrigger(trigger)) setTrigger(trigger);
+        triggered = true;
+      }
+    });
+
+    if (!triggered && currentTrigger) {
+      setTrigger(null);
+    }
+  }, [
+    triggers,
+    viewportState.currentCharacter?.tile.x,
+    viewportState.currentCharacter?.tile.y
+  ]);
+
   return (
-    <Container ref={container}>
-      <Container ref={tilesLayer} parentGroup={mapState?.groups[TILES_LAYER]} />
-      <Container
-        ref={spritesLayer}
-        parentGroup={mapState?.groups[DETAILS_LAYER]}
-      />
-      <Container
-        ref={objectsLayer}
-        parentGroup={mapState?.groups[ENTITIES_LAYER]}
-      />
-    </Container>
+    <>
+      <Water />
+      <Container ref={container}>
+        <Container
+          ref={tilesLayer}
+          parentGroup={mapState?.groups[TILES_LAYER]}
+        />
+        <Container
+          ref={spritesLayer}
+          parentGroup={mapState?.groups[DETAILS_LAYER]}
+        />
+        <Container
+          ref={objectsLayer}
+          parentGroup={mapState?.groups[ENTITIES_LAYER]}
+        />
+      </Container>
+    </>
   );
 };

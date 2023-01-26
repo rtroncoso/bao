@@ -56,7 +56,7 @@ export class OnJoinCommand extends Command<WorldRoom, OnJoinParameters> {
       character.bodyId = apiCharacter.body;
       character.headId = apiCharacter.head;
       character.sessionId = client.sessionId;
-      character.moveTo(50, 50);
+      character.moveTo(20, 65);
       this.state.characters.push(character);
     } catch (error) {
       if (axios.isAxiosError(error)) {
