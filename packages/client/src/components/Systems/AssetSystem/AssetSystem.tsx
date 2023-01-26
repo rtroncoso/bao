@@ -39,7 +39,7 @@ export const AssetSystemContext = createContext<AssetContextState>({
   bodies: []
 });
 
-export const useAssets = () => {
+export const useAssetsContext = () => {
   return useContext(AssetSystemContext);
 };
 
@@ -60,7 +60,13 @@ type ConnectedProps = ReturnType<typeof mapStateToProps> &
 
 export type AssetSystemConnectedProps = AssetSystemProps & ConnectedProps;
 
-export const AssetSystem: React.FC<AssetSystemConnectedProps> = (props) => {
+export const AssetSystem: React.FC<AssetSystemConnectedProps> = ({
+  bodies,
+  ...props
+  // graphics,
+  // manifest,
+  // token
+}) => {
   const app = useApp();
   const [loaded, setLoaded] = useState(false);
   const { children, loadAssets } = props;
@@ -80,8 +86,8 @@ export const AssetSystem: React.FC<AssetSystemConnectedProps> = (props) => {
   }, []);
 
   useEffect(() => {
-    setAssetState({ ...assetState, bodies: props.bodies });
-  }, [props.bodies]);
+    setAssetState({ ...assetState, bodies });
+  }, [bodies]);
 
   const assetContext = {
     setAssetState,

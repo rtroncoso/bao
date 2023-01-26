@@ -37,7 +37,6 @@ export class WorldRoom extends Room<WorldRoomState> {
         }
         const character = new CharacterState();
         character.sessionId = (Math.random() + 1).toString(36).substring(7);
-        character.name = (Math.random() + 1).toString(36).substring(7);
         character.x = character.tile.x * TILE_SIZE;
         character.y = character.tile.y * TILE_SIZE;
         character.bodyId = 2;
@@ -51,7 +50,6 @@ export class WorldRoom extends Room<WorldRoomState> {
       ...new Array(10).fill(0).map((_, i) => {
         const character = new CharacterState();
         character.sessionId = (Math.random() + 1).toString(36).substring(7);
-        character.name = (Math.random() + 1).toString(36).substring(7);
         character.moveTo(i, 10);
         character.bodyId = 3;
         character.headId = 4;
@@ -67,7 +65,6 @@ export class WorldRoom extends Room<WorldRoomState> {
       ...new Array(10).fill(0).map((_, i) => {
         const character = new CharacterState();
         character.sessionId = (Math.random() + 1).toString(36).substring(7);
-        character.name = (Math.random() + 1).toString(36).substring(7);
         character.moveTo(i, 7);
         character.bodyId = 23;
         character.headId = 2;

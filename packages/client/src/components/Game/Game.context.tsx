@@ -67,6 +67,16 @@ export const GameContainer = <P extends GameConnectedProps>(
     const [state, setState, resetState, updateState] =
       useLocalStateReducer<GameContextState>(createInitialState());
 
+    useEffect(() => {
+      if (!router.query?.characterId) {
+        router.push('/characters');
+      }
+
+      router.replace({ pathname: router.pathname, query: null }, undefined, {
+        shallow: true
+      });
+    }, []);
+
     const handleSendRoomMessage = useCallback(
       (messageType, parameters) => {
         if (state.room) {
@@ -87,7 +97,7 @@ export const GameContainer = <P extends GameConnectedProps>(
     const handleLeaveRoom = useCallback(
       (error?: Error) => {
         console.error(
-          `[handleLeaveRoom]: exiting room with error "${error.message}"`
+          `[handleLeaveRoom]: exiting room with error "${error?.message}"`
         );
 
         if (state.room) {
@@ -104,7 +114,7 @@ export const GameContainer = <P extends GameConnectedProps>(
 
     const handleRoomError = useCallback(
       (error: any) => {
-        if (error.message === 'LEAVE_ROOM') {
+        if (error?.message === 'LEAVE_ROOM') {
           resetState();
           router.push('/');
           return;
@@ -146,7 +156,7 @@ export const GameContainer = <P extends GameConnectedProps>(
       try {
         const client = new Client(process.env.NEXT_PUBLIC_BAO_SERVER);
         const room = await client.joinOrCreate<WorldRoomState>(options.room, {
-          characterId: router.query.characterId,
+          characterId: router.query?.characterId as string,
           token
         });
 

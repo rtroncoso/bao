@@ -112,6 +112,7 @@ importers:
       '@pixi/extensions': ^6.3.1
       '@pixi/filter-alpha': ^6.3.1
       '@pixi/filter-blur': ^6.3.1
+      '@pixi/layers': ^1.0.0
       '@pixi/loaders': ^6.5.8
       '@pixi/math': ^6.3.1
       '@pixi/mesh': ^6.5.8
@@ -127,6 +128,7 @@ importers:
       '@svgr/webpack': 5.4.0
       '@tailwindcss/typography': ^0.5.9
       '@types/jest': ^27.4.0
+      '@types/lodash': ^4.14.191
       '@types/node': ^14.0.0
       '@types/react': ^17.0.0
       '@types/react-dom': ^17.0.0
@@ -162,12 +164,12 @@ importers:
       hex-rgb: ^4.2.0
       immer: ^9.0.18
       localforage: ^1.10.0
+      lodash: ^4.17.21
       next: 12.1.6
       next-pwa: ^5.6.0
       next-transpile-modules: ^9.0.0
       pixi-ease: ^3.0.6
       pixi-filters: ^4.0.0
-      pixi-layers: ^0.3.1
       pixi-picture: ^2.0.3
       pixi.js: ^6.3.1
       postcss: ^8.2.9
@@ -223,6 +225,7 @@ importers:
       '@pixi/extensions': 6.5.8
       '@pixi/filter-alpha': 6.5.8_@pixi+core@6.5.8
       '@pixi/filter-blur': 6.5.8_ruze7uo4dqey55gax24ufeqa5m
+      '@pixi/layers': 1.0.11_poghtwf5oajarq6x6mmmgv75aq
       '@pixi/loaders': 6.5.8_6ckrlwn7winopwhi64blk5ppm4
       '@pixi/math': 6.5.8
       '@pixi/mesh': 6.5.8_poghtwf5oajarq6x6mmmgv75aq
@@ -250,12 +253,12 @@ importers:
       hex-rgb: 4.3.0
       immer: 9.0.18
       localforage: 1.10.0
+      lodash: 4.17.21
       next: 12.1.6_vzd3d6irctqcpwaf2lggst7oam
       next-pwa: 5.6.0_xar45q2dk63klapq7erhubvxym
       next-transpile-modules: 9.1.0
       pixi-ease: 3.0.7_pixi.js@6.5.8
       pixi-filters: 4.2.0_ecwvliosoon5uy6p7rrk4hnfni
-      pixi-layers: 0.3.1
       pixi-picture: 2.0.3
       pixi.js: 6.5.8
       postcss: 8.4.21
@@ -301,6 +304,7 @@ importers:
       '@emotion/styled': 11.10.5_6pyqqf3gsgk64dc57nzribe7em
       '@svgr/webpack': 5.4.0
       '@types/jest': 27.5.2
+      '@types/lodash': 4.14.191
       '@types/node': 14.18.36
       '@types/react': 17.0.53
       '@types/react-dom': 17.0.18
@@ -3346,6 +3350,25 @@ packages:
       '@pixi/utils': 6.5.8_qeualvkmgwo4nudflomrx2dohe
     dev: false
 
+  /@pixi/layers/1.0.11_poghtwf5oajarq6x6mmmgv75aq:
+    resolution: {integrity: sha512-E9jVR7kWMbBBhyaoX4Vi/rZAk4QFMDFiwvZF5xXZ2sBKh1/2aaTD2oQB3QHtekQ0IYXjyxgRRVEpeYTlZgz5xA==}
+    peerDependencies:
+      '@pixi/canvas-renderer': ^6.0.4
+      '@pixi/constants': ^6.0.4
+      '@pixi/core': ^6.0.4
+      '@pixi/display': ^6.0.4
+      '@pixi/math': ^6.0.4
+      '@pixi/settings': ^6.0.4
+      '@pixi/utils': ^6.0.4
+    dependencies:
+      '@pixi/constants': 6.5.8
+      '@pixi/core': 6.5.8_plvhmba5imzl5ocyxvgulib4y4
+      '@pixi/display': 6.5.8_iuuj35lwfm7xh3uibmbysjulzi
+      '@pixi/math': 6.5.8
+      '@pixi/settings': 6.5.8_@pixi+constants@6.5.8
+      '@pixi/utils': 6.5.8_qeualvkmgwo4nudflomrx2dohe
+    dev: false
+
   /@pixi/loaders/6.5.8_6ckrlwn7winopwhi64blk5ppm4:
     resolution: {integrity: sha512-mj11UPKsqWaTEPMpCnFugr6heKkQeNFuVSddSwE8crg19l46zcMhk3ucpQX15RDpAdDJjtl3OraevQCHHbNENw==}
     peerDependencies:
@@ -4164,6 +4187,10 @@ packages:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
       '@types/node': 18.11.18
+    dev: true
+
+  /@types/lodash/4.14.191:
+    resolution: {integrity: sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ==}
     dev: true
 
   /@types/mime/3.0.1:
@@ -12846,10 +12873,6 @@ packages:
       - '@pixi/math'
       - '@pixi/settings'
       - '@pixi/utils'
-    dev: false
-
-  /pixi-layers/0.3.1:
-    resolution: {integrity: sha512-sLqkg4xnlKKjKceTgyNEvb2Fh7A1OmbsZRTHVnnsqMmhkVLVUgRNZX6ZflTne0pgGOal6EXp1bmns4geXZsY7A==}
     dev: false
 
   /pixi-picture/2.0.3:

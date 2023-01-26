@@ -4,11 +4,11 @@ import React, { useEffect } from 'react';
 
 import { defaultTextStyle, useGame } from '@bao/client/components/Game';
 import { TILE_SIZE } from '@bao/core/constants/game';
-import { useViewport } from './ViewportSystem';
+import { useViewportContext } from './ViewportSystem';
 
 export const DebugGridSystem = () => {
   const { callbacks } = useGame();
-  const { viewportState, setViewportState } = useViewport();
+  const { viewportState, setViewportState } = useViewportContext();
 
   const { filter, projection } = viewportState;
 
@@ -132,7 +132,7 @@ export const DebugGridSystem = () => {
 };
 
 export const DebugTextSystem: React.FC = () => {
-  const { viewportState } = useViewport();
+  const { viewportState } = useViewportContext();
   const { currentCharacter } = viewportState;
 
   return (

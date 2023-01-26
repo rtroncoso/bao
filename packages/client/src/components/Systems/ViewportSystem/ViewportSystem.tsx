@@ -48,7 +48,7 @@ export const ViewportContext = createContext<ViewportContextState>({
   viewportState: createInitialViewportState()
 });
 
-export const useViewport = () => {
+export const useViewportContext = () => {
   return useContext(ViewportContext);
 };
 
@@ -107,7 +107,7 @@ export const ViewportSystem: React.FC<ViewportProps> = (
           y={-viewportState.projection.y}
         >
           <DebugGridSystem />
-          {children as React.ReactElement}
+          {children}
           <DebugTextSystem />
         </Container>
       )}

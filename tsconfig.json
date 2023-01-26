@@ -22,6 +22,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
+      "@bao/assets*": ["../../packages/assets/public*"],
+      "@bao/assets": ["../../packages/assets/public"],
       "@bao/client*": ["../../packages/client/src*"],
       "@bao/client": ["../../packages/client/src"],
       "@bao/server*": ["../../packages/colyseus/src*"],
