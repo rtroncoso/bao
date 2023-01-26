@@ -14,6 +14,7 @@ import { Stage as LayersStage } from '@bao/client/components/Pixi';
 
 import { GameConnectedProps, GameContext } from './Game.context';
 import { GameStyled } from './Game.styles';
+import { TiledMap } from '../Entities';
 
 export type GameComponentProps = GameConnectedProps;
 
@@ -24,6 +25,7 @@ export const Systems: React.FC = () => {
         <KeyboardSystem />
         <MapRenderingSystem>
           <ViewportSystem>
+            <TiledMap />
             <CharacterRenderingSystem />
           </ViewportSystem>
         </MapRenderingSystem>

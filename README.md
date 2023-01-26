@@ -1,7 +1,7 @@
 bao
 ======
 
->![GitHub deployments](https://img.shields.io/github/deployments/rtroncoso/bao/Production?label=vercel&logo=vercel&logoColor=white)
+>[![vercel](https://img.shields.io/github/deployments/rtroncoso/bao/Production?label=vercel&logo=vercel&logoColor=white)](https://vercel.com)
 > [![turborepo](https://img.shields.io/badge/maintained%20with-turborepo-blueviolet.svg)](https://turborepo.org/)
 > [![pnpm](https://img.shields.io/badge/pnpm-v7.11.0-informational)](https://pnpm.io/)
 

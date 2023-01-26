@@ -42,15 +42,15 @@ export class WorldRoom extends Room<WorldRoomState> {
         character.bodyId = 2;
         character.headId = 5;
         character.moveTo(
-          randomIntFromInterval(-20, 20),
-          randomIntFromInterval(-20, 20)
+          randomIntFromInterval(25, 75),
+          randomIntFromInterval(25, 75)
         );
         return character;
       }),
       ...new Array(10).fill(0).map((_, i) => {
         const character = new CharacterState();
         character.sessionId = (Math.random() + 1).toString(36).substring(7);
-        character.moveTo(i, 10);
+        character.moveTo(i + 25, 60);
         character.bodyId = 3;
         character.headId = 4;
 
@@ -65,7 +65,7 @@ export class WorldRoom extends Room<WorldRoomState> {
       ...new Array(10).fill(0).map((_, i) => {
         const character = new CharacterState();
         character.sessionId = (Math.random() + 1).toString(36).substring(7);
-        character.moveTo(i, 7);
+        character.moveTo(i + 25, 65);
         character.bodyId = 23;
         character.headId = 2;
 

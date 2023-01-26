@@ -43,6 +43,40 @@ declare module '*.webp' {
   export default src;
 }
 
+declare module '*.dat' {
+  const src: string;
+  export default src;
+}
+
+declare module '*.inf' {
+  const src: Uint8Array;
+  export default src;
+}
+declare module '*.ind' {
+  const src: Uint8Array;
+  export default src;
+}
+
+declare module '*.map' {
+  const src: Uint8Array;
+  export default src;
+}
+
+declare module '*.ini' {
+  const src: string;
+  export default src;
+}
+
+declare module '*.frag' {
+  const src: string;
+  export default src;
+}
+
+declare module '*.vert' {
+  const src: string;
+  export default src;
+}
+
 declare module '*.svg' {
   import * as React from 'react';
 

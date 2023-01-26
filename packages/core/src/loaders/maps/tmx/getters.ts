@@ -102,7 +102,7 @@ export const getTileLayersFromTmx = (tmx: Tiled) => {
   return getTileLayers(layers);
 };
 
-export const getObjectsFrobaojectLayers = (layers: Array<LayerType>) => {
+export const getObjectsFromObjectLayers = (layers: Array<LayerType>): TmxObject[] => {
   const getObjectLayers = flow(
     flatMap((layer: LayerType) => layer.objects.filter(
       (object: TmxObject) => (
@@ -115,7 +115,7 @@ export const getObjectsFrobaojectLayers = (layers: Array<LayerType>) => {
   return getObjectLayers(layers);
 };
 
-export const getSpritesFrobaojectLayers = (layers: Array<LayerType>) => {
+export const getSpritesFromObjectLayers = (layers: Array<LayerType>): TmxObject[] => {
   const getObjectLayers = flow(
     flatMap((layer: LayerType) => layer.objects.filter(
       object => object.type === SPRITE_TYPE || object.type === ANIMATION_TYPE
@@ -125,7 +125,7 @@ export const getSpritesFrobaojectLayers = (layers: Array<LayerType>) => {
   return getObjectLayers(layers);
 };
 
-export const getCollisionsFrobaojectLayers = (layers: Array<LayerType>) => {
+export const getCollisionsFromObjectLayers = (layers: Array<LayerType>) => {
   const getObjectLayers = flow(
     flatMap((layer: LayerType) => (
       layer.objects.filter(object => object.type === COLLISION_TYPE))
@@ -141,7 +141,7 @@ export const getCollisionsFrobaojectLayers = (layers: Array<LayerType>) => {
   return getObjectLayers(layers);
 };
 
-export const getTriggersFrobaojectLayers = (layers: Array<LayerType>) => {
+export const getTriggersFromObjectLayers = (layers: Array<LayerType>) => {
   const getObjectLayers = flow(
     flatMap((layer: LayerType) => layer.objects.filter(
       object => object.type === TRIGGER_TYPE)
@@ -151,7 +151,7 @@ export const getTriggersFrobaojectLayers = (layers: Array<LayerType>) => {
   return getObjectLayers(layers);
 };
 
-export const getWaterFrobaojectLayers = (layers: Array<LayerType>) => {
+export const getWaterFromObjectLayers = (layers: Array<LayerType>) => {
   const getObjectLayers = flow(
     flatMap((layer: LayerType) => layer.objects.filter(
       object => object.type === WATER_TYPE)

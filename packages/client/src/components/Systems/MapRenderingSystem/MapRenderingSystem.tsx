@@ -52,7 +52,7 @@ export const MapRenderingSystem: React.FC = ({ children }) => {
 
   useEffect(() => {
     const groups: Group[] = [];
-    for (const index of range(0, MAP_LAYERS)) {
+    for (const index of range(0, MAP_LAYERS + 1)) {
       const group = new Group(index, true);
       if (index === ENTITIES_LAYER) {
         group.on('sort', handleLayerSort);

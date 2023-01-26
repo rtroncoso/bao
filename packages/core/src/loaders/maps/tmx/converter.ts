@@ -780,10 +780,10 @@ export const processLayer = ({
 };
 
 export interface ConvertLayersToTmxParameters {
-  crop: boolean;
+  crop?: boolean;
   layers: Tile[][][];
-  name: string;
-  number: number;
+  name?: string;
+  number?: number;
   resources: { [key: string]: LoaderResource; };
 }
 
