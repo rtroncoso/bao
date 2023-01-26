@@ -26,10 +26,10 @@ export interface WaterProps {
 export class WaterFilter extends Filter {
   constructor(vertex, fragment) {
     super(vertex, fragment);
-    this.uniforms.camera = [0, 0];
     this.uniforms.time = 0;
     this.uniforms.tileFactor = [1.0, 1.0];
     this.uniforms.camera = [0, 0];
+    this.uniforms.dimensions = [0, 0];
     this.uniforms.waveTimeScale = 0.1;
     this.uniforms.waveScale = [0.2, 0.2];
     this.uniforms.waveAmplitude = [0.02, 0.03];
@@ -37,6 +37,9 @@ export class WaterFilter extends Filter {
     this.uniforms.uvOffsetSize = [2.7, 3.5];
     this.uniforms.uvAmplitude = [0.08, 0.15];
     this.uniforms.mappedMatrix = new Matrix();
+    this.uniforms.texture = Texture.EMPTY;
+    this.uniforms.normal = Texture.EMPTY;
+    this.uniforms.displacement = Texture.EMPTY;
     this.autoFit = false;
     this.padding = 0;
   }
@@ -55,30 +58,38 @@ export const Water: React.FC<WaterProps> = ({ shapes = [] }) => {
 
   const water = useRef<PixiSprite>();
   const [shader, setShader] = useState<Filter>();
+  const [texture, setTexture] = useState<Texture>();
+  const [normal, setNormal] = useState<Texture>();
+  const [displacement, setDisplacement] = useState<Texture>();
 
-  const texture = Texture.from(waterTexture.src);
-  const normal = Texture.from(waterNormal.src);
-  const displacement = Texture.from(displacementTexture.src);
+  useEffect(() => {
+    (async () => {
+      const [textureResource, normalResource, displacementResource] =
+        await Promise.all([
+          Texture.fromURL(waterTexture.src),
+          Texture.fromURL(waterNormal.src),
+          Texture.fromURL(displacementTexture.src)
+        ]);
 
-  texture.baseTexture.wrapMode = WRAP_MODES.REPEAT;
-  normal.baseTexture.wrapMode = WRAP_MODES.REPEAT;
-  displacement.baseTexture.wrapMode = WRAP_MODES.REPEAT;
+      textureResource.baseTexture.wrapMode = WRAP_MODES.REPEAT;
+      normalResource.baseTexture.wrapMode = WRAP_MODES.REPEAT;
+      displacementResource.baseTexture.wrapMode = WRAP_MODES.REPEAT;
+
+      console.log(textureResource);
+      setTexture(textureResource);
+      setNormal(normalResource);
+      setDisplacement(displacementResource);
+    })();
+  }, []);
 
   useEffect(() => {
     try {
       const shader = new WaterFilter(vertex, fragment);
-      shader.uniforms.normalTexture = normal;
-      shader.uniforms.displacementTexture = displacement;
-      shader.uniforms.dimensions = [
-        viewportState.projection.width,
-        viewportState.projection.height
-      ];
-
       setShader(shader);
     } catch (error) {
       callbacks.leaveRoom(error);
     }
-  }, [normal, displacement, viewportState]);
+  }, []);
 
   const mask = useMemo(() => {
     const g = new PixiGraphics();
@@ -104,6 +115,9 @@ export const Water: React.FC<WaterProps> = ({ shapes = [] }) => {
 
     if (shader) {
       shader.uniforms.time += delta * 0.03;
+      shader.uniforms.texture = texture;
+      shader.uniforms.normalTexture = normal;
+      shader.uniforms.displacementTexture = displacement;
       shader.uniforms.camera[0] =
         viewportState.projection.x / viewportState.projection.width;
       shader.uniforms.camera[1] =
@@ -111,7 +125,7 @@ export const Water: React.FC<WaterProps> = ({ shapes = [] }) => {
     }
   });
 
-  return shader ? (
+  return shader && texture ? (
     <Sprite ref={water} texture={texture} filters={[shader]} />
   ) : null;
 };

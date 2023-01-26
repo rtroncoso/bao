@@ -2,11 +2,13 @@ precision mediump float;
 
 varying vec2 vTextureCoord;
 uniform sampler2D uSampler;
+uniform sampler2D texture;
 uniform sampler2D normalTexture;
 uniform sampler2D displacementTexture;
 
 uniform vec2 tileFactor;
 uniform vec4 filterClamp;
+uniform vec2 dimensions;
 uniform vec2 camera;
 
 uniform float time;
@@ -59,5 +61,5 @@ void main(void) {
 
   vec2 waveCoords = tiledUvs + (textureBasedOffset * uvAmplitude) + (wavesOffset * waveAmplitude);
   // gl_FragColor = vec4(textureBasedOffset, 1.0, 1.0);
-  gl_FragColor = texture2D(uSampler, waveCoords);
+  gl_FragColor = texture2D(texture, waveCoords);
 }
