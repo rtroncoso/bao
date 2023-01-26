@@ -7,8 +7,10 @@ import React, {
 } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
+import { useApp } from '@inlet/react-pixi';
 
 import { SetStateCallback, useLocalStateReducer } from '@bao/client/hooks';
+import { ProgressBar } from '@bao/client/components/Pixi';
 import { selectToken } from '@bao/client/queries/account';
 import {
   AssetEntities,
@@ -19,8 +21,7 @@ import {
   selectManifest
 } from '@bao/client/queries/assets';
 import { Dispatch, State } from '@bao/client/store';
-import { useApp } from '@inlet/react-pixi';
-import { getAllTextures } from '@bao/core';
+import { App } from '@bao/core';
 
 export type AssetSystemProps = object;
 export type AssetSystemState = AssetEntities;
@@ -61,15 +62,12 @@ type ConnectedProps = ReturnType<typeof mapStateToProps> &
 export type AssetSystemConnectedProps = AssetSystemProps & ConnectedProps;
 
 export const AssetSystem: React.FC<AssetSystemConnectedProps> = ({
-  bodies,
-  ...props
-  // graphics,
-  // manifest,
-  // token
+  children,
+  loadAssets
 }) => {
   const app = useApp();
   const [loaded, setLoaded] = useState(false);
-  const { children, loadAssets } = props;
+  const [progress, setProgress] = useState(0);
 
   const [assetState, setAssetState] = useLocalStateReducer(
     createInitialAssetState()
@@ -79,15 +77,12 @@ export const AssetSystem: React.FC<AssetSystemConnectedProps> = ({
     const { loader } = app;
     loadAssets({ loader });
     loader.onComplete.add(() => setLoaded(true));
+    loader.onProgress.add(() => setProgress(loader.progress / 100));
   }, [app, loadAssets]);
 
   useEffect(() => {
     loadAssetsCallback();
   }, []);
-
-  useEffect(() => {
-    setAssetState({ ...assetState, bodies });
-  }, [bodies]);
 
   const assetContext = {
     setAssetState,
@@ -97,6 +92,18 @@ export const AssetSystem: React.FC<AssetSystemConnectedProps> = ({
   return (
     <AssetSystemContext.Provider value={assetContext}>
       {loaded && children}
+      {!loaded && (
+        <ProgressBar
+          label="Cargando recursos"
+          backgroundColor={0x000000}
+          foregroundColor={0xff0000}
+          x={App.canvasWidth / 2}
+          y={App.canvasHeight / 2}
+          progress={progress}
+          width={200}
+          height={5}
+        />
+      )}
     </AssetSystemContext.Provider>
   );
 };
