@@ -73,7 +73,7 @@ export const TiledMap: React.FC = () => {
     //   layers: legacyMap,
     //   resources: loader.resources
     // });
-    const tmx = TMX_MAP as Tiled;
+    const tmx = TMX_MAP as unknown as Tiled;
     const tileLayers = getTileLayersFromTmx(tmx);
     const objectLayers = getObjectLayersFromTmx(tmx);
     const sprites = getSpritesFromObjectLayers(objectLayers);

@@ -38,17 +38,15 @@ export const GameComponent: React.FC<GameComponentProps> = () => {
   if (typeof window === undefined) return null;
   const gameContext = useContext(GameContext);
   const reduxContext = useContext(ReactReduxContext);
-  // useEffect(() => {
-  //   const handleContextMenu = (
-  //     event: Parameters<typeof document.addEventListener<'contextmenu'>>[1]
-  //   ) => {
-  //     event.preventDefault();
-  //   };
-  //   document.addEventListener('contextmenu', handleContextMenu);
-  //   return function cleanup() {
-  //     document.removeEventListener('contextmenu', handleContextMenu);
-  //   };
-  // }, []);
+  useEffect(() => {
+    const handleContextMenu = (event: MouseEvent) => {
+      event.preventDefault();
+    };
+    document.addEventListener('contextmenu', handleContextMenu);
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+    };
+  }, []);
 
   return (
     <GameStyled>
