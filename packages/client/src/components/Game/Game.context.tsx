@@ -28,8 +28,9 @@ export interface GameComponentRouterState {
 }
 
 export interface GameContextState {
+  debug?: boolean;
   client?: Client;
-  connected: boolean;
+  connected?: boolean;
   serverState?: WorldRoomState;
   room?: Room<WorldRoomState>;
 }
@@ -38,7 +39,7 @@ export interface GameContextProps {
   callbacks: {
     joinRoom: () => Promise<boolean>;
     leaveRoom: (error?: Error) => void;
-    updateServerState: (updater: (draft: GameContextState) => void) => void;
+    updateGameState: (updater: (draft: GameContextState) => void) => void;
     sendRoomMessage: (messageType: any, parameters: any) => void;
   };
   state: GameContextState;
@@ -53,7 +54,8 @@ export const createWorldOptions = (): GameContainerOptions => ({
 });
 
 export const GameContext = createContext<Partial<GameContextProps>>({});
-export const useGame = () => {
+
+export const useGameContext = () => {
   return useContext(GameContext);
 };
 
@@ -142,12 +144,9 @@ export const GameContainer = <P extends GameConnectedProps>(
       [setState]
     );
 
-    const handleUpdateServerState = useCallback(
+    const handleUpdateGameState = useCallback(
       (updater: Parameters<typeof updateState>[0]) => {
         updateState(updater);
-        updateState((state) => {
-          state.serverState.characters;
-        });
       },
       [setState]
     );
@@ -197,7 +196,7 @@ export const GameContainer = <P extends GameConnectedProps>(
     const callbacks = {
       joinRoom: handleJoinRoom,
       leaveRoom: handleLeaveRoom,
-      updateServerState: handleUpdateServerState,
+      updateGameState: handleUpdateGameState,
       sendRoomMessage: handleSendRoomMessage
     };
 

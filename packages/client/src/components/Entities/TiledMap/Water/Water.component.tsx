@@ -10,7 +10,7 @@ import {
   Matrix
 } from 'pixi.js';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useGame } from 'src/components/Game';
+import { useGameContext } from 'src/components/Game';
 import { useMapContext, useViewportContext } from 'src/components/Systems';
 
 import waterTexture from './water.png';
@@ -31,7 +31,7 @@ export class WaterFilter extends Filter {
     this.uniforms.camera = [0, 0];
     this.uniforms.dimensions = [0, 0];
     this.uniforms.waveTimeScale = 0.1;
-    this.uniforms.waveScale = [0.2, 0.2];
+    this.uniforms.waveScale = [0.5, 0.5];
     this.uniforms.waveAmplitude = [0.02, 0.03];
     this.uniforms.uvTimeScale = -0.003;
     this.uniforms.uvOffsetSize = [2.7, 3.5];
@@ -52,7 +52,7 @@ export class WaterFilter extends Filter {
 }
 
 export const Water: React.FC<WaterProps> = ({ shapes = [] }) => {
-  const { callbacks } = useGame();
+  const { callbacks } = useGameContext();
   const { mapState } = useMapContext();
   const { viewportState } = useViewportContext();
 
@@ -75,7 +75,6 @@ export const Water: React.FC<WaterProps> = ({ shapes = [] }) => {
       normalResource.baseTexture.wrapMode = WRAP_MODES.REPEAT;
       displacementResource.baseTexture.wrapMode = WRAP_MODES.REPEAT;
 
-      console.log(textureResource);
       setTexture(textureResource);
       setNormal(normalResource);
       setDisplacement(displacementResource);
@@ -105,16 +104,11 @@ export const Water: React.FC<WaterProps> = ({ shapes = [] }) => {
   useTick((delta) => {
     if (water.current) {
       const group = mapState.groups[WATER_LAYER];
-      water.current.mask = mask;
       water.current.parentGroup = group;
-      water.current.width = viewportState.projection.width;
-      water.current.height = viewportState.projection.height;
-      water.current.position.x = viewportState.projection.x;
-      water.current.position.y = viewportState.projection.y;
     }
 
     if (shader) {
-      shader.uniforms.time += delta * 0.03;
+      shader.uniforms.time += delta * 0.05;
       shader.uniforms.texture = texture;
       shader.uniforms.normalTexture = normal;
       shader.uniforms.displacementTexture = displacement;
@@ -126,6 +120,16 @@ export const Water: React.FC<WaterProps> = ({ shapes = [] }) => {
   });
 
   return shader && texture ? (
-    <Sprite ref={water} texture={texture} filters={[shader]} />
+    <Sprite
+      ref={water}
+      mask={mask}
+      x={viewportState.projection.x}
+      y={viewportState.projection.y}
+      width={viewportState.projection.width}
+      height={viewportState.projection.height}
+      parentGroup={mapState.groups[WATER_LAYER]}
+      texture={texture}
+      filters={[shader]}
+    />
   ) : null;
 };
