@@ -311,16 +311,17 @@ export const TiledMap: React.FC = () => {
   const handleTrigger = (trigger) => {
     const number = getTriggerFromLayer(trigger);
     const hideRoofs = flow(
-      filter<Sprite>((sprite) => sprite.accessibleType === `${UPPER_LAYER}`),
-      filter<Sprite>((sprite) =>
-        boxPolygon(
-          sprite.position.x,
-          sprite.position.y,
-          sprite.width,
-          sprite.height,
-          polygon(trigger.polygon),
-          0.1
-        )
+      filter<Sprite>(
+        (sprite) =>
+          sprite.accessibleType === `${UPPER_LAYER}` &&
+          boxPolygon(
+            sprite.position.x,
+            sprite.position.y,
+            sprite.width,
+            sprite.height,
+            polygon(trigger.polygon),
+            0.1
+          )
       ),
       each<Sprite>((sprite) =>
         easing.add(sprite, { alpha: 0.0 }, { duration: 500 })

@@ -2,6 +2,10 @@ import { Container, useTick } from '@inlet/react-pixi';
 import { Container as PixiContainer, Filter } from 'pixi.js';
 import React, { createContext, useContext, useRef } from 'react';
 
+import {
+  DebugGridSystem,
+  DebugTextSystem
+} from '@bao/client/components/Systems/DebugSystem';
 import { useGameContext } from '@bao/client/components/Game';
 import {
   SetStateCallback,
@@ -10,7 +14,6 @@ import {
 } from '@bao/client/hooks';
 import { App } from '@bao/core/constants/game';
 import { CharacterState } from '@bao/server/schema/CharacterState';
-import { DebugGridSystem, DebugTextSystem } from './DebugSystems';
 
 export interface ViewportProps {
   children?: React.ReactNode;

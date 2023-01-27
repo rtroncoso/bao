@@ -164,6 +164,7 @@ importers:
       eslint-plugin-react-hooks: ^4.2.0
       flatted: ^3.2.7
       formik: ^2.2.4
+      fps-m: ^1.1.3
       fs-extra: ^9.0.1
       hex-rgb: ^4.2.0
       immer: ^9.0.18
@@ -259,6 +260,7 @@ importers:
       ecsy: 0.4.2
       flatted: 3.2.7
       formik: 2.2.9_react@17.0.2
+      fps-m: 1.1.3
       fs-extra: 9.1.0
       hex-rgb: 4.3.0
       immer: 9.0.18
@@ -8897,6 +8899,10 @@ packages:
   /fossil-delta/1.0.2:
     resolution: {integrity: sha512-fkgQUnBaJjhDq0DN1ajBlWWRH99NQgwVoReMEr0oXLqYXAx8X9mD5gGaoTYDdVVbLJYsMNrnkJ028Ld0UgWrGA==}
     dev: true
+
+  /fps-m/1.1.3:
+    resolution: {integrity: sha512-xffPympHBssGSdXwF35KUJF3kosyA7zhRIpMqbRf/fNzG7H653Q3foCNzwGzA2GzFoMLKtmLG18g+JfLdqrl/Q==}
+    dev: false
 
   /fraction.js/4.2.0:
     resolution: {integrity: sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==}

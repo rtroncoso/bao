@@ -3,80 +3,17 @@ import { Filter } from 'pixi.js';
 import React, { useEffect } from 'react';
 
 import { defaultTextStyle, useGameContext } from '@bao/client/components/Game';
+import { useViewportContext } from '@bao/client/components/Systems/ViewportSystem';
 import { TILE_SIZE } from '@bao/core/constants/game';
-import { useViewportContext } from './ViewportSystem';
+import fragment from './grid.frag';
+import vertex from './grid.vert';
 
 export const DebugGridSystem = () => {
   const { callbacks } = useGameContext();
   const { viewportState, setViewportState } = useViewportContext();
-
   const { filter, projection } = viewportState;
 
   useEffect(() => {
-    const vertex = `
-      attribute vec2 aVertexPosition;
-      attribute vec2 aTextureCoord;
-
-      uniform mat3 projectionMatrix;
-      varying vec2 vTextureCoord;
-
-      void main(void) {
-        gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
-        vTextureCoord = aTextureCoord;
-      }
-    `;
-    const fragment = `
-      precision mediump float;
-
-      varying vec2 vTextureCoord;
-      varying vec4 vColor;
-
-      uniform sampler2D uSampler;
-      uniform vec2 position;
-      uniform vec2 dimensions;
-      uniform float tileSize;
-      uniform float time;
-
-      void main(void)
-      {
-        vec2 uvs = vTextureCoord.xy;
-        vec4 fg = texture2D(uSampler, uvs);
-
-        vec2 worldSpace;
-        vec2 tileGrid;
-        vec3 color;
-
-        worldSpace.x = uvs.x + (position.x / dimensions.x);
-        worldSpace.y = uvs.y + (position.y / dimensions.y);
-        tileGrid.x = fract(worldSpace.x * (dimensions.x / tileSize));
-        tileGrid.y = fract(worldSpace.y * (dimensions.y / tileSize));
-
-        if (
-          (tileGrid.x <= 0.03 || tileGrid.x >= 0.97)
-        ) {
-          color.r = tileGrid.x * (sin(time * .03) * 0.5 + 0.5);
-          color.g = (tileGrid.x + tileGrid.y) * (sin(time * .03) * 0.5 + 0.5);
-          color.b = tileGrid.y * (sin(time * .03) * 0.5 + 0.5);
-          color.r = clamp(color.r, 0.2, 0.4);
-          color.g = clamp(color.g, 0.1, 0.3);
-          color.b = clamp(color.b, 0.4, 0.8);
-        }
-        if (
-          (tileGrid.y <= 0.03 || tileGrid.y >= 0.97)
-        ) {
-          color.r = tileGrid.x + (cos(time * .03) * 0.5 + 0.5);
-          color.g = (worldSpace.x + worldSpace.y) * (cos(time * .03) * 0.5 + 0.5);
-          color.b = tileGrid.y + (cos(time * .03) * 0.5 + 0.5);
-          color.r = clamp(color.r, 0.2, 0.4);
-          color.g = clamp(color.g, 0.1, 0.3);
-          color.b = clamp(color.b, 0.4, 0.8);
-        }
-
-        color = color * .5;
-        gl_FragColor = vec4(color, .2);
-      }
-    `;
-
     try {
       const filter = new Filter(vertex, fragment);
       filter.uniforms.time = 0;

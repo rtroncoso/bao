@@ -56,7 +56,7 @@ const enhancers = composeWithDevTools(
 );
 
 export let store;
-if (typeof window === undefined) {
+if (typeof window === 'undefined') {
   store = createStore(reducer, enhancers);
 } else {
   store = createStore(persistedReducer, enhancers);
