@@ -9,9 +9,9 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rimraf dist",
-    "dev": "npm run start",
-    "build": "npm run clean && tsc",
-    "start": "nodemon --watch src --exec npm run build",
+    "dev": "pnpm run start",
+    "build": "pnpm run clean && tsc",
+    "start": "nodemon --watch src --exec pnpm run build",
     "test": "mocha --require babel-register --colors ./test/*.spec.js",
     "test:watch": "mocha --require babel-register --colors -w ./test/*.spec.js",
     "test:cover": "cross-env NODE_ENV=test nyc mocha --require babel-register --colors test/*.js"

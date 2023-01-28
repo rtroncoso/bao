@@ -17,10 +17,24 @@ const config = {
       config.resolve.fallback.module = false;
     }
 
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ['@svgr/webpack']
-    });
+    config.module.rules.push(
+      {
+        test: /\.svg$/,
+        use: ['@svgr/webpack']
+      },
+      {
+        test: /\.(shader|vert|frag|geom)$/i,
+        use: 'raw-loader'
+      },
+      {
+        test: /\.(ini|dat)$/i,
+        use: 'ini-loader'
+      },
+      {
+        test: /\.(map|inf|ind)$/i,
+        use: 'buffer-loader'
+      }
+    );
 
     return config;
   }
@@ -28,9 +42,13 @@ const config = {
 
 module.exports = compose(
   withTwin,
-  withTM(['@bao/core']),
   withPWA({
     disable: prod ? false : true,
     dest: 'public'
-  })
+  }),
+  withTM([
+    '@bao/core',
+    '@bao/server',
+    '@bao/react-fps'
+  ]),
 )(config);

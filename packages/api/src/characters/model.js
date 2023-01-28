@@ -15,7 +15,7 @@ export const find = async ({ ids, accountId } = {}) => {
     qb.where('accountId', accountId)
   }
 
-  const charactersSql = await qb.get()
+  const charactersSql = qb.get()
   const characters = await db.executeQuery(charactersSql)
   const charactersIds = characters.map((character) => character.id)
 
@@ -31,7 +31,7 @@ export const find = async ({ ids, accountId } = {}) => {
   qb.join('characters', 'classes.id = characters.classId', 'inner')
   qb.whereIn('characters.id', charactersIds)
 
-  const characterClassesSql = await qb.get()
+  const characterClassesSql = qb.get()
   const characterClasses = await db.executeQuery(characterClassesSql)
 
   // Races
@@ -42,7 +42,7 @@ export const find = async ({ ids, accountId } = {}) => {
   qb.join('characters', 'races.id = characters.raceId', 'inner')
   qb.whereIn('characters.id', charactersIds)
 
-  const characterRacesSql = await qb.get()
+  const characterRacesSql = qb.get()
   const characterRaces = await db.executeQuery(characterRacesSql)
 
   // Response
@@ -87,7 +87,7 @@ export const inventory = async ({ characterId } = {}) => {
   qb.from('character_inventory')
   qb.whereIn('characterId', characterId)
 
-  const inventorySql = await qb.get()
+  const inventorySql = qb.get()
   const inventory = await db.executeQuery(inventorySql)
 
   // Objects

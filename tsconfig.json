@@ -22,16 +22,20 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
+      "@bao/assets*": ["../../packages/assets/public*"],
+      "@bao/assets": ["../../packages/assets/public"],
       "@bao/client*": ["../../packages/client/src*"],
       "@bao/client": ["../../packages/client/src"],
       "@bao/server*": ["../../packages/colyseus/src*"],
       "@bao/server": ["../../packages/colyseus/src"],
       "@bao/core*": ["../../packages/core/src*"],
       "@bao/core": ["../../packages/core/src"],
-      "@*": [
-        "../../packages/client/src*",
-        "../../packages/colyseus/src*",
-        "../../packages/core/src*"
+      "@bao/react-fps*": ["../../packages/react-fps/src*"],
+      "@bao/react-fps": ["../../packages/react-fps/src"],
+      "@/*": [
+        "../../packages/client/src/*",
+        "../../packages/colyseus/src/*",
+        "../../packages/core/src/*"
       ]
     }
   }

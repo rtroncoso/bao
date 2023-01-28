@@ -28,14 +28,20 @@ export interface GameComponentRouterState {
 }
 
 export interface GameContextState {
+  debug?: boolean;
   client?: Client;
-  connected: boolean;
+  connected?: boolean;
   serverState?: WorldRoomState;
   room?: Room<WorldRoomState>;
 }
 
 export interface GameContextProps {
-  callbacks: any;
+  callbacks: {
+    joinRoom: () => Promise<boolean>;
+    leaveRoom: (error?: Error) => void;
+    updateGameState: (updater: (draft: GameContextState) => void) => void;
+    sendRoomMessage: (messageType: any, parameters: any) => void;
+  };
   state: GameContextState;
 }
 
@@ -48,7 +54,8 @@ export const createWorldOptions = (): GameContainerOptions => ({
 });
 
 export const GameContext = createContext<Partial<GameContextProps>>({});
-export const useGame = () => {
+
+export const useGameContext = () => {
   return useContext(GameContext);
 };
 
@@ -59,8 +66,18 @@ export const GameContainer = <P extends GameConnectedProps>(
   const WithGameContext: React.FC<GameConnectedProps> = (props) => {
     const { token } = props;
     const router = useRouter();
-    const [state, setState, resetState] =
+    const [state, setState, resetState, updateState] =
       useLocalStateReducer<GameContextState>(createInitialState());
+
+    useEffect(() => {
+      if (!router.query?.characterId) {
+        router.push('/characters');
+      }
+
+      router.replace({ pathname: router.pathname, query: null }, undefined, {
+        shallow: true
+      });
+    }, []);
 
     const handleSendRoomMessage = useCallback(
       (messageType, parameters) => {
@@ -79,20 +96,27 @@ export const GameContainer = <P extends GameConnectedProps>(
       [state]
     );
 
-    const handleLeaveRoom = useCallback(() => {
-      if (state.room) {
-        resetState();
-        state.room.leave(true);
-        router.push('/');
-        return;
-      }
+    const handleLeaveRoom = useCallback(
+      (error?: Error) => {
+        console.error(
+          `[handleLeaveRoom]: exiting room with error "${error?.message}"`
+        );
 
-      console.warn(`[handleLeaveRoom]: trying to leave a closed room`);
-    }, [router, resetState, state]);
+        if (state.room) {
+          resetState();
+          state.room.leave(true);
+          router.push('/');
+          return;
+        }
+
+        console.warn(`[handleLeaveRoom]: trying to leave a closed room`);
+      },
+      [router, resetState, state]
+    );
 
     const handleRoomError = useCallback(
       (error: any) => {
-        if (error.message === 'LEAVE_ROOM') {
+        if (error?.message === 'LEAVE_ROOM') {
           resetState();
           router.push('/');
           return;
@@ -113,9 +137,16 @@ export const GameContainer = <P extends GameConnectedProps>(
       console.log(type, message);
     }, []);
 
-    const handleUpdateServerState = useCallback(
+    const handleSetServerState = useCallback(
       (serverState: WorldRoomState) => {
         setState({ serverState });
+      },
+      [setState]
+    );
+
+    const handleUpdateGameState = useCallback(
+      (updater: Parameters<typeof updateState>[0]) => {
+        updateState(updater);
       },
       [setState]
     );
@@ -124,12 +155,12 @@ export const GameContainer = <P extends GameConnectedProps>(
       try {
         const client = new Client(process.env.NEXT_PUBLIC_BAO_SERVER);
         const room = await client.joinOrCreate<WorldRoomState>(options.room, {
-          characterId: router.query.characterId,
+          characterId: router.query?.characterId as string,
           token
         });
 
         room.onMessage('*', handleRoomMessage);
-        room.onStateChange(handleUpdateServerState);
+        room.onStateChange(handleSetServerState);
         room.onError(handleRoomError);
         room.onLeave(() => handleRoomError({ message: 'LEAVE_ROOM' }));
 
@@ -152,7 +183,7 @@ export const GameContainer = <P extends GameConnectedProps>(
     }, [
       handleRoomError,
       handleRoomMessage,
-      handleUpdateServerState,
+      handleSetServerState,
       setState,
       token
     ]);
@@ -163,9 +194,10 @@ export const GameContainer = <P extends GameConnectedProps>(
     }, []);
 
     const callbacks = {
-      handleJoinRoom,
-      handleLeaveRoom,
-      handleSendRoomMessage
+      joinRoom: handleJoinRoom,
+      leaveRoom: handleLeaveRoom,
+      updateGameState: handleUpdateGameState,
+      sendRoomMessage: handleSendRoomMessage
     };
 
     return (

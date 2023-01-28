@@ -1,5 +1,5 @@
 import { actionCreatorFactory } from 'typescript-fsa';
-import { LoadAssetsPayload } from './models';
+import { LoadAssetsPayload } from './asset.model';
 
 const actionCreator = actionCreatorFactory();
 

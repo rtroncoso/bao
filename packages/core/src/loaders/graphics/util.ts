@@ -43,14 +43,19 @@ export const getRegion = (graphic: Graphic, frame: RegionFrame) => {
  * Obtains spritesheet texture from graphic with corrected region,
  * scale mode and mipmaps setting
  */
-export const getTexture = (graphic: Graphic) => {
-  if (!graphic || !graphic.fileName) return null;
-  const fileName = getGraphicsFileName(graphic.fileName);
-  const frame = Texture.from(fileName);
-  const texture = new Texture(frame.baseTexture, getRegion(graphic, frame.frame));
-  texture.baseTexture.scaleMode = SCALE_MODES.NEAREST;
-  texture.baseTexture.mipmap = MIPMAP_MODES.POW2;
-  return texture;
+export const getTexture = (graphic: Graphic | number) => {
+  if (graphic instanceof Graphic) {
+    if (!graphic || !graphic.fileName) return null;
+    const fileName = getGraphicsFileName(graphic.fileName);
+    const frame = Texture.from(fileName);
+    const texture = new Texture(frame.baseTexture, getRegion(graphic, frame.frame));
+    texture.baseTexture.scaleMode = SCALE_MODES.NEAREST;
+    texture.baseTexture.mipmap = MIPMAP_MODES.POW2;
+    return texture;
+  }
+
+  console.warn(`[graphics:getTexture] waspassed a non-graphic reference`);
+  return Texture.EMPTY;
 };
 
 /**

@@ -5,7 +5,7 @@
   "description": "Colyseus game server for BAO",
   "main": "lib/index.js",
   "scripts": {
-    "dev": "npm run start",
+    "dev": "pnpm run start",
     "start": "ts-node-dev -r tsconfig-paths/register src/index.ts",
     "loadtest": "colyseus-loadtest loadtest/example.ts --room my_room --numClients 2",
     "test": "echo \"Error: no test specified\" && exit 1",

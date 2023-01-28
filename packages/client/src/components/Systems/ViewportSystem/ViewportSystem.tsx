@@ -2,11 +2,18 @@ import { Container, useTick } from '@inlet/react-pixi';
 import { Container as PixiContainer, Filter } from 'pixi.js';
 import React, { createContext, useContext, useRef } from 'react';
 
-import { useGame } from '@bao/client/components/Game';
-import { SetStateCallback, useLocalStateReducer } from '@bao/client/hooks';
+import {
+  DebugGridSystem,
+  DebugTextSystem
+} from '@bao/client/components/Systems/DebugSystem';
+import { useGameContext } from '@bao/client/components/Game';
+import {
+  SetStateCallback,
+  UpdateStateCallback,
+  useLocalStateReducer
+} from '@bao/client/hooks';
 import { App } from '@bao/core/constants/game';
 import { CharacterState } from '@bao/server/schema/CharacterState';
-import { DebugGridSystem, DebugTextSystem } from './DebugSystems';
 
 export interface ViewportProps {
   children?: React.ReactNode;
@@ -29,6 +36,7 @@ export interface ViewportSystemState {
 
 export interface ViewportContextState {
   setViewportState: SetStateCallback<ViewportSystemState> | null;
+  updateViewportState: UpdateStateCallback<ViewportSystemState> | null;
   viewportState: ViewportSystemState;
 }
 
@@ -45,21 +53,21 @@ export const createInitialViewportState = (): ViewportSystemState => ({
 
 export const ViewportContext = createContext<ViewportContextState>({
   setViewportState: null,
+  updateViewportState: null,
   viewportState: createInitialViewportState()
 });
 
-export const useViewport = () => {
+export const useViewportContext = () => {
   return useContext(ViewportContext);
 };
 
 export const ViewportSystem: React.FC<ViewportProps> = (
   props: ViewportProps
 ) => {
-  const [viewportState, setViewportState] = useLocalStateReducer(
-    createInitialViewportState()
-  );
+  const [viewportState, setViewportState, , updateViewportState] =
+    useLocalStateReducer(createInitialViewportState());
   const viewport = useRef<PixiContainer>(null);
-  const { state } = useGame();
+  const { state } = useGameContext();
 
   const { room, serverState } = state;
   const { children } = props;
@@ -95,6 +103,7 @@ export const ViewportSystem: React.FC<ViewportProps> = (
 
   const viewportContext = {
     setViewportState,
+    updateViewportState,
     viewportState
   };
 
@@ -106,9 +115,9 @@ export const ViewportSystem: React.FC<ViewportProps> = (
           x={-viewportState.projection.x}
           y={-viewportState.projection.y}
         >
-          <DebugGridSystem />
-          <DebugTextSystem />
-          {children as React.ReactElement}
+          {state.debug && <DebugGridSystem />}
+          {children}
+          {state.debug && <DebugTextSystem />}
         </Container>
       )}
     </ViewportContext.Provider>

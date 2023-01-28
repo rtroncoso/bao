@@ -14,7 +14,7 @@ export const find = async ({ ids, username } = {}) => {
     qb.where('username', username)
   }
 
-  const sql = await qb.get()
+  const sql = qb.get()
   const accounts = await db.executeQuery(sql)
 
   if (!accounts.length) {

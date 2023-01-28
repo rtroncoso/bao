@@ -1,13 +1,17 @@
 import { Stage } from '@inlet/react-pixi';
-import React from 'react';
-import { ReactReduxContext } from 'react-redux';
+import React, { useContext } from 'react';
+import { FpsView } from '@bao/react-fps';
+import { Provider, ReactReduxContext } from 'react-redux';
 
 import {
   AssetSystem,
   CharacterRenderingSystem,
   KeyboardSystem,
+  MapRenderingSystem,
   ViewportSystem
 } from '@bao/client/components/Systems';
+import { TiledMap } from '@bao/client/components/Entities';
+import { Stage as LayersStage } from '@bao/client/components/Pixi';
 import { App } from '@bao/core/constants';
 
 import { GameConnectedProps, GameContext } from './Game.context';
@@ -17,36 +21,44 @@ export type GameComponentProps = GameConnectedProps;
 
 export const Systems: React.FC = () => {
   return (
-    <React.Fragment>
-      <KeyboardSystem />
-      <AssetSystem />
-      <ViewportSystem>
-        <CharacterRenderingSystem />
-      </ViewportSystem>
-    </React.Fragment>
+    <LayersStage enableSort>
+      <AssetSystem>
+        <MapRenderingSystem>
+          <ViewportSystem>
+            <KeyboardSystem />
+            <TiledMap />
+            <CharacterRenderingSystem />
+          </ViewportSystem>
+        </MapRenderingSystem>
+      </AssetSystem>
+    </LayersStage>
   );
 };
 
 export const GameComponent: React.FC<GameComponentProps> = () => {
-  if (typeof window === undefined) return null;
+  if (typeof window === 'undefined') return null;
+  const gameContext = useContext(GameContext);
+  const reduxContext = useContext(ReactReduxContext);
 
   return (
     <GameStyled>
-      <ReactReduxContext.Consumer>
-        {(reduxContext) => (
-          <GameContext.Consumer>
-            {(gameContext) => (
-              <Stage height={App.canvasHeight} width={App.canvasWidth}>
-                <ReactReduxContext.Provider value={reduxContext}>
-                  <GameContext.Provider value={gameContext}>
-                    <Systems />
-                  </GameContext.Provider>
-                </ReactReduxContext.Provider>
-              </Stage>
-            )}
-          </GameContext.Consumer>
-        )}
-      </ReactReduxContext.Consumer>
+      <Stage width={App.canvasWidth} height={App.canvasHeight}>
+        <Provider store={reduxContext.store}>
+          <GameContext.Provider value={gameContext}>
+            <Systems />
+          </GameContext.Provider>
+        </Provider>
+      </Stage>
+      {gameContext.state.debug && (
+        <FpsView
+          width={70}
+          height={30}
+          left={null}
+          right={60}
+          top={20}
+          bottom={null}
+        />
+      )}
     </GameStyled>
   );
 };

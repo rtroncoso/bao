@@ -1,7 +1,6 @@
 import { Client } from 'colyseus';
 import { Command } from '@colyseus/command';
-
-import { WorldRoom } from 'src/rooms/WorldRoom';
+import { WorldRoom } from '@/rooms/WorldRoom';
 
 export interface OnLeaveParameters {
   client: Client;
