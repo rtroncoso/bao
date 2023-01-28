@@ -1,5 +1,6 @@
 import { Stage } from '@inlet/react-pixi';
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, { useContext } from 'react';
+import { FpsView } from '@bao/react-fps';
 import { Provider, ReactReduxContext } from 'react-redux';
 
 import {
@@ -9,12 +10,12 @@ import {
   MapRenderingSystem,
   ViewportSystem
 } from '@bao/client/components/Systems';
-import { App } from '@bao/core/constants';
+import { TiledMap } from '@bao/client/components/Entities';
 import { Stage as LayersStage } from '@bao/client/components/Pixi';
+import { App } from '@bao/core/constants';
 
 import { GameConnectedProps, GameContext } from './Game.context';
 import { GameStyled } from './Game.styles';
-import { TiledMap } from '../Entities';
 
 export type GameComponentProps = GameConnectedProps;
 
@@ -48,6 +49,16 @@ export const GameComponent: React.FC<GameComponentProps> = () => {
           </GameContext.Provider>
         </Provider>
       </Stage>
+      {gameContext.state.debug && (
+        <FpsView
+          width={70}
+          height={30}
+          left={null}
+          right={60}
+          top={20}
+          bottom={null}
+        />
+      )}
     </GameStyled>
   );
 };

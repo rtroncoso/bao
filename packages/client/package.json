@@ -45,6 +45,7 @@
   "dependencies": {
     "@bao/core": "workspace:*",
     "@bao/server": "workspace:*",
+    "@bao/react-fps": "workspace:*",
     "@colyseus/schema": "^1.0.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",

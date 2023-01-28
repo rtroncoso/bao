@@ -361,17 +361,11 @@ export const TiledMap: React.FC = () => {
   useEffect(() => {
     let triggered = false;
     const tile = viewportState.currentCharacter?.tile;
-    const x = tile?.x * TILE_SIZE;
-    const y = tile?.y * TILE_SIZE;
+    const x = tile?.x * TILE_SIZE + TILE_SIZE / 2;
+    const y = tile?.y * TILE_SIZE + TILE_SIZE / 2;
 
     triggers.forEach((trigger) => {
-      if (
-        pointPolygon(
-          x + TILE_SIZE / 2,
-          y + TILE_SIZE / 2,
-          polygon(trigger.polygon)
-        )
-      ) {
+      if (pointPolygon(x, y, polygon(trigger.polygon), 0.2)) {
         const number = getTriggerFromLayer(trigger);
         if (!hasTrigger(number)) setTrigger(trigger);
         triggered = true;

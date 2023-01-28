@@ -42,9 +42,13 @@ const config = {
 
 module.exports = compose(
   withTwin,
-  withTM(['@bao/core', '@bao/server']),
   withPWA({
     disable: prod ? false : true,
     dest: 'public'
-  })
+  }),
+  withTM([
+    '@bao/core',
+    '@bao/server',
+    '@bao/react-fps'
+  ]),
 )(config);
