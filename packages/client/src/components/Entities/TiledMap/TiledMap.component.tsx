@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Ease } from 'pixi-ease';
 import {
   Container as PixiContainer,
   Rectangle,
@@ -11,6 +12,7 @@ import {
 } from 'pixi.js';
 import { boxPolygon, pointPolygon } from 'intersects';
 import { CompositeTilemap } from '@pixi/tilemap';
+import { Container, useApp } from '@inlet/react-pixi';
 
 import each from 'lodash/fp/each';
 import flow from 'lodash/fp/flow';
@@ -48,13 +50,20 @@ import {
   ENTITIES_LAYER,
   TileLayer,
   TRIGGER_ROOF,
-  UPPER_LAYER
+  UPPER_LAYER,
+  convertLayersToTmx,
+  getBinaryLayers
 } from '@bao/core';
-import { Container, useApp } from '@inlet/react-pixi';
-import { selectAnimations, selectGraphics, selectManifest } from 'src/queries';
-import { useMapContext, useViewportContext } from 'src/components/Systems';
-import { polygon } from 'src/utils';
-import { Ease } from 'pixi-ease';
+import {
+  selectAnimations,
+  selectGraphics,
+  selectManifest
+} from '@bao/client/queries';
+import {
+  useMapContext,
+  useViewportContext
+} from '@bao/client/components/Systems';
+import { polygon } from '@bao/client/utils';
 import { Water } from './Water';
 
 export const ANIMATIONS_POOL_SIZE = 2000;
@@ -68,18 +77,6 @@ export const TiledMap: React.FC = () => {
   const animations = useSelector(selectAnimations);
   const manifest = useSelector(selectManifest);
   const { objects, sprites, tileLayers, triggers, tmx } = useMemo(() => {
-    // const legacyMap = getBinaryLayers({
-    //   graphics,
-    //   animations,
-    //   objects: OBJECTS as any[],
-    //   mapFile: MAP,
-    //   datFile: DAT,
-    //   infFile: INF
-    // });
-    // const tmx = convertLayersToTmx({
-    //   layers: legacyMap,
-    //   resources: loader.resources
-    // });
     const tmx = TMX_MAP as unknown as Tiled;
     const tileLayers = getTileLayersFromTmx(tmx);
     const objectLayers = getObjectLayersFromTmx(tmx);
@@ -103,9 +100,26 @@ export const TiledMap: React.FC = () => {
   const { viewportState } = useViewportContext();
   const { mapState } = useMapContext();
 
-  const [currentTrigger, setCurrentTrigger] = useState();
+  const [currentTrigger, setCurrentTrigger] = useState<TmxObject>();
   const [objectsCache, setObjectsCache] = useState<SpritesCache>({});
   const [spritesCache, setSpritesCache] = useState<SpritesCache>({});
+
+  // useEffect(() => {
+  //   const legacyMap = getBinaryLayers({
+  //     graphics,
+  //     animations,
+  //     objects: OBJECTS as any[],
+  //     mapFile: MAP,
+  //     datFile: DAT,
+  //     infFile: INF
+  //   });
+  //   const tmx = convertLayersToTmx({
+  //     layers: legacyMap,
+  //     resources: loader.resources,
+  //     number: 34
+  //   });
+  //   console.log(tmx);
+  // }, []);
 
   const animationsPool = useMemo(() => {
     return range(0, ANIMATIONS_POOL_SIZE).map(
@@ -294,21 +308,21 @@ export const TiledMap: React.FC = () => {
     viewportState.currentCharacter?.tile.y
   ]);
 
-  const getTriggerFromLayer = (trigger) => {
+  const getTriggerFromLayer = (trigger: TmxObject): number => {
     return trigger ? getProperty(trigger, 'trigger') : null;
   };
 
-  const hasTrigger = (trigger) => {
-    const number = getTriggerFromLayer(trigger);
+  const hasTrigger = (trigger: number) => {
+    const number = getTriggerFromLayer(currentTrigger);
     return number ? trigger === number : false;
   };
 
-  const setTrigger = (trigger) => {
-    setCurrentTrigger(getTriggerFromLayer(trigger));
+  const setTrigger = (trigger: TmxObject) => {
+    setCurrentTrigger(trigger);
     handleTrigger(trigger);
   };
 
-  const handleTrigger = (trigger) => {
+  const handleTrigger = (trigger: TmxObject) => {
     const number = getTriggerFromLayer(trigger);
     const hideRoofs = flow(
       filter<Sprite>(
@@ -358,7 +372,8 @@ export const TiledMap: React.FC = () => {
           polygon(trigger.polygon)
         )
       ) {
-        if (!hasTrigger(trigger)) setTrigger(trigger);
+        const number = getTriggerFromLayer(trigger);
+        if (!hasTrigger(number)) setTrigger(trigger);
         triggered = true;
       }
     });

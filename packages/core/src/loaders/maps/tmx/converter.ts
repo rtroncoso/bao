@@ -693,7 +693,7 @@ export const processLayer = ({
   tmx,
 }: ProcessLayerParameters) => (layer: Tile[][], index: number) => {
   const getId = (id: number) => parseFloat(Number(id).toFixed(2));
-  const tileLayer = new TileLayer(tmx);
+  const tileLayer = new TileLayer();
   const imageGroup = new GroupLayer();
   const objectLayer = new ObjectLayer();
   const groupLayer = new GroupLayer();

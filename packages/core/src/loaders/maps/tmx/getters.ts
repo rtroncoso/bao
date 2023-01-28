@@ -141,7 +141,7 @@ export const getCollisionsFromObjectLayers = (layers: Array<LayerType>) => {
   return getObjectLayers(layers);
 };
 
-export const getTriggersFromObjectLayers = (layers: Array<LayerType>) => {
+export const getTriggersFromObjectLayers = (layers: Array<LayerType>): TmxObject[] => {
   const getObjectLayers = flow(
     flatMap((layer: LayerType) => layer.objects.filter(
       object => object.type === TRIGGER_TYPE)
@@ -151,7 +151,7 @@ export const getTriggersFromObjectLayers = (layers: Array<LayerType>) => {
   return getObjectLayers(layers);
 };
 
-export const getWaterFromObjectLayers = (layers: Array<LayerType>) => {
+export const getWaterFromObjectLayers = (layers: Array<LayerType>): TmxObject[] => {
   const getObjectLayers = flow(
     flatMap((layer: LayerType) => layer.objects.filter(
       object => object.type === WATER_TYPE)

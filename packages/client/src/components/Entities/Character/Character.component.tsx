@@ -1,21 +1,23 @@
 import { Container, Sprite, Text, useTick } from '@inlet/react-pixi';
-import React, { useMemo, useRef } from 'react';
+import { AnimatedSprite, Container as PixiContainer, Point } from 'pixi.js';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Ease, Easing } from 'pixi-ease';
 
 import {
   CHARACTER_TYPE,
   ENTITIES_LAYER,
   getTexture,
   Graphic,
+  HEADINGS,
   TILE_SIZE
 } from '@bao/core';
 import { CharacterState } from '@bao/server/schema/CharacterState';
-import { defaultTextStyle } from 'src/components/Game';
-import { Animation } from 'src/components/Pixi';
-import { HEADINGS } from '@bao/core';
-import { useSelector } from 'react-redux';
-import { selectBodies, selectHeads } from 'src/queries';
-import { AnimatedSprite, Point } from 'pixi.js';
-import { useMapContext } from '@/components/Systems/MapRenderingSystem/MapRenderingSystem';
+import { defaultTextStyle } from '@bao/client/components/Game';
+import { Animation } from '@bao/client/components/Pixi';
+import { selectBodies, selectHeads } from '@bao/client/queries';
+import { useMapContext } from '@bao/client/components/Systems';
+const easing = new Ease({});
 
 export interface CharacterProps {
   character: CharacterState;
@@ -24,6 +26,7 @@ export interface CharacterProps {
 export const Character = ({ character }: CharacterProps) => {
   const { mapState } = useMapContext();
   const bodyRef = useRef<AnimatedSprite>();
+  const containerRef = useRef<PixiContainer>();
   const bodies = useSelector(selectBodies);
   const heads = useSelector(selectHeads);
   const heading = HEADINGS[character.heading];
@@ -65,12 +68,13 @@ export const Character = ({ character }: CharacterProps) => {
 
   return (
     <Container
-      anchor={0.5}
+      ref={containerRef}
       accessibleType={CHARACTER_TYPE}
       parentGroup={mapState.groups[ENTITIES_LAYER]}
       key={character.sessionId}
       x={character.x}
       y={character.y}
+      anchor={0.5}
     >
       <Container x={bodyOffset.x} y={bodyOffset.y}>
         {body && Boolean(body[heading]) && (

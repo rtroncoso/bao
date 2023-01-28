@@ -98,7 +98,6 @@ export class TmxTile {
 
 export class TileLayer {
   id: number;
-  map: Tiled;
   type: string;
   name: string;
   opacity: number;
@@ -113,8 +112,7 @@ export class TileLayer {
   width: number;
   height: number;
 
-  constructor(map) {
-    this.map = map;
+  constructor() {
     this.type = TILE_LAYER_TYPE;
     this.name = null;
     this.opacity = 1;
@@ -130,12 +128,12 @@ export class TileLayer {
     // this.diagonalFlips = new Array(tileCount);
   }
 
-  tileAt(x, y) {
-    return this.tiles[y * this.map.width + x];
+  tileAt(x, y, mapWidth) {
+    return this.data[y * mapWidth + x];
   }
 
-  setTileAt(x, y, tile) {
-    this.tiles[y * this.map.width + x] = tile;
+  setTileAt(x, y, tile, mapWidth) {
+    this.data[y * mapWidth + x] = tile;
   }
 }
 
