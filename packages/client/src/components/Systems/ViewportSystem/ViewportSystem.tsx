@@ -1,6 +1,12 @@
 import { Container, useTick } from '@inlet/react-pixi';
 import { Container as PixiContainer, Filter } from 'pixi.js';
-import React, { createContext, useContext, useRef } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef
+} from 'react';
 import lerp from 'lerp';
 
 import {
@@ -8,12 +14,13 @@ import {
   DebugTextSystem
 } from '@bao/client/components/Systems/DebugSystem';
 import { useGameContext } from '@bao/client/components/Game';
+import { useMapContext } from '@bao/client/components/Systems/MapRenderingSystem';
 import {
   SetStateCallback,
   UpdateStateCallback,
   useLocalStateReducer
 } from '@bao/client/hooks';
-import { App, TILE_SIZE } from '@bao/core/constants/game';
+import { App } from '@bao/core/constants/game';
 import { CharacterState } from '@bao/server/schema/CharacterState';
 
 export interface ViewportProps {
@@ -69,16 +76,37 @@ export const ViewportSystem: React.FC<ViewportProps> = (
     useLocalStateReducer(createInitialViewportState());
   const viewport = useRef<PixiContainer>(null);
   const { state } = useGameContext();
-
+  const { mapState } = useMapContext();
   const { room, serverState } = state;
   const { children } = props;
 
+  const currentCharacter = useMemo(
+    () =>
+      serverState.characters.find(
+        (character) => character.sessionId === room.sessionId
+      ),
+    []
+  );
+
+  useEffect(() => {
+    if (currentCharacter && mapState.groups.length) {
+      const x = currentCharacter.x - viewportState.projection.width / 2;
+      const y = currentCharacter.y - viewportState.projection.height / 2;
+      const projection = {
+        ...viewportState.projection,
+        x,
+        y
+      };
+
+      setViewportState({
+        currentCharacter,
+        projection
+      });
+    }
+  }, [currentCharacter, mapState]);
+
   useTick(() => {
     if (serverState && room) {
-      const currentCharacter = serverState.characters.find(
-        (character) => character.sessionId === room.sessionId
-      );
-
       if (currentCharacter) {
         const x = lerp(
           viewportState.projection.x,

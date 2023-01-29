@@ -81,7 +81,9 @@ export const AssetSystem: React.FC<AssetSystemConnectedProps> = ({
   }, [app, loadAssets]);
 
   useEffect(() => {
+    const { loader } = app;
     loadAssetsCallback();
+    return () => loader.destroy();
   }, []);
 
   const assetContext = {

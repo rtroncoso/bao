@@ -117,7 +117,6 @@ export const GameContainer = <P extends GameConnectedProps>(
     const handleRoomError = useCallback(
       (error: any) => {
         if (error?.message === 'LEAVE_ROOM') {
-          resetState();
           router.push('/');
           return;
         }

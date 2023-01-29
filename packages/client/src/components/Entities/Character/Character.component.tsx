@@ -1,6 +1,6 @@
 import { Container, Sprite, Text, useTick } from '@inlet/react-pixi';
 import { AnimatedSprite, Container as PixiContainer, Point } from 'pixi.js';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Ease } from 'pixi-ease';
 import lerp from 'lerp';
@@ -65,6 +65,11 @@ export const Character = ({ character }: CharacterProps) => {
       bodyRef.current?.gotoAndStop(0);
     }
   });
+
+  useEffect(() => {
+    containerRef.current.x = character.x;
+    containerRef.current.y = character.y;
+  }, []);
 
   useTick(() => {
     const x = lerp(containerRef.current.x, character.x, 1 / 3);
