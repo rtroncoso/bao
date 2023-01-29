@@ -1,6 +1,7 @@
 import { Container, useTick } from '@inlet/react-pixi';
 import { Container as PixiContainer, Filter } from 'pixi.js';
 import React, { createContext, useContext, useRef } from 'react';
+import lerp from 'lerp';
 
 import {
   DebugGridSystem,
@@ -12,7 +13,7 @@ import {
   UpdateStateCallback,
   useLocalStateReducer
 } from '@bao/client/hooks';
-import { App } from '@bao/core/constants/game';
+import { App, TILE_SIZE } from '@bao/core/constants/game';
 import { CharacterState } from '@bao/server/schema/CharacterState';
 
 export interface ViewportProps {
@@ -79,8 +80,16 @@ export const ViewportSystem: React.FC<ViewportProps> = (
       );
 
       if (currentCharacter) {
-        const x = currentCharacter.x - viewportState.projection.width / 2;
-        const y = currentCharacter.y - viewportState.projection.height / 2;
+        const x = lerp(
+          viewportState.projection.x,
+          currentCharacter.x - viewportState.projection.width / 2,
+          1 / 3
+        );
+        const y = lerp(
+          viewportState.projection.y,
+          currentCharacter.y - viewportState.projection.height / 2,
+          1 / 3
+        );
 
         if (
           x !== viewportState.projection.x ||

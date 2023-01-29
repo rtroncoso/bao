@@ -1,8 +1,9 @@
 import { Container, Sprite, Text, useTick } from '@inlet/react-pixi';
 import { AnimatedSprite, Container as PixiContainer, Point } from 'pixi.js';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Ease, Easing } from 'pixi-ease';
+import { Ease } from 'pixi-ease';
+import lerp from 'lerp';
 
 import {
   CHARACTER_TYPE,
@@ -17,7 +18,6 @@ import { defaultTextStyle } from '@bao/client/components/Game';
 import { Animation } from '@bao/client/components/Pixi';
 import { selectBodies, selectHeads } from '@bao/client/queries';
 import { useMapContext } from '@bao/client/components/Systems';
-const easing = new Ease({});
 
 export interface CharacterProps {
   character: CharacterState;
@@ -66,14 +66,19 @@ export const Character = ({ character }: CharacterProps) => {
     }
   });
 
+  useTick(() => {
+    const x = lerp(containerRef.current.x, character.x, 1 / 3);
+    const y = lerp(containerRef.current.y, character.y, 1 / 3);
+    containerRef.current.x = x;
+    containerRef.current.y = y;
+  });
+
   return (
     <Container
       ref={containerRef}
       accessibleType={CHARACTER_TYPE}
       parentGroup={mapState.groups[ENTITIES_LAYER]}
       key={character.sessionId}
-      x={character.x}
-      y={character.y}
       anchor={0.5}
     >
       <Container x={bodyOffset.x} y={bodyOffset.y}>

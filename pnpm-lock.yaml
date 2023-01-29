@@ -171,6 +171,7 @@ importers:
       immer: ^9.0.18
       ini-loader: ^1.0.1
       intersects: ^2.5.2
+      lerp: ^1.0.3
       localforage: ^1.10.0
       lodash: ^4.17.21
       next: 12.1.6
@@ -267,6 +268,7 @@ importers:
       hex-rgb: 4.3.0
       immer: 9.0.19
       intersects: 2.7.2
+      lerp: 1.0.3
       localforage: 1.10.0
       lodash: 4.17.21
       next: 12.1.6_vzd3d6irctqcpwaf2lggst7oam

@@ -44,8 +44,8 @@
   },
   "dependencies": {
     "@bao/core": "workspace:*",
-    "@bao/server": "workspace:*",
     "@bao/react-fps": "workspace:*",
+    "@bao/server": "workspace:*",
     "@colyseus/schema": "^1.0.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
@@ -92,6 +92,7 @@
     "hex-rgb": "^4.2.0",
     "immer": "^9.0.18",
     "intersects": "^2.5.2",
+    "lerp": "^1.0.3",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
     "next": "12.1.6",

@@ -22,7 +22,6 @@ export class WorldRoom extends Room<WorldRoomState> {
     this.setState(new WorldRoomState());
     this.movementSystem = new MovementSystem(this);
     this.setSimulationInterval(this.update);
-    this.setPatchRate(16.6);
 
     this.onMessage('input', (client, message: InputParameters) => {
       this.dispatcher.dispatch(new OnInputCommand(), {
