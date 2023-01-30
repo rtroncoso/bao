@@ -1,6 +1,8 @@
 precision mediump float;
 
 varying vec2 vTextureCoord;
+uniform vec2 inputSize;
+uniform vec4 outputFrame;
 uniform sampler2D uSampler;
 uniform sampler2D texture;
 uniform sampler2D normalTexture;
@@ -51,7 +53,8 @@ vec2 cameraCoords(vec2 coords, vec2 camera) {
 }
 
 void main(void) {
-  vec2 clampedCoord = clamp(vTextureCoord, filterClamp.xy, filterClamp.zw);
+  vec2 uvs = vTextureCoord.xy * inputSize.xy / outputFrame.zw;
+  vec2 clampedCoord = clamp(uvs, filterClamp.xy, filterClamp.zw);
   vec2 cameraCoord = cameraCoords(clampedCoord, camera);
 
   vec2 tiledUvs = tiledUvs(clampedCoord, tileFactor);

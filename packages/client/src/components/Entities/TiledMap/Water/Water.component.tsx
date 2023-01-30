@@ -41,6 +41,7 @@ export class WaterFilter extends Filter {
     this.uniforms.normal = Texture.EMPTY;
     this.uniforms.displacement = Texture.EMPTY;
     this.autoFit = false;
+    this.resolution = 2;
     this.padding = 0;
   }
 
