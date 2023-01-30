@@ -112,10 +112,8 @@ export const Water: React.FC<WaterProps> = ({ shapes = [] }) => {
       shader.uniforms.texture = texture;
       shader.uniforms.normalTexture = normal;
       shader.uniforms.displacementTexture = displacement;
-      shader.uniforms.camera[0] =
-        viewportState.projection.x / viewportState.projection.width;
-      shader.uniforms.camera[1] =
-        viewportState.projection.y / viewportState.projection.height;
+      shader.uniforms.camera[0] = water.current.x / water.current.width;
+      shader.uniforms.camera[1] = water.current.y / water.current.height;
     }
   });
 
