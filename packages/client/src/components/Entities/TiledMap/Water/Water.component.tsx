@@ -102,12 +102,9 @@ export const Water: React.FC<WaterProps> = ({ shapes = [] }) => {
   }, [shapes]);
 
   useTick((delta) => {
-    if (water.current) {
+    if (shader && water.current) {
       const group = mapState.groups[WATER_LAYER];
       water.current.parentGroup = group;
-    }
-
-    if (shader) {
       shader.uniforms.time += delta * 0.05;
       shader.uniforms.texture = texture;
       shader.uniforms.normalTexture = normal;
