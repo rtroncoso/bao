@@ -9,9 +9,14 @@ import {
   Filter,
   Matrix
 } from 'pixi.js';
+import lerp from 'lerp';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useGameContext } from 'src/components/Game';
-import { useMapContext, useViewportContext } from 'src/components/Systems';
+
+import { useGameContext } from '@bao/client/components/Game';
+import {
+  useMapContext,
+  useViewportContext
+} from '@bao/client/components/Systems';
 
 import waterTexture from './water.png';
 import waterNormal from './water_normal.png';
@@ -112,10 +117,25 @@ export const Water: React.FC<WaterProps> = ({ shapes = [] }) => {
       shader.uniforms.texture = texture;
       shader.uniforms.normalTexture = normal;
       shader.uniforms.displacementTexture = displacement;
-      shader.uniforms.camera[0] =
-        viewportState.projection.x / viewportState.projection.width;
-      shader.uniforms.camera[1] =
-        viewportState.projection.y / viewportState.projection.height;
+      shader.uniforms.camera[0] = water.current.x / water.current.width;
+      shader.uniforms.camera[1] = water.current.y / water.current.height;
+    }
+  });
+
+  useTick(() => {
+    if (viewportState.currentCharacter) {
+      const x = lerp(
+        water.current.x,
+        viewportState.currentCharacter.x - viewportState.projection.width / 2,
+        1 / 3
+      );
+      const y = lerp(
+        water.current.y,
+        viewportState.currentCharacter.y - viewportState.projection.height / 2,
+        1 / 3
+      );
+      water.current.x = x;
+      water.current.y = y;
     }
   });
 
@@ -123,8 +143,6 @@ export const Water: React.FC<WaterProps> = ({ shapes = [] }) => {
     <Sprite
       ref={water}
       mask={mask}
-      x={viewportState.projection.x}
-      y={viewportState.projection.y}
       width={viewportState.projection.width}
       height={viewportState.projection.height}
       parentGroup={mapState.groups[WATER_LAYER]}

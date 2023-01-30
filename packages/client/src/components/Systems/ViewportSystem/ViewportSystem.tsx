@@ -102,6 +102,9 @@ export const ViewportSystem: React.FC<ViewportProps> = (
         currentCharacter,
         projection
       });
+
+      viewport.current.x = -x;
+      viewport.current.y = -y;
     }
   }, [currentCharacter, mapState]);
 
@@ -109,25 +112,25 @@ export const ViewportSystem: React.FC<ViewportProps> = (
     if (serverState && room) {
       if (currentCharacter) {
         const x = lerp(
-          viewportState.projection.x,
+          -viewport.current.x,
           currentCharacter.x - viewportState.projection.width / 2,
           1 / 3
         );
         const y = lerp(
-          viewportState.projection.y,
+          -viewport.current.y,
           currentCharacter.y - viewportState.projection.height / 2,
           1 / 3
         );
 
-        viewport.current.x = x;
-        viewport.current.y = y;
+        viewport.current.x = -x;
+        viewport.current.y = -y;
       }
     }
   });
 
   useEffect(() => {
-    const x = viewport.current.x;
-    const y = viewport.current.y;
+    const x = -viewport.current.x;
+    const y = -viewport.current.y;
     const projection = {
       ...viewportState.projection,
       x,
@@ -149,11 +152,7 @@ export const ViewportSystem: React.FC<ViewportProps> = (
   return (
     <ViewportContext.Provider value={viewportContext}>
       {viewportState && (
-        <Container
-          ref={viewport}
-          x={-viewportState.projection.x}
-          y={-viewportState.projection.y}
-        >
+        <Container ref={viewport}>
           {state.debug && <DebugGridSystem />}
           {children}
           {state.debug && <DebugTextSystem />}
