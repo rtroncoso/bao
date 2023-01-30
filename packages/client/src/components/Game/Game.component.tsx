@@ -1,5 +1,5 @@
 import { Stage } from '@inlet/react-pixi';
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { FpsView } from '@bao/react-fps';
 import { Provider, ReactReduxContext } from 'react-redux';
 
@@ -40,8 +40,14 @@ export const GameComponent: React.FC<GameComponentProps> = () => {
   const gameContext = useContext(GameContext);
   const reduxContext = useContext(ReactReduxContext);
 
+  const { width, height } = useMemo(() => {
+    const width = (16 * window.innerHeight) / 9;
+    const height = (9 * window.innerWidth) / 16;
+    return { width, height };
+  }, [window.innerWidth, window.innerHeight]);
+
   return (
-    <GameStyled>
+    <GameStyled width={width} height={height}>
       <Stage width={App.canvasWidth} height={App.canvasHeight}>
         <Provider store={reduxContext.store}>
           <GameContext.Provider value={gameContext}>
