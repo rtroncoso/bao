@@ -119,24 +119,26 @@ export const ViewportSystem: React.FC<ViewportProps> = (
           1 / 3
         );
 
-        if (
-          x !== viewportState.projection.x ||
-          y !== viewportState.projection.y
-        ) {
-          const projection = {
-            ...viewportState.projection,
-            x,
-            y
-          };
-
-          setViewportState({
-            currentCharacter,
-            projection
-          });
-        }
+        viewport.current.x = x;
+        viewport.current.y = y;
       }
     }
   });
+
+  useEffect(() => {
+    const x = viewport.current.x;
+    const y = viewport.current.y;
+    const projection = {
+      ...viewportState.projection,
+      x,
+      y
+    };
+
+    setViewportState({
+      currentCharacter,
+      projection
+    });
+  }, [currentCharacter.tile?.x, currentCharacter.tile?.y]);
 
   const viewportContext = {
     setViewportState,
