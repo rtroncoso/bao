@@ -69,7 +69,7 @@ export const MapRenderingSystem: React.FC = ({ children }) => {
         {mapState.groups.map((layer, index) => (
           <Layer key={index} group={layer} />
         ))}
-        {children}
+        {Boolean(mapState.groups.length) && children}
       </Stage>
     </MapContext.Provider>
   );

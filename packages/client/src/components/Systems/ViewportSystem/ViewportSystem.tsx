@@ -14,7 +14,6 @@ import {
   DebugTextSystem
 } from '@bao/client/components/Systems/DebugSystem';
 import { useGameContext } from '@bao/client/components/Game';
-import { useMapContext } from '@bao/client/components/Systems/MapRenderingSystem';
 import {
   SetStateCallback,
   UpdateStateCallback,
@@ -76,7 +75,6 @@ export const ViewportSystem: React.FC<ViewportProps> = (
     useLocalStateReducer(createInitialViewportState());
   const viewport = useRef<PixiContainer>(null);
   const { state } = useGameContext();
-  const { mapState } = useMapContext();
   const { room, serverState } = state;
   const { children } = props;
 
@@ -89,7 +87,7 @@ export const ViewportSystem: React.FC<ViewportProps> = (
   );
 
   useEffect(() => {
-    if (currentCharacter && mapState.groups.length) {
+    if (currentCharacter) {
       const x = currentCharacter.x - viewportState.projection.width / 2;
       const y = currentCharacter.y - viewportState.projection.height / 2;
       const projection = {
@@ -102,46 +100,41 @@ export const ViewportSystem: React.FC<ViewportProps> = (
         currentCharacter,
         projection
       });
-
-      viewport.current.x = -x;
-      viewport.current.y = -y;
     }
-  }, [currentCharacter, mapState]);
+  }, [currentCharacter]);
 
   useTick(() => {
     if (serverState && room) {
       if (currentCharacter) {
         const x = lerp(
-          -viewport.current.x,
+          viewportState.projection.x,
           currentCharacter.x - viewportState.projection.width / 2,
           1 / 3
         );
         const y = lerp(
-          -viewport.current.y,
+          viewportState.projection.y,
           currentCharacter.y - viewportState.projection.height / 2,
           1 / 3
         );
 
-        viewport.current.x = -x;
-        viewport.current.y = -y;
+        if (
+          x !== viewportState.projection.x ||
+          y !== viewportState.projection.y
+        ) {
+          const projection = {
+            ...viewportState.projection,
+            x,
+            y
+          };
+
+          setViewportState({
+            currentCharacter,
+            projection
+          });
+        }
       }
     }
   });
-
-  useEffect(() => {
-    const x = -viewport.current.x;
-    const y = -viewport.current.y;
-    const projection = {
-      ...viewportState.projection,
-      x,
-      y
-    };
-
-    setViewportState({
-      currentCharacter,
-      projection
-    });
-  }, [currentCharacter.tile?.x, currentCharacter.tile?.y]);
 
   const viewportContext = {
     setViewportState,
@@ -152,7 +145,11 @@ export const ViewportSystem: React.FC<ViewportProps> = (
   return (
     <ViewportContext.Provider value={viewportContext}>
       {viewportState && (
-        <Container ref={viewport}>
+        <Container
+          ref={viewport}
+          x={-viewportState.projection.x}
+          y={-viewportState.projection.y}
+        >
           {state.debug && <DebugGridSystem />}
           {children}
           {state.debug && <DebugTextSystem />}

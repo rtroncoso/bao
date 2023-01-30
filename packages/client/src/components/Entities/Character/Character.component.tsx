@@ -26,7 +26,7 @@ export interface CharacterProps {
 export const Character = ({ character }: CharacterProps) => {
   const { mapState } = useMapContext();
   const bodyRef = useRef<AnimatedSprite>();
-  const containerRef = useRef<PixiContainer>();
+  const container = useRef<PixiContainer>();
   const bodies = useSelector(selectBodies);
   const heads = useSelector(selectHeads);
   const heading = HEADINGS[character.heading];
@@ -67,20 +67,20 @@ export const Character = ({ character }: CharacterProps) => {
   });
 
   useEffect(() => {
-    containerRef.current.x = character.x;
-    containerRef.current.y = character.y;
+    container.current.x = character.x;
+    container.current.y = character.y;
   }, []);
 
   useTick(() => {
-    const x = lerp(containerRef.current.x, character.x, 1 / 3);
-    const y = lerp(containerRef.current.y, character.y, 1 / 3);
-    containerRef.current.x = x;
-    containerRef.current.y = y;
+    const x = lerp(container.current.x, character.x, 1 / 3);
+    const y = lerp(container.current.y, character.y, 1 / 3);
+    container.current.x = x;
+    container.current.y = y;
   });
 
   return (
     <Container
-      ref={containerRef}
+      ref={container}
       accessibleType={CHARACTER_TYPE}
       parentGroup={mapState.groups[ENTITIES_LAYER]}
       key={character.sessionId}
