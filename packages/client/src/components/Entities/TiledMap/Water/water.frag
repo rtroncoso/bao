@@ -43,8 +43,8 @@ vec2 textureBasedOffset(sampler2D displacement, vec2 uv) {
 
 vec2 wavesOffset(float time, vec2 uv, vec2 scale, float timeScale) {
   vec2 wavesOffset = uv;
-  wavesOffset.x = cos(time * timeScale + (uv.x + uv.y) * scale.x);
-  wavesOffset.y = sin(time * timeScale + (uv.x + uv.y) * scale.y);
+  wavesOffset.x = cos(time * timeScale + (uv.x + uv.y)) * scale.x;
+  wavesOffset.y = sin(time * timeScale + (uv.x + uv.y)) * scale.y;
   return wavesOffset;
 }
 

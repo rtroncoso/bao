@@ -31,7 +31,7 @@ export class WaterFilter extends Filter {
     this.uniforms.dimensions = [0, 0];
     this.uniforms.tileFactor = [0.3, 0.3];
     this.uniforms.colorDamp = [0.9, 0.9, 0.8];
-    this.uniforms.waveTimeScale = 0.05;
+    this.uniforms.waveTimeScale = 0.2;
     this.uniforms.waveScale = [0.5, 0.5];
     this.uniforms.waveAmplitude = [0.02, 0.03];
     this.uniforms.uvTimeScale = -0.003;

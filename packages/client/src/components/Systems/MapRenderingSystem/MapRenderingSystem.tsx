@@ -44,7 +44,7 @@ export const MapRenderingSystem: React.FC = ({ children }) => {
   const [mapState, setMapState] = useLocalStateReducer(createInitialMapState());
   const handleLayerSort = useCallback((sprite: Sprite) => {
     if (sprite.accessibleType === CHARACTER_TYPE) {
-      return (sprite.zOrder = sprite.y + TILE_SIZE);
+      return (sprite.zOrder = sprite.y + TILE_SIZE / 2);
     }
 
     return (sprite.zOrder = sprite.y + sprite.height);
