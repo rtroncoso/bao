@@ -30,22 +30,21 @@ vec2 tiledUvs(vec2 uv, vec2 tf) {
 
 vec2 offsetTextureUvs(float time, vec2 uv, vec2 scale, float timeScale) {
   vec2 offsetTextureUvs = uv * scale;
-  offsetTextureUvs.x -= sin(time * timeScale + (uv.x + uv.y));
-  offsetTextureUvs.y -= cos(time * timeScale + (uv.x + uv.y));
+  offsetTextureUvs.x -= sin(time * timeScale);
+  offsetTextureUvs.y -= cos(time * timeScale);
   return offsetTextureUvs;
 }
 
 vec2 textureBasedOffset(sampler2D displacement, vec2 uv) {
   vec2 textureBasedOffset = texture2D(displacement, uv).rg;
-  textureBasedOffset = textureBasedOffset * 2.0 - 1.0;
-  return textureBasedOffset;
+  return textureBasedOffset * 2.0 - 1.0;
 }
 
 vec2 wavesOffset(float time, vec2 uv, vec2 scale, float timeScale) {
-  vec2 wavesOffset = uv;
-  wavesOffset.x = cos(time * timeScale + (uv.x + uv.y)) * scale.x;
-  wavesOffset.y = sin(time * timeScale + (uv.x + uv.y)) * scale.y;
-  return wavesOffset;
+  vec2 wavesOffset = uv * scale;
+  wavesOffset.x += sin(time * timeScale + (uv.x + uv.y));
+  wavesOffset.y += cos(time * timeScale + (uv.x + uv.y));
+  return wavesOffset * 2.0 - 1.0;
 }
 
 vec2 cameraCoords(vec2 coords, vec2 camera) {
@@ -55,10 +54,9 @@ vec2 cameraCoords(vec2 coords, vec2 camera) {
 
 void main(void) {
   vec2 uvs = vTextureCoord.xy * inputSize.xy / outputFrame.zw;
-  vec2 clampedCoord = clamp(uvs, filterClamp.xy, filterClamp.zw);
-  vec2 cameraCoord = cameraCoords(clampedCoord, camera);
+  vec2 cameraCoord = cameraCoords(uvs, camera);
 
-  vec2 tiledUvs = tiledUvs(clampedCoord, tileFactor);
+  vec2 tiledUvs = tiledUvs(cameraCoord, tileFactor);
   vec2 offsetTextureUvs = offsetTextureUvs(time, cameraCoord, uvOffsetSize, uvTimeScale);
   vec2 textureBasedOffset = textureBasedOffset(displacementTexture, offsetTextureUvs);
   vec2 wavesOffset = wavesOffset(time, cameraCoord, waveScale, waveTimeScale);
