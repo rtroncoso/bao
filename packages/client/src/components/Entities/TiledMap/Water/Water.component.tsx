@@ -27,14 +27,15 @@ export class WaterFilter extends Filter {
   constructor(vertex, fragment) {
     super(vertex, fragment);
     this.uniforms.time = 0;
-    this.uniforms.tileFactor = [1.0, 1.0];
     this.uniforms.camera = [0, 0];
     this.uniforms.dimensions = [0, 0];
+    this.uniforms.tileFactor = [0.3, 0.3];
+    this.uniforms.colorDamp = [0.9, 0.9, 0.8];
     this.uniforms.waveTimeScale = 0.1;
     this.uniforms.waveScale = [0.5, 0.5];
     this.uniforms.waveAmplitude = [0.02, 0.03];
     this.uniforms.uvTimeScale = -0.003;
-    this.uniforms.uvOffsetSize = [2.7, 3.5];
+    this.uniforms.uvOffsetSize = [2.2, 2.4];
     this.uniforms.uvAmplitude = [0.08, 0.15];
     this.uniforms.mappedMatrix = new Matrix();
     this.uniforms.texture = Texture.EMPTY;

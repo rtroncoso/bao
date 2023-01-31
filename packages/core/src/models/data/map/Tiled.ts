@@ -227,7 +227,7 @@ export class TmxObject {
   id: any;
   visible: boolean;
   ellipse: boolean;
-  polygon: any;
+  polygon: ({ x: number, y: number })[];
   polyline: any;
 
   constructor() {

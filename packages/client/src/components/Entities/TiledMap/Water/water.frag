@@ -8,6 +8,7 @@ uniform sampler2D texture;
 uniform sampler2D normalTexture;
 uniform sampler2D displacementTexture;
 
+uniform vec3 colorDamp;
 uniform vec2 tileFactor;
 uniform vec4 filterClamp;
 uniform vec2 dimensions;
@@ -64,5 +65,11 @@ void main(void) {
 
   vec2 waveCoords = tiledUvs + (textureBasedOffset * uvAmplitude) + (wavesOffset * waveAmplitude);
   // gl_FragColor = vec4(textureBasedOffset, 1.0, 1.0);
-  gl_FragColor = texture2D(texture, waveCoords);
+  vec4 color = texture2D(texture, waveCoords);
+  gl_FragColor = vec4(
+    color.r * colorDamp.r,
+    color.g * colorDamp.g,
+    color.b * colorDamp.b,
+    color.a
+  );
 }
