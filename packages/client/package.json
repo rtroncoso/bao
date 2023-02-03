@@ -79,7 +79,7 @@
     "@tailwindcss/typography": "^0.5.9",
     "bfj": "^7.0.2",
     "camelcase": "^6.1.0",
-    "colyseus.js": "^0.14.0",
+    "colyseus.js": "^0.14.13",
     "css-loader": "4.3.0",
     "daisyui": "^2.47.0",
     "dotenv": "^16.0.3",

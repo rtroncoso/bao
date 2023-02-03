@@ -6,11 +6,11 @@ import * as dotenv from 'dotenv';
 import http from 'http';
 import path from 'path';
 
-import { WorldRoom } from './rooms/WorldRoom';
+import { ChatRoom, WorldRoom } from './rooms';
 
 const envPath = process.env.ENV_PATH || process.cwd();
 dotenv.config({ path: path.resolve(envPath, '.env') });
-const port = Number(process.env.PORT || 2567);
+const port = Number(process.env.PORT || 7666);
 const app = express();
 
 app.use(cors());
@@ -25,6 +25,7 @@ const gameServer = new Server({
 
 // gameServer.simulateLatency(50);
 gameServer.define('world', WorldRoom);
+gameServer.define('chat', ChatRoom);
 
 app.use('/colyseus', monitor());
 

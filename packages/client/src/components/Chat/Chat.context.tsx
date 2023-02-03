@@ -1,3 +1,4 @@
+import { ArraySchema } from '@colyseus/schema';
 import { Client, Room } from 'colyseus.js';
 import { useRouter } from 'next/router';
 import React, {
@@ -9,66 +10,68 @@ import React, {
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
-import { useLocalStateReducer } from '@bao/client/hooks';
+import { Message } from '@bao/server/schema/MessageState';
+import { ChatRoom } from '@bao/server/rooms/ChatRoom';
+import { SetStateCallback, useLocalStateReducer } from '@bao/client/hooks';
 import { selectToken } from '@bao/client/queries/account';
 import { State } from '@bao/client/store';
 
-import { WorldRoomState } from '@bao/server/schema/WorldRoomState';
-
-export interface GameConnectedProps {
+export interface ChatConnectedProps {
   token?: string | null;
 }
 
-export interface GameContainerOptions {
+export interface ChatContainerOptions {
   room: string;
 }
 
-export interface GameComponentRouterState {
+export interface ChatComponentRouterState {
   characterId?: number;
 }
 
-export interface GameContextState {
-  debug?: boolean;
+export interface ChatContextState {
   client?: Client;
   connected?: boolean;
-  serverState?: WorldRoomState;
-  room?: Room<WorldRoomState>;
+  focused?: boolean;
+  room?: Room<ChatRoom>;
+  messages: ArraySchema<Message>;
 }
 
-export interface GameContextProps {
+export interface ChatContextProps {
   callbacks: {
+    setState: SetStateCallback<ChatContextState>;
     joinRoom: () => Promise<boolean>;
     leaveRoom: (error?: Error) => void;
-    updateGameState: (updater: (draft: GameContextState) => void) => void;
     sendRoomMessage: (messageType: any, parameters: any) => void;
   };
-  state: GameContextState;
+  state: ChatContextState;
 }
 
-export const createGameInitialState = (): GameContextState => ({
-  connected: false
+export const createChatInitialState = (): ChatContextState => ({
+  connected: false,
+  focused: false,
+  messages: new ArraySchema<Message>()
 });
 
-export const createWorldOptions = (): GameContainerOptions => ({
-  room: 'world'
+export const createChatOptions = (): ChatContainerOptions => ({
+  room: 'chat'
 });
 
-export const GameContext = createContext<Partial<GameContextProps>>({});
+export const ChatContext = createContext<Partial<ChatContextProps>>({});
 
-export const useGameContext = () => {
-  return useContext(GameContext);
+export const useChatContext = () => {
+  return useContext(ChatContext);
 };
 
-export const GameContainer = <P extends GameConnectedProps>(
+export const ChatContainer = <P extends ChatConnectedProps>(
   Component: React.ComponentType<P>,
-  options: GameContainerOptions = createWorldOptions()
+  options: ChatContainerOptions = createChatOptions()
 ) => {
-  const WithGameContext: React.FC<GameConnectedProps> = (props) => {
+  const WithChatContext: React.FC<ChatConnectedProps> = (props) => {
     if (typeof window === 'undefined') return null;
     const { token } = props;
     const router = useRouter();
     const [state, setState, resetState, updateState] =
-      useLocalStateReducer<GameContextState>(createGameInitialState());
+      useLocalStateReducer<ChatContextState>(createChatInitialState());
 
     useEffect(() => {
       if (!router.query?.characterId) {
@@ -87,7 +90,7 @@ export const GameContainer = <P extends GameConnectedProps>(
         }
 
         console.warn(
-          `[world:handleSendRoomMessage]: Sending message to closed room ${messageType}:${JSON.stringify(
+          `[chat:handleSendRoomMessage]: Sending message to closed room ${messageType}:${JSON.stringify(
             parameters,
             Object.getOwnPropertyNames(parameters),
             2
@@ -101,7 +104,7 @@ export const GameContainer = <P extends GameConnectedProps>(
       (error?: Error) => {
         if (error) {
           console.error(
-            `[world:handleLeaveRoom]: exiting room with error "${error?.message}"`
+            `[chat:handleLeaveRoom]: exiting room with error "${error?.message}"`
           );
         }
 
@@ -111,7 +114,7 @@ export const GameContainer = <P extends GameConnectedProps>(
           return;
         }
 
-        console.warn(`[world:handleLeaveRoom]: trying to leave a closed room`);
+        console.warn(`[chat:handleLeaveRoom]: trying to leave a closed room`);
       },
       [router, resetState, state]
     );
@@ -124,7 +127,7 @@ export const GameContainer = <P extends GameConnectedProps>(
         }
 
         console.warn(
-          `[world:handleRoomError]: unhandled room error ${JSON.stringify(
+          `[chat:handleRoomError]: unhandled room error ${JSON.stringify(
             error,
             Object.getOwnPropertyNames(error),
             2
@@ -134,35 +137,26 @@ export const GameContainer = <P extends GameConnectedProps>(
       [router, resetState]
     );
 
-    const handleRoomMessage = useCallback((type: any, message: any) => {
-      console.log(type, message);
-    }, []);
-
-    const handleSetServerState = useCallback(
-      (serverState: WorldRoomState) => {
-        setState({ serverState });
+    const handleRoomMessage = useCallback(
+      (type: 'message', message: Message) => {
+        updateState((draft) => {
+          draft.messages.push(message);
+        });
+        console.log(state, message);
       },
-      [setState]
-    );
-
-    const handleUpdateGameState = useCallback(
-      (updater: Parameters<typeof updateState>[0]) => {
-        updateState(updater);
-      },
-      [setState]
+      [state, setState]
     );
 
     const handleJoinRoom = useCallback(async () => {
       try {
         const client = new Client(process.env.NEXT_PUBLIC_BAO_SERVER);
-        const room = await client.joinOrCreate<WorldRoomState>(options.room, {
+        const room = await client.joinOrCreate<ChatRoom>(options.room, {
           characterId: router.query?.characterId as string,
           token
         });
 
-        room.onMessage('*', handleRoomMessage);
-        room.onStateChange(handleSetServerState);
         room.onError(handleRoomError);
+        room.onMessage('*', handleRoomMessage);
         room.onLeave(() => handleRoomError({ message: 'LEAVE_ROOM' }));
 
         setState({
@@ -172,7 +166,7 @@ export const GameContainer = <P extends GameConnectedProps>(
         });
       } catch (error) {
         console.error(
-          `[world:handleJoinRoom]: Error ${JSON.stringify(
+          `[chat:handleJoinRoom]: Error ${JSON.stringify(
             error,
             Object.getOwnPropertyNames(error),
             2
@@ -181,13 +175,7 @@ export const GameContainer = <P extends GameConnectedProps>(
 
         return router.push('/');
       }
-    }, [
-      handleRoomError,
-      handleRoomMessage,
-      handleSetServerState,
-      setState,
-      token
-    ]);
+    }, [handleRoomError, handleRoomMessage, setState, token]);
 
     useEffect(() => {
       handleJoinRoom();
@@ -195,21 +183,21 @@ export const GameContainer = <P extends GameConnectedProps>(
     }, []);
 
     const callbacks = {
+      setState,
       joinRoom: handleJoinRoom,
       leaveRoom: handleLeaveRoom,
-      updateGameState: handleUpdateGameState,
       sendRoomMessage: handleSendRoomMessage
     };
 
     return (
-      <GameContext.Provider
+      <ChatContext.Provider
         value={{
           callbacks,
           state
         }}
       >
         <Component {...(props as P)} />
-      </GameContext.Provider>
+      </ChatContext.Provider>
     );
   };
 
@@ -217,12 +205,12 @@ export const GameContainer = <P extends GameConnectedProps>(
     token: selectToken(state)
   });
 
-  return compose(connect(mapStateToProps))(WithGameContext);
+  return compose(connect(mapStateToProps))(WithChatContext);
 };
 
-export const withGameContextOptions =
-  <P extends GameConnectedProps>(options: GameContainerOptions) =>
+export const withChatContextOptions =
+  <P extends ChatConnectedProps>(options: ChatContainerOptions) =>
   (Component: React.ComponentType<P>) =>
-    GameContainer(Component, options);
+    ChatContainer(Component, options);
 
-export const withGameContext = GameContainer;
+export const withChatContext = ChatContainer;

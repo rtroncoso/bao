@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useChatContext } from 'src/components/Chat';
 
 export function useKeyPress(targetKey: string) {
   const [keyPressed, setKeyPressed] = useState(false);
@@ -30,6 +31,7 @@ export function useKeyPress(targetKey: string) {
 
 export function usePressedKeys() {
   const [keys, setKeys] = useState<Array<string>>([]);
+  const { state } = useChatContext();
 
   useEffect(() => {
     const blurHandler = () => {
@@ -37,7 +39,7 @@ export function usePressedKeys() {
     };
 
     const downHandler = ({ key }: { key: string }) => {
-      if (keys.indexOf(key.toLowerCase()) === -1) {
+      if (!state.focused && keys.indexOf(key.toLowerCase()) === -1) {
         keys.push(key.toLowerCase());
         setKeys([...keys.reverse()]);
       }
@@ -45,7 +47,7 @@ export function usePressedKeys() {
 
     const upHandler = ({ key }: { key: string }) => {
       const index = keys.indexOf(key.toLowerCase());
-      if (index !== -1) {
+      if (!state.focused && index !== -1) {
         keys.splice(index, 1);
         setKeys([...keys.reverse()]);
       }

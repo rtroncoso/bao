@@ -10,6 +10,7 @@ import {
   MapRenderingSystem,
   ViewportSystem
 } from '@bao/client/components/Systems';
+import { ChatComponent, ChatContext, useChatContext } from '@bao/client/components/Chat';
 import { TiledMap } from '@bao/client/components/Entities';
 import { Stage as LayersStage } from '@bao/client/components/Pixi';
 import { App } from '@bao/core/constants';
@@ -36,7 +37,7 @@ export const Systems: React.FC = () => {
 };
 
 export const GameComponent: React.FC<GameComponentProps> = () => {
-  if (typeof window === 'undefined') return null;
+  const chatContext = useChatContext();
   const gameContext = useContext(GameContext);
   const reduxContext = useContext(ReactReduxContext);
 
@@ -51,10 +52,13 @@ export const GameComponent: React.FC<GameComponentProps> = () => {
       <Stage width={App.canvasWidth} height={App.canvasHeight}>
         <Provider store={reduxContext.store}>
           <GameContext.Provider value={gameContext}>
-            <Systems />
+            <ChatContext.Provider value={chatContext}>
+              <Systems />
+            </ChatContext.Provider>
           </GameContext.Provider>
         </Provider>
       </Stage>
+      <ChatComponent />
       {gameContext.state.debug && (
         <FpsView
           width={70}
