@@ -4,7 +4,31 @@ import { TextStyle } from 'pixi.js';
 export const styles = s;
 export const roles = r;
 
-export const CHARACTER_ROLE_STYLES = {
-  [roles.user]: new TextStyle({ ...styles.name, fill: '#ffebb6', fontWeight: 'bold', align: 'center' }),
-  [roles.admin]: new TextStyle({ ...styles.name, fill: '#16b601', fontWeight: 'bold', align: 'center' })
+export const CHARACTER_NAME_STYLES = {
+  [roles.user]: new TextStyle({
+    ...styles.name,
+    fill: styles.privilegeColors.user,
+    fontWeight: 'bold',
+    align: 'center'
+  }),
+  [roles.admin]: new TextStyle({
+    ...styles.name,
+    fill: styles.privilegeColors.admin,
+    fontWeight: 'bold',
+    align: 'center'
+  })
+};
+
+export const CHARACTER_CHAT_STYLES = {
+  [roles.user]: new TextStyle({
+    ...styles.name,
+    fontWeight: 'bold',
+    align: 'center'
+  }),
+  [roles.admin]: new TextStyle({
+    ...styles.name,
+    fill: styles.privilegeColors.admin,
+    fontWeight: 'bold',
+    align: 'center'
+  })
 };

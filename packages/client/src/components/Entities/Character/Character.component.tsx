@@ -7,20 +7,22 @@ import {
   Point,
   Text as PixiText
 } from 'pixi.js';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import lerp from 'lerp';
 
 import {
+  CHARACTER_CHAT_STYLES,
+  CHARACTER_NAME_STYLES,
   CHARACTER_TYPE,
   ENTITIES_LAYER,
   getTexture,
   Graphic,
   HEADINGS,
+  roles,
   TILE_SIZE
 } from '@bao/core';
 import { CharacterState } from '@bao/server/schema/CharacterState';
-import { defaultTextStyle, useGameContext } from '@bao/client/components/Game';
 import { Animation } from '@bao/client/components/Pixi';
 import { selectBodies, selectHeads } from '@bao/client/queries';
 import { useMapContext } from '@bao/client/components/Systems';
@@ -42,6 +44,9 @@ export const Character = ({ character }: CharacterProps) => {
   const body = character.bodyId && bodies[character.bodyId];
   const head = character.headId && heads[character.headId];
   const easing = useMemo(() => new Ease({}), []);
+  const chatStyle = useMemo(() => CHARACTER_CHAT_STYLES[roles.admin], []);
+  const nameStyle = useMemo(() => CHARACTER_NAME_STYLES[roles.admin], []);
+  const [chatTimeoutId, setChatTimeoutId] = useState<NodeJS.Timeout>();
 
   const bodyOffset = useMemo(() => {
     if (body) {
@@ -98,17 +103,22 @@ export const Character = ({ character }: CharacterProps) => {
 
   useEffect(() => {
     if (lastMessage && chatMessageRef.current) {
+      if (chatTimeoutId) clearTimeout(chatTimeoutId);
       easing.removeAll();
       easing.add(
         chatMessageRef.current,
-        { y: headOffset.y - TILE_SIZE / 2, alpha: 1 },
+        { y: headOffset.y - 4 - TILE_SIZE / 2, alpha: 1 },
         { duration: 300 }
       );
-      easing.add(
-        chatMessageRef.current,
-        { y: headOffset.y, alpha: 0 },
-        { duration: 300, wait: 3000 }
-      );
+
+      const timeoutId = setTimeout(() => {
+        easing.add(
+          chatMessageRef.current,
+          { y: headOffset.y, alpha: 0 },
+          { duration: 300 }
+        );
+      }, 3000);
+      setChatTimeoutId(timeoutId);
     }
   }, [lastMessage, chatMessageRef.current]);
 
@@ -139,7 +149,7 @@ export const Character = ({ character }: CharacterProps) => {
           x={TILE_SIZE / 2}
           text={lastMessage.message}
           style={{
-            ...defaultTextStyle,
+            ...chatStyle,
             breakWords: true,
             wordWrapWidth: 200,
             wordWrap: true,
@@ -149,11 +159,11 @@ export const Character = ({ character }: CharacterProps) => {
       )}
       {character.name && (
         <Text
-          anchor={[0.5, 0.5]}
+          anchor={[0.5, 0]}
           x={TILE_SIZE / 2}
-          y={TILE_SIZE + TILE_SIZE / 2}
-          text={character.name}
-          style={defaultTextStyle}
+          y={TILE_SIZE}
+          text={`${character.name}\n<Game Master>`}
+          style={nameStyle}
         />
       )}
     </Container>

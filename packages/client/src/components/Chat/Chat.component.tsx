@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import { ChatConnectedProps, useChatContext } from './Chat.context';
 import {
@@ -69,12 +68,18 @@ export const ChatComponent: React.FC<ChatComponentProps> = () => {
   return (
     <ChatStyled focused={state.focused} onClick={handleChatClick}>
       <ChatMessageListStyled ref={chatList}>
-        {state.messages.map((message) => (
-          <ChatMessageStyled key={message.timestamp}>
-            {message.character ? `${message.character.name}> ` : ''}
-            {message.message}
-          </ChatMessageStyled>
-        ))}
+        {state.messages.map(
+          (message) =>
+            message.message.trim() && (
+              <ChatMessageStyled
+                key={message.timestamp}
+                options={message.options}
+              >
+                {message.character ? `${message.character.name}> ` : ''}
+                {message.message.trim()}
+              </ChatMessageStyled>
+            )
+        )}
       </ChatMessageListStyled>
       <ChatInputStyled
         ref={input}

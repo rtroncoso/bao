@@ -1,9 +1,5 @@
 import tw, { css, styled, theme } from 'twin.macro';
 
-import { CHARACTER_ROLE_STYLES, roles } from '@bao/core/constants';
-
-export const defaultTextStyle = CHARACTER_ROLE_STYLES[roles.admin];
-
 export interface GameStyledProps {
   width: number;
   height: number;

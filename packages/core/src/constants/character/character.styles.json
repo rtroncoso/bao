@@ -9,13 +9,23 @@
   },
   "name": {
     "fill": "#fff",
-    "fontSize": 15,
+    "fontSize": 14,
     "dropShadow": true,
     "dropShadowAlpha": 0.6,
     "dropShadowColor": "#000",
     "dropShadowDistance": 2,
     "letterSpacing": 0.2,
-    "fontFamily": "Impact, Charcoal, sans-serif"
+    "fontFamily": "Arial, sans-serif"
+  },
+  "chat": {
+    "fill": "#fff",
+    "fontSize": 16,
+    "dropShadow": true,
+    "dropShadowAlpha": 0.6,
+    "dropShadowColor": "#000",
+    "dropShadowDistance": 2,
+    "letterSpacing": 0.2,
+    "fontFamily": "Arial, sans-serif"
   },
   "privilegeColors": {
     "admin": "#16b601",
