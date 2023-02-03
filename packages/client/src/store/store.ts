@@ -46,20 +46,19 @@ const persistConfig = {
   transforms: [transformCircular]
 };
 
-export const sagaMiddleware = createSagaMiddleware();
-const persistedReducer = persistReducer<any>(persistConfig, reducer);
-const enhancers = composeWithDevTools(
-  applyMiddleware(
-    sagaMiddleware,
-    queryMiddleware(superagentInterface, getQueries, getEntities)
-  )
-);
-
 export let store;
 if (typeof window === 'undefined') {
-  store = createStore(reducer, enhancers);
+  store = createStore(reducer);
 } else {
-  store = createStore(persistedReducer, enhancers);
+  const sagaMiddleware = createSagaMiddleware();
+  const enhancers = applyMiddleware(
+    sagaMiddleware,
+    queryMiddleware(superagentInterface, getQueries, getEntities)
+  );
+  const persistedReducer = persistReducer<any>(persistConfig, reducer);
+  store = createStore(persistedReducer, composeWithDevTools(enhancers));
+
+  sagaMiddleware.run(querySagas);
 }
 
 export type State = ReturnType<typeof store.getState>;
@@ -69,5 +68,3 @@ export const useAppDispatch = () => useDispatch<Dispatch>();
 export const useAppSelector = createSelectorHook<State>();
 
 export const persistor = persistStore(store);
-
-sagaMiddleware.run(querySagas);

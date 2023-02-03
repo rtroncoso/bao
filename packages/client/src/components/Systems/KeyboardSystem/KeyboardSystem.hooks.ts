@@ -34,6 +34,10 @@ export function usePressedKeys() {
   const { state } = useChatContext();
 
   useEffect(() => {
+    if (state.focused && keys.length) {
+      setKeys([]);
+    }
+
     const blurHandler = () => {
       setKeys([]);
     };
@@ -62,7 +66,7 @@ export function usePressedKeys() {
       window.removeEventListener('keydown', downHandler);
       window.removeEventListener('keyup', upHandler);
     };
-  }, [keys]);
+  }, [keys, state.focused]);
 
   return keys;
 }

@@ -1,6 +1,6 @@
 import http from 'http';
 
-import { Client, Room } from 'colyseus';
+import { Client, Presence, Room } from 'colyseus';
 import { Dispatcher } from '@colyseus/command';
 
 import { OnJoinCommand } from '@bao/server/commands/OnJoinChat';
@@ -13,6 +13,8 @@ import {
   OnMessageParameters
 } from '@bao/server/commands/OnMessage';
 import { WorldRoomState } from '@bao/server/schema/WorldRoomState';
+import { ArraySchema } from '@colyseus/schema';
+import { throws } from 'assert';
 
 export interface SendMessageParams {
   message: string;
@@ -27,17 +29,13 @@ export interface BroadcastMessageParams {
 }
 
 export class ChatRoom extends Room<WorldRoomState> {
-  characters: Array<CharacterState> = [];
+  characters = new ArraySchema<CharacterState>();
   authService: AuthService = new AuthService(this);
   dispatcher = new Dispatcher(this);
 
   public onCreate(options: any) {
+    console.log(`chat:onCreate`);
     this.setState(new WorldRoomState());
-    this.presence.subscribe('player:join', ({ character }) => {
-      console.log('joined chat', character.toJSON());
-      this.characters.push(character);
-    });
-
     this.onMessage('message', (client, message: string) => {
       this.dispatcher.dispatch(new OnMessageCommand(), {
         message,

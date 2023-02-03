@@ -2,10 +2,11 @@ import { Client } from 'colyseus';
 import { Command } from '@colyseus/command';
 
 import { ChatRoom } from '@bao/server/rooms';
+import { CharacterState } from '@bao/server/schema/CharacterState';
 
 export interface OnJoinOptions {
   account: any;
-  characterId: string | number;
+  characterId: string;
 }
 
 export interface OnJoinParameters {
@@ -15,13 +16,12 @@ export interface OnJoinParameters {
 
 export class OnJoinCommand extends Command<ChatRoom, OnJoinParameters> {
   async execute({ client, options }: OnJoinParameters) {
-    const { characters } = this.room;
-    const character = characters.find((item) => {
-      item.id === options.characterId;
-    });
-    if (character) {
-      character.sessionId = client.sessionId;
-      console.log(character.toJSON(), client.sessionId);
-    }
+    const key = `character:${options.characterId}`;
+    const [item] = await this.room.presence.smembers(key);
+
+    // TODO : dirty hack
+    const character = (item as unknown as CharacterState).clone();
+    character.sessionId = client.sessionId;
+    this.room.characters.push(character);
   }
 }

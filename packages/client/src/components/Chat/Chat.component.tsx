@@ -1,7 +1,12 @@
 import _ from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import { ChatConnectedProps, useChatContext } from './Chat.context';
-import { ChatInputStyled, ChatMessageStyled, ChatStyled } from './Chat.styles';
+import {
+  ChatInputStyled,
+  ChatMessageListStyled,
+  ChatMessageStyled,
+  ChatStyled
+} from './Chat.styles';
 
 export type ChatComponentProps = ChatConnectedProps;
 
@@ -9,54 +14,68 @@ export const ChatComponent: React.FC<ChatComponentProps> = () => {
   const { callbacks, state } = useChatContext();
   const [message, setMessage] = useState('');
   const input = useRef<HTMLInputElement>();
+  const chatList = useRef<HTMLUListElement>();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(event.target.value);
-    event.preventDefault();
-    event.stopPropagation();
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key.toLowerCase() === 'enter') {
-      callbacks.sendRoomMessage('message', message);
       input.current?.blur();
+      callbacks.sendRoomMessage('message', message);
       setMessage('');
     }
   };
 
   const handleChatClick = () => {
     input.current?.focus();
-    console.log(state.messages);
   };
+
+  useEffect(() => {
+    chatList.current?.scrollTo({
+      top: chatList.current?.scrollHeight,
+      behavior: 'smooth'
+    });
+  }, [state.messages.length]);
 
   useEffect(() => {
     const focusCallback = () => callbacks.setState({ focused: true });
     const blurCallback = () => callbacks.setState({ focused: false });
     const keyPressCallback = (event: KeyboardEvent) => {
-      if (event.key.toLowerCase() === 'enter') {
+      if (!state.focused && event.key.toLowerCase() === 'enter') {
         input.current?.focus();
+      }
+    };
+    const keyDownCallback = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() === 'escape') {
+        input.current?.blur();
       }
     };
 
     input.current?.addEventListener('focus', focusCallback);
     input.current?.addEventListener('blur', blurCallback);
     window.addEventListener('keypress', keyPressCallback);
+    window.addEventListener('keydown', keyDownCallback);
 
     return () => {
       input.current?.removeEventListener('focus', focusCallback);
       input.current?.removeEventListener('blur', blurCallback);
       window.removeEventListener('keypress', keyPressCallback);
+      window.removeEventListener('keydown', keyDownCallback);
     };
-  }, [input.current]);
+  }, [state, input.current]);
 
   return (
     <ChatStyled focused={state.focused} onClick={handleChatClick}>
-      {state.messages.map((message) => {
-        <ChatMessageStyled>
-          {message.character ? `${message.character.name}> ` : ''}
-          {message.message}
-        </ChatMessageStyled>;
-      })}
+      <ChatMessageListStyled ref={chatList}>
+        {state.messages.map((message) => (
+          <ChatMessageStyled key={message.timestamp}>
+            {message.character ? `${message.character.name}> ` : ''}
+            {message.message}
+          </ChatMessageStyled>
+        ))}
+      </ChatMessageListStyled>
       <ChatInputStyled
         ref={input}
         value={message}

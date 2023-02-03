@@ -30,6 +30,7 @@ export interface GameComponentRouterState {
 export interface GameContextState {
   debug?: boolean;
   client?: Client;
+  characterId?: string;
   connected?: boolean;
   serverState?: WorldRoomState;
   room?: Room<WorldRoomState>;
@@ -75,6 +76,7 @@ export const GameContainer = <P extends GameConnectedProps>(
         router.push('/characters');
       }
 
+      setState({ characterId: router.query?.characterId as string });
       router.replace({ pathname: router.pathname, query: null }, undefined, {
         shallow: true
       });
@@ -156,7 +158,7 @@ export const GameContainer = <P extends GameConnectedProps>(
       try {
         const client = new Client(process.env.NEXT_PUBLIC_BAO_SERVER);
         const room = await client.joinOrCreate<WorldRoomState>(options.room, {
-          characterId: router.query?.characterId as string,
+          characterId: state.characterId,
           token
         });
 
@@ -182,6 +184,7 @@ export const GameContainer = <P extends GameConnectedProps>(
         return router.push('/');
       }
     }, [
+      state,
       handleRoomError,
       handleRoomMessage,
       handleSetServerState,
@@ -190,9 +193,12 @@ export const GameContainer = <P extends GameConnectedProps>(
     ]);
 
     useEffect(() => {
-      handleJoinRoom();
+      if (state.characterId) {
+        handleJoinRoom();
+      }
+
       return handleLeaveRoom;
-    }, []);
+    }, [state.characterId]);
 
     const callbacks = {
       joinRoom: handleJoinRoom,

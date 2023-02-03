@@ -7,20 +7,23 @@ import React, {
   useContext,
   useEffect
 } from 'react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
+import { useSelector } from 'react-redux';
 
 import { Message } from '@bao/server/schema/MessageState';
 import { ChatRoom } from '@bao/server/rooms/ChatRoom';
-import { SetStateCallback, useLocalStateReducer } from '@bao/client/hooks';
+import { useGameContext } from '@bao/client/components/Game/Game.context';
+import {
+  SetStateCallback,
+  UpdateStateCallback,
+  useLocalStateReducer
+} from '@bao/client/hooks';
 import { selectToken } from '@bao/client/queries/account';
-import { State } from '@bao/client/store';
 
 export interface ChatConnectedProps {
   token?: string | null;
 }
 
-export interface ChatContainerOptions {
+export interface ChatContextContainerOptions {
   room: string;
 }
 
@@ -39,6 +42,7 @@ export interface ChatContextState {
 export interface ChatContextProps {
   callbacks: {
     setState: SetStateCallback<ChatContextState>;
+    updateState: UpdateStateCallback<ChatContextState>;
     joinRoom: () => Promise<boolean>;
     leaveRoom: (error?: Error) => void;
     sendRoomMessage: (messageType: any, parameters: any) => void;
@@ -52,7 +56,7 @@ export const createChatInitialState = (): ChatContextState => ({
   messages: new ArraySchema<Message>()
 });
 
-export const createChatOptions = (): ChatContainerOptions => ({
+export const createChatOptions = (): ChatContextContainerOptions => ({
   room: 'chat'
 });
 
@@ -62,26 +66,17 @@ export const useChatContext = () => {
   return useContext(ChatContext);
 };
 
-export const ChatContainer = <P extends ChatConnectedProps>(
+export const ChatContextContainer = <P extends ChatConnectedProps>(
   Component: React.ComponentType<P>,
-  options: ChatContainerOptions = createChatOptions()
+  options: ChatContextContainerOptions = createChatOptions()
 ) => {
   const WithChatContext: React.FC<ChatConnectedProps> = (props) => {
     if (typeof window === 'undefined') return null;
-    const { token } = props;
     const router = useRouter();
+    const token = useSelector(selectToken);
     const [state, setState, resetState, updateState] =
       useLocalStateReducer<ChatContextState>(createChatInitialState());
-
-    useEffect(() => {
-      if (!router.query?.characterId) {
-        router.push('/characters');
-      }
-
-      router.replace({ pathname: router.pathname, query: null }, undefined, {
-        shallow: true
-      });
-    }, []);
+    const { state: gameState } = useGameContext();
 
     const handleSendRoomMessage = useCallback(
       (messageType, parameters) => {
@@ -142,7 +137,6 @@ export const ChatContainer = <P extends ChatConnectedProps>(
         updateState((draft) => {
           draft.messages.push(message);
         });
-        console.log(state, message);
       },
       [state, setState]
     );
@@ -151,7 +145,7 @@ export const ChatContainer = <P extends ChatConnectedProps>(
       try {
         const client = new Client(process.env.NEXT_PUBLIC_BAO_SERVER);
         const room = await client.joinOrCreate<ChatRoom>(options.room, {
-          characterId: router.query?.characterId as string,
+          characterId: gameState.characterId,
           token
         });
 
@@ -175,15 +169,19 @@ export const ChatContainer = <P extends ChatConnectedProps>(
 
         return router.push('/');
       }
-    }, [handleRoomError, handleRoomMessage, setState, token]);
+    }, [gameState, handleRoomError, handleRoomMessage, setState, token]);
 
     useEffect(() => {
-      handleJoinRoom();
+      if (gameState.connected) {
+        handleJoinRoom();
+      }
+
       return handleLeaveRoom;
-    }, []);
+    }, [gameState.connected]);
 
     const callbacks = {
       setState,
+      updateState,
       joinRoom: handleJoinRoom,
       leaveRoom: handleLeaveRoom,
       sendRoomMessage: handleSendRoomMessage
@@ -201,16 +199,12 @@ export const ChatContainer = <P extends ChatConnectedProps>(
     );
   };
 
-  const mapStateToProps = (state: State) => ({
-    token: selectToken(state)
-  });
-
-  return compose(connect(mapStateToProps))(WithChatContext);
+  return WithChatContext;
 };
 
 export const withChatContextOptions =
-  <P extends ChatConnectedProps>(options: ChatContainerOptions) =>
+  <P extends ChatConnectedProps>(options: ChatContextContainerOptions) =>
   (Component: React.ComponentType<P>) =>
-    ChatContainer(Component, options);
+    ChatContextContainer(Component, options);
 
-export const withChatContext = ChatContainer;
+export const withChatContext = ChatContextContainer;

@@ -1,8 +1,14 @@
-import { Container, Sprite, Text, useTick } from '@inlet/react-pixi';
-import { AnimatedSprite, Container as PixiContainer, Point } from 'pixi.js';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { Sprite, Text } from '@inlet/react-pixi';
+import { Container, useTick } from '@inlet/react-pixi';
 import { Ease } from 'pixi-ease';
+import {
+  AnimatedSprite,
+  Container as PixiContainer,
+  Point,
+  Text as PixiText
+} from 'pixi.js';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import lerp from 'lerp';
 
 import {
@@ -14,10 +20,11 @@ import {
   TILE_SIZE
 } from '@bao/core';
 import { CharacterState } from '@bao/server/schema/CharacterState';
-import { defaultTextStyle } from '@bao/client/components/Game';
+import { defaultTextStyle, useGameContext } from '@bao/client/components/Game';
 import { Animation } from '@bao/client/components/Pixi';
 import { selectBodies, selectHeads } from '@bao/client/queries';
 import { useMapContext } from '@bao/client/components/Systems';
+import { useChatContext } from 'src/components/Chat';
 
 export interface CharacterProps {
   character: CharacterState;
@@ -25,13 +32,16 @@ export interface CharacterProps {
 
 export const Character = ({ character }: CharacterProps) => {
   const { mapState } = useMapContext();
+  const { state: chatState } = useChatContext();
   const bodyRef = useRef<AnimatedSprite>();
   const container = useRef<PixiContainer>();
+  const chatMessageRef = useRef<PixiText>();
   const bodies = useSelector(selectBodies);
   const heads = useSelector(selectHeads);
   const heading = HEADINGS[character.heading];
   const body = character.bodyId && bodies[character.bodyId];
   const head = character.headId && heads[character.headId];
+  const easing = useMemo(() => new Ease({}), []);
 
   const bodyOffset = useMemo(() => {
     if (body) {
@@ -78,6 +88,30 @@ export const Character = ({ character }: CharacterProps) => {
     container.current.y = y;
   });
 
+  const lastMessage = useMemo(() => {
+    const messages = [...chatState.messages].reverse();
+    const [message] = messages.filter((message) =>
+      message.character ? message.character?.id === character.id : false
+    );
+    return message;
+  }, [chatState.messages.length]);
+
+  useEffect(() => {
+    if (lastMessage && chatMessageRef.current) {
+      easing.removeAll();
+      easing.add(
+        chatMessageRef.current,
+        { y: headOffset.y - TILE_SIZE / 2, alpha: 1 },
+        { duration: 300 }
+      );
+      easing.add(
+        chatMessageRef.current,
+        { y: headOffset.y, alpha: 0 },
+        { duration: 300, wait: 3000 }
+      );
+    }
+  }, [lastMessage, chatMessageRef.current]);
+
   return (
     <Container
       ref={container}
@@ -98,6 +132,21 @@ export const Character = ({ character }: CharacterProps) => {
           </>
         )}
       </Container>
+      {lastMessage && (
+        <Text
+          ref={chatMessageRef}
+          anchor={[0.5, 1.0]}
+          x={TILE_SIZE / 2}
+          text={lastMessage.message}
+          style={{
+            ...defaultTextStyle,
+            breakWords: true,
+            wordWrapWidth: 200,
+            wordWrap: true,
+            trim: true
+          }}
+        />
+      )}
       {character.name && (
         <Text
           anchor={[0.5, 0.5]}
