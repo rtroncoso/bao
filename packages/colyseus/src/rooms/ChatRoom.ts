@@ -12,7 +12,7 @@ import {
   OnMessageCommand,
   OnMessageParameters
 } from '@bao/server/commands/OnMessage';
-import { WorldRoomState } from 'src/schema/WorldRoomState';
+import { WorldRoomState } from '@bao/server/schema/WorldRoomState';
 
 export interface SendMessageParams {
   message: string;

@@ -1,7 +1,7 @@
 import { Client } from 'colyseus';
 import { Command } from '@colyseus/command';
 
-import { ChatRoom } from 'src/rooms';
+import { ChatRoom } from '@bao/server/rooms';
 
 export interface OnJoinOptions {
   account: any;

@@ -10,7 +10,11 @@ import {
   MapRenderingSystem,
   ViewportSystem
 } from '@bao/client/components/Systems';
-import { ChatComponent, ChatContext, useChatContext } from '@bao/client/components/Chat';
+import {
+  ChatComponent,
+  ChatContext,
+  useChatContext
+} from '@bao/client/components/Chat';
 import { TiledMap } from '@bao/client/components/Entities';
 import { Stage as LayersStage } from '@bao/client/components/Pixi';
 import { App } from '@bao/core/constants';

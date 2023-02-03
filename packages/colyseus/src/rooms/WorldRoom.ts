@@ -3,9 +3,9 @@ import http from 'http';
 import { Client, Room } from 'colyseus';
 import { Dispatcher } from '@colyseus/command';
 
-import { OnJoinCommand } from 'src/commands/OnJoinWorld';
+import { OnJoinCommand } from '@bao/server/commands/OnJoinWorld';
 import { InputParameters, OnInputCommand } from '@bao/server/commands/OnInput';
-import { OnLeaveCommand } from 'src/commands/OnLeaveWorld';
+import { OnLeaveCommand } from '@bao/server/commands/OnLeaveWorld';
 import { AuthService } from '@bao/server/services/AuthService';
 import { WorldRoomState } from '@bao/server/schema/WorldRoomState';
 import { MovementSystem } from '@bao/server/systems';
