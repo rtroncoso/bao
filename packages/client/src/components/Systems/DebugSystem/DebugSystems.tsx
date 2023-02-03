@@ -2,7 +2,8 @@ import { Graphics, Text, useTick } from '@inlet/react-pixi';
 import { Filter } from 'pixi.js';
 import React, { useEffect } from 'react';
 
-import { defaultTextStyle, useGameContext } from '@bao/client/components/Game';
+import { CHARACTER_NAME_STYLES, roles } from '@bao/core';
+import { useGameContext } from '@bao/client/components/Game';
 import { useViewportContext } from '@bao/client/components/Systems/ViewportSystem';
 import { TILE_SIZE } from '@bao/core/constants/game';
 import fragment from './grid.frag';
@@ -75,7 +76,7 @@ export const DebugTextSystem: React.FC = () => {
   return (
     currentCharacter && (
       <Text
-        style={defaultTextStyle}
+        style={CHARACTER_NAME_STYLES[roles.user]}
         x={viewportState.projection.x}
         y={viewportState.projection.y}
         text={`
