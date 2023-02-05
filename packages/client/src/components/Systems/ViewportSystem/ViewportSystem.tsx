@@ -104,34 +104,32 @@ export const ViewportSystem: React.FC<ViewportProps> = (
   }, [currentCharacter]);
 
   useTick(() => {
-    if (serverState && room) {
-      if (currentCharacter) {
-        const x = lerp(
-          viewportState.projection.x,
-          currentCharacter.x - viewportState.projection.width / 2,
-          1 / 3
-        );
-        const y = lerp(
-          viewportState.projection.y,
-          currentCharacter.y - viewportState.projection.height / 2,
-          1 / 3
-        );
+    if (currentCharacter) {
+      const x = lerp(
+        viewportState.projection.x,
+        currentCharacter.x - viewportState.projection.width / 2,
+        1 / 3
+      );
+      const y = lerp(
+        viewportState.projection.y,
+        currentCharacter.y - viewportState.projection.height / 2,
+        1 / 3
+      );
 
-        if (
-          x !== viewportState.projection.x ||
-          y !== viewportState.projection.y
-        ) {
-          const projection = {
-            ...viewportState.projection,
-            x,
-            y
-          };
+      if (
+        x !== viewportState.projection.x ||
+        y !== viewportState.projection.y
+      ) {
+        const projection = {
+          ...viewportState.projection,
+          x,
+          y
+        };
 
-          setViewportState({
-            currentCharacter,
-            projection
-          });
-        }
+        setViewportState({
+          currentCharacter,
+          projection
+        });
       }
     }
   });

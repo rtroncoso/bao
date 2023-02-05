@@ -281,7 +281,7 @@ export const TiledMap: React.FC = () => {
   useEffect(() => {
     setSpritesCache(generateObjectsCache(sprites));
     setObjectsCache(generateObjectsCache(objects));
-  }, [mapState.groups, tmx]);
+  }, [tmx]);
 
   useEffect(() => {
     const x = Math.floor(viewportState.projection.x / TILE_SIZE);
@@ -303,7 +303,6 @@ export const TiledMap: React.FC = () => {
     renderSpriteLayers(spritesInViewport, spritesLayer, spritesCache);
     renderSpriteLayers(objectsInViewport, objectsLayer, objectsCache);
   }, [
-    mapState,
     viewportState.currentCharacter?.tile.x,
     viewportState.currentCharacter?.tile.y
   ]);
