@@ -105,6 +105,9 @@ export const Character = ({ character }: CharacterProps) => {
     if (lastMessage && chatMessageRef.current) {
       if (chatTimeoutId) clearTimeout(chatTimeoutId);
       easing.removeAll();
+      chatMessageRef.current.y = headOffset.y;
+      chatMessageRef.current.alpha = 0;
+
       easing.add(
         chatMessageRef.current,
         { y: headOffset.y - 4 - TILE_SIZE / 2, alpha: 1 },
