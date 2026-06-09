@@ -2,14 +2,12 @@ import { useMemo, useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Rectangle,
-  Point,
   Container as PixiContainer,
   AnimatedSprite,
   Sprite
 } from 'pixi.js';
 import { pointPolygon } from 'intersects';
 import {
-  PRELOAD,
   TILE_SIZE,
   getTileSetTextures,
   getTileLayersFromTmx,
@@ -20,6 +18,7 @@ import {
   getTriggersFromObjectLayers,
   getWaterFromObjectLayers,
   calculateProjectionMatrix,
+  SHORE_LAYER,
   TmxObject,
   TRIGGER_ROOF
 } from '@bao/core';
@@ -35,19 +34,36 @@ import {
 } from '@bao/client/components/Systems';
 import { polygon } from '@bao/client/utils';
 
-import { SpritesCache, TiledMapData } from './types';
-import { POOL_SIZES, COLLISION_CONFIG } from './constants';
+import { SpatialIndexes, SpritesCache, TiledMapData } from './types';
+import {
+  POOL_SIZES,
+  COLLISION_CONFIG,
+  SPATIAL_CELL_SIZE_TILES,
+  TILE_CHUNK_SIZE_TILES,
+  TILE_CHUNK_CACHE_MARGIN,
+  TILE_CULLING_TILES,
+  OBJECT_CULLING_TILES
+} from './constants';
 import {
   createSpritePool,
   createAnimationPool,
   generateObjectsCache,
+  getObjectRenderBounds,
   getObjectsInViewport,
-  generateTileLayers,
+  renderTileLayers,
   renderToTarget,
   renderSpriteLayers,
   getTriggerFromLayer,
   handleRoofTrigger
 } from './utils';
+import { SpatialHashGrid, TileChunkCache } from './spatial';
+import {
+  getShoreOrientations,
+  ShoreEdges,
+  useShoreSpriteFilters as useShoreSpriteFilterPool
+} from './Shore';
+
+export { useShoreSpriteFilters } from './Shore';
 
 export const useMapData = (tmxMap: any): TiledMapData => {
   return useMemo(() => {
@@ -71,6 +87,36 @@ export const useMapData = (tmxMap: any): TiledMapData => {
       water
     };
   }, [tmxMap]);
+};
+
+export const useSpatialIndexes = (mapData: TiledMapData): SpatialIndexes | null => {
+  return useMemo(() => {
+    if (!mapData.tmx?.width) {
+      return null;
+    }
+
+    const mapWidthPx = mapData.tmx.width * TILE_SIZE;
+    const cellSize = SPATIAL_CELL_SIZE_TILES * TILE_SIZE;
+
+    const resolveId = (object: TmxObject) => object.id;
+
+    return {
+      sprites: SpatialHashGrid.fromItems(
+        mapData.sprites,
+        cellSize,
+        mapWidthPx,
+        getObjectRenderBounds,
+        resolveId
+      ),
+      objects: SpatialHashGrid.fromItems(
+        mapData.objects,
+        cellSize,
+        mapWidthPx,
+        getObjectRenderBounds,
+        resolveId
+      )
+    };
+  }, [mapData.objects, mapData.sprites, mapData.tmx]);
 };
 
 export const useSpritePools = () => {
@@ -140,12 +186,14 @@ export const useTextures = () => {
 export const useRenderTargets = () => {
   const container = useRef<PixiContainer>();
   const tilesLayer = useRef<PixiContainer>();
+  const shoreLayer = useRef<PixiContainer>();
   const spritesLayer = useRef<PixiContainer>();
   const objectsLayer = useRef<PixiContainer>();
 
   return {
     container,
     tilesLayer,
+    shoreLayer,
     spritesLayer,
     objectsLayer
   };
@@ -226,69 +274,115 @@ export const useTriggerHandling = (
   };
 };
 
+export const useShoreOrientations = (mapData: TiledMapData) => {
+  return useMemo(
+    () => getShoreOrientations(mapData.sprites, mapData.water ?? []),
+    [mapData.sprites, mapData.water]
+  );
+};
+
 export const useViewportRendering = (
   mapData: TiledMapData,
+  spatialIndexes: SpatialIndexes | null,
   objectsCache: SpritesCache,
   spritesCache: SpritesCache,
   textures: any[],
-  renderTargets: any
+  renderTargets: any,
+  getShoreSpriteFilter: ReturnType<typeof useShoreSpriteFilterPool>,
+  shoreOrientations: Map<string | number, ShoreEdges>
 ) => {
   const { viewportState } = useViewportContext();
-  const preload = PRELOAD * TILE_SIZE;
+  const { mapState } = useMapContext();
+  const tileCullingPx = TILE_CULLING_TILES * TILE_SIZE;
+  const objectCullingPx = OBJECT_CULLING_TILES * TILE_SIZE;
+  const tileChunkCache = useRef(new TileChunkCache());
+  const projectionTileX = Math.floor(viewportState.projection.x / TILE_SIZE);
+  const projectionTileY = Math.floor(viewportState.projection.y / TILE_SIZE);
 
   useEffect(() => {
-    if (!textures.length) {
+    return () => {
+      tileChunkCache.current.clear();
+    };
+  }, [mapData.tmx, textures]);
+
+  useEffect(() => {
+    if (!textures.length || !spatialIndexes) {
       return;
     }
 
-    const x = Math.floor(viewportState.projection.x / TILE_SIZE);
-    const y = Math.floor(viewportState.projection.y / TILE_SIZE);
     const projection = new Rectangle(
       viewportState.projection.x,
       viewportState.projection.y,
       viewportState.projection.width,
       viewportState.projection.height
     );
-    const chunk = new Point(x, y);
-    const bounds = calculateProjectionMatrix(mapData.tmx, projection, preload);
+    const tileBounds = calculateProjectionMatrix(
+      mapData.tmx,
+      projection,
+      tileCullingPx
+    );
+    const objectBounds = calculateProjectionMatrix(
+      mapData.tmx,
+      projection,
+      objectCullingPx
+    );
 
     const spritesInViewport = getObjectsInViewport(
-      mapData.sprites,
-      chunk,
-      bounds,
-      mapData.tmx
+      spatialIndexes.sprites,
+      objectBounds
     );
     const objectsInViewport = getObjectsInViewport(
-      mapData.objects,
-      chunk,
-      bounds,
-      mapData.tmx
+      spatialIndexes.objects,
+      objectBounds
     );
-    const tiles = generateTileLayers(
+    const tiles = tileChunkCache.current.getVisibleTilemaps(
       mapData.tileLayers,
-      bounds,
+      tileBounds,
       textures,
-      mapData.tmx
+      mapData.tmx,
+      TILE_CHUNK_SIZE_TILES
     );
 
-    renderToTarget(tiles, renderTargets.tilesLayer);
+    tileChunkCache.current.evictOutside(
+      tileBounds,
+      mapData.tileLayers.length,
+      TILE_CHUNK_SIZE_TILES,
+      TILE_CHUNK_CACHE_MARGIN
+    );
+
+    renderTileLayers(tiles, {
+      tilesLayer: renderTargets.tilesLayer,
+      shoreLayer: renderTargets.shoreLayer
+    });
+
     renderSpriteLayers(
       spritesInViewport,
       renderTargets.spritesLayer,
-      spritesCache
+      spritesCache,
+      {
+        getShoreSpriteFilter,
+        shoreGroup: mapState?.groups[SHORE_LAYER],
+        shoreOrientations,
+        shoreTarget: renderTargets.shoreLayer
+      }
     );
+
     renderSpriteLayers(
       objectsInViewport,
       renderTargets.objectsLayer,
       objectsCache
     );
   }, [
-    viewportState.currentCharacter?.tile.x,
-    viewportState.currentCharacter?.tile.y,
+    projectionTileX,
+    projectionTileY,
     mapData,
+    spatialIndexes,
     objectsCache,
     spritesCache,
     textures,
-    renderTargets
+    renderTargets,
+    mapState,
+    getShoreSpriteFilter,
+    shoreOrientations
   ]);
 };

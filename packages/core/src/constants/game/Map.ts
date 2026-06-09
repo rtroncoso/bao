@@ -1,17 +1,30 @@
 export const HEADER_SIZE = 263 + (2 * 5);
 export const INF_HEADER_SIZE = 6;
 
-export const MAP_LAYERS = 4;
+/** Highest @pixi/layers group index (inclusive). */
+export const MAP_LAYERS = 5;
 export const WATER_LAYER = 0;
 export const TILES_LAYER = 1;
-export const DETAILS_LAYER = 2;
-export const ENTITIES_LAYER = 3;
-export const UPPER_LAYER = 4;
+export const SHORE_LAYER = 2;
+export const DETAILS_LAYER = 3;
+export const ENTITIES_LAYER = 4;
+export const UPPER_RENDER_GROUP = 5;
+
+/** Layer ids stored on TMX object properties in baked assets. */
+export const TMX_DETAILS_LAYER = 2;
+export const TMX_ENTITIES_LAYER = 3;
+export const TMX_UPPER_LAYER = 4;
+
+export const UPPER_LAYER = TMX_UPPER_LAYER;
 export const COLLISION_LAYER = TILES_LAYER;
 export const TILE_EXIT_LAYER = TILES_LAYER;
-export const OBJECT_LAYER = ENTITIES_LAYER;
-export const NPC_LAYER = ENTITIES_LAYER;
-export const TRIGGER_LAYER = UPPER_LAYER;
+export const OBJECT_LAYER = TMX_ENTITIES_LAYER;
+export const NPC_LAYER = TMX_ENTITIES_LAYER;
+export const TRIGGER_LAYER = TMX_UPPER_LAYER;
+
+/** Maps TMX sprite layer ids to @pixi/layers group indices (shore inserted at 2). */
+export const tmxLayerToRenderGroup = (tmxLayer: number): number =>
+  tmxLayer >= TMX_DETAILS_LAYER ? tmxLayer + 1 : tmxLayer;
 
 export const NO_TRIGGER = 0;
 export const TRIGGER_ROOF = 1;

@@ -9,7 +9,6 @@ import {
 } from 'pixi.js';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import lerp from 'lerp';
 
 import {
   CHARACTER_CHAT_STYLES,
@@ -26,6 +25,7 @@ import { CharacterState } from '@bao/server/schema/CharacterState';
 import { Animation } from '@bao/client/components/Pixi';
 import { selectBodies, selectHeads } from '@bao/client/queries';
 import { useMapContext } from '@bao/client/components/Systems';
+import { useInterpolatedPosition } from '@bao/client/hooks';
 import { useChatContext } from 'src/components/Chat';
 
 export interface CharacterProps {
@@ -71,6 +71,8 @@ export const Character = ({ character }: CharacterProps) => {
     return new Point();
   }, [body]);
 
+  const positionRef = useInterpolatedPosition(character.x, character.y);
+
   useTick(() => {
     if (character.isMoving && !bodyRef.current?.playing) {
       bodyRef.current?.gotoAndPlay(0);
@@ -79,18 +81,11 @@ export const Character = ({ character }: CharacterProps) => {
     if (!character.isMoving) {
       bodyRef.current?.gotoAndStop(0);
     }
-  });
 
-  useEffect(() => {
-    container.current.x = character.x;
-    container.current.y = character.y;
-  }, []);
-
-  useTick(() => {
-    const x = lerp(container.current.x, character.x, 1 / 3);
-    const y = lerp(container.current.y, character.y, 1 / 3);
-    container.current.x = x;
-    container.current.y = y;
+    if (container.current) {
+      container.current.x = positionRef.current.x;
+      container.current.y = positionRef.current.y;
+    }
   });
 
   const lastMessage = useMemo(() => {

@@ -2,11 +2,21 @@ import React from 'react';
 import { Container } from '@inlet/react-pixi';
 
 import TMX_MAP from '../../../../../assets/public/maps/34.json';
-import { TILES_LAYER, DETAILS_LAYER, ENTITIES_LAYER, Tiled } from '@bao/core';
+import {
+  TILES_LAYER,
+  SHORE_LAYER,
+  DETAILS_LAYER,
+  ENTITIES_LAYER,
+  Tiled
+} from '@bao/core';
 import { useMapContext } from '@bao/client/components/Systems';
 import { Water } from './Water';
+import { EffectsAnimationSystem } from './Shore';
 import {
   useMapData,
+  useSpatialIndexes,
+  useShoreOrientations,
+  useShoreSpriteFilters,
   useSpriteCache,
   useTextures,
   useRenderTargets,
@@ -15,44 +25,44 @@ import {
 } from './hooks';
 
 export const TiledMap: React.FC = () => {
-  // Extract map data from TMX
   const mapData = useMapData(TMX_MAP as unknown as Tiled);
-
-  // Get map state for layer management
+  const spatialIndexes = useSpatialIndexes(mapData);
   const { mapState } = useMapContext();
-
-  // Load textures
   const textures = useTextures();
-
-  // Setup render targets
   const renderTargets = useRenderTargets();
+  const getShoreSpriteFilter = useShoreSpriteFilters();
+  const shoreOrientations = useShoreOrientations(mapData);
 
-  // Setup sprite caching
   const { objectsCache, spritesCache } = useSpriteCache(
     mapData.objects,
     mapData.sprites,
     mapData.tmx
   );
 
-  // Handle trigger interactions
   useTriggerHandling(mapData.triggers, renderTargets.spritesLayer);
 
-  // Handle viewport rendering
   useViewportRendering(
     mapData,
+    spatialIndexes,
     objectsCache,
     spritesCache,
     textures,
-    renderTargets
+    renderTargets,
+    getShoreSpriteFilter,
+    shoreOrientations
   );
 
   return (
-    <>
-      <Water />
+    <EffectsAnimationSystem>
+      <Water water={mapData.water} />
       <Container ref={renderTargets.container}>
         <Container
           ref={renderTargets.tilesLayer}
           parentGroup={mapState?.groups[TILES_LAYER]}
+        />
+        <Container
+          ref={renderTargets.shoreLayer}
+          parentGroup={mapState?.groups[SHORE_LAYER]}
         />
         <Container
           ref={renderTargets.spritesLayer}
@@ -63,6 +73,6 @@ export const TiledMap: React.FC = () => {
           parentGroup={mapState?.groups[ENTITIES_LAYER]}
         />
       </Container>
-    </>
+    </EffectsAnimationSystem>
   );
 };

@@ -1,4 +1,4 @@
-import { WATER_LAYER } from '@bao/core';
+import { WATER_LAYER, TmxObject } from '@bao/core';
 import { Sprite, useTick } from '@inlet/react-pixi';
 import {
   Graphics as PixiGraphics,
@@ -6,82 +6,41 @@ import {
   Sprite as PixiSprite,
   WRAP_MODES,
   Point,
-  Filter,
-  Matrix
+  Filter
 } from 'pixi.js';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useGameContext } from 'src/components/Game';
 import { useMapContext, useViewportContext } from 'src/components/Systems';
+
+import { registerAnimatedFilter } from '../Shore/effectAnimationRegistry';
+import { getWaterPolygons } from '../Shore/waterPolygons';
 
 import waterTexture from './water.png';
 import waterNormal from './water_normal.png';
 import displacementTexture from './water_uv_displacement.png';
-import vertex from './water.vert';
-import fragment from './water.frag';
+import { WaterFilter } from './WaterFilter';
 
 const assetUrl = (asset: string | { src: string }) =>
   typeof asset === 'string' ? asset : asset.src;
 
 export interface WaterProps {
-  shapes?: Point[][];
+  water?: TmxObject[];
 }
 
-export class WaterFilter extends Filter {
-  constructor(vertex, fragment) {
-    super(vertex, fragment);
-    this.uniforms.time = 0;
-    this.uniforms.camera = [0, 0];
-    this.uniforms.dimensions = [0, 0];
-    this.uniforms.tileFactor = [0.3, 0.3];
-    this.uniforms.colorDamp = [0.9, 0.9, 0.8];
-    this.uniforms.waveTimeScale = 0.1;
-    this.uniforms.waveScale = [0.5, 0.5];
-    this.uniforms.waveAmplitude = [0.02, 0.03];
-    this.uniforms.uvTimeScale = -0.003;
-    this.uniforms.uvOffsetSize = [2.2, 2.4];
-    this.uniforms.uvAmplitude = [0.08, 0.15];
-    this.uniforms.mappedMatrix = new Matrix();
-    this.uniforms.texture = Texture.EMPTY;
-    this.uniforms.normal = Texture.EMPTY;
-    this.uniforms.displacement = Texture.EMPTY;
-    this.autoFit = false;
-    this.padding = 0;
-    if (this.isRetina()) {
-      this.resolution = 2;
-    }
-  }
-
-  isRetina() {
-    return (
-      ((window.matchMedia &&
-        (window.matchMedia(
-          'only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx), only screen and (min-resolution: 75.6dpcm)'
-        ).matches ||
-          window.matchMedia(
-            'only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (min--moz-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2)'
-          ).matches)) ||
-        (window.devicePixelRatio && window.devicePixelRatio >= 2)) &&
-      /(iPad|iPhone|iPod|Macintosh)/g.test(navigator.userAgent)
-    );
-  }
-
-  apply(filterManager, input, output, clear) {
-    this.uniforms.dimensions[0] = input.filterFrame.width;
-    this.uniforms.dimensions[1] = input.filterFrame.height;
-    filterManager.applyFilter(this, input, output, clear);
-  }
-}
-
-export const Water: React.FC<WaterProps> = ({ shapes = [] }) => {
-  const { callbacks } = useGameContext();
+export const Water: React.FC<WaterProps> = ({ water = [] }) => {
   const { mapState } = useMapContext();
-  const { viewportState } = useViewportContext();
+  const { projectionRef } = useViewportContext();
 
-  const water = useRef<PixiSprite>();
-  const [shader, setShader] = useState<Filter>();
+  const waterRef = useRef<PixiSprite>();
+  const filterRef = useRef<WaterFilter>();
+  const [filter, setFilter] = useState<Filter>();
   const [texture, setTexture] = useState<Texture>();
   const [normal, setNormal] = useState<Texture>();
   const [displacement, setDisplacement] = useState<Texture>();
+
+  const shapes = useMemo(
+    () => getWaterPolygons(water).map((polygon) => polygon.map((p) => new Point(p.x, p.y))),
+    [water]
+  );
 
   useEffect(() => {
     (async () => {
@@ -104,48 +63,71 @@ export const Water: React.FC<WaterProps> = ({ shapes = [] }) => {
 
   useEffect(() => {
     try {
-      const shader = new WaterFilter(vertex, fragment);
-      setShader(shader);
+      const waterFilter = new WaterFilter();
+      filterRef.current = waterFilter;
+      setFilter(waterFilter);
+      return registerAnimatedFilter(waterFilter);
     } catch (error) {
-      callbacks.leaveRoom(error);
+      console.error('[Water] failed to create water filter', error);
+      return undefined;
     }
   }, []);
 
   const mask = useMemo(() => {
-    const g = new PixiGraphics();
+    const graphics = new PixiGraphics();
     shapes.forEach((shape) => {
-      const start = shape.shift();
-      g.moveTo(start.x, start.y);
-      shape.forEach((s) => g.lineTo(s.x, s.y));
-      g.lineTo(start.x, start.y);
+      if (shape.length < 3) {
+        return;
+      }
+
+      graphics.moveTo(shape[0].x, shape[0].y);
+      for (let index = 1; index < shape.length; index++) {
+        graphics.lineTo(shape[index].x, shape[index].y);
+      }
+      graphics.lineTo(shape[0].x, shape[0].y);
     });
-    return g;
+    return graphics;
   }, [shapes]);
 
-  useTick((delta) => {
-    if (shader && water.current) {
-      const group = mapState.groups[WATER_LAYER];
-      water.current.parentGroup = group;
-      shader.uniforms.time += delta * 0.05;
-      shader.uniforms.texture = texture;
-      shader.uniforms.normalTexture = normal;
-      shader.uniforms.displacementTexture = displacement;
-      shader.uniforms.camera[0] = water.current.x / water.current.width;
-      shader.uniforms.camera[1] = water.current.y / water.current.height;
+  useTick(() => {
+    const waterFilter = filterRef.current;
+    const sprite = waterRef.current;
+    const projection = projectionRef.current;
+
+    if (!waterFilter || !sprite || !texture || !normal || !displacement) {
+      return;
     }
+
+    const group = mapState.groups[WATER_LAYER];
+    if (group) {
+      sprite.parentGroup = group;
+    }
+
+    sprite.x = projection.x;
+    sprite.y = projection.y;
+    sprite.width = projection.width;
+    sprite.height = projection.height;
+
+    waterFilter.uniforms.texture = texture;
+    waterFilter.uniforms.normalTexture = normal;
+    waterFilter.uniforms.displacementTexture = displacement;
+    waterFilter.uniforms.camera[0] = projection.x / projection.width;
+    waterFilter.uniforms.camera[1] = projection.y / projection.height;
+
+    (sprite as unknown as { _boundsID: number })._boundsID++;
   });
 
-  return shader && texture ? (
+  if (!filter || !texture || !shapes.length) {
+    return null;
+  }
+
+  return (
     <Sprite
-      ref={water}
+      ref={waterRef}
       mask={mask}
-      x={viewportState.projection.x}
-      y={viewportState.projection.y}
-      width={viewportState.projection.width}
-      height={viewportState.projection.height}
       parentGroup={mapState.groups[WATER_LAYER]}
       texture={texture}
-      filters={[shader]}
+      filters={[filter]}
     />
-  ) : null;
+  );
 };

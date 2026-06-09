@@ -1,18 +1,16 @@
+import React from 'react';
 import {
   Rectangle,
-  Point,
   AnimatedSprite,
   Sprite,
   Texture,
   DisplayObject
 } from 'pixi.js';
-import { CompositeTilemap } from '@pixi/tilemap';
 import { boxPolygon } from 'intersects';
 import { Ease } from 'pixi-ease';
 
 import flow from 'lodash/fp/flow';
 import filter from 'lodash/fp/filter';
-import map from 'lodash/fp/map';
 import mapValues from 'lodash/fp/mapValues';
 import groupBy from 'lodash/fp/groupBy';
 import each from 'lodash/fp/each';
@@ -23,12 +21,39 @@ import {
   getTexture,
   TmxObject,
   Graphic,
-  TileLayer,
-  UPPER_LAYER
+  UPPER_LAYER,
+  tmxLayerToRenderGroup
 } from '@bao/core';
 import { polygon } from '@bao/client/utils';
-import { SpritesCache } from './types';
-import { ANIMATION_CONFIG, COLLISION_CONFIG } from './constants';
+import { ObjectsInViewport, SpritesCache } from './types';
+import { ANIMATION_CONFIG, COLLISION_CONFIG, SHORE_TILE_LAYER_INDEX, TMX_SHORE_SPRITE_LAYER } from './constants';
+import { SpatialHashGrid, TileLayerChunk, SHORE_TILE_CHUNK_NAME } from './spatial';
+import { CompositeTilemap } from '@pixi/tilemap';
+import {
+  getShoreOrientation,
+  applyShoreSpriteOverlap,
+  getShoreTileOrigin,
+  shoreEdgesToBitmask,
+  ShoreEdges
+} from './Shore/shoreUtils';
+import { ShoreSpriteFilter } from './Shore/ShoreSpriteFilter';
+import {
+  getShoreBucket,
+  isShoreBucket,
+  mountShoreBuckets,
+  resetShoreBuckets
+} from './Shore/shoreBuckets';
+
+type ShoreCachedSprite = Sprite & { shoreTileX: number; shoreTileY: number };
+
+const getShoreTileCoords = (sprite: Sprite): { x: number; y: number } => {
+  const shoreSprite = sprite as ShoreCachedSprite;
+  if (typeof shoreSprite.shoreTileX === 'number' && typeof shoreSprite.shoreTileY === 'number') {
+    return { x: shoreSprite.shoreTileX, y: shoreSprite.shoreTileY };
+  }
+
+  return getShoreTileOrigin(sprite);
+};
 
 const easing = new Ease({});
 
@@ -84,8 +109,22 @@ export const createSpriteFromObject = (
   const graphic = graphics[graphicId];
   const sprite = getSpriteFromPoolOrNew(graphic, animationsPool, spritesPool);
   sprite.position.set(x, y);
+  sprite.scale.set(1, 1);
 
-  const group = mapState.groups[layerNumber];
+  const texture = sprite.texture;
+
+  if (Number(layerNumber) === TMX_SHORE_SPRITE_LAYER) {
+    sprite.width = TILE_SIZE;
+    sprite.height = TILE_SIZE;
+    const shoreSprite = sprite as ShoreCachedSprite;
+    shoreSprite.shoreTileX = x;
+    shoreSprite.shoreTileY = y;
+  } else if (texture?.width && texture?.height) {
+    sprite.width = texture.width;
+    sprite.height = texture.height;
+  }
+
+  const group = mapState.groups[tmxLayerToRenderGroup(layerNumber)];
   if (group) sprite.parentGroup = group;
   sprite.accessibleType = `${layerNumber}`;
 
@@ -114,51 +153,31 @@ export const generateObjectsCache = (
   return cache;
 };
 
+export interface ObjectRenderBounds {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/** Render-space AABB matching sprite placement in createSpriteFromObject. */
+export const getObjectRenderBounds = (object: TmxObject): ObjectRenderBounds => ({
+  x: getProperty(object, 'x') ?? object.x,
+  y: getProperty(object, 'y') ?? object.y,
+  width: getProperty(object, 'width') ?? object.width ?? TILE_SIZE,
+  height: getProperty(object, 'height') ?? object.height ?? TILE_SIZE
+});
+
 export const getObjectsInViewport = (
-  objects: TmxObject[],
-  chunk: Point,
-  bounds: Rectangle,
-  tmx: any
-) => {
-  const memoKey = chunk.y * tmx.width + chunk.x;
+  spatialGrid: SpatialHashGrid<TmxObject>,
+  bounds: Rectangle
+): ObjectsInViewport => {
+  const objects = spatialGrid.query(bounds);
 
-  const grabSprites = flow(
-    filter<TmxObject>((object) => bounds.contains(object.x, object.y)),
-    groupBy((object) => getProperty(object, 'layer')),
+  return flow(
+    groupBy((object: TmxObject) => getProperty(object, 'layer')),
     mapValues<TmxObject[], string[]>((layer) => layer.map((o) => o.id))
-  );
-
-  return grabSprites(objects);
-};
-
-export const generateTileLayers = (
-  layers: TileLayer[],
-  bounds: Rectangle,
-  textures: any[],
-  tmx: any
-): CompositeTilemap[] => {
-  const screenBoundsX = Math.floor(bounds.x / TILE_SIZE);
-  const screenBoundsY = Math.floor(bounds.y / TILE_SIZE);
-  const screenBoundsWidth =
-    screenBoundsX + Math.floor(bounds.width / TILE_SIZE);
-  const screenBoundsHeight =
-    screenBoundsY + Math.floor(bounds.height / TILE_SIZE);
-
-  return layers.map((layer) => {
-    const tileSets = getProperty(layer, 'usedTileSets');
-    const tilemap = new CompositeTilemap(tileSets);
-
-    for (let y = screenBoundsY; y < screenBoundsHeight; y++) {
-      for (let x = screenBoundsX; x < screenBoundsWidth; x++) {
-        const index = y * tmx.width + x;
-        if (layer.data[index] > 0) {
-          const texture = textures[layer.data[index]];
-          tilemap.tile(texture, x * TILE_SIZE, y * TILE_SIZE);
-        }
-      }
-    }
-    return tilemap;
-  });
+  )(objects);
 };
 
 export const renderToTarget = (
@@ -180,18 +199,140 @@ export const renderToTarget = (
   return nodes;
 };
 
-export const renderSpriteLayers = (
-  nodes: any,
-  target: React.RefObject<any>,
-  cache: SpritesCache
+export const renderTileLayers = (
+  chunks: TileLayerChunk[],
+  targets: {
+    tilesLayer: React.RefObject<any>;
+    shoreLayer: React.RefObject<any>;
+  },
+  shoreLayerIndex = SHORE_TILE_LAYER_INDEX
 ) => {
-  const spritesRenderer = each<any[]>((node) => {
-    const action = (id: string) => cache[id];
-    return renderToTarget(node, target, action, false);
+  if (!targets.tilesLayer.current || !targets.shoreLayer.current) {
+    return chunks;
+  }
+
+  targets.tilesLayer.current.removeChildren();
+
+  const shoreContainer = targets.shoreLayer.current;
+  shoreContainer.children.slice().forEach((child) => {
+    if (
+      child instanceof CompositeTilemap ||
+      child.name === SHORE_TILE_CHUNK_NAME ||
+      isShoreBucket(child)
+    ) {
+      return;
+    }
+
+    shoreContainer.removeChild(child);
   });
 
-  if (target.current) target.current.removeChildren();
-  return spritesRenderer(Object.values(nodes));
+  chunks.forEach(({ displayObject, layerIndex }) => {
+    displayObject.filters = null;
+
+    if (layerIndex === shoreLayerIndex) {
+      targets.shoreLayer.current.addChild(displayObject);
+      return;
+    }
+
+    targets.tilesLayer.current.addChild(displayObject);
+  });
+
+  return chunks;
+};
+
+export interface SpriteRenderOptions {
+  shoreTarget?: React.RefObject<any>;
+  getShoreSpriteFilter?: (edgeMask: number) => ShoreSpriteFilter | undefined;
+  shoreOrientations?: Map<string | number, ShoreEdges>;
+  shoreGroup?: import('@pixi/layers').Group;
+}
+
+export const renderSpriteLayers = (
+  nodes: ObjectsInViewport,
+  target: React.RefObject<any>,
+  cache: SpritesCache,
+  options?: SpriteRenderOptions
+) => {
+  if (target.current) {
+    target.current.removeChildren();
+  }
+  if (options?.shoreTarget?.current) {
+    const shoreContainer = options.shoreTarget.current;
+    shoreContainer.children.slice().forEach((child) => {
+      if (
+        child instanceof CompositeTilemap ||
+        child.name === SHORE_TILE_CHUNK_NAME ||
+        isShoreBucket(child)
+      ) {
+        return;
+      }
+
+      shoreContainer.removeChild(child);
+    });
+    resetShoreBuckets();
+  }
+
+  const shoreLayer = options?.shoreTarget?.current;
+
+  Object.values(nodes)
+    .flat()
+    .forEach((id) => {
+      const sprite =
+        cache[id] ??
+        cache[String(id)] ??
+        cache[Number(id as string)];
+      if (!sprite) {
+        return;
+      }
+
+      const isShoreLayerSprite =
+        sprite.accessibleType === `${TMX_SHORE_SPRITE_LAYER}`;
+      const isShoreSprite = isShoreLayerSprite && options?.shoreTarget?.current;
+
+      if (isShoreSprite) {
+        const edges = options?.shoreOrientations
+          ? getShoreOrientation(options.shoreOrientations, id)
+          : undefined;
+        const edgeMask = shoreEdgesToBitmask(
+          edges ?? { top: false, right: false, bottom: false, left: false }
+        );
+
+        const { x: tileX, y: tileY } = getShoreTileCoords(sprite);
+
+        if (edges) {
+          applyShoreSpriteOverlap(sprite, edges, tileX, tileY);
+        } else {
+          sprite.anchor.set(0, 0);
+          sprite.position.set(tileX, tileY);
+          sprite.width = TILE_SIZE;
+          sprite.height = TILE_SIZE;
+        }
+
+        sprite.filterArea = null;
+        sprite.filters = null;
+        sprite.visible = true;
+        sprite.alpha = 1;
+        sprite.renderable = true;
+        sprite.parentGroup = options.shoreGroup ?? sprite.parentGroup;
+
+        if (edgeMask > 0 && shoreLayer && options.getShoreSpriteFilter) {
+          getShoreBucket(edgeMask).addChild(sprite);
+        } else {
+          shoreLayer?.addChild(sprite);
+        }
+        return;
+      }
+
+      sprite.filterArea = null;
+      sprite.filters = null;
+      target.current?.addChild(sprite);
+    });
+
+  if (shoreLayer && options?.getShoreSpriteFilter) {
+    mountShoreBuckets(shoreLayer, options.getShoreSpriteFilter);
+  }
+
+  return nodes;
 };
 
 export const getTriggerFromLayer = (trigger: TmxObject): number => {

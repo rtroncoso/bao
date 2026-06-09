@@ -1,7 +1,16 @@
-import { AnimatedSprite, Sprite, Point, Rectangle } from 'pixi.js';
+import { AnimatedSprite, Sprite } from 'pixi.js';
 import { TmxObject } from '@bao/core';
 
+import { SpatialHashGrid } from './spatial';
+
 export type SpritesCache = { [key: string]: Sprite | AnimatedSprite };
+
+export type ObjectsInViewport = { [layer: string]: string[] };
+
+export interface SpatialIndexes {
+  sprites: SpatialHashGrid<TmxObject>;
+  objects: SpatialHashGrid<TmxObject>;
+}
 
 export interface ViewportBounds {
   x: number;
