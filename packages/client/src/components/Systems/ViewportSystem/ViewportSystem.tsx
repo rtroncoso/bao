@@ -80,10 +80,10 @@ export const ViewportSystem: React.FC<ViewportProps> = (
 
   const currentCharacter = useMemo(
     () =>
-      serverState.characters.find(
-        (character) => character.sessionId === room.sessionId
-      ),
-    []
+      serverState?.characters?.find(
+        (character) => character.sessionId === room?.sessionId
+      ) ?? null,
+    [serverState, room?.sessionId]
   );
 
   useEffect(() => {

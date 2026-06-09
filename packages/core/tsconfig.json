@@ -3,7 +3,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "dist",
-    "declaration": true
+    "rootDir": "src",
+    "declaration": true,
+    "ignoreDeprecations": "5.0"
   },
   "exclude": [
     "dist"

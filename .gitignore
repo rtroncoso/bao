@@ -51,6 +51,12 @@ typings/
 # Optional npm cache directory
 .npm
 
+# Optional pnpm cache directory
+.pnpm-store/
+
+# Turborepo
+.turbo
+
 # Optional eslint cache
 .eslintcache
 

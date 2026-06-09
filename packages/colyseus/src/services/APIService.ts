@@ -1,5 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
+import { config } from '../config';
+
 declare module 'axios' {
   interface AxiosResponse<T = any> extends Promise<T> {}
 }
@@ -16,7 +18,7 @@ export abstract class APIService {
   public constructor({ authToken, baseURL }: APIServiceOptions = {}) {
     this.authToken = authToken || process.env.JWT_TOKEN;
     this.instance = axios.create({
-      baseURL: baseURL || process.env.BAO_API
+      baseURL: baseURL || config.apiBaseUrl
     });
 
     this._initializeRequestInterceptor();

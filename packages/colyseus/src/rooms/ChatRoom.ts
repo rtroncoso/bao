@@ -1,6 +1,6 @@
 import http from 'http';
 
-import { Client, Presence, Room } from 'colyseus';
+import { Client, Room } from 'colyseus';
 import { Dispatcher } from '@colyseus/command';
 
 import { OnJoinCommand } from '@bao/server/commands/OnJoinChat';
@@ -14,7 +14,6 @@ import {
 } from '@bao/server/commands/OnMessage';
 import { WorldRoomState } from '@bao/server/schema/WorldRoomState';
 import { ArraySchema } from '@colyseus/schema';
-import { throws } from 'assert';
 
 export interface SendMessageParams {
   message: string;
@@ -93,14 +92,18 @@ export class ChatRoom extends Room<WorldRoomState> {
     return this.authService.authenticate(client, options, request);
   }
 
-  public onJoin(client: Client, options: any) {
+  public async onJoin(client: Client, options: any, auth: any) {
     console.log(`chat:onJoin: ${client.sessionId}, ${client.id}`);
-    this.dispatcher.dispatch(new OnJoinCommand(), { client, options });
+    await this.dispatcher.dispatch(new OnJoinCommand(), {
+      client,
+      options,
+      auth
+    });
   }
 
   public async onLeave(client: Client, consented: boolean) {
     console.log(`chat:onLeave: ${client.sessionId}, ${client.id}`);
-    this.dispatcher.dispatch(new OnLeaveCommand(), { client });
+    await this.dispatcher.dispatch(new OnLeaveCommand(), { client });
   }
 
   public onDispose() {

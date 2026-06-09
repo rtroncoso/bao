@@ -95,14 +95,18 @@ export class WorldRoom extends Room<WorldRoomState> {
     return this.authService.authenticate(client, options, request);
   }
 
-  public onJoin(client: Client, options: any) {
+  public async onJoin(client: Client, options: any, auth: any) {
     console.log(`onJoin: ${client.sessionId}, ${client.id}`);
-    this.dispatcher.dispatch(new OnJoinCommand(), { client, options });
+    await this.dispatcher.dispatch(new OnJoinCommand(), {
+      client,
+      options,
+      auth
+    });
   }
 
-  public onLeave(client: Client, consented: boolean) {
+  public async onLeave(client: Client, consented: boolean) {
     console.log(`onLeave: ${client.sessionId}, ${client.id}`);
-    this.dispatcher.dispatch(new OnLeaveCommand(), { client });
+    await this.dispatcher.dispatch(new OnLeaveCommand(), { client });
   }
 
   public onDispose() {

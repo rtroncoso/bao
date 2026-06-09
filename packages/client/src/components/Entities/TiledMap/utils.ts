@@ -4,7 +4,7 @@ import {
   AnimatedSprite,
   Sprite,
   Texture,
-  DisplayObject,
+  DisplayObject
 } from 'pixi.js';
 import { CompositeTilemap } from '@pixi/tilemap';
 import { boxPolygon } from 'intersects';
@@ -24,7 +24,7 @@ import {
   TmxObject,
   Graphic,
   TileLayer,
-  UPPER_LAYER,
+  UPPER_LAYER
 } from '@bao/core';
 import { polygon } from '@bao/client/utils';
 import { SpritesCache } from './types';
@@ -37,7 +37,10 @@ export const createSpritePool = (size: number): Sprite[] => {
 };
 
 export const createAnimationPool = (size: number): AnimatedSprite[] => {
-  return Array.from({ length: size }, () => new AnimatedSprite([Texture.EMPTY]));
+  return Array.from(
+    { length: size },
+    () => new AnimatedSprite([Texture.EMPTY])
+  );
 };
 
 export const getSpriteFromPoolOrNew = (
@@ -81,7 +84,7 @@ export const createSpriteFromObject = (
   const graphic = graphics[graphicId];
   const sprite = getSpriteFromPoolOrNew(graphic, animationsPool, spritesPool);
   sprite.position.set(x, y);
-  
+
   const group = mapState.groups[layerNumber];
   if (group) sprite.parentGroup = group;
   sprite.accessibleType = `${layerNumber}`;
@@ -97,7 +100,7 @@ export const generateObjectsCache = (
   spritesPool: Sprite[]
 ): SpritesCache => {
   const cache: SpritesCache = {};
-  
+
   objects.forEach((object) => {
     cache[object.id] = createSpriteFromObject(
       object,
@@ -136,13 +139,15 @@ export const generateTileLayers = (
 ): CompositeTilemap[] => {
   const screenBoundsX = Math.floor(bounds.x / TILE_SIZE);
   const screenBoundsY = Math.floor(bounds.y / TILE_SIZE);
-  const screenBoundsWidth = screenBoundsX + Math.floor(bounds.width / TILE_SIZE);
-  const screenBoundsHeight = screenBoundsY + Math.floor(bounds.height / TILE_SIZE);
+  const screenBoundsWidth =
+    screenBoundsX + Math.floor(bounds.width / TILE_SIZE);
+  const screenBoundsHeight =
+    screenBoundsY + Math.floor(bounds.height / TILE_SIZE);
 
   return layers.map((layer) => {
     const tileSets = getProperty(layer, 'usedTileSets');
     const tilemap = new CompositeTilemap(tileSets);
-    
+
     for (let y = screenBoundsY; y < screenBoundsHeight; y++) {
       for (let x = screenBoundsX; x < screenBoundsWidth; x++) {
         const index = y * tmx.width + x;
@@ -165,7 +170,7 @@ export const renderToTarget = (
   if (target.current) {
     const container = target.current;
     if (removeChildren) target.current.removeChildren();
-    
+
     nodes.forEach((node) => {
       const child = action(node);
       if (child) container.addChild(child);
@@ -212,23 +217,31 @@ export const handleRoofTrigger = (
         )
     ),
     each<Sprite>((sprite) =>
-      easing.add(sprite, { alpha: ANIMATION_CONFIG.ALPHA_HIDDEN }, { 
-        duration: ANIMATION_CONFIG.ROOF_FADE_DURATION 
-      })
+      easing.add(
+        sprite,
+        { alpha: ANIMATION_CONFIG.ALPHA_HIDDEN },
+        {
+          duration: ANIMATION_CONFIG.ROOF_FADE_DURATION
+        }
+      )
     )
   );
 
   const showRoofs = flow(
     filter<Sprite>((sprite) => sprite.accessibleType === `${UPPER_LAYER}`),
     each<Sprite>((sprite) =>
-      easing.add(sprite, { alpha: ANIMATION_CONFIG.ALPHA_VISIBLE }, { 
-        duration: ANIMATION_CONFIG.ROOF_FADE_DURATION 
-      })
+      easing.add(
+        sprite,
+        { alpha: ANIMATION_CONFIG.ALPHA_VISIBLE },
+        {
+          duration: ANIMATION_CONFIG.ROOF_FADE_DURATION
+        }
+      )
     )
   );
 
   return {
     hideRoofs: () => hideRoofs(spritesLayerChildren),
-    showRoofs: () => showRoofs(spritesLayerChildren),
+    showRoofs: () => showRoofs(spritesLayerChildren)
   };
 };

@@ -2,12 +2,7 @@ import React from 'react';
 import { Container } from '@inlet/react-pixi';
 
 import TMX_MAP from '../../../../../assets/public/maps/34.json';
-import {
-  TILES_LAYER,
-  DETAILS_LAYER,
-  ENTITIES_LAYER,
-  Tiled,
-} from '@bao/core';
+import { TILES_LAYER, DETAILS_LAYER, ENTITIES_LAYER, Tiled } from '@bao/core';
 import { useMapContext } from '@bao/client/components/Systems';
 import { Water } from './Water';
 import {
@@ -16,32 +11,32 @@ import {
   useTextures,
   useRenderTargets,
   useTriggerHandling,
-  useViewportRendering,
+  useViewportRendering
 } from './hooks';
 
 export const TiledMap: React.FC = () => {
   // Extract map data from TMX
   const mapData = useMapData(TMX_MAP as unknown as Tiled);
-  
+
   // Get map state for layer management
   const { mapState } = useMapContext();
-  
+
   // Load textures
   const textures = useTextures();
-  
+
   // Setup render targets
   const renderTargets = useRenderTargets();
-  
+
   // Setup sprite caching
   const { objectsCache, spritesCache } = useSpriteCache(
     mapData.objects,
     mapData.sprites,
     mapData.tmx
   );
-  
+
   // Handle trigger interactions
   useTriggerHandling(mapData.triggers, renderTargets.spritesLayer);
-  
+
   // Handle viewport rendering
   useViewportRendering(
     mapData,

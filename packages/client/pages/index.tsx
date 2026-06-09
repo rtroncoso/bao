@@ -1,11 +1,12 @@
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { GetServerSideProps } from 'next';
+
+export const getServerSideProps: GetServerSideProps = async () => ({
+  redirect: {
+    destination: '/login',
+    permanent: false
+  }
+});
 
 export default function IndexPage() {
-  const router = useRouter();
-  const { query } = router;
-  useEffect(() => {
-    router.replace({ pathname: 'login', query }, undefined, { shallow: true });
-  });
   return null;
 }

@@ -4,7 +4,8 @@ import React, {
   createContext,
   useCallback,
   useContext,
-  useEffect
+  useEffect,
+  useRef
 } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -70,6 +71,7 @@ export const GameContainer = <P extends GameConnectedProps>(
     const router = useRouter();
     const [state, setState, resetState, updateState] =
       useLocalStateReducer<GameContextState>(createGameInitialState());
+    const joiningRef = useRef(false);
 
     useEffect(() => {
       if (!router.query?.characterId) {
@@ -155,6 +157,12 @@ export const GameContainer = <P extends GameConnectedProps>(
     );
 
     const handleJoinRoom = useCallback(async () => {
+      if (!token || !state.characterId || joiningRef.current || state.room) {
+        return false;
+      }
+
+      joiningRef.current = true;
+
       try {
         const client = new Client(process.env.NEXT_PUBLIC_BAO_SERVER);
         const room = await client.joinOrCreate<WorldRoomState>(options.room, {
@@ -170,35 +178,42 @@ export const GameContainer = <P extends GameConnectedProps>(
         setState({
           connected: true,
           client,
-          room
+          room,
+          serverState: room.state
         });
-      } catch (error) {
+
+        return true;
+      } catch (error: any) {
         console.error(
-          `[world:handleJoinRoom]: Error ${JSON.stringify(
-            error,
-            Object.getOwnPropertyNames(error),
-            2
-          )}`
+          `[world:handleJoinRoom]: code=${error?.code} message=${error?.message}`,
+          error
         );
 
-        return router.push('/');
+        router.push('/');
+        return false;
+      } finally {
+        joiningRef.current = false;
       }
     }, [
-      state,
+      state.characterId,
+      state.room,
       handleRoomError,
       handleRoomMessage,
       handleSetServerState,
+      router,
       setState,
       token
     ]);
 
     useEffect(() => {
-      if (state.characterId) {
+      if (state.characterId && token) {
         handleJoinRoom();
       }
 
-      return handleLeaveRoom;
-    }, [state.characterId]);
+      return () => {
+        handleLeaveRoom();
+      };
+    }, [state.characterId, token]);
 
     const callbacks = {
       joinRoom: handleJoinRoom,

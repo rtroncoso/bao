@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist",
+    "rootDir": "src",
+    "module": "commonjs",
+    "lib": ["esnext"],
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": false,
+    "strict": true,
+    "noImplicitAny": true,
+    "ignoreDeprecations": "5.0"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

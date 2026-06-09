@@ -1,16 +1,15 @@
+import { config, validateConfig } from './config'
+
 import { monitor } from '@colyseus/monitor';
 import { Server } from 'colyseus';
 import cors from 'cors';
 import express from 'express';
-import * as dotenv from 'dotenv';
 import http from 'http';
-import path from 'path';
 
 import { ChatRoom, WorldRoom } from './rooms';
 
-const envPath = process.env.ENV_PATH || process.cwd();
-dotenv.config({ path: path.resolve(envPath, '.env') });
-const port = Number(process.env.PORT || 7666);
+validateConfig();
+const port = config.port;
 const app = express();
 
 app.use(cors());

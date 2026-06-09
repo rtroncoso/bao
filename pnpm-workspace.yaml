@@ -1,2 +1,8 @@
 packages:
   - 'packages/*'
+
+overrides:
+  '@types/react': '17.0.44'
+  '@types/react-dom': '17.0.18'
+  '@fortawesome/fontawesome-svg-core': '1.2.36'
+  '@fortawesome/fontawesome-common-types': '0.2.36'

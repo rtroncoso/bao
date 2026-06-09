@@ -1,6 +1,12 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { Rectangle, Point, Container as PixiContainer, AnimatedSprite, Sprite } from 'pixi.js';
+import {
+  Rectangle,
+  Point,
+  Container as PixiContainer,
+  AnimatedSprite,
+  Sprite
+} from 'pixi.js';
 import { pointPolygon } from 'intersects';
 import { useApp } from '@inlet/react-pixi';
 
@@ -17,7 +23,7 @@ import {
   getWaterFromObjectLayers,
   calculateProjectionMatrix,
   TmxObject,
-  TRIGGER_ROOF,
+  TRIGGER_ROOF
 } from '@bao/core';
 import {
   selectAnimations,
@@ -41,7 +47,7 @@ import {
   renderToTarget,
   renderSpriteLayers,
   getTriggerFromLayer,
-  handleRoofTrigger,
+  handleRoofTrigger
 } from './utils';
 
 export const useMapData = (tmxMap: any): TiledMapData => {
@@ -69,13 +75,12 @@ export const useMapData = (tmxMap: any): TiledMapData => {
 };
 
 export const useSpritePools = () => {
-  const animationsPool = useMemo(() => 
-    createAnimationPool(POOL_SIZES.ANIMATIONS), []
+  const animationsPool = useMemo(
+    () => createAnimationPool(POOL_SIZES.ANIMATIONS),
+    []
   );
-  
-  const spritesPool = useMemo(() => 
-    createSpritePool(POOL_SIZES.SPRITES), []
-  );
+
+  const spritesPool = useMemo(() => createSpritePool(POOL_SIZES.SPRITES), []);
 
   return { animationsPool, spritesPool };
 };
@@ -88,14 +93,30 @@ export const useSpriteCache = (
   const graphics = useSelector(selectGraphics);
   const { mapState } = useMapContext();
   const { animationsPool, spritesPool } = useSpritePools();
-  
+
   const [objectsCache, setObjectsCache] = useState<SpritesCache>({});
   const [spritesCache, setSpritesCache] = useState<SpritesCache>({});
 
   useEffect(() => {
     if (graphics && mapState) {
-      setSpritesCache(generateObjectsCache(sprites, graphics, mapState, animationsPool, spritesPool));
-      setObjectsCache(generateObjectsCache(objects, graphics, mapState, animationsPool, spritesPool));
+      setSpritesCache(
+        generateObjectsCache(
+          sprites,
+          graphics,
+          mapState,
+          animationsPool,
+          spritesPool
+        )
+      );
+      setObjectsCache(
+        generateObjectsCache(
+          objects,
+          graphics,
+          mapState,
+          animationsPool,
+          spritesPool
+        )
+      );
     }
   }, [tmx, graphics, mapState, objects, sprites, animationsPool, spritesPool]);
 
@@ -104,7 +125,7 @@ export const useSpriteCache = (
 
 export const useTextures = () => {
   const { loader } = useApp();
-  
+
   return useMemo(() => {
     if (!loader.loading) {
       return getTileSetTextures(
@@ -127,7 +148,7 @@ export const useRenderTargets = () => {
     container,
     tilesLayer,
     spritesLayer,
-    objectsLayer,
+    objectsLayer
   };
 };
 
@@ -150,11 +171,11 @@ export const useTriggerHandling = (
 
   const handleTrigger = (trigger: TmxObject) => {
     if (!spritesLayer.current) return;
-    
+
     const number = getTriggerFromLayer(trigger);
     const { hideRoofs, showRoofs } = handleRoofTrigger(
-      trigger, 
-      number, 
+      trigger,
+      number,
       spritesLayer.current.children
     );
 
@@ -175,7 +196,14 @@ export const useTriggerHandling = (
     const y = tile?.y * TILE_SIZE + TILE_SIZE / 2;
 
     triggers.forEach((trigger) => {
-      if (pointPolygon(x, y, polygon(trigger.polygon), COLLISION_CONFIG.TRIGGER_TOLERANCE)) {
+      if (
+        pointPolygon(
+          x,
+          y,
+          polygon(trigger.polygon),
+          COLLISION_CONFIG.TRIGGER_TOLERANCE
+        )
+      ) {
         const number = getTriggerFromLayer(trigger);
         if (!hasTrigger(number)) setTrigger(trigger);
         triggered = true;
@@ -195,7 +223,7 @@ export const useTriggerHandling = (
     currentTrigger,
     hasTrigger,
     setTrigger,
-    handleTrigger,
+    handleTrigger
   };
 };
 
@@ -221,13 +249,36 @@ export const useViewportRendering = (
     const chunk = new Point(x, y);
     const bounds = calculateProjectionMatrix(mapData.tmx, projection, preload);
 
-    const spritesInViewport = getObjectsInViewport(mapData.sprites, chunk, bounds, mapData.tmx);
-    const objectsInViewport = getObjectsInViewport(mapData.objects, chunk, bounds, mapData.tmx);
-    const tiles = generateTileLayers(mapData.tileLayers, bounds, textures, mapData.tmx);
+    const spritesInViewport = getObjectsInViewport(
+      mapData.sprites,
+      chunk,
+      bounds,
+      mapData.tmx
+    );
+    const objectsInViewport = getObjectsInViewport(
+      mapData.objects,
+      chunk,
+      bounds,
+      mapData.tmx
+    );
+    const tiles = generateTileLayers(
+      mapData.tileLayers,
+      bounds,
+      textures,
+      mapData.tmx
+    );
 
     renderToTarget(tiles, renderTargets.tilesLayer);
-    renderSpriteLayers(spritesInViewport, renderTargets.spritesLayer, spritesCache);
-    renderSpriteLayers(objectsInViewport, renderTargets.objectsLayer, objectsCache);
+    renderSpriteLayers(
+      spritesInViewport,
+      renderTargets.spritesLayer,
+      spritesCache
+    );
+    renderSpriteLayers(
+      objectsInViewport,
+      renderTargets.objectsLayer,
+      objectsCache
+    );
   }, [
     viewportState.currentCharacter?.tile.x,
     viewportState.currentCharacter?.tile.y,

@@ -36,10 +36,12 @@
     "eslint-plugin-react": "^7.31.8",
     "eslint-plugin-react-hooks": "^4.2.0",
     "ini-loader": "^1.0.1",
+    "nanoid": "3.3.12",
     "postcss": "^8.4.16",
     "postcss-import": "^14.0.2",
     "raw-loader": "^4.0.2",
     "react-scripts": "^5.0.0",
+    "serialize-javascript": "4.0.0",
     "webpack": "^5.74.0"
   },
   "dependencies": {
@@ -47,7 +49,7 @@
     "@bao/react-fps": "workspace:*",
     "@bao/server": "workspace:*",
     "@colyseus/schema": "^1.0.2",
-    "@fortawesome/fontawesome-svg-core": "^1.2.32",
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/react-fontawesome": "^0.1.12",
     "@inlet/react-pixi": "^6.8.0",
@@ -139,7 +141,7 @@
     "yup": "^0.29.3"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/dev.js",
     "start": "next start",
     "build": "next build",
     "test": "run-s test:unit test:lint",

@@ -1,6 +1,8 @@
+import { CharacterSelectionContainer } from '@bao/client/components/CharacterSelection';
 import { NextPage } from 'next';
 import React from 'react';
-import { CharacterSelectionContainer } from 'src';
+
+export const getServerSideProps = async () => ({ props: {} });
 
 export const CharacterSelectionPage: NextPage = (props) => (
   <CharacterSelectionContainer {...props} />

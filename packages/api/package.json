@@ -2,13 +2,14 @@
   "name": "@bao/api",
   "version": "0.1.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "dev": "nodemon --exec pnpm run start",
-    "start": "node -r esm src/index.js",
-    "start:sa": "node -r esm src/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "start": "pnpm run dev",
+    "start:prod": "node dist/index.js",
+    "build": "tsc",
     "lint": "eslint src",
-    "lint:fix": "pnpm run lint -- --fix",
+    "lint:fix": "eslint src --fix",
     "format": "prettier src/**/**",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "prettier -w \"src/**/*.{js,ts,jsx,tsx}\""
@@ -24,22 +25,28 @@
   },
   "homepage": "https://github.com/rtroncoso/bao#readme",
   "dependencies": {
+    "@bao/env": "workspace:*",
+    "@bao/types": "workspace:*",
     "bcrypt": "^4.0.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
-    "crypto": "^1.0.1",
-    "dotenv": "^16.0.3",
-    "esm": "^3.2.25",
     "express": "^4.18.2",
     "express-pino-logger": "^5.0.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "moment": "^2.24.0",
-    "mysql": "^2.18.1",
+    "mysql2": "^3.11.0",
     "pino": "^6.7.0",
     "sha1": "^1.1.1"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.19.5",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
     "eslint": "^8.32.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-config-standard": "^17.0.0",
@@ -53,6 +60,9 @@
     "nodemon": "^1.19.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.8.3",
-    "prettier-eslint": "^15.0.1"
+    "prettier-eslint": "^15.0.1",
+    "resolve": "^1.22.12",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.6.0"
   }
 }
