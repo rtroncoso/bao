@@ -29,7 +29,7 @@ module.exports = function withTwin(nextConfig) {
                   require.resolve("babel-plugin-macros"),
                   {
                     twin: {
-                      perest: "emotion",
+                      preset: 'styled-components'
                     },
                   },
                 ],

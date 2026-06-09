@@ -5,7 +5,7 @@
   "description": "Colyseus game server for BAO",
   "main": "lib/index.js",
   "scripts": {
-    "dev": "pnpm run start",
+    "dev": "node scripts/wait-for-api.mjs && pnpm run start",
     "start": "ts-node-dev -r tsconfig-paths/register src/index.ts",
     "loadtest": "colyseus-loadtest loadtest/example.ts --room my_room --numClients 2",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -38,6 +38,7 @@
     "@colyseus/social": "^0.11.7",
     "@types/jsonwebtoken": "^8.5.0",
     "axios": "^0.21.0",
+    "dotenv": "^16.0.3",
     "colyseus": "^0.14.24",
     "colyseus.js": "^0.14.0",
     "cors": "^2.8.5",

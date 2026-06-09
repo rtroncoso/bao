@@ -11,7 +11,26 @@ async function connect(): Promise<void> {
     })
   })
 
-  await pool.query('SELECT 1')
+  const maxAttempts = Number(process.env.MYSQL_CONNECT_RETRIES ?? 15)
+  const delayMs = Number(process.env.MYSQL_CONNECT_DELAY_MS ?? 2000)
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      await pool.query('SELECT 1')
+      return
+    } catch (error) {
+      const isLastAttempt = attempt === maxAttempts
+
+      if (isLastAttempt) {
+        throw error
+      }
+
+      console.warn(
+        `MySQL not ready (attempt ${attempt}/${maxAttempts}), retrying in ${delayMs}ms...`
+      )
+      await new Promise((resolve) => setTimeout(resolve, delayMs))
+    }
+  }
 }
 
 async function executeQuery<T>(query: string): Promise<T[]> {

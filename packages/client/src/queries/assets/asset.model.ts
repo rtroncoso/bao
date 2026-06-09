@@ -1,5 +1,4 @@
-import { Loader } from 'pixi.js';
-
+import { PixiAssetLoader } from '@bao/client/lib/pixi-asset-loader';
 import { AuthorizedRequestPayload } from 'src/queries/shared/shared.model';
 import {
   Body,
@@ -49,7 +48,7 @@ export interface ShieldsEntityModel extends ResourceEntityModel<Shield> {}
 export interface WeaponsEntityModel extends ResourceEntityModel<Weapon> {}
 
 export interface LoadAssetsPayload extends AuthorizedRequestPayload {
-  loader: Loader;
+  loader: PixiAssetLoader;
 }
 
 export interface LoadManifestPayload extends LoadAssetsPayload {}

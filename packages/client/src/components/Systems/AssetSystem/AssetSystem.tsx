@@ -7,9 +7,8 @@ import React, {
 } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
-import { useApp } from '@inlet/react-pixi';
-
 import { SetStateCallback, useLocalStateReducer } from '@bao/client/hooks';
+import { PixiAssetLoader } from '@bao/client/lib/pixi-asset-loader';
 import { ProgressBar } from '@bao/client/components/Pixi';
 import { selectToken } from '@bao/client/queries/account';
 import {
@@ -30,6 +29,7 @@ export interface AssetContextState {
   assetState: AssetSystemState;
   setAssetState: SetStateCallback<AssetSystemState>;
   bodies?: BodiesEntityModel | any[];
+  loader: PixiAssetLoader | null;
 }
 
 export const createInitialAssetState = (): AssetSystemState => ({});
@@ -37,7 +37,8 @@ export const createInitialAssetState = (): AssetSystemState => ({});
 export const AssetSystemContext = createContext<AssetContextState>({
   assetState: createInitialAssetState(),
   setAssetState: null,
-  bodies: []
+  bodies: [],
+  loader: null
 });
 
 export const useAssetsContext = () => {
@@ -59,13 +60,16 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
 type ConnectedProps = ReturnType<typeof mapStateToProps> &
   ReturnType<typeof mapDispatchToProps>;
 
-export type AssetSystemConnectedProps = AssetSystemProps & ConnectedProps;
+export type AssetSystemConnectedProps = AssetSystemProps &
+  ConnectedProps & {
+    children?: React.ReactNode;
+  };
 
-export const AssetSystem: React.FC<AssetSystemConnectedProps> = ({
+export const AssetSystem = ({
   children,
   loadAssets
-}) => {
-  const app = useApp();
+}: AssetSystemConnectedProps) => {
+  const [loader] = useState(() => new PixiAssetLoader());
   const [loaded, setLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -73,22 +77,21 @@ export const AssetSystem: React.FC<AssetSystemConnectedProps> = ({
     createInitialAssetState()
   );
 
-  const loadAssetsCallback = useCallback(async () => {
-    const { loader } = app;
+  const loadAssetsCallback = useCallback(() => {
     loadAssets({ loader });
     loader.onComplete.add(() => setLoaded(true));
     loader.onProgress.add(() => setProgress(loader.progress / 100));
-  }, [app, loadAssets]);
+  }, [loader, loadAssets]);
 
   useEffect(() => {
-    const { loader } = app;
     loadAssetsCallback();
     return () => loader.destroy();
-  }, []);
+  }, [loadAssetsCallback, loader]);
 
   const assetContext = {
     setAssetState,
-    assetState
+    assetState,
+    loader
   };
 
   return (

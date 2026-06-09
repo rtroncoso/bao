@@ -178,6 +178,9 @@ export const getAllTextures =
     const textures = [];
     const processSpriteSheet = (spriteSheet) => {
       const frame = getFrameData(spriteSheet);
+      if (!frame) {
+        return;
+      }
       const { frames } = frame;
       const firstgid = gid * ATLAS_COLUMNS * ATLAS_COLUMNS + 1;
       gid++;

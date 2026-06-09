@@ -5,7 +5,12 @@
     "outDir": "./dist",
     "noEmit": true,
     "incremental": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "exclude": [
     ".next",
@@ -13,15 +18,19 @@
     "next.config.js"
   ],
   "include": [
-    "src/bao-core.d.ts",
-    "src/twin.d.ts",
-    "src/next-env.d.ts",
-    "src/react-app-env.d.ts",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "next-env.d.ts",
+    "pages/**/*.ts",
+    "pages/**/*.tsx",
     "src/**/*.js",
     "src/**/*.jsx",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "pages/**/*.ts",
-    "pages/**/*.tsx"
+    "src/bao-core.d.ts",
+    "src/react-18-pixi-compat.d.ts",
+    "src/react-app-env.d.ts",
+    "src/twin.d.ts",
+    ".next/types/**/*.ts"
   ]
 }

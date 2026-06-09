@@ -1,22 +1,21 @@
 import { useRouter } from 'next/router';
 import React, { useCallback, useState } from 'react';
 
-import { ContainerStyled } from '@bao/client/components/App/App.styles';
-import { Button } from '@bao/client/components/Button';
+import {
+  AuthCard,
+  Button,
+  PageShell,
+  SelectableOption,
+  SiteHeader
+} from '@bao/ui';
+
 import { CharacterModel } from '@bao/client/queries/account';
 import { CharacterSelectionConnectedProps } from './CharacterSelection.container';
-import {
-  CharacterListStyled,
-  CharacterListItemStyled,
-  TitleStyled
-} from './CharacterSelection.styles';
 
-type CharacterSelectionProps = CharacterSelectionConnectedProps;
-
-const CharacterSelection: React.FC<CharacterSelectionProps> = ({
+const CharacterSelection = ({
   account,
   characters
-}) => {
+}: CharacterSelectionConnectedProps) => {
   const router = useRouter();
   const [currentCharacter, setCurrentCharacter] =
     useState<CharacterModel | null>(null);
@@ -38,37 +37,64 @@ const CharacterSelection: React.FC<CharacterSelectionProps> = ({
     }
   }, [currentCharacter, router]);
 
+  const selectedName = currentCharacter?.name;
+
   return (
-    <ContainerStyled>
-      <TitleStyled>¡Bienvenido, {account?.username}!</TitleStyled>
-      <CharacterListStyled>
-        {characters.map((character) => (
-          <CharacterListItemStyled
-            key={character.id}
-            isActive={currentCharacter && currentCharacter.id === character.id}
-          >
-            <button
-              className="w-full h-full py-2"
-              onClick={() => handleCharacterSelection(character)}
+    <PageShell width="lg">
+      <SiteHeader
+        title="BAO"
+        subtitle={`Bienvenido de vuelta, ${account?.username ?? 'jugador'}.`}
+      />
+      <AuthCard
+        title="Elegí tu personaje"
+        description="Seleccioná un personaje existente o creá uno nuevo para entrar al mundo."
+      >
+        {characters.length > 0 ? (
+          <ul className="space-y-2">
+            {characters.map((character) => (
+              <li key={character.id}>
+                <SelectableOption
+                  selected={currentCharacter?.id === character.id}
+                  onClick={() => handleCharacterSelection(character)}
+                >
+                  <span>{character.name}</span>
+                  {currentCharacter?.id === character.id && (
+                    <span className="text-xs font-normal text-muted-foreground">
+                      Seleccionado
+                    </span>
+                  )}
+                </SelectableOption>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="rounded-lg border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground">
+            Todavía no tenés personajes. Creá uno para empezar a jugar.
+          </p>
+        )}
+
+        <div className="flex flex-col gap-2 pt-2 sm:flex-row">
+          {characters.length > 0 && (
+            <Button
+              className="flex-1"
+              onClick={handleSubmit}
+              disabled={!currentCharacter}
             >
-              {character.name}
-            </button>
-          </CharacterListItemStyled>
-        ))}
-      </CharacterListStyled>
-      {characters.length > 0 && (
-        <Button onClick={handleSubmit} disabled={!currentCharacter}>
-          {currentCharacter
-            ? `Ingresar con ${
-                characters.find(
-                  (character) => character.id === currentCharacter.id
-                )?.name
-              }`
-            : 'Seleccione un personaje'}
-        </Button>
-      )}
-      <Button onClick={handleCharacterCreation}>Crear personaje</Button>
-    </ContainerStyled>
+              {selectedName
+                ? `Entrar con ${selectedName}`
+                : 'Seleccioná un personaje'}
+            </Button>
+          )}
+          <Button
+            className="flex-1"
+            variant={characters.length > 0 ? 'outline' : 'default'}
+            onClick={handleCharacterCreation}
+          >
+            Crear personaje
+          </Button>
+        </div>
+      </AuthCard>
+    </PageShell>
   );
 };
 

@@ -19,6 +19,9 @@ import displacementTexture from './water_uv_displacement.png';
 import vertex from './water.vert';
 import fragment from './water.frag';
 
+const assetUrl = (asset: string | { src: string }) =>
+  typeof asset === 'string' ? asset : asset.src;
+
 export interface WaterProps {
   shapes?: Point[][];
 }
@@ -84,9 +87,9 @@ export const Water: React.FC<WaterProps> = ({ shapes = [] }) => {
     (async () => {
       const [textureResource, normalResource, displacementResource] =
         await Promise.all([
-          Texture.fromURL(waterTexture.src),
-          Texture.fromURL(waterNormal.src),
-          Texture.fromURL(displacementTexture.src)
+          Texture.fromURL(assetUrl(waterTexture)),
+          Texture.fromURL(assetUrl(waterNormal)),
+          Texture.fromURL(assetUrl(displacementTexture))
         ]);
 
       textureResource.baseTexture.wrapMode = WRAP_MODES.REPEAT;

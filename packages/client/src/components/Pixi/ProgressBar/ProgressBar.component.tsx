@@ -12,13 +12,13 @@ export interface ProgressBarProps extends Partial<RectangleProps> {
   width: number;
 }
 
-export const ProgressBar: React.FC<ProgressBarProps> = ({
+export const ProgressBar = ({
   backgroundColor,
   foregroundColor,
   label,
   progress,
   ...props
-}) => {
+}: ProgressBarProps) => {
   return (
     <Container x={props.x} y={props.y}>
       <Rectangle

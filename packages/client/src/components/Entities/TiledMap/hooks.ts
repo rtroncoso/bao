@@ -8,8 +8,6 @@ import {
   Sprite
 } from 'pixi.js';
 import { pointPolygon } from 'intersects';
-import { useApp } from '@inlet/react-pixi';
-
 import {
   PRELOAD,
   TILE_SIZE,
@@ -31,6 +29,7 @@ import {
   selectManifest
 } from '@bao/client/queries';
 import {
+  useAssetsContext,
   useMapContext,
   useViewportContext
 } from '@bao/client/components/Systems';
@@ -124,10 +123,10 @@ export const useSpriteCache = (
 };
 
 export const useTextures = () => {
-  const { loader } = useApp();
+  const { loader } = useAssetsContext();
 
   return useMemo(() => {
-    if (!loader.loading) {
+    if (loader && !loader.loading && Object.keys(loader.resources).length > 0) {
       return getTileSetTextures(
         loader.resources,
         'tilesets',
@@ -135,7 +134,7 @@ export const useTextures = () => {
       );
     }
     return [];
-  }, [loader.loading, loader.resources]);
+  }, [loader, loader?.loading, loader?.progress]);
 };
 
 export const useRenderTargets = () => {
@@ -238,6 +237,10 @@ export const useViewportRendering = (
   const preload = PRELOAD * TILE_SIZE;
 
   useEffect(() => {
+    if (!textures.length) {
+      return;
+    }
+
     const x = Math.floor(viewportState.projection.x / TILE_SIZE);
     const y = Math.floor(viewportState.projection.y / TILE_SIZE);
     const projection = new Rectangle(

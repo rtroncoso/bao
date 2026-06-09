@@ -3,7 +3,7 @@ const { spawn } = require('child_process');
 
 require('dotenv').config({ path: path.resolve(__dirname, '../../../.env') });
 
-const port = process.env.CLIENT_PORT || 3000;
+const port = process.env.PORT || 3000;
 
 spawn('next', ['dev', '-p', String(port)], {
   stdio: 'inherit',

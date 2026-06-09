@@ -32,6 +32,8 @@
       "@bao/core": ["../../packages/core/src"],
       "@bao/react-fps*": ["../../packages/react-fps/src*"],
       "@bao/react-fps": ["../../packages/react-fps/src"],
+      "@bao/ui*": ["../../packages/ui/src*"],
+      "@bao/ui": ["../../packages/ui/src"],
       "@/*": [
         "../../packages/client/src/*",
         "../../packages/colyseus/src/*",

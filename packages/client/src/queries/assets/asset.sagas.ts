@@ -145,10 +145,7 @@ export function* handleLoadManifest(payload: LoadAssetsPayload) {
 }
 
 export function* startLoaderSaga(payload: LoadAssetsPayload) {
-  const { loader } = payload;
   yield call(handleLoadManifest, payload);
-  console.log('Everything loaded');
-  loader.load();
 }
 
 export function* watchStartLoadAssets() {

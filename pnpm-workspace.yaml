@@ -1,8 +1,16 @@
 packages:
   - 'packages/*'
 
+packageExtensions:
+  postcss@*:
+    dependencies:
+      nanoid: ^3.3.12
+  babel-plugin-macros@*:
+    dependencies:
+      resolve: ^1.22.8
+
 overrides:
-  '@types/react': '17.0.44'
-  '@types/react-dom': '17.0.18'
+  '@types/react': '18.3.12'
+  '@types/react-dom': '18.3.1'
   '@fortawesome/fontawesome-svg-core': '1.2.36'
   '@fortawesome/fontawesome-common-types': '0.2.36'

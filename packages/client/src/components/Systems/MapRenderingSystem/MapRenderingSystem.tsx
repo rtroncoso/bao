@@ -61,7 +61,14 @@ export const MapRenderingSystem: React.FC = ({ children }) => {
     }
 
     setMapState({ groups });
-  }, []);
+
+    return () => {
+      const entitiesGroup = groups[ENTITIES_LAYER];
+      if (entitiesGroup) {
+        entitiesGroup.off('sort', handleLayerSort);
+      }
+    };
+  }, [handleLayerSort]);
 
   return (
     <MapContext.Provider value={{ mapState, setMapState }}>

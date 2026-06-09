@@ -4,7 +4,7 @@ import pack from 'ndarray-pack';
 import contour from 'contour-2d';
 import decompose from 'rectangle-decomposition';
 
-import { LoaderResource, Texture } from 'pixi.js';
+import { Texture } from 'pixi.js';
 import {
   ATLAS_COLUMNS,
   TILESET_SPRITESHEETS
@@ -676,9 +676,18 @@ export const makeObjectsLayer = ({ layers }) => {
   });
 };
 
+export type SpriteSheetResources = Record<
+  string,
+  {
+    data?: { frames: Record<string, unknown> };
+    textures?: Record<string, Texture>;
+    texture?: Texture;
+  }
+>;
+
 export interface ProcessLayerParameters {
   offset?: { x: number, y: number };
-  resources: { [key: string]: LoaderResource };
+  resources: SpriteSheetResources;
   tileSets: TileSet[];
   tmx: Tiled;
 }
@@ -784,7 +793,7 @@ export interface ConvertLayersToTmxParameters {
   layers: Tile[][][];
   name?: string;
   number?: number;
-  resources: { [key: string]: LoaderResource; };
+  resources: SpriteSheetResources;
 }
 
 /**
