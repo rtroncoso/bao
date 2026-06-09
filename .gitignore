@@ -1,5 +1,5 @@
-# Builds
-packages/**/lib
+# Builds (package-root compiled output, e.g. packages/colyseus/lib)
+packages/*/lib
 packages/**/tsclib
 packages/**/dist
 
