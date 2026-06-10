@@ -1,67 +1,67 @@
 import { Graphics, Text, useTick } from '@inlet/react-pixi';
 import { Filter } from 'pixi.js';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { CHARACTER_NAME_STYLES, roles } from '@bao/core';
+import { App } from '@bao/core/constants';
 import { useGameContext } from '@bao/client/components/Game';
 import { useViewportContext } from '@bao/client/components/Systems/ViewportSystem';
 import { TILE_SIZE } from '@bao/core/constants/game';
+import { DEBUG_SHOW_PIXI_TILE_GRID } from '@bao/client/components/Entities/TiledMap/debugFlags';
 import fragment from './grid.frag';
 import vertex from './grid.vert';
 
 export const DebugGridSystem = () => {
   const { callbacks } = useGameContext();
-  const { viewportState, setViewportState } = useViewportContext();
-  const { filter, projection } = viewportState;
+  const { viewportState, projectionRef, setViewportState } = useViewportContext();
+  const { filter } = viewportState;
+  const filterRef = useRef<Filter | null>(null);
 
   useEffect(() => {
     try {
-      const filter = new Filter(vertex, fragment);
-      filter.uniforms.time = 0;
-      filter.uniforms.tileSize = TILE_SIZE.toFixed(1);
-      filter.uniforms.position = [0.0, 0.0];
-      filter.uniforms.dimensions = [
-        viewportState.projection.width,
-        viewportState.projection.height
-      ];
+      const gridFilter = new Filter(vertex, fragment);
+      gridFilter.uniforms.time = 0;
+      gridFilter.uniforms.tileSize = TILE_SIZE;
+      gridFilter.uniforms.position = [0, 0];
+      gridFilter.uniforms.dimensions = [App.canvasWidth, App.canvasHeight];
+      filterRef.current = gridFilter;
 
       if (setViewportState) {
-        setViewportState({ filter });
+        setViewportState({ filter: gridFilter });
       }
     } catch (error) {
       callbacks.leaveRoom(error);
     }
-  }, []);
+  }, [callbacks, setViewportState]);
 
   useTick((delta: number) => {
-    if (filter) {
-      filter.uniforms.time += delta;
+    const gridFilter = filterRef.current;
+    if (!DEBUG_SHOW_PIXI_TILE_GRID || !gridFilter) {
+      return;
+    }
 
-      const x = projection.x ? projection.x.toFixed(2) : 0;
-      const y = projection.y ? projection.y.toFixed(2) : 0;
+    gridFilter.uniforms.time += delta;
 
-      const hasChanges =
-        filter.uniforms.position[0] !== x || filter.uniforms.position[1] !== y;
+    const { x, y } = projectionRef.current;
+    const [prevX, prevY] = gridFilter.uniforms.position;
 
-      if (hasChanges) {
-        filter.uniforms.position = [x, y];
-      }
+    if (prevX !== x || prevY !== y) {
+      gridFilter.uniforms.position = [x, y];
     }
   });
 
+  if (!DEBUG_SHOW_PIXI_TILE_GRID) {
+    return null;
+  }
+
   return (
-    viewportState.filter && (
+    filter && (
       <Graphics
-        filters={[viewportState.filter]}
+        filters={[filter]}
         draw={(g) => {
           g.clear();
           g.beginFill(0x000);
-          g.drawRect(
-            viewportState.projection.x,
-            viewportState.projection.y,
-            viewportState.projection.width,
-            viewportState.projection.height
-          );
+          g.drawRect(0, 0, App.canvasWidth, App.canvasHeight);
           g.endFill();
         }}
       />
@@ -77,8 +77,8 @@ export const DebugTextSystem: React.FC = () => {
     currentCharacter && (
       <Text
         style={CHARACTER_NAME_STYLES[roles.user]}
-        x={viewportState.projection.x}
-        y={viewportState.projection.y}
+        x={0}
+        y={0}
         text={`
         X: ${currentCharacter.x.toFixed(2)}
         Y: ${currentCharacter.y.toFixed(2)}

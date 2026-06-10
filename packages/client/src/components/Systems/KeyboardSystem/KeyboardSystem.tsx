@@ -21,29 +21,29 @@ export const KeyboardSystem: React.FC<KeyboardInputProps> = (props) => {
       event.preventDefault();
     };
     const handleKeyDown = (event: KeyboardEvent) => {
-      const commandKey = navigator.platform.match('Mac')
-        ? event.metaKey
-        : event.ctrlKey;
+      const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+      const commandKey = isMac ? event.metaKey : event.ctrlKey;
+      const key = event.key.toLowerCase();
 
-      if (['s', 'd', 'f', 'g'].includes(event.key) && commandKey) {
+      if (['s', 'd', 'f', 'g'].includes(key) && commandKey) {
         event.preventDefault();
       }
 
-      if (event.key === 'g' && event.ctrlKey) {
+      if (key === 'g' && commandKey) {
         callbacks.updateGameState((draft) => {
           draft.debug = !draft.debug;
         });
       }
     };
 
-    document.addEventListener('contextmenu', handleContextMenu);
-    document.addEventListener('keydown', handleKeyDown, false);
+    window.addEventListener('contextmenu', handleContextMenu);
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      document.removeEventListener('contextmenu', handleContextMenu);
-      document.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('contextmenu', handleContextMenu);
+      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [state]);
+  }, [callbacks]);
 
   return null;
 };

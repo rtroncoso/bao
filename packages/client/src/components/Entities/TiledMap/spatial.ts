@@ -15,7 +15,7 @@ export type IdResolver<T> = (item: T) => string | number;
 
 export const intersectsBounds = (
   item: SpatialBounds,
-  bounds: Rectangle
+  bounds: Rectangle | SpatialBounds
 ): boolean =>
   !(
     item.x + item.width < bounds.x ||
@@ -208,6 +208,7 @@ export class TileChunkCache {
       chunkSizeTiles
     );
 
+    displayObject.name = key;
     this.cache.set(key, displayObject);
     return displayObject;
   }
@@ -273,6 +274,11 @@ export class TileChunkCache {
 
     for (const [key, displayObject] of this.cache.entries()) {
       if (!keepKeys.has(key)) {
+        displayObject.filters = null;
+        displayObject.parentGroup = null;
+        if (displayObject.parent) {
+          displayObject.parent.removeChild(displayObject);
+        }
         displayObject.destroy({ children: true });
         this.cache.delete(key);
       }
@@ -281,6 +287,11 @@ export class TileChunkCache {
 
   clear(): void {
     for (const displayObject of this.cache.values()) {
+      displayObject.filters = null;
+      displayObject.parentGroup = null;
+      if (displayObject.parent) {
+        displayObject.parent.removeChild(displayObject);
+      }
       displayObject.destroy({ children: true });
     }
     this.cache.clear();

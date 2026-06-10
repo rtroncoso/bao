@@ -84,6 +84,10 @@ export const GameComponent: React.FC<GameComponentProps> = () => {
   return (
     <GamePageShell>
       <GameStyled width={width} height={height}>
+        <div
+          id="game-debug-overlay"
+          className="pointer-events-none absolute inset-0 z-10"
+        />
         <GameStage width={App.canvasWidth} height={App.canvasHeight}>
           <Provider store={reduxContext.store}>
             <GameContext.Provider value={gameContext}>

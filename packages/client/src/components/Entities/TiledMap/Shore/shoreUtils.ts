@@ -15,8 +15,22 @@ import { getWaterPolygons, WaterPolygon } from './waterPolygons';
 /** Distance from sprite edge to probe for adjacent water. */
 const WATER_PROBE_PX = TILE_SIZE * 0.5;
 
+/** Step size when marching from a shore edge to find dry land. */
+const DRY_LAND_STEP_PX = 4;
+
+/** Max march distance — must reach past wide water polygons that cover shore strips. */
+const DRY_LAND_MAX_PX = TILE_SIZE * 16;
+
+/** Ignore short west/north exits when the sprite sits on the map border. */
+const MAP_EDGE_CLAMP_PX = TILE_SIZE;
+
+/** Minimum land-distance gap before picking a water-facing side. */
+const DIRECTION_MARGIN_PX = 4;
+
 /** Samples taken along each sprite edge (large shore strips need more than center probe). */
 const EDGE_SAMPLES = 5;
+
+type AxisSide = 'negative' | 'positive';
 
 export interface ShoreEdges {
   top: boolean;
@@ -66,6 +80,73 @@ const edgeTouchesWater = (
   waterPolygons: WaterPolygon[]
 ): boolean => probes.some(({ x, y }) => isPointInWater(x, y, waterPolygons));
 
+/** March from a shore edge outward until leaving the water polygon. */
+const distanceToDryLandFromEdge = (
+  edgeX: number,
+  edgeY: number,
+  dirX: number,
+  dirY: number,
+  waterPolygons: WaterPolygon[]
+): number => {
+  let distance = WATER_PROBE_PX;
+
+  while (distance < DRY_LAND_MAX_PX) {
+    if (
+      !isPointInWater(
+        edgeX + dirX * distance,
+        edgeY + dirY * distance,
+        waterPolygons
+      )
+    ) {
+      return distance;
+    }
+
+    distance += DRY_LAND_STEP_PX;
+  }
+
+  return DRY_LAND_MAX_PX;
+};
+
+/**
+ * Pick which side faces open water. Land is the direction that reaches dry ground
+ * sooner; map-edge exits on the west/north border are ignored when they are
+ * closer than a real coastline.
+ */
+const resolveWaterSide = (
+  nearNegative: boolean,
+  nearPositive: boolean,
+  landBeyondPositive: number,
+  landBeyondNegative: number,
+  negativeBoundary: number
+): AxisSide | null => {
+  if (nearNegative && !nearPositive) {
+    return 'negative';
+  }
+
+  if (!nearNegative && nearPositive) {
+    return negativeBoundary < MAP_EDGE_CLAMP_PX ? 'negative' : 'positive';
+  }
+
+  if (!nearNegative && !nearPositive) {
+    return null;
+  }
+
+  const credibleNegativeLand =
+    landBeyondNegative < negativeBoundary + MAP_EDGE_CLAMP_PX
+      ? Number.POSITIVE_INFINITY
+      : landBeyondNegative;
+
+  if (landBeyondPositive < credibleNegativeLand - DIRECTION_MARGIN_PX) {
+    return 'negative';
+  }
+
+  if (credibleNegativeLand < landBeyondPositive - DIRECTION_MARGIN_PX) {
+    return 'positive';
+  }
+
+  return null;
+};
+
 const sampleEdgePoints = (
   start: number,
   end: number,
@@ -89,53 +170,135 @@ const sampleEdgePoints = (
   return points;
 };
 
-export const getShoreEdgesForBounds = (
+const getNearWaterProbes = (
   bounds: ObjectRenderBounds,
   waterPolygons: WaterPolygon[]
-): ShoreEdges => {
+): {
+  centerX: number;
+  centerY: number;
+  centerInWater: boolean;
+  near: { top: boolean; right: boolean; bottom: boolean; left: boolean };
+} => {
   const left = bounds.x;
   const right = bounds.x + bounds.width;
   const top = bounds.y;
   const bottom = bounds.y + bounds.height;
-  const cornerProbe = WATER_PROBE_PX * 0.75;
+  const centerX = (left + right) / 2;
+  const centerY = (top + bottom) / 2;
+
+  return {
+    centerX,
+    centerY,
+    centerInWater: isPointInWater(centerX, centerY, waterPolygons),
+    near: {
+      top: edgeTouchesWater(
+        sampleEdgePoints(left, right, 'y', top, -WATER_PROBE_PX),
+        waterPolygons
+      ),
+      right: edgeTouchesWater(
+        sampleEdgePoints(top, bottom, 'x', right, WATER_PROBE_PX),
+        waterPolygons
+      ),
+      bottom: edgeTouchesWater(
+        sampleEdgePoints(left, right, 'y', bottom, WATER_PROBE_PX),
+        waterPolygons
+      ),
+      left: edgeTouchesWater(
+        sampleEdgePoints(top, bottom, 'x', left, -WATER_PROBE_PX),
+        waterPolygons
+      )
+    }
+  };
+};
+
+export const getShoreEdgesForBounds = (
+  bounds: ObjectRenderBounds,
+  waterPolygons: WaterPolygon[]
+): ShoreEdges => {
+  if (!waterPolygons.length) {
+    return { top: false, right: false, bottom: false, left: false };
+  }
+
+  const left = bounds.x;
+  const right = bounds.x + bounds.width;
+  const top = bounds.y;
+  const bottom = bounds.y + bounds.height;
+  const { centerX, centerY, centerInWater, near } = getNearWaterProbes(
+    bounds,
+    waterPolygons
+  );
+
+  if (!centerInWater) {
+    return {
+      left: near.left && !near.right,
+      right: near.right && !near.left,
+      top: near.top && !near.bottom,
+      bottom: near.bottom && !near.top
+    };
+  }
 
   const edges: ShoreEdges = {
-    top: edgeTouchesWater(
-      sampleEdgePoints(left, right, 'y', top, -WATER_PROBE_PX),
-      waterPolygons
-    ),
-    right: edgeTouchesWater(
-      sampleEdgePoints(top, bottom, 'x', right, WATER_PROBE_PX),
-      waterPolygons
-    ),
-    bottom: edgeTouchesWater(
-      sampleEdgePoints(left, right, 'y', bottom, WATER_PROBE_PX),
-      waterPolygons
-    ),
-    left: edgeTouchesWater(
-      sampleEdgePoints(top, bottom, 'x', left, -WATER_PROBE_PX),
-      waterPolygons
-    )
+    top: false,
+    right: false,
+    bottom: false,
+    left: false
   };
 
-  const cornerProbes: Array<
-    [keyof ShoreEdges, keyof ShoreEdges, number, number]
-  > = [
-    ['top', 'left', left - cornerProbe, top - cornerProbe],
-    ['top', 'right', right + cornerProbe, top - cornerProbe],
-    ['bottom', 'left', left - cornerProbe, bottom + cornerProbe],
-    ['bottom', 'right', right + cornerProbe, bottom + cornerProbe]
-  ];
+  const horizontalSide = resolveWaterSide(
+    near.left,
+    near.right,
+    distanceToDryLandFromEdge(right, centerY, 1, 0, waterPolygons),
+    distanceToDryLandFromEdge(left, centerY, -1, 0, waterPolygons),
+    left
+  );
 
-  for (const [edgeA, edgeB, probeX, probeY] of cornerProbes) {
-    if (
-      !edges[edgeA] &&
-      !edges[edgeB] &&
-      isPointInWater(probeX, probeY, waterPolygons)
-    ) {
-      edges[edgeA] = true;
-      edges[edgeB] = true;
+  if (horizontalSide === 'negative') {
+    edges.left = true;
+  } else if (horizontalSide === 'positive') {
+    edges.right = true;
+  }
+
+  const horizontalEdge = edges.left || edges.right;
+
+  const skipVerticalDistance =
+    horizontalEdge && edges.left && left < MAP_EDGE_CLAMP_PX * 2;
+
+  if (near.top && near.bottom && !skipVerticalDistance) {
+    const verticalSide = resolveWaterSide(
+      near.top,
+      near.bottom,
+      distanceToDryLandFromEdge(centerX, bottom, 0, 1, waterPolygons),
+      distanceToDryLandFromEdge(centerX, top, 0, -1, waterPolygons),
+      top
+    );
+
+    if (verticalSide === 'negative') {
+      edges.top = true;
+    } else if (verticalSide === 'positive') {
+      edges.bottom = true;
     }
+  } else if (!horizontalEdge) {
+    const verticalSide = resolveWaterSide(
+      near.top,
+      near.bottom,
+      DRY_LAND_MAX_PX,
+      DRY_LAND_MAX_PX,
+      top
+    );
+
+    if (verticalSide === 'negative') {
+      edges.top = true;
+    } else if (verticalSide === 'positive') {
+      edges.bottom = true;
+    }
+  }
+
+  if (left < MAP_EDGE_CLAMP_PX && !edges.right) {
+    edges.left = true;
+  }
+
+  if (top < MAP_EDGE_CLAMP_PX && !edges.bottom) {
+    edges.top = true;
   }
 
   return edges;

@@ -1,4 +1,4 @@
-import { PRELOAD } from '@bao/core';
+import { PRELOAD, TILE_SIZE } from '@bao/core';
 
 export const POOL_SIZES = {
   ANIMATIONS: 2000,
@@ -31,6 +31,13 @@ export const SHORE_EDGE_TILES = 2;
 
 /** Slight stretch toward water to hide filter seams between adjacent shore tiles. */
 export const SHORE_SPRITE_OVERLAP_SCALE = 1.1;
+
+/** Extra padding for shore sprite SHG/cull bounds (anchor + overlap extend past tile). */
+export const SHORE_SPRITE_CULL_PADDING =
+  Math.ceil(TILE_SIZE * (SHORE_SPRITE_OVERLAP_SCALE - 1)) + TILE_SIZE * 0.5;
+
+/** Additional viewport margin when querying shore sprites. */
+export const SHORE_SPRITE_EXTRA_CULL_PX = TILE_SIZE * 2;
 
 /** 0-based index of the TMX shore tile layer ("Tile Layer 2"). */
 export const SHORE_TILE_LAYER_INDEX = 1;

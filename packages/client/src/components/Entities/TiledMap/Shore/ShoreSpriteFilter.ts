@@ -16,9 +16,10 @@ const EDGE_BAND_VERTICAL_NORTH = 0.08;
 /** South shores: thicker foam band — current look reads well. */
 const EDGE_BAND_VERTICAL_SOUTH = 0.16;
 
-const WAVE_AMP_PX = 1.5;
-const WAVE_AMP_VERTICAL_PX = 1.1;
+const WAVE_AMP = 1.1;
 const WAVE_SPEED = 2.0;
+/** Spatial phase advance per map tile along the shoreline (not per pixel). */
+const WAVE_SPATIAL_SCALE_TILES = 1.2;
 
 /** Per-tick time advance for shore filters (water uses the default 0.07). */
 export const SHORE_FILTER_TIME_SCALE = 0.07;
@@ -60,8 +61,8 @@ uniform vec4 inputClamp;
 
 uniform float time;
 uniform float waveSpeed;
-uniform float waveAmpPx;
-uniform float waveAmpVerticalPx;
+uniform float waveAmp;
+uniform float waveSpatialScaleTiles;
 uniform vec4 waterEdges;
 uniform float edgeBandHorizontal;
 uniform float edgeBandVerticalNorth;
@@ -78,30 +79,35 @@ float edgeProximity(float distFromWater, float band) {
 vec2 waterEdgeWaveOffset(vec2 uv) {
   vec2 offsetPx = vec2(0.0);
   float phase = time * waveSpeed;
-  float waveScale = 0.35;
 
-  vec2 localPx = uv * inputSize.xy - vec2(shorePadding);
+  vec2 contentPx = uv * inputSize.xy;
+  vec2 localPx = contentPx - vec2(shorePadding);
   vec2 worldPx = worldOrigin + localPx;
-  vec2 tileLocalUv = mod(localPx + vec2(0.001), tileSizePx) / tileSizePx;
+  vec2 tileLocalUv = mod(worldPx + vec2(0.001), tileSizePx) / tileSizePx;
+  vec2 tileCoord = floor(worldPx / tileSizePx);
 
   if (waterEdges.x > 0.5) {
     float weight = edgeProximity(tileLocalUv.y, edgeBandVerticalNorth);
-    offsetPx.y -= sin(phase + worldPx.x * waveScale) * waveAmpVerticalPx * weight;
+    float alongShore = tileCoord.x * waveSpatialScaleTiles;
+    offsetPx.y -= sin(phase + alongShore) * waveAmp * weight;
   }
 
   if (waterEdges.z > 0.5) {
     float weight = edgeProximity(1.0 - tileLocalUv.y, edgeBandVerticalSouth);
-    offsetPx.y += sin(phase + worldPx.x * waveScale) * waveAmpVerticalPx * weight;
+    float alongShore = tileCoord.x * waveSpatialScaleTiles;
+    offsetPx.y += sin(phase + alongShore) * waveAmp * weight;
   }
 
   if (waterEdges.w > 0.5) {
     float weight = edgeProximity(tileLocalUv.x, edgeBandHorizontal);
-    offsetPx.x -= sin(phase + worldPx.y * waveScale) * waveAmpPx * weight;
+    float alongShore = tileCoord.y * waveSpatialScaleTiles;
+    offsetPx.x -= sin(phase + alongShore) * waveAmp * weight;
   }
 
   if (waterEdges.y > 0.5) {
     float weight = edgeProximity(1.0 - tileLocalUv.x, edgeBandHorizontal);
-    offsetPx.x += sin(phase + worldPx.y * waveScale) * waveAmpPx * weight;
+    float alongShore = tileCoord.y * waveSpatialScaleTiles;
+    offsetPx.x += sin(phase + alongShore) * waveAmp * weight;
   }
 
   return offsetPx / max(inputSize.xy, vec2(1.0));
@@ -123,8 +129,8 @@ export class ShoreSpriteFilter extends Filter {
 
     this.uniforms.time = 0;
     this.uniforms.waveSpeed = WAVE_SPEED;
-    this.uniforms.waveAmpPx = WAVE_AMP_PX;
-    this.uniforms.waveAmpVerticalPx = WAVE_AMP_VERTICAL_PX;
+    this.uniforms.waveAmp = WAVE_AMP;
+    this.uniforms.waveSpatialScaleTiles = WAVE_SPATIAL_SCALE_TILES;
     this.uniforms.edgeBandHorizontal = EDGE_BAND_HORIZONTAL;
     this.uniforms.edgeBandVerticalNorth = EDGE_BAND_VERTICAL_NORTH;
     this.uniforms.edgeBandVerticalSouth = EDGE_BAND_VERTICAL_SOUTH;

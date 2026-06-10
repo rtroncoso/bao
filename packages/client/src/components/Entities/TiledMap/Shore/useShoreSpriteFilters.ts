@@ -1,5 +1,4 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { Sprite } from 'pixi.js';
 
 import {
   SHORE_FILTER_TIME_SCALE,
@@ -9,37 +8,36 @@ import {
   animatedFilters,
   registerAnimatedFilter
 } from './effectAnimationRegistry';
+import { shoreBitmaskToUniform } from './shoreUtils';
 
-/** One filter per visible shore sprite — Pixi cannot share a Filter across sprites. */
+/** One filter per shore edge mask (bucket-level — shared by sprites in that bucket). */
 export const useShoreSpriteFilters = () => {
-  const spriteFiltersRef = useRef(new WeakMap<Sprite, ShoreSpriteFilter>());
-  const allFiltersRef = useRef(new Set<ShoreSpriteFilter>());
+  const bucketFiltersRef = useRef(new Map<number, ShoreSpriteFilter>());
 
   useEffect(() => {
+    const filters = bucketFiltersRef.current;
     return () => {
-      allFiltersRef.current.forEach((filter) => {
+      filters.forEach((filter) => {
         animatedFilters.delete(filter);
       });
-      allFiltersRef.current.clear();
+      filters.clear();
     };
   }, []);
 
-  return useCallback(
-    (edgeMask: number, sprite: Sprite): ShoreSpriteFilter | undefined => {
-      if (edgeMask === 0) {
-        return undefined;
-      }
+  return useCallback((edgeMask: number): ShoreSpriteFilter | undefined => {
+    if (edgeMask === 0) {
+      return undefined;
+    }
 
-      let filter = spriteFiltersRef.current.get(sprite);
-      if (!filter) {
-        filter = new ShoreSpriteFilter(edgeMask);
-        registerAnimatedFilter(filter, SHORE_FILTER_TIME_SCALE);
-        spriteFiltersRef.current.set(sprite, filter);
-        allFiltersRef.current.add(filter);
-      }
+    let filter = bucketFiltersRef.current.get(edgeMask);
+    if (!filter) {
+      filter = new ShoreSpriteFilter(edgeMask);
+      registerAnimatedFilter(filter, SHORE_FILTER_TIME_SCALE);
+      bucketFiltersRef.current.set(edgeMask, filter);
+    } else {
+      filter.uniforms.waterEdges = shoreBitmaskToUniform(edgeMask);
+    }
 
-      return filter;
-    },
-    []
-  );
+    return filter;
+  }, []);
 };

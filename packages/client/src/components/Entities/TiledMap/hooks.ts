@@ -1,4 +1,5 @@
-import { useMemo, useState, useEffect, useRef } from 'react';
+import { useMemo, useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
+import { useTick } from '@inlet/react-pixi';
 import { useSelector } from 'react-redux';
 import {
   Rectangle,
@@ -9,6 +10,7 @@ import {
 import { pointPolygon } from 'intersects';
 import {
   TILE_SIZE,
+  getProperty,
   getTileSetTextures,
   getTileLayersFromTmx,
   getObjectLayersFromTmx,
@@ -43,13 +45,16 @@ import {
   TILE_CHUNK_CACHE_MARGIN,
   TILE_CULLING_TILES,
   OBJECT_CULLING_TILES,
-  SHORE_TILE_LAYER_INDEX
+  SHORE_SPRITE_EXTRA_CULL_PX,
+  SHORE_TILE_LAYER_INDEX,
+  TMX_SHORE_SPRITE_LAYER
 } from './constants';
 import {
   createSpritePool,
   createAnimationPool,
   generateObjectsCache,
   getObjectRenderBounds,
+  ensureShoreSpritesInViewport,
   getObjectsInViewport,
   renderTileLayers,
   renderToTarget,
@@ -58,6 +63,7 @@ import {
   handleRoofTrigger
 } from './utils';
 import { SpatialHashGrid, TileChunkCache } from './spatial';
+import { spatialDebugRef } from './spatialDebug';
 import {
   getShoreOrientations,
   ShoreEdges,
@@ -294,13 +300,140 @@ export const useViewportRendering = (
   getShoreSpriteFilter: ReturnType<typeof useShoreSpriteFilterPool>,
   shoreOrientations: Map<string | number, ShoreEdges>
 ) => {
-  const { viewportState } = useViewportContext();
+  const { viewportState, projectionRef } = useViewportContext();
   const { mapState } = useMapContext();
   const tileCullingPx = TILE_CULLING_TILES * TILE_SIZE;
   const objectCullingPx = OBJECT_CULLING_TILES * TILE_SIZE;
   const tileChunkCache = useRef(new TileChunkCache());
+  const lastCullRef = useRef({ x: Number.NaN, y: Number.NaN });
   const projectionTileX = Math.floor(viewportState.projection.x / TILE_SIZE);
   const projectionTileY = Math.floor(viewportState.projection.y / TILE_SIZE);
+  const shoreSpriteObjects = useMemo(
+    () =>
+      mapData.sprites.filter(
+        (sprite) =>
+          Number(getProperty(sprite, 'layer')) === TMX_SHORE_SPRITE_LAYER
+      ),
+    [mapData.sprites]
+  );
+
+  const syncViewportLayers = useCallback(
+    (projection: Rectangle) => {
+      if (!textures.length || !spatialIndexes) {
+        return;
+      }
+
+      const tileBounds = calculateProjectionMatrix(
+        mapData.tmx,
+        projection,
+        tileCullingPx
+      );
+      const objectBounds = calculateProjectionMatrix(
+        mapData.tmx,
+        projection,
+        objectCullingPx
+      );
+      const spriteBounds = calculateProjectionMatrix(
+        mapData.tmx,
+        projection,
+        objectCullingPx + SHORE_SPRITE_EXTRA_CULL_PX
+      );
+
+      const spritesInViewport = ensureShoreSpritesInViewport(
+        getObjectsInViewport(spatialIndexes.sprites, spriteBounds),
+        shoreSpriteObjects,
+        spriteBounds
+      );
+      const objectsInViewport = getObjectsInViewport(
+        spatialIndexes.objects,
+        objectBounds
+      );
+      const tiles = tileChunkCache.current.getVisibleTilemaps(
+        mapData.tileLayers,
+        tileBounds,
+        textures,
+        mapData.tmx,
+        TILE_CHUNK_SIZE_TILES
+      );
+
+      renderTileLayers(
+        tiles,
+        {
+          tilesLayer: renderTargets.tilesLayer,
+          shoreLayer: renderTargets.shoreLayer
+        },
+        SHORE_TILE_LAYER_INDEX,
+        mapState?.groups[SHORE_LAYER]
+      );
+
+      renderSpriteLayers(
+        spritesInViewport,
+        renderTargets.spritesLayer,
+        spritesCache,
+        {
+          getShoreSpriteFilter,
+          shoreGroup: mapState?.groups[SHORE_LAYER],
+          shoreOrientations,
+          shoreTarget: renderTargets.shoreLayer
+        }
+      );
+
+      renderSpriteLayers(
+        objectsInViewport,
+        renderTargets.objectsLayer,
+        objectsCache
+      );
+
+      tileChunkCache.current.evictOutside(
+        tileBounds,
+        mapData.tileLayers.length,
+        TILE_CHUNK_SIZE_TILES,
+        TILE_CHUNK_CACHE_MARGIN
+      );
+
+      spatialDebugRef.current = {
+        tmx: mapData.tmx,
+        tileCullingPx,
+        objectCullingPx,
+        cullProjection: projection,
+        tileBounds: {
+          x: tileBounds.x,
+          y: tileBounds.y,
+          width: tileBounds.width,
+          height: tileBounds.height
+        },
+        spriteBounds: {
+          x: spriteBounds.x,
+          y: spriteBounds.y,
+          width: spriteBounds.width,
+          height: spriteBounds.height
+        },
+        objectBounds: {
+          x: objectBounds.x,
+          y: objectBounds.y,
+          width: objectBounds.width,
+          height: objectBounds.height
+        },
+        cellSize: SPATIAL_CELL_SIZE_TILES * TILE_SIZE,
+        spriteQueryCount: Object.values(spritesInViewport).flat().length,
+        objectQueryCount: Object.values(objectsInViewport).flat().length
+      };
+    },
+    [
+      mapData,
+      spatialIndexes,
+      objectsCache,
+      spritesCache,
+      textures,
+      renderTargets,
+      mapState,
+      getShoreSpriteFilter,
+      shoreOrientations,
+      tileCullingPx,
+      objectCullingPx,
+      shoreSpriteObjects
+    ]
+  );
 
   useEffect(() => {
     return () => {
@@ -308,89 +441,31 @@ export const useViewportRendering = (
     };
   }, [mapData.tmx, textures]);
 
-  useEffect(() => {
-    if (!textures.length || !spatialIndexes) {
-      return;
-    }
-
+  useLayoutEffect(() => {
     const projection = new Rectangle(
       viewportState.projection.x,
       viewportState.projection.y,
       viewportState.projection.width,
       viewportState.projection.height
     );
-    const tileBounds = calculateProjectionMatrix(
-      mapData.tmx,
-      projection,
-      tileCullingPx
-    );
-    const objectBounds = calculateProjectionMatrix(
-      mapData.tmx,
-      projection,
-      objectCullingPx
-    );
-
-    const spritesInViewport = getObjectsInViewport(
-      spatialIndexes.sprites,
-      objectBounds
-    );
-    const objectsInViewport = getObjectsInViewport(
-      spatialIndexes.objects,
-      objectBounds
-    );
-    const tiles = tileChunkCache.current.getVisibleTilemaps(
-      mapData.tileLayers,
-      tileBounds,
-      textures,
-      mapData.tmx,
-      TILE_CHUNK_SIZE_TILES
-    );
-
-    tileChunkCache.current.evictOutside(
-      tileBounds,
-      mapData.tileLayers.length,
-      TILE_CHUNK_SIZE_TILES,
-      TILE_CHUNK_CACHE_MARGIN
-    );
-
-    renderTileLayers(
-      tiles,
-      {
-        tilesLayer: renderTargets.tilesLayer,
-        shoreLayer: renderTargets.shoreLayer
-      },
-      SHORE_TILE_LAYER_INDEX,
-      mapState?.groups[SHORE_LAYER]
-    );
-
-    renderSpriteLayers(
-      spritesInViewport,
-      renderTargets.spritesLayer,
-      spritesCache,
-      {
-        getShoreSpriteFilter,
-        shoreGroup: mapState?.groups[SHORE_LAYER],
-        shoreOrientations,
-        shoreTarget: renderTargets.shoreLayer
-      }
-    );
-
-    renderSpriteLayers(
-      objectsInViewport,
-      renderTargets.objectsLayer,
-      objectsCache
-    );
+    syncViewportLayers(projection);
+    lastCullRef.current = { x: projection.x, y: projection.y };
   }, [
     projectionTileX,
     projectionTileY,
-    mapData,
-    spatialIndexes,
-    objectsCache,
-    spritesCache,
-    textures,
-    renderTargets,
-    mapState,
-    getShoreSpriteFilter,
-    shoreOrientations
+    syncViewportLayers,
+    viewportState.projection.width,
+    viewportState.projection.height
   ]);
+
+  useTick(() => {
+    const { x, y, width, height } = projectionRef.current;
+    const last = lastCullRef.current;
+    if (Math.abs(x - last.x) < 8 && Math.abs(y - last.y) < 8) {
+      return;
+    }
+
+    lastCullRef.current = { x, y };
+    syncViewportLayers(new Rectangle(x, y, width, height));
+  });
 };
