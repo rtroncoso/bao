@@ -4,7 +4,9 @@ import config from './config'
 import db from './db'
 import initExpress from './express'
 
-console.log(`[@bao/api] starting (port ${config.app.port}, db ${config.db.host}/${config.db.database})`)
+console.log(
+  `[@bao/api] starting (port ${config.app.port}, db ${config.db.host}/${config.db.database})`
+)
 
 db.connect()
   .then(() => {

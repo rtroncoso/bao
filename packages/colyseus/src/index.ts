@@ -1,5 +1,5 @@
-import { config, validateConfig } from './config'
-import { buildExpressCorsOptions, patchMatchmakeCors } from './cors'
+import { config, validateConfig } from './config';
+import { buildExpressCorsOptions, patchMatchmakeCors } from './cors';
 
 import { monitor } from '@colyseus/monitor';
 import { Server } from 'colyseus';
@@ -30,7 +30,7 @@ const gameServer = new Server({
           callback(false, 403, 'Forbidden');
         }
       }
-    : undefined,
+    : undefined
 });
 
 patchMatchmakeCors(gameServer, config.corsOrigins);

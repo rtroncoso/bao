@@ -307,7 +307,9 @@ export const renderTileLayers = (
     return chunks;
   }
 
-  const visibleChunks = new Set(chunks.map(({ displayObject }) => displayObject));
+  const visibleChunks = new Set(
+    chunks.map(({ displayObject }) => displayObject)
+  );
   const shoreContainer = targets.shoreLayer.current;
 
   targets.tilesLayer.current.removeChildren();
@@ -343,9 +345,7 @@ export const renderTileLayers = (
 
 export interface SpriteRenderOptions {
   shoreTarget?: React.RefObject<any>;
-  getShoreSpriteFilter?: (
-    edgeMask: number
-  ) => ShoreSpriteFilter | undefined;
+  getShoreSpriteFilter?: (edgeMask: number) => ShoreSpriteFilter | undefined;
   shoreOrientations?: Map<string | number, ShoreEdges>;
   shoreGroup?: import('@pixi/layers').Group;
 }

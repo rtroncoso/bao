@@ -37,12 +37,12 @@ export class MovementSystem {
     return key === 's'
       ? Heading.SOUTH
       : key === 'd'
-        ? Heading.EAST
-        : key === 'w'
-          ? Heading.NORTH
-          : key === 'a'
-            ? Heading.WEST
-            : null;
+      ? Heading.EAST
+      : key === 'w'
+      ? Heading.NORTH
+      : key === 'a'
+      ? Heading.WEST
+      : null;
   }
 
   public static getCharacterDirection(heading: Heading) {

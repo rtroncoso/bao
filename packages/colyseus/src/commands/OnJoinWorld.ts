@@ -35,9 +35,7 @@ function getAccountId(auth: jwt.JwtPayload | string): number | undefined {
 
 function toJoinServerError(error: unknown): ServerError {
   if (error instanceof ServerError) {
-    return error.message
-      ? error
-      : new ServerError(error.code, 'JOIN_FAILED');
+    return error.message ? error : new ServerError(error.code, 'JOIN_FAILED');
   }
 
   if (axios.isAxiosError(error)) {

@@ -13,7 +13,8 @@ import vertex from './grid.vert';
 
 export const DebugGridSystem = () => {
   const { callbacks } = useGameContext();
-  const { viewportState, projectionRef, setViewportState } = useViewportContext();
+  const { viewportState, projectionRef, setViewportState } =
+    useViewportContext();
   const { filter } = viewportState;
   const filterRef = useRef<Filter | null>(null);
 

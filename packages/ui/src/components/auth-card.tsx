@@ -1,13 +1,13 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { cn } from '../lib/utils';
+import { cn } from "../lib/utils";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
-} from './ui/card';
+  CardTitle,
+} from "./ui/card";
 
 export interface AuthCardProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
@@ -19,7 +19,7 @@ const AuthCard = React.forwardRef<HTMLDivElement, AuthCardProps>(
     return (
       <Card
         ref={ref}
-        className={cn('border-border/60 shadow-lg', className)}
+        className={cn("border-border/60 shadow-lg", className)}
         {...props}
       >
         <CardHeader className="space-y-1 pb-4">
@@ -31,6 +31,6 @@ const AuthCard = React.forwardRef<HTMLDivElement, AuthCardProps>(
     );
   }
 );
-AuthCard.displayName = 'AuthCard';
+AuthCard.displayName = "AuthCard";
 
 export { AuthCard };

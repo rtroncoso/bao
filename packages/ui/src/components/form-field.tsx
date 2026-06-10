@@ -1,8 +1,8 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { cn } from '../lib/utils';
-import { Input, type InputProps } from './ui/input';
-import { Label } from './ui/label';
+import { cn } from "../lib/utils";
+import { Input, type InputProps } from "./ui/input";
+import { Label } from "./ui/label";
 
 export interface FormFieldProps extends InputProps {
   label?: string;
@@ -16,7 +16,7 @@ const FormField = React.forwardRef<HTMLInputElement, FormFieldProps>(
     const showError = Boolean(error && touched);
 
     return (
-      <div className={cn('space-y-2', className)}>
+      <div className={cn("space-y-2", className)}>
         {label && <Label htmlFor={fieldId}>{label}</Label>}
         <Input
           ref={ref}
@@ -39,6 +39,6 @@ const FormField = React.forwardRef<HTMLInputElement, FormFieldProps>(
     );
   }
 );
-FormField.displayName = 'FormField';
+FormField.displayName = "FormField";
 
 export { FormField };

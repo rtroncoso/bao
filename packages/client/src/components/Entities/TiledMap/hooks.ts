@@ -1,4 +1,11 @@
-import { useMemo, useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
+import {
+  useMemo,
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback
+} from 'react';
 import { useTick } from '@inlet/react-pixi';
 import { useSelector } from 'react-redux';
 import {

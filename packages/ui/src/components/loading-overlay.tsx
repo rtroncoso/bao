@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { Loader2 } from 'lucide-react';
+import * as React from "react";
+import { Loader2 } from "lucide-react";
 
-import { cn } from '../lib/utils';
+import { cn } from "../lib/utils";
 
 export interface LoadingOverlayProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -11,12 +11,12 @@ export interface LoadingOverlayProps
 }
 
 const LoadingOverlay = React.forwardRef<HTMLDivElement, LoadingOverlayProps>(
-  ({ className, label = 'Cargando…', ...props }, ref) => {
+  ({ className, label = "Cargando…", ...props }, ref) => {
     return (
       <div
         ref={ref}
         className={cn(
-          'fixed inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-background/80 backdrop-blur-sm',
+          "fixed inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-background/80 backdrop-blur-sm",
           className
         )}
         {...props}
@@ -27,6 +27,6 @@ const LoadingOverlay = React.forwardRef<HTMLDivElement, LoadingOverlayProps>(
     );
   }
 );
-LoadingOverlay.displayName = 'LoadingOverlay';
+LoadingOverlay.displayName = "LoadingOverlay";
 
 export { LoadingOverlay };

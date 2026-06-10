@@ -22,10 +22,7 @@ export class OnJoinCommand extends Command<ChatRoom, OnJoinParameters> {
     const [item] = await this.room.presence.smembers(key);
 
     if (!item) {
-      throw new ServerError(
-        404,
-        'CHARACTER_NOT_IN_WORLD'
-      );
+      throw new ServerError(404, 'CHARACTER_NOT_IN_WORLD');
     }
 
     const character = (item as unknown as CharacterState).clone();
