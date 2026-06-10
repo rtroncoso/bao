@@ -5,198 +5,170 @@
     {
       "objectId": 822,
       "amount": 100,
-      "x": 32,
-      "y": 17
+      "x": 24,
+      "y": 11
     },
     {
       "objectId": 821,
       "amount": 100,
-      "x": 22,
-      "y": 24
+      "x": 14,
+      "y": 18
     },
     {
       "objectId": 823,
       "amount": 100,
-      "x": 80,
-      "y": 49
-    },
-    {
-      "objectId": 191,
-      "amount": 1,
       "x": 72,
-      "y": 65
+      "y": 43
     },
     {
       "objectId": 191,
       "amount": 1,
-      "x": 62,
-      "y": 66
+      "x": 64,
+      "y": 59
     },
     {
       "objectId": 191,
       "amount": 1,
-      "x": 67,
-      "y": 66
+      "x": 54,
+      "y": 60
+    },
+    {
+      "objectId": 191,
+      "amount": 1,
+      "x": 59,
+      "y": 60
+    },
+    {
+      "objectId": 189,
+      "amount": 1,
+      "x": 60,
+      "y": 60
+    },
+    {
+      "objectId": 189,
+      "amount": 1,
+      "x": 55,
+      "y": 61
+    },
+    {
+      "objectId": 191,
+      "amount": 1,
+      "x": 63,
+      "y": 61
     },
     {
       "objectId": 189,
       "amount": 1,
       "x": 68,
-      "y": 66
-    },
-    {
-      "objectId": 189,
-      "amount": 1,
-      "x": 63,
-      "y": 67
+      "y": 61
     },
     {
       "objectId": 191,
       "amount": 1,
-      "x": 71,
-      "y": 67
+      "x": 57,
+      "y": 62
     },
     {
       "objectId": 189,
       "amount": 1,
-      "x": 76,
-      "y": 67
+      "x": 61,
+      "y": 62
     },
     {
       "objectId": 191,
       "amount": 1,
-      "x": 65,
-      "y": 68
+      "x": 67,
+      "y": 62
     },
     {
       "objectId": 189,
       "amount": 1,
-      "x": 69,
-      "y": 68
+      "x": 58,
+      "y": 63
+    },
+    {
+      "objectId": 189,
+      "amount": 1,
+      "x": 64,
+      "y": 63
     },
     {
       "objectId": 191,
       "amount": 1,
-      "x": 75,
-      "y": 68
+      "x": 70,
+      "y": 63
     },
     {
       "objectId": 189,
       "amount": 1,
-      "x": 66,
-      "y": 69
-    },
-    {
-      "objectId": 189,
-      "amount": 1,
-      "x": 72,
-      "y": 69
-    },
-    {
-      "objectId": 191,
-      "amount": 1,
-      "x": 78,
-      "y": 69
+      "x": 54,
+      "y": 64
     },
     {
       "objectId": 189,
       "amount": 1,
       "x": 62,
-      "y": 70
-    },
-    {
-      "objectId": 189,
-      "amount": 1,
-      "x": 70,
-      "y": 70
+      "y": 64
     },
     {
       "objectId": 191,
       "amount": 1,
-      "x": 73,
-      "y": 70
+      "x": 65,
+      "y": 64
     },
     {
       "objectId": 190,
       "amount": 1,
-      "x": 77,
-      "y": 70
+      "x": 69,
+      "y": 64
     },
     {
       "objectId": 191,
       "amount": 1,
-      "x": 63,
-      "y": 71
+      "x": 55,
+      "y": 65
     },
     {
       "objectId": 189,
       "amount": 1,
-      "x": 69,
-      "y": 71
+      "x": 61,
+      "y": 65
     },
     {
       "objectId": 189,
       "amount": 1,
-      "x": 76,
-      "y": 71
+      "x": 68,
+      "y": 65
     }
   ],
   "tileExits": [
     {
-      "x": 21,
-      "y": 16,
+      "x": 13,
+      "y": 10,
       "targetMapId": 38,
-      "targetX": 70,
-      "targetY": 77
+      "targetX": 62,
+      "targetY": 71
     },
     {
-      "x": 22,
-      "y": 16,
+      "x": 14,
+      "y": 10,
       "targetMapId": 38,
-      "targetX": 70,
-      "targetY": 77
+      "targetX": 62,
+      "targetY": 71
     },
     {
-      "x": 23,
-      "y": 16,
+      "x": 15,
+      "y": 10,
       "targetMapId": 38,
-      "targetX": 71,
-      "targetY": 77
+      "targetX": 63,
+      "targetY": 71
     },
     {
-      "x": 24,
-      "y": 16,
+      "x": 16,
+      "y": 10,
       "targetMapId": 38,
-      "targetX": 72,
-      "targetY": 77
-    },
-    {
-      "x": 92,
-      "y": 81,
-      "targetMapId": 51,
-      "targetX": 14,
-      "targetY": 81
-    },
-    {
-      "x": 92,
-      "y": 82,
-      "targetMapId": 51,
-      "targetX": 14,
-      "targetY": 82
-    },
-    {
-      "x": 92,
-      "y": 83,
-      "targetMapId": 51,
-      "targetX": 14,
-      "targetY": 83
-    },
-    {
-      "x": 92,
-      "y": 84,
-      "targetMapId": 51,
-      "targetX": 14,
-      "targetY": 84
+      "targetX": 64,
+      "targetY": 71
     }
   ],
   "info": {

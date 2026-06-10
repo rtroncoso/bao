@@ -1,5 +1,7 @@
 import { LayeredTile } from '@bao/core/models';
 
+import { isInteriorSpawnTile, isWithinWorldMap, toWorldCoords } from './coords';
+
 export interface MapNpcSpawn {
   npcId: number;
   x: number;
@@ -43,30 +45,40 @@ export const extractMapMeta = (mapId: number, tiles: LayeredTile[][]): MapMeta =
       }
 
       if (tile.npc) {
-        npcs.push({
-          npcId: tile.npc.id,
-          x: tile.x,
-          y: tile.y,
-        });
+        const { x, y } = toWorldCoords(tile.x, tile.y);
+        if (isInteriorSpawnTile(x, y)) {
+          npcs.push({
+            npcId: tile.npc.id,
+            x,
+            y,
+          });
+        }
       }
 
       if (tile.object) {
-        objects.push({
-          objectId: tile.object.id,
-          amount: tile.object.amount,
-          x: tile.x,
-          y: tile.y,
-        });
+        const { x, y } = toWorldCoords(tile.x, tile.y);
+        if (isInteriorSpawnTile(x, y)) {
+          objects.push({
+            objectId: tile.object.id,
+            amount: tile.object.amount,
+            x,
+            y,
+          });
+        }
       }
 
       if (tile.tileExit) {
-        tileExits.push({
-          x: tile.x,
-          y: tile.y,
-          targetMapId: tile.tileExit.map,
-          targetX: tile.tileExit.x,
-          targetY: tile.tileExit.y,
-        });
+        const { x, y } = toWorldCoords(tile.x, tile.y);
+        const target = toWorldCoords(tile.tileExit.x, tile.tileExit.y);
+        if (isWithinWorldMap(x, y)) {
+          tileExits.push({
+            x,
+            y,
+            targetMapId: tile.tileExit.map,
+            targetX: target.x,
+            targetY: target.y,
+          });
+        }
       }
     }
   }

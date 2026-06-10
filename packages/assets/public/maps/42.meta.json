@@ -3,79 +3,51 @@
   "npcs": [
     {
       "npcId": 547,
-      "x": 80,
-      "y": 43
+      "x": 72,
+      "y": 37
     },
     {
       "npcId": 531,
-      "x": 47,
-      "y": 47
+      "x": 39,
+      "y": 41
     }
   ],
   "objects": [],
   "tileExits": [
     {
-      "x": 41,
-      "y": 7,
+      "x": 33,
+      "y": 1,
       "targetMapId": 41,
-      "targetX": 41,
-      "targetY": 93
+      "targetX": 33,
+      "targetY": 87
     },
     {
-      "x": 42,
-      "y": 7,
+      "x": 34,
+      "y": 1,
       "targetMapId": 41,
-      "targetX": 42,
-      "targetY": 93
+      "targetX": 34,
+      "targetY": 87
     },
     {
-      "x": 43,
-      "y": 7,
+      "x": 35,
+      "y": 1,
       "targetMapId": 41,
-      "targetX": 43,
-      "targetY": 93
+      "targetX": 35,
+      "targetY": 87
     },
     {
-      "x": 44,
-      "y": 7,
+      "x": 36,
+      "y": 1,
       "targetMapId": 41,
-      "targetX": 44,
-      "targetY": 93
+      "targetX": 36,
+      "targetY": 87
     },
     {
-      "x": 45,
-      "y": 7,
+      "x": 37,
+      "y": 1,
       "targetMapId": 41,
-      "targetX": 44,
-      "targetY": 93
-    },
-    {
-      "x": 41,
-      "y": 94,
-      "targetMapId": 43,
-      "targetX": 41,
-      "targetY": 8
-    },
-    {
-      "x": 42,
-      "y": 94,
-      "targetMapId": 43,
-      "targetX": 42,
-      "targetY": 8
-    },
-    {
-      "x": 43,
-      "y": 94,
-      "targetMapId": 43,
-      "targetX": 43,
-      "targetY": 8
-    },
-    {
-      "x": 44,
-      "y": 94,
-      "targetMapId": 43,
-      "targetX": 44,
-      "targetY": 8
+      "targetX": 36,
+      "targetY": 87
     }
   ],
   "info": {

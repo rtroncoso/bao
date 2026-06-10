@@ -1,6 +1,12 @@
 import path from 'path';
 import fs from 'fs';
+import { createRequire } from 'node:module';
+
+import '../../lib/registerCoreAliases.js';
 import { parseIniFile, readLatin1File, upsertSql } from '../lib/iniParser.js';
+
+const require = createRequire(import.meta.url);
+const { toWorldCoords } = require('@bao/core/loaders/maps/coords');
 
 export const importCities = ({ datsDir }) => {
   const filePath = path.join(datsDir, 'Ciudades.Dat');
@@ -18,6 +24,10 @@ export const importCities = ({ datsDir }) => {
       continue;
     }
 
+    const aoX = Number.parseInt(fields.X ?? '0', 10);
+    const aoY = Number.parseInt(fields.Y ?? '0', 10);
+    const { x, y } = toWorldCoords(aoX, aoY);
+
     statements.push(
       upsertSql(
         'cities',
@@ -25,8 +35,8 @@ export const importCities = ({ datsDir }) => {
           id: cityId,
           name,
           mapId: Number.parseInt(fields.MAPA ?? fields.Mapa ?? '0', 10),
-          x: Number.parseInt(fields.X ?? '0', 10),
-          y: Number.parseInt(fields.Y ?? '0', 10),
+          x,
+          y,
         },
         ['id'],
       ),

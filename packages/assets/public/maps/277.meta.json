@@ -5,62 +5,62 @@
     {
       "objectId": 838,
       "amount": 1,
-      "x": 57,
-      "y": 25
+      "x": 49,
+      "y": 19
     },
     {
       "objectId": 827,
       "amount": 1,
-      "x": 51,
-      "y": 26
+      "x": 43,
+      "y": 20
     },
     {
       "objectId": 8,
       "amount": 1,
-      "x": 58,
-      "y": 30
+      "x": 50,
+      "y": 24
+    },
+    {
+      "objectId": 814,
+      "amount": 1,
+      "x": 45,
+      "y": 46
     },
     {
       "objectId": 814,
       "amount": 1,
       "x": 53,
-      "y": 52
-    },
-    {
-      "objectId": 814,
-      "amount": 1,
-      "x": 61,
-      "y": 52
+      "y": 46
     },
     {
       "objectId": 815,
       "amount": 1,
-      "x": 57,
-      "y": 54
+      "x": 49,
+      "y": 48
+    },
+    {
+      "objectId": 814,
+      "amount": 1,
+      "x": 45,
+      "y": 51
     },
     {
       "objectId": 814,
       "amount": 1,
       "x": 53,
-      "y": 57
-    },
-    {
-      "objectId": 814,
-      "amount": 1,
-      "x": 61,
-      "y": 57
+      "y": 51
     },
     {
       "objectId": 378,
       "amount": 1,
-      "x": 52,
-      "y": 71
+      "x": 44,
+      "y": 65
     },
     {
       "objectId": 378,
       "amount": 1,
-      "x": 55,
-      "y": 71
+      "x": 47,
+      "y": 65
     }
   ],
   "tileExits": [],

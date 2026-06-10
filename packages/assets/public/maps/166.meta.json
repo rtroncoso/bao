@@ -2,97 +2,65 @@
   "mapId": 166,
   "npcs": [
     {
-      "npcId": 541,
-      "x": 27,
-      "y": 8
-    },
-    {
-      "npcId": 541,
-      "x": 59,
-      "y": 12
-    },
-    {
-      "npcId": 517,
-      "x": 89,
-      "y": 16
-    },
-    {
-      "npcId": 537,
-      "x": 41,
-      "y": 45
-    },
-    {
-      "npcId": 537,
-      "x": 71,
-      "y": 55
-    },
-    {
-      "npcId": 541,
-      "x": 24,
-      "y": 65
-    },
-    {
       "npcId": 537,
       "x": 33,
-      "y": 70
+      "y": 39
+    },
+    {
+      "npcId": 537,
+      "x": 63,
+      "y": 49
+    },
+    {
+      "npcId": 541,
+      "x": 16,
+      "y": 59
+    },
+    {
+      "npcId": 537,
+      "x": 25,
+      "y": 64
     },
     {
       "npcId": 542,
-      "x": 45,
-      "y": 75
+      "x": 37,
+      "y": 69
     },
     {
       "npcId": 541,
-      "x": 59,
-      "y": 84
-    },
-    {
-      "npcId": 537,
-      "x": 94,
-      "y": 84
+      "x": 51,
+      "y": 78
     }
   ],
   "objects": [
     {
       "objectId": 378,
       "amount": 1,
-      "x": 18,
-      "y": 10
-    },
-    {
-      "objectId": 378,
-      "amount": 1,
-      "x": 78,
-      "y": 66
-    },
-    {
-      "objectId": 378,
-      "amount": 1,
-      "x": 18,
-      "y": 87
+      "x": 70,
+      "y": 60
     }
   ],
   "tileExits": [
     {
-      "x": 14,
-      "y": 10,
+      "x": 6,
+      "y": 4,
       "targetMapId": 7,
-      "targetX": 50,
-      "targetY": 10
+      "targetX": 42,
+      "targetY": 4
     },
     {
-      "x": 74,
-      "y": 66,
+      "x": 66,
+      "y": 60,
       "targetMapId": 17,
-      "targetX": 82,
-      "targetY": 15
+      "targetX": 74,
+      "targetY": 9
     },
     {
-      "x": 14,
-      "y": 87,
+      "x": 6,
+      "y": 81,
       "targetMapId": 24,
-      "targetX": 80,
-      "targetY": 30
+      "targetX": 72,
+      "targetY": 24
     }
   ],
   "info": {

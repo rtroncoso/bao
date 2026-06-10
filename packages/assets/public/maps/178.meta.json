@@ -2,191 +2,109 @@
   "mapId": 178,
   "npcs": [
     {
-      "npcId": 504,
-      "x": 88,
-      "y": 17
+      "npcId": 592,
+      "x": 28,
+      "y": 18
     },
     {
-      "npcId": 504,
-      "x": 87,
+      "npcId": 591,
+      "x": 47,
       "y": 20
     },
     {
-      "npcId": 504,
-      "x": 90,
-      "y": 22
-    },
-    {
-      "npcId": 592,
-      "x": 36,
-      "y": 24
-    },
-    {
-      "npcId": 504,
-      "x": 89,
-      "y": 25
-    },
-    {
       "npcId": 591,
-      "x": 55,
-      "y": 26
-    },
-    {
-      "npcId": 591,
-      "x": 67,
-      "y": 26
-    },
-    {
-      "npcId": 504,
-      "x": 91,
-      "y": 28
-    },
-    {
-      "npcId": 504,
-      "x": 87,
-      "y": 29
+      "x": 59,
+      "y": 20
     },
     {
       "npcId": 592,
-      "x": 62,
-      "y": 33
-    },
-    {
-      "npcId": 534,
-      "x": 88,
-      "y": 43
+      "x": 54,
+      "y": 27
     },
     {
       "npcId": 590,
-      "x": 57,
-      "y": 44
+      "x": 49,
+      "y": 38
     },
     {
       "npcId": 590,
-      "x": 36,
-      "y": 54
+      "x": 28,
+      "y": 48
     },
     {
       "npcId": 590,
-      "x": 88,
-      "y": 55
-    },
-    {
-      "npcId": 590,
-      "x": 69,
-      "y": 56
-    },
-    {
-      "npcId": 504,
-      "x": 44,
-      "y": 75
-    },
-    {
-      "npcId": 592,
-      "x": 24,
-      "y": 76
-    },
-    {
-      "npcId": 595,
       "x": 61,
-      "y": 78
+      "y": 50
     },
     {
-      "npcId": 534,
-      "x": 79,
-      "y": 79
+      "npcId": 504,
+      "x": 36,
+      "y": 69
+    },
+    {
+      "npcId": 592,
+      "x": 16,
+      "y": 70
     },
     {
       "npcId": 595,
-      "x": 50,
-      "y": 80
+      "x": 53,
+      "y": 72
+    },
+    {
+      "npcId": 534,
+      "x": 71,
+      "y": 73
+    },
+    {
+      "npcId": 595,
+      "x": 42,
+      "y": 74
     }
   ],
   "objects": [],
   "tileExits": [
     {
-      "x": 82,
-      "y": 7,
+      "x": 74,
+      "y": 1,
       "targetMapId": 177,
-      "targetX": 75,
-      "targetY": 93
+      "targetX": 67,
+      "targetY": 87
     },
     {
-      "x": 83,
-      "y": 7,
+      "x": 75,
+      "y": 1,
       "targetMapId": 177,
-      "targetX": 76,
-      "targetY": 93
+      "targetX": 68,
+      "targetY": 87
     },
     {
-      "x": 84,
-      "y": 7,
+      "x": 76,
+      "y": 1,
       "targetMapId": 177,
-      "targetX": 77,
-      "targetY": 93
+      "targetX": 69,
+      "targetY": 87
     },
     {
-      "x": 85,
-      "y": 7,
+      "x": 77,
+      "y": 1,
       "targetMapId": 177,
-      "targetX": 78,
-      "targetY": 93
+      "targetX": 70,
+      "targetY": 87
     },
     {
-      "x": 86,
-      "y": 7,
+      "x": 78,
+      "y": 1,
       "targetMapId": 177,
-      "targetX": 79,
-      "targetY": 93
+      "targetX": 71,
+      "targetY": 87
     },
     {
-      "x": 87,
-      "y": 7,
+      "x": 79,
+      "y": 1,
       "targetMapId": 177,
-      "targetX": 80,
-      "targetY": 93
-    },
-    {
-      "x": 42,
-      "y": 94,
-      "targetMapId": 55,
-      "targetX": 51,
-      "targetY": 57
-    },
-    {
-      "x": 43,
-      "y": 94,
-      "targetMapId": 55,
-      "targetX": 51,
-      "targetY": 57
-    },
-    {
-      "x": 44,
-      "y": 94,
-      "targetMapId": 55,
-      "targetX": 52,
-      "targetY": 57
-    },
-    {
-      "x": 45,
-      "y": 94,
-      "targetMapId": 55,
-      "targetX": 52,
-      "targetY": 57
-    },
-    {
-      "x": 46,
-      "y": 94,
-      "targetMapId": 55,
-      "targetX": 53,
-      "targetY": 57
-    },
-    {
-      "x": 47,
-      "y": 94,
-      "targetMapId": 55,
-      "targetX": 53,
-      "targetY": 57
+      "targetX": 72,
+      "targetY": 87
     }
   ],
   "info": {

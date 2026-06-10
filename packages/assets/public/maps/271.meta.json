@@ -3,61 +3,32 @@
   "npcs": [
     {
       "npcId": 533,
-      "x": 63,
-      "y": 80
+      "x": 55,
+      "y": 74
     },
     {
       "npcId": 500,
-      "x": 79,
-      "y": 80
+      "x": 71,
+      "y": 74
     },
     {
       "npcId": 533,
-      "x": 72,
-      "y": 81
-    },
-    {
-      "npcId": 500,
-      "x": 59,
-      "y": 84
-    },
-    {
-      "npcId": 500,
       "x": 64,
-      "y": 84
+      "y": 75
+    },
+    {
+      "npcId": 500,
+      "x": 51,
+      "y": 78
+    },
+    {
+      "npcId": 500,
+      "x": 56,
+      "y": 78
     }
   ],
   "objects": [],
-  "tileExits": [
-    {
-      "x": 54,
-      "y": 94,
-      "targetMapId": 180,
-      "targetX": 56,
-      "targetY": 56
-    },
-    {
-      "x": 55,
-      "y": 94,
-      "targetMapId": 180,
-      "targetX": 56,
-      "targetY": 56
-    },
-    {
-      "x": 56,
-      "y": 94,
-      "targetMapId": 180,
-      "targetX": 57,
-      "targetY": 56
-    },
-    {
-      "x": 57,
-      "y": 94,
-      "targetMapId": 180,
-      "targetX": 57,
-      "targetY": 56
-    }
-  ],
+  "tileExits": [],
   "info": {
     "id": 271,
     "name": "Interior de la Montaña.",

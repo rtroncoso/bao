@@ -21,7 +21,6 @@ import {
   getTileSetTextures,
   getTileLayersFromTmx,
   getObjectLayersFromTmx,
-  getCollisionsFromObjectLayers,
   getObjectsFromObjectLayers,
   getSpritesFromObjectLayers,
   getTriggersFromObjectLayers,
@@ -87,11 +86,9 @@ export const useMapData = (tmxMap: any): TiledMapData => {
     const sprites = getSpritesFromObjectLayers(objectLayers);
     const objects = getObjectsFromObjectLayers(objectLayers);
     const water = getWaterFromObjectLayers(objectLayers);
-    const collisions = getCollisionsFromObjectLayers(objectLayers);
     const triggers = getTriggersFromObjectLayers(objectLayers);
 
     return {
-      collisions,
       objectLayers,
       objects,
       sprites,

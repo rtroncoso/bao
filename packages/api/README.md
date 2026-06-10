@@ -41,10 +41,6 @@ Full runner details: [`sql/README.md`](sql/README.md).
 
 `2020-11-09_full.sql` must run first — seed SQL references `objects` and world spawn tables FK into `maps` / `objects`.
 
-### MySQL caveat
-
-DDL (`CREATE TABLE`, etc.) can cause implicit commits. If a migration fails mid-file, drop/recreate the dev database and run `pnpm db:migrate` again.
-
 ### Environment variables
 
 | Variable | Default | Purpose |

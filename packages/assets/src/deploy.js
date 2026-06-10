@@ -1,4 +1,8 @@
 import {
+  CloudFrontClient,
+  CreateInvalidationCommand,
+} from '@aws-sdk/client-cloudfront';
+import {
   DeleteObjectsCommand,
   ListObjectsV2Command,
   PutObjectCommand,
@@ -27,8 +31,68 @@ const progress = new cliProgress.SingleBar(
   cliProgress.Presets.shades_classic
 );
 
+const CLOUDFRONT_MAX_PATHS = 3000;
+
 const resolveS3Env = (name) =>
   envString(`BAO_S3_${name}`) ?? envString(`AWS_S3_${name}`);
+
+const s3KeyToInvalidationPath = (key) => `/${key}`;
+
+const buildInvalidationPaths = (keys) => {
+  const unique = [...new Set(keys.map(s3KeyToInvalidationPath))];
+
+  if (unique.length === 0) {
+    return [];
+  }
+
+  if (unique.length > CLOUDFRONT_MAX_PATHS) {
+    return ['/*'];
+  }
+
+  return unique;
+};
+
+const invalidateCloudFront = async ({
+  client,
+  distributionId,
+  paths,
+  debug = false,
+}) => {
+  if (paths.length === 0) {
+    return null;
+  }
+
+  const callerReference = `bao-deploy-${Date.now()}-${createHash('md5')
+    .update(paths.join('\0'))
+    .digest('hex')
+    .slice(0, 12)}`;
+
+  const response = await client.send(
+    new CreateInvalidationCommand({
+      DistributionId: distributionId,
+      InvalidationBatch: {
+        CallerReference: callerReference,
+        Paths: {
+          Quantity: paths.length,
+          Items: paths,
+        },
+      },
+    })
+  );
+
+  const invalidationId = response.Invalidation?.Id ?? null;
+
+  if (debug) {
+    console.log(
+      `[deploy] cloudfront invalidation ${invalidationId}: ${paths.length} path(s)`
+    );
+    if (paths.length <= 20) {
+      paths.forEach((item) => console.log(`[deploy]   ${item}`));
+    }
+  }
+
+  return invalidationId;
+};
 
 const loadDeployEnv = (environment) => {
   const repoRoot = loadRootEnv(PACKAGE_ROOT);
@@ -205,6 +269,7 @@ program
 
       let uploaded = 0;
       let skipped = 0;
+      const changedKeys = [...keysToDelete];
 
       progress.start(localFiles.length, 0);
 
@@ -227,6 +292,7 @@ program
             })
           );
           uploaded += 1;
+          changedKeys.push(key);
           if (debug) {
             console.log(`[deploy] upload ${key}`);
           }
@@ -240,6 +306,43 @@ program
         `[deploy] complete: ${uploaded} uploaded, ${skipped} unchanged` +
           (keysToDelete.length > 0 ? `, ${keysToDelete.length} removed` : '')
       );
+
+      const distributionId = envString('AWS_CLOUDFRONT_DISTRIBUTION_ID');
+
+      if (!distributionId) {
+        if (changedKeys.length > 0) {
+          console.log(
+            '[deploy] skipping CloudFront invalidation (AWS_CLOUDFRONT_DISTRIBUTION_ID not set)'
+          );
+        }
+      } else if (changedKeys.length === 0) {
+        console.log('[deploy] skipping CloudFront invalidation (no changed objects)');
+      } else {
+        const cloudFrontClient = new CloudFrontClient({
+          region: region ?? 'us-east-1',
+          credentials: {
+            accessKeyId: accessKey,
+            secretAccessKey: secretKey,
+          },
+        });
+
+        const invalidationPaths = buildInvalidationPaths(changedKeys);
+        const invalidationId = await invalidateCloudFront({
+          client: cloudFrontClient,
+          distributionId,
+          paths: invalidationPaths,
+          debug,
+        });
+
+        const pathLabel =
+          invalidationPaths.length === 1 && invalidationPaths[0] === '/*'
+            ? '/*'
+            : `${invalidationPaths.length} path(s)`;
+
+        console.log(
+          `[deploy] cloudfront invalidation ${invalidationId ?? 'started'} (${pathLabel})`
+        );
+      }
       process.exit(0);
     } catch (error) {
       progress.stop();

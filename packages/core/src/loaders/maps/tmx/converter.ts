@@ -31,6 +31,7 @@ import {
   WATER_TYPE,
 } from '@bao/core/constants/game/Map';
 import { BorderNeighbor, makeBorderTriggersLayer } from '@bao/core/loaders/maps/world';
+import { buildServerSpawnMask, isServerSpawnTile } from '@bao/core/loaders/maps/coords';
 import {
   createProperty,
   findInTileSets,
@@ -306,21 +307,6 @@ export const cropLayer = ({
     if (tile) {
       tile.x = x - x1;
       tile.y = y - y1;
-
-      if (tile.tileExit) {
-        tile.tileExit.x -= x1;
-        tile.tileExit.y -= y1;
-      }
-
-      if (tile.npc) {
-        tile.npc.x = tile.x - 4;
-        tile.npc.y = tile.y;
-      }
-
-      if (tile.object) {
-        tile.object.x = tile.x - 4;
-        tile.object.y = tile.y;
-      }
     }
 
     return tile;
@@ -687,8 +673,10 @@ export type SpriteSheetResources = Record<
 >;
 
 export interface ProcessLayerParameters {
+  clientOnly?: boolean;
   offset?: { x: number, y: number };
   resources: SpriteSheetResources;
+  serverSpawnMask?: Set<string>;
   tileSets: TileSet[];
   tmx: Tiled;
 }
@@ -697,8 +685,10 @@ export interface ProcessLayerParameters {
  * Handles layer parsing
  */
 export const processLayer = ({
+  clientOnly = false,
   offset = { x: 0, y: 0 },
   resources = {},
+  serverSpawnMask,
   tileSets = [],
   tmx,
 }: ProcessLayerParameters) => (layer: Tile[][], index: number) => {
@@ -733,6 +723,12 @@ export const processLayer = ({
       const tile = layer[y][x];
       const tileIndex = y * TILED_MAP_SIZE[0] + x;
       tilesData[tileIndex] = 0;
+      if (clientOnly && serverSpawnMask?.has(`${x},${y}`)) {
+        continue;
+      }
+      if (clientOnly && isServerSpawnTile(tile)) {
+        continue;
+      }
       if (tile && tile.graphic) {
         const { graphic, animation } = tile;
         const data = findInTileSets({ graphic, tileSets, resources });
@@ -848,8 +844,10 @@ export const convertLayersToTmx = ({
     ));
   }
 
+  const serverSpawnMask = clientOnly ? buildServerSpawnMask(layers) : undefined;
+
   layers.forEach((l, i) => {
-    const process = processLayer({ tmx, resources, tileSets });
+    const process = processLayer({ clientOnly, serverSpawnMask, tmx, resources, tileSets });
     tmx.layers.push(process(l, i));
   });
 
@@ -863,10 +861,13 @@ export const convertLayersToTmx = ({
 
   tmx.layers.push(...makeTriggersLayer({ layers }));
 
-  if (borderNeighbors.length > 0) {
-    tmx.layers.push(makeBorderTriggersLayer({ neighbors: borderNeighbors }));
+  if (!clientOnly) {
+    if (borderNeighbors.length > 0) {
+      tmx.layers.push(makeBorderTriggersLayer({ neighbors: borderNeighbors }));
+    }
+
+    tmx.layers.push(makeCollisionLayer({ layers }));
   }
 
-  tmx.layers.push(makeCollisionLayer({ layers }));
   return tmx;
 };

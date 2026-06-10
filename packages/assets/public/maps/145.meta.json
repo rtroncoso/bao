@@ -3,52 +3,52 @@
   "npcs": [
     {
       "npcId": 550,
-      "x": 74,
-      "y": 30
+      "x": 66,
+      "y": 24
     },
     {
       "npcId": 553,
-      "x": 79,
-      "y": 30
+      "x": 71,
+      "y": 24
     },
     {
       "npcId": 550,
-      "x": 33,
+      "x": 25,
+      "y": 43
+    },
+    {
+      "npcId": 517,
+      "x": 44,
       "y": 49
     },
     {
       "npcId": 517,
-      "x": 52,
-      "y": 55
-    },
-    {
-      "npcId": 517,
-      "x": 34,
-      "y": 67
+      "x": 26,
+      "y": 61
     }
   ],
   "objects": [],
   "tileExits": [
     {
-      "x": 9,
-      "y": 53,
+      "x": 1,
+      "y": 47,
       "targetMapId": 144,
-      "targetX": 91,
-      "targetY": 52
+      "targetX": 83,
+      "targetY": 46
     },
     {
-      "x": 9,
-      "y": 54,
+      "x": 1,
+      "y": 48,
       "targetMapId": 144,
-      "targetX": 91,
-      "targetY": 53
+      "targetX": 83,
+      "targetY": 47
     },
     {
-      "x": 9,
-      "y": 55,
+      "x": 1,
+      "y": 49,
       "targetMapId": 144,
-      "targetX": 91,
-      "targetY": 54
+      "targetX": 83,
+      "targetY": 48
     }
   ],
   "info": {

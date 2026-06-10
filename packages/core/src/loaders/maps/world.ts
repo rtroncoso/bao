@@ -55,6 +55,55 @@ const getBorderDirection = (x: number, y: number): BorderDirection | null => {
 };
 
 /**
+ * Infer travel direction from a tile exit and its destination coords.
+ * Pairing source/target edges is more reliable than source position alone.
+ */
+export const inferExitDirection = (
+  x: number,
+  y: number,
+  targetX: number,
+  targetY: number,
+): BorderDirection | null => {
+  const onNorth = y <= EDGE_MARGIN_Y;
+  const onSouth = y >= MAP_HEIGHT - EDGE_MARGIN_Y - 1;
+  const onWest = x <= EDGE_MARGIN_X;
+  const onEast = x >= MAP_WIDTH - EDGE_MARGIN_X - 1;
+
+  const tgtNorth = targetY <= EDGE_MARGIN_Y;
+  const tgtSouth = targetY >= MAP_HEIGHT - EDGE_MARGIN_Y - 1;
+  const tgtWest = targetX <= EDGE_MARGIN_X;
+  const tgtEast = targetX >= MAP_WIDTH - EDGE_MARGIN_X - 1;
+
+  if (onNorth && tgtSouth) {
+    return 'north';
+  }
+  if (onSouth && tgtNorth) {
+    return 'south';
+  }
+  if (onWest && tgtEast) {
+    return 'west';
+  }
+  if (onEast && tgtWest) {
+    return 'east';
+  }
+
+  if (onNorth && !onWest && !onEast) {
+    return 'north';
+  }
+  if (onSouth && !onWest && !onEast) {
+    return 'south';
+  }
+  if (onWest && !onNorth && !onSouth) {
+    return 'west';
+  }
+  if (onEast && !onNorth && !onSouth) {
+    return 'east';
+  }
+
+  return getBorderDirection(x, y);
+};
+
+/**
  * Groups tile exits by border direction and picks the dominant target per edge.
  */
 export const computeBorderNeighbors = (tileExits: MapTileExit[]): BorderNeighbor[] => {
@@ -66,7 +115,7 @@ export const computeBorderNeighbors = (tileExits: MapTileExit[]): BorderNeighbor
   };
 
   for (const exit of tileExits) {
-    const direction = getBorderDirection(exit.x, exit.y);
+    const direction = inferExitDirection(exit.x, exit.y, exit.targetX, exit.targetY);
     if (!direction) {
       continue;
     }
@@ -190,6 +239,7 @@ export const buildWorldsJson = ({
 }: BuildWorldsJsonParameters): WorldsJson => {
   const positions: Record<number, { x: number; y: number }> = {};
   const visited = new Set<number>();
+  const gridOccupancy = new Map<string, number>();
   const queue: Array<{ mapId: number; gridX: number; gridY: number }> = [];
 
   const sortedIds = [...mapIds].sort((a, b) => a - b);
@@ -203,12 +253,7 @@ export const buildWorldsJson = ({
     west: { dx: -1, dy: 0 },
   };
 
-  const oppositeDirection: Record<BorderDirection, BorderDirection> = {
-    north: 'south',
-    south: 'north',
-    east: 'west',
-    west: 'east',
-  };
+  const gridKey = (gridX: number, gridY: number) => `${gridX},${gridY}`;
 
   while (queue.length > 0) {
     const current = queue.shift();
@@ -216,7 +261,14 @@ export const buildWorldsJson = ({
       continue;
     }
 
+    const key = gridKey(current.gridX, current.gridY);
+    const occupyingMapId = gridOccupancy.get(key);
+    if (occupyingMapId !== undefined && occupyingMapId !== current.mapId) {
+      continue;
+    }
+
     visited.add(current.mapId);
+    gridOccupancy.set(key, current.mapId);
     positions[current.mapId] = {
       x: current.gridX * MAP_PIXEL_WIDTH,
       y: current.gridY * MAP_PIXEL_HEIGHT,
@@ -229,20 +281,35 @@ export const buildWorldsJson = ({
       }
 
       const delta = directionDelta[neighbor.direction];
+      const nextGridX = current.gridX + delta.dx;
+      const nextGridY = current.gridY + delta.dy;
+      const nextKey = gridKey(nextGridX, nextGridY);
+      const nextOccupant = gridOccupancy.get(nextKey);
+
+      if (nextOccupant !== undefined && nextOccupant !== neighbor.targetMapId) {
+        continue;
+      }
+
       queue.push({
         mapId: neighbor.targetMapId,
-        gridX: current.gridX + delta.dx,
-        gridY: current.gridY + delta.dy,
+        gridX: nextGridX,
+        gridY: nextGridY,
       });
     }
   }
 
+  let fallbackColumn = 0;
   for (const mapId of sortedIds) {
     if (!positions[mapId]) {
+      while (gridOccupancy.has(gridKey(fallbackColumn, 0))) {
+        fallbackColumn += 1;
+      }
+      gridOccupancy.set(gridKey(fallbackColumn, 0), mapId);
       positions[mapId] = {
-        x: sortedIds.indexOf(mapId) * MAP_PIXEL_WIDTH,
+        x: fallbackColumn * MAP_PIXEL_WIDTH,
         y: 0,
       };
+      fallbackColumn += 1;
     }
   }
 

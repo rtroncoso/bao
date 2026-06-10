@@ -14,7 +14,7 @@ export class MapNpcEntityState extends Schema {
   public headId = 0;
 
   @type('uint8')
-  public heading = 3;
+  public heading = 0;
 
   @type('int32')
   public x = 0;

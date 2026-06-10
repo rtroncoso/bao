@@ -60,13 +60,6 @@ Convert maps options:
   --no-crop            Skip border crop when converting
   --dry-run            Log conversion without writing files
   --debug              Verbose logging
-
-Environment (seed apply):
-  MYSQL_* from repo root .env — see packages/api/README.md
-
-More:
-  Database migrations   packages/api/README.md
-  AO Dat file list      packages/assets/public/dats/README.md
 ```
 
 `npx bao` resolves the workspace CLI without a global install. Equivalent pnpm scripts:
@@ -125,4 +118,4 @@ pnpm staging
 pnpm production
 ```
 
-S3 credentials: repo root `.env` (`AWS_S3_*` or `BAO_S3_*`). Optional overlay: `.env.staging` / `.env.production` in repo root or this package.
+S3 credentials: repo root `.env` (`AWS_S3_*`). CloudFront cache invalidation runs after sync when `AWS_CLOUDFRONT_DISTRIBUTION_ID` is set — only uploaded or removed objects are invalidated in a single request (falls back to `/*` if over 3,000 paths). Optional overlay: `.env.staging` / `.env.production` in repo root or this package.

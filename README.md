@@ -19,9 +19,22 @@ You can fiddle around this implementation by going to the [Demo Site](https://ba
 
 ## Getting Started
 
-Install and run all packages using `pnpm` package manager.
+Install dependencies and start the dev stack (API, client, Colyseus, core):
 
 ```sh
 pnpm install
+cp .env.example .env   # set MYSQL_*, JWT_SECRET, etc.
+pnpm dev:db            # MySQL via Docker
+pnpm db:migrate
 pnpm dev
 ```
+
+World data (maps, NPCs, objects) is managed with the **`bao` CLI** from [`@bao/assets`](packages/assets/README.md):
+
+```sh
+npx bao convert maps --maps 34   # legacy maps → client JSON + meta sidecars
+npx bao seed apply               # generate SQL and load MySQL
+```
+
+See [`packages/assets/README.md`](packages/assets/README.md) for full CLI usage, seed options, and the end-to-end asset workflow. API/database details: [`packages/api/README.md`](packages/api/README.md).
+

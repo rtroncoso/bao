@@ -3,251 +3,117 @@
   "npcs": [
     {
       "npcId": 510,
-      "x": 60,
-      "y": 22
+      "x": 52,
+      "y": 16
     },
     {
       "npcId": 507,
-      "x": 46,
+      "x": 38,
+      "y": 20
+    },
+    {
+      "npcId": 510,
+      "x": 34,
       "y": 26
     },
     {
       "npcId": 510,
-      "x": 42,
-      "y": 32
-    },
-    {
-      "npcId": 510,
-      "x": 46,
-      "y": 32
+      "x": 38,
+      "y": 26
     },
     {
       "npcId": 549,
-      "x": 61,
-      "y": 32
+      "x": 53,
+      "y": 26
     },
     {
       "npcId": 549,
-      "x": 61,
-      "y": 34
+      "x": 53,
+      "y": 28
     },
     {
       "npcId": 510,
-      "x": 59,
-      "y": 37
+      "x": 51,
+      "y": 31
     },
     {
       "npcId": 537,
-      "x": 31,
-      "y": 46
+      "x": 23,
+      "y": 40
     },
     {
       "npcId": 537,
-      "x": 46,
-      "y": 50
+      "x": 38,
+      "y": 44
     },
     {
       "npcId": 537,
-      "x": 56,
-      "y": 63
+      "x": 48,
+      "y": 57
     },
     {
       "npcId": 510,
-      "x": 32,
-      "y": 85
+      "x": 24,
+      "y": 79
     }
   ],
-  "objects": [
-    {
-      "objectId": 6,
-      "amount": 1,
-      "x": 89,
-      "y": 5
-    },
-    {
-      "objectId": 6,
-      "amount": 1,
-      "x": 84,
-      "y": 6
-    },
-    {
-      "objectId": 6,
-      "amount": 1,
-      "x": 84,
-      "y": 7
-    },
-    {
-      "objectId": 6,
-      "amount": 1,
-      "x": 87,
-      "y": 7
-    },
-    {
-      "objectId": 6,
-      "amount": 1,
-      "x": 86,
-      "y": 8
-    },
-    {
-      "objectId": 6,
-      "amount": 1,
-      "x": 87,
-      "y": 8
-    },
-    {
-      "objectId": 6,
-      "amount": 1,
-      "x": 90,
-      "y": 8
-    },
-    {
-      "objectId": 6,
-      "amount": 1,
-      "x": 89,
-      "y": 14
-    },
-    {
-      "objectId": 4,
-      "amount": 1,
-      "x": 92,
-      "y": 14
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 85,
-      "y": 15
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 86,
-      "y": 15
-    },
-    {
-      "objectId": 6,
-      "amount": 1,
-      "x": 88,
-      "y": 15
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 89,
-      "y": 15
-    },
-    {
-      "objectId": 6,
-      "amount": 1,
-      "x": 86,
-      "y": 16
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 87,
-      "y": 16
-    },
-    {
-      "objectId": 6,
-      "amount": 1,
-      "x": 90,
-      "y": 16
-    },
-    {
-      "objectId": 6,
-      "amount": 1,
-      "x": 86,
-      "y": 17
-    },
-    {
-      "objectId": 6,
-      "amount": 1,
-      "x": 89,
-      "y": 18
-    },
-    {
-      "objectId": 6,
-      "amount": 1,
-      "x": 88,
-      "y": 21
-    },
-    {
-      "objectId": 6,
-      "amount": 1,
-      "x": 90,
-      "y": 21
-    },
-    {
-      "objectId": 188,
-      "amount": 1,
-      "x": 88,
-      "y": 80
-    }
-  ],
+  "objects": [],
   "tileExits": [
     {
-      "x": 88,
-      "y": 7,
+      "x": 80,
+      "y": 1,
       "targetMapId": 164,
-      "targetX": 10,
-      "targetY": 74
+      "targetX": 2,
+      "targetY": 68
     },
     {
-      "x": 89,
-      "y": 7,
+      "x": 81,
+      "y": 1,
       "targetMapId": 164,
-      "targetX": 10,
-      "targetY": 75
+      "targetX": 2,
+      "targetY": 69
     },
     {
-      "x": 90,
-      "y": 7,
+      "x": 82,
+      "y": 1,
       "targetMapId": 164,
-      "targetX": 10,
-      "targetY": 76
+      "targetX": 2,
+      "targetY": 70
     },
     {
-      "x": 91,
-      "y": 7,
+      "x": 83,
+      "y": 1,
       "targetMapId": 164,
-      "targetX": 10,
-      "targetY": 77
+      "targetX": 2,
+      "targetY": 71
     },
     {
-      "x": 92,
-      "y": 7,
-      "targetMapId": 164,
-      "targetX": 10,
-      "targetY": 78
-    },
-    {
-      "x": 25,
-      "y": 66,
+      "x": 17,
+      "y": 60,
       "targetMapId": 159,
-      "targetX": 81,
-      "targetY": 27
+      "targetX": 73,
+      "targetY": 21
     },
     {
-      "x": 25,
-      "y": 67,
+      "x": 17,
+      "y": 61,
       "targetMapId": 159,
-      "targetX": 81,
-      "targetY": 28
+      "targetX": 73,
+      "targetY": 22
     },
     {
-      "x": 25,
-      "y": 68,
+      "x": 17,
+      "y": 62,
       "targetMapId": 159,
-      "targetX": 80,
-      "targetY": 28
+      "targetX": 72,
+      "targetY": 22
     },
     {
-      "x": 25,
-      "y": 69,
+      "x": 17,
+      "y": 63,
       "targetMapId": 159,
-      "targetX": 80,
-      "targetY": 28
+      "targetX": 72,
+      "targetY": 22
     }
   ],
   "info": {

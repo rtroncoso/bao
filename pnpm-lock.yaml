@@ -147,6 +147,9 @@ importers:
 
   packages/assets:
     dependencies:
+      '@aws-sdk/client-cloudfront':
+        specifier: ^3.750.0
+        version: 3.1066.0
       '@aws-sdk/client-s3':
         specifier: ^3.750.0
         version: 3.1066.0
@@ -924,6 +927,10 @@ packages:
 
   '@aws-sdk/checksums@3.1000.5':
     resolution: {integrity: sha512-zOXUUnilC6lgCsQtp77p/QNPmRlTES9Xi6tlDwbR6kfC/kz5PCzZckgHWm5z+8DskdwuMAbFDq61x3zr10GEEQ==}
+    engines: {node: '>=20.0.0'}
+
+  '@aws-sdk/client-cloudfront@3.1066.0':
+    resolution: {integrity: sha512-c1bn81+pxFqBE1SRAbGHbYSQzf8CgRbRyYDeJtMFLV2foVHcqlsiIffwVQoCDw91i45toWn/cLIiroI5hb4GZg==}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/client-s3@3.1066.0':
@@ -14677,6 +14684,19 @@ snapshots:
       '@aws-sdk/core': 3.974.20
       '@aws-sdk/types': 3.973.12
       '@smithy/core': 3.24.6
+      '@smithy/types': 4.14.3
+      tslib: 2.8.1
+
+  '@aws-sdk/client-cloudfront@3.1066.0':
+    dependencies:
+      '@aws-crypto/sha256-browser': 5.2.0
+      '@aws-crypto/sha256-js': 5.2.0
+      '@aws-sdk/core': 3.974.20
+      '@aws-sdk/credential-provider-node': 3.972.55
+      '@aws-sdk/types': 3.973.12
+      '@smithy/core': 3.24.6
+      '@smithy/fetch-http-handler': 5.4.6
+      '@smithy/node-http-handler': 4.7.7
       '@smithy/types': 4.14.3
       tslib: 2.8.1
 

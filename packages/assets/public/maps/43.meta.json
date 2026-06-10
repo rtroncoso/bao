@@ -4,60 +4,32 @@
   "objects": [],
   "tileExits": [
     {
-      "x": 41,
-      "y": 7,
+      "x": 33,
+      "y": 1,
       "targetMapId": 42,
-      "targetX": 41,
-      "targetY": 93
+      "targetX": 33,
+      "targetY": 87
     },
     {
-      "x": 42,
-      "y": 7,
+      "x": 34,
+      "y": 1,
       "targetMapId": 42,
-      "targetX": 42,
-      "targetY": 93
+      "targetX": 34,
+      "targetY": 87
     },
     {
-      "x": 43,
-      "y": 7,
+      "x": 35,
+      "y": 1,
       "targetMapId": 42,
-      "targetX": 43,
-      "targetY": 93
+      "targetX": 35,
+      "targetY": 87
     },
     {
-      "x": 44,
-      "y": 7,
+      "x": 36,
+      "y": 1,
       "targetMapId": 42,
-      "targetX": 44,
-      "targetY": 93
-    },
-    {
-      "x": 41,
-      "y": 94,
-      "targetMapId": 44,
-      "targetX": 41,
-      "targetY": 8
-    },
-    {
-      "x": 42,
-      "y": 94,
-      "targetMapId": 44,
-      "targetX": 42,
-      "targetY": 8
-    },
-    {
-      "x": 43,
-      "y": 94,
-      "targetMapId": 44,
-      "targetX": 43,
-      "targetY": 8
-    },
-    {
-      "x": 44,
-      "y": 94,
-      "targetMapId": 44,
-      "targetX": 44,
-      "targetY": 8
+      "targetX": 36,
+      "targetY": 87
     }
   ],
   "info": {

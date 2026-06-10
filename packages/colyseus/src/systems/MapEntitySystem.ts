@@ -1,4 +1,5 @@
 import { ArraySchema } from '@colyseus/schema';
+import { Heading } from '@bao/core';
 
 import {
   MapNpcEntityState,
@@ -34,7 +35,7 @@ export class MapEntitySystem {
         entity.npcId = spawn.npcId;
         entity.bodyId = spawn.bodyId;
         entity.headId = spawn.headId;
-        entity.heading = spawn.heading;
+        entity.heading = Heading.SOUTH;
         entity.x = spawn.x;
         entity.y = spawn.y;
         return entity;

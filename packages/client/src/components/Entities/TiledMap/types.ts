@@ -25,7 +25,6 @@ export interface TiledMapData {
   tileLayers: any[];
   triggers: TmxObject[];
   tmx: any;
-  collisions: any[];
   objectLayers: any[];
   water: any[];
 }
