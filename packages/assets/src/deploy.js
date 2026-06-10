@@ -6,6 +6,7 @@ import {
 } from '@aws-sdk/client-s3';
 import cliProgress from 'cli-progress';
 import program from 'commander';
+import { createHash } from 'crypto';
 import dotenv from 'dotenv';
 import fs, { createReadStream } from 'fs';
 import path from 'path';
@@ -68,8 +69,8 @@ const walkFiles = (rootDir) => {
 const toPosixKey = (filePath, rootDir) =>
   path.relative(rootDir, filePath).split(path.sep).join('/');
 
-const listRemoteKeys = async (client, bucket) => {
-  const keys = new Set();
+const listRemoteObjects = async (client, bucket) => {
+  const objects = new Map();
   let continuationToken;
 
   do {
@@ -82,7 +83,7 @@ const listRemoteKeys = async (client, bucket) => {
 
     for (const object of response.Contents ?? []) {
       if (object.Key) {
-        keys.add(object.Key);
+        objects.set(object.Key, object.ETag ?? null);
       }
     }
 
@@ -91,7 +92,32 @@ const listRemoteKeys = async (client, bucket) => {
       : undefined;
   } while (continuationToken);
 
-  return keys;
+  return objects;
+};
+
+const fileMd5 = (filePath) =>
+  new Promise((resolve, reject) => {
+    const hash = createHash('md5');
+    const stream = createReadStream(filePath);
+
+    stream.on('data', (chunk) => hash.update(chunk));
+    stream.on('end', () => resolve(hash.digest('hex')));
+    stream.on('error', reject);
+  });
+
+const etagMatchesMd5 = (remoteEtag, localMd5) => {
+  if (!remoteEtag) {
+    return false;
+  }
+
+  const normalized = remoteEtag.replace(/^"|"$/g, '');
+
+  // Multipart uploads use a compound ETag (e.g. "abc123-5") — re-upload.
+  if (normalized.includes('-')) {
+    return false;
+  }
+
+  return normalized === localMd5;
 };
 
 const deleteRemoteKeys = async (client, bucket, keys) => {
@@ -167,30 +193,53 @@ program
 
       console.log(`[deploy] syncing ${localFiles.length} file(s) to s3://${bucket}/`);
 
-      const remoteKeys = await listRemoteKeys(client, bucket);
-      const keysToDelete = [...remoteKeys].filter((key) => !localKeys.has(key));
+      const remoteObjects = await listRemoteObjects(client, bucket);
+      const keysToDelete = [...remoteObjects.keys()].filter(
+        (key) => !localKeys.has(key)
+      );
 
       if (keysToDelete.length > 0) {
         console.log(`[deploy] removing ${keysToDelete.length} remote file(s)`);
         await deleteRemoteKeys(client, bucket, keysToDelete);
       }
 
+      let uploaded = 0;
+      let skipped = 0;
+
       progress.start(localFiles.length, 0);
 
       for (const filePath of localFiles) {
         const key = toPosixKey(filePath, PUBLIC_DIR);
-        await client.send(
-          new PutObjectCommand({
-            Bucket: bucket,
-            Key: key,
-            Body: createReadStream(filePath),
-          })
-        );
+        const localMd5 = await fileMd5(filePath);
+        const remoteEtag = remoteObjects.get(key);
+
+        if (etagMatchesMd5(remoteEtag, localMd5)) {
+          skipped += 1;
+          if (debug) {
+            console.log(`[deploy] skip ${key}`);
+          }
+        } else {
+          await client.send(
+            new PutObjectCommand({
+              Bucket: bucket,
+              Key: key,
+              Body: createReadStream(filePath),
+            })
+          );
+          uploaded += 1;
+          if (debug) {
+            console.log(`[deploy] upload ${key}`);
+          }
+        }
+
         progress.increment();
       }
 
       progress.stop();
-      console.log('Upload complete!');
+      console.log(
+        `[deploy] complete: ${uploaded} uploaded, ${skipped} unchanged` +
+          (keysToDelete.length > 0 ? `, ${keysToDelete.length} removed` : '')
+      );
       process.exit(0);
     } catch (error) {
       progress.stop();
