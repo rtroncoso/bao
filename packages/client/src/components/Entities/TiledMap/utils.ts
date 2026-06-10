@@ -37,12 +37,6 @@ import {
   ShoreEdges
 } from './Shore/shoreUtils';
 import { ShoreSpriteFilter } from './Shore/ShoreSpriteFilter';
-import {
-  getShoreBucket,
-  isShoreBucket,
-  mountShoreBuckets,
-  resetShoreBuckets
-} from './Shore/shoreBuckets';
 
 type ShoreCachedSprite = Sprite & { shoreTileX: number; shoreTileY: number };
 
@@ -205,7 +199,8 @@ export const renderTileLayers = (
     tilesLayer: React.RefObject<any>;
     shoreLayer: React.RefObject<any>;
   },
-  shoreLayerIndex = SHORE_TILE_LAYER_INDEX
+  shoreLayerIndex = SHORE_TILE_LAYER_INDEX,
+  shoreGroup?: import('@pixi/layers').Group
 ) => {
   if (!targets.tilesLayer.current || !targets.shoreLayer.current) {
     return chunks;
@@ -217,8 +212,7 @@ export const renderTileLayers = (
   shoreContainer.children.slice().forEach((child) => {
     if (
       child instanceof CompositeTilemap ||
-      child.name === SHORE_TILE_CHUNK_NAME ||
-      isShoreBucket(child)
+      child.name === SHORE_TILE_CHUNK_NAME
     ) {
       return;
     }
@@ -230,6 +224,9 @@ export const renderTileLayers = (
     displayObject.filters = null;
 
     if (layerIndex === shoreLayerIndex) {
+      if (shoreGroup) {
+        displayObject.parentGroup = shoreGroup;
+      }
       targets.shoreLayer.current.addChild(displayObject);
       return;
     }
@@ -242,7 +239,10 @@ export const renderTileLayers = (
 
 export interface SpriteRenderOptions {
   shoreTarget?: React.RefObject<any>;
-  getShoreSpriteFilter?: (edgeMask: number) => ShoreSpriteFilter | undefined;
+  getShoreSpriteFilter?: (
+    edgeMask: number,
+    sprite: Sprite
+  ) => ShoreSpriteFilter | undefined;
   shoreOrientations?: Map<string | number, ShoreEdges>;
   shoreGroup?: import('@pixi/layers').Group;
 }
@@ -261,15 +261,13 @@ export const renderSpriteLayers = (
     shoreContainer.children.slice().forEach((child) => {
       if (
         child instanceof CompositeTilemap ||
-        child.name === SHORE_TILE_CHUNK_NAME ||
-        isShoreBucket(child)
+        child.name === SHORE_TILE_CHUNK_NAME
       ) {
         return;
       }
 
       shoreContainer.removeChild(child);
     });
-    resetShoreBuckets();
   }
 
   const shoreLayer = options?.shoreTarget?.current;
@@ -309,17 +307,28 @@ export const renderSpriteLayers = (
         }
 
         sprite.filterArea = null;
-        sprite.filters = null;
         sprite.visible = true;
         sprite.alpha = 1;
         sprite.renderable = true;
         sprite.parentGroup = options.shoreGroup ?? sprite.parentGroup;
 
-        if (edgeMask > 0 && shoreLayer && options.getShoreSpriteFilter) {
-          getShoreBucket(edgeMask).addChild(sprite);
+        const shoreFilter =
+          edgeMask > 0 && options.getShoreSpriteFilter
+            ? options.getShoreSpriteFilter(edgeMask, sprite)
+            : undefined;
+
+        if (shoreFilter) {
+          const left = sprite.x - sprite.width * sprite.anchor.x;
+          const top = sprite.y - sprite.height * sprite.anchor.y;
+          shoreFilter.syncBounds(left, top, sprite.width, sprite.height);
+          sprite.filters = [shoreFilter];
+          (sprite as Sprite & { _boundsID?: number })._boundsID =
+            ((sprite as Sprite & { _boundsID?: number })._boundsID ?? 0) + 1;
         } else {
-          shoreLayer?.addChild(sprite);
+          sprite.filters = null;
         }
+
+        shoreLayer?.addChild(sprite);
         return;
       }
 
@@ -327,10 +336,6 @@ export const renderSpriteLayers = (
       sprite.filters = null;
       target.current?.addChild(sprite);
     });
-
-  if (shoreLayer && options?.getShoreSpriteFilter) {
-    mountShoreBuckets(shoreLayer, options.getShoreSpriteFilter);
-  }
 
   return nodes;
 };

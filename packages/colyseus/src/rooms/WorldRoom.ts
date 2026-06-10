@@ -47,7 +47,7 @@ export class WorldRoom extends Room<WorldRoomState> {
         );
         return character;
       }),
-      ...new Array(10).fill(0).map((_, i) => {
+      ...new Array(2).fill(0).map((_, i) => {
         const character = new CharacterState();
         character.sessionId = (Math.random() + 1).toString(36).substring(7);
         character.moveTo(i + 25, 60);
@@ -62,7 +62,7 @@ export class WorldRoom extends Room<WorldRoomState> {
 
         return character;
       }),
-      ...new Array(10).fill(0).map((_, i) => {
+      ...new Array(2).fill(0).map((_, i) => {
         const character = new CharacterState();
         character.sessionId = (Math.random() + 1).toString(36).substring(7);
         character.moveTo(i + 25, 65);

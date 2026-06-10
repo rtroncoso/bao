@@ -1,33 +1,39 @@
 import { useEffect, useRef, useCallback } from 'react';
+import { Sprite } from 'pixi.js';
 
 import { SHORE_FILTER_TIME_SCALE, ShoreSpriteFilter } from './ShoreSpriteFilter';
 import { animatedFilters, registerAnimatedFilter } from './effectAnimationRegistry';
 
-/** One filter per orientation (~15 max) — applied to a bucket container, not each sprite. */
+/** One filter per visible shore sprite — Pixi cannot share a Filter across sprites. */
 export const useShoreSpriteFilters = () => {
-  const poolRef = useRef(new Map<number, ShoreSpriteFilter>());
+  const spriteFiltersRef = useRef(new WeakMap<Sprite, ShoreSpriteFilter>());
+  const allFiltersRef = useRef(new Set<ShoreSpriteFilter>());
 
   useEffect(() => {
     return () => {
-      poolRef.current.forEach((filter) => {
+      allFiltersRef.current.forEach((filter) => {
         animatedFilters.delete(filter);
       });
-      poolRef.current.clear();
+      allFiltersRef.current.clear();
     };
   }, []);
 
-  return useCallback((edgeMask: number): ShoreSpriteFilter | undefined => {
-    if (edgeMask === 0) {
-      return undefined;
-    }
+  return useCallback(
+    (edgeMask: number, sprite: Sprite): ShoreSpriteFilter | undefined => {
+      if (edgeMask === 0) {
+        return undefined;
+      }
 
-    let filter = poolRef.current.get(edgeMask);
-    if (!filter) {
-      filter = new ShoreSpriteFilter(edgeMask);
-      registerAnimatedFilter(filter, SHORE_FILTER_TIME_SCALE);
-      poolRef.current.set(edgeMask, filter);
-    }
+      let filter = spriteFiltersRef.current.get(sprite);
+      if (!filter) {
+        filter = new ShoreSpriteFilter(edgeMask);
+        registerAnimatedFilter(filter, SHORE_FILTER_TIME_SCALE);
+        spriteFiltersRef.current.set(sprite, filter);
+        allFiltersRef.current.add(filter);
+      }
 
-    return filter;
-  }, []);
+      return filter;
+    },
+    []
+  );
 };

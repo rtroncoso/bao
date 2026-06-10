@@ -1,4 +1,4 @@
-import { useTick } from '@inlet/react-pixi';
+import { Container, useTick } from '@inlet/react-pixi';
 import React from 'react';
 
 import {
@@ -24,5 +24,11 @@ export const EffectsAnimationSystem: React.FC<{ children?: React.ReactNode }> = 
     });
   });
 
-  return <>{children}</>;
+  // Pixi node keeps useTick wired to the stage ticker.
+  return (
+    <>
+      <Container interactive={false} interactiveChildren={false} />
+      {children}
+    </>
+  );
 };

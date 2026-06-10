@@ -1,4 +1,5 @@
-import { Container, Sprite } from 'pixi.js';
+import { Container, Rectangle, Sprite } from 'pixi.js';
+import { Group } from '@pixi/layers';
 import { TILE_SIZE } from '@bao/core';
 
 import { ShoreSpriteFilter } from './ShoreSpriteFilter';
@@ -11,6 +12,8 @@ export const resetShoreBuckets = (): void => {
   shoreBuckets.forEach((bucket) => {
     bucket.removeChildren();
     bucket.filters = null;
+    bucket.filterArea = null;
+    bucket.parentGroup = null;
   });
 };
 
@@ -27,10 +30,17 @@ export const getShoreBucket = (edgeMask: number): Container => {
 
 export const mountShoreBuckets = (
   shoreLayer: Container,
-  getFilter: (edgeMask: number) => ShoreSpriteFilter | undefined
+  getFilter: (edgeMask: number) => ShoreSpriteFilter | undefined,
+  shoreGroup?: Group
 ): void => {
   shoreBuckets.forEach((bucket, edgeMask) => {
     if (bucket.children.length === 0) {
+      if (bucket.parent) {
+        bucket.parent.removeChild(bucket);
+      }
+      bucket.filters = null;
+      bucket.filterArea = null;
+      bucket.parentGroup = null;
       return;
     }
 
@@ -49,16 +59,25 @@ export const mountShoreBuckets = (
       maxY = Math.max(maxY, top + sprite.height);
     });
 
+    const width = Math.max(TILE_SIZE, maxX - minX);
+    const height = Math.max(TILE_SIZE, maxY - minY);
+
     const filter = getFilter(edgeMask);
     if (filter) {
-      filter.syncBounds(
-        minX,
-        minY,
-        Math.max(TILE_SIZE, maxX - minX),
-        Math.max(TILE_SIZE, maxY - minY)
-      );
+      filter.syncBounds(minX, minY, width, height);
+      bucket.filterArea = new Rectangle(minX, minY, width, height);
       bucket.filters = [filter];
     }
+
+    bucket.visible = true;
+    bucket.renderable = true;
+
+    if (shoreGroup) {
+      bucket.parentGroup = shoreGroup;
+    }
+
+    (bucket as Container & { _boundsID?: number })._boundsID =
+      ((bucket as Container & { _boundsID?: number })._boundsID ?? 0) + 1;
 
     shoreLayer.addChild(bucket);
   });

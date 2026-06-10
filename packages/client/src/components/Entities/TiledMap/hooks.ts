@@ -42,7 +42,8 @@ import {
   TILE_CHUNK_SIZE_TILES,
   TILE_CHUNK_CACHE_MARGIN,
   TILE_CULLING_TILES,
-  OBJECT_CULLING_TILES
+  OBJECT_CULLING_TILES,
+  SHORE_TILE_LAYER_INDEX
 } from './constants';
 import {
   createSpritePool,
@@ -350,10 +351,15 @@ export const useViewportRendering = (
       TILE_CHUNK_CACHE_MARGIN
     );
 
-    renderTileLayers(tiles, {
-      tilesLayer: renderTargets.tilesLayer,
-      shoreLayer: renderTargets.shoreLayer
-    });
+    renderTileLayers(
+      tiles,
+      {
+        tilesLayer: renderTargets.tilesLayer,
+        shoreLayer: renderTargets.shoreLayer
+      },
+      SHORE_TILE_LAYER_INDEX,
+      mapState?.groups[SHORE_LAYER]
+    );
 
     renderSpriteLayers(
       spritesInViewport,
