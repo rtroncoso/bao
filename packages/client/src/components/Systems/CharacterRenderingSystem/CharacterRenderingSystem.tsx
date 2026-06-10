@@ -19,8 +19,7 @@ export const CharacterRenderingSystem: React.FC = () => {
       <React.Fragment>
         {characters
           .filter(
-            (character) =>
-              character.sessionId !== localCharacter?.sessionId
+            (character) => character.sessionId !== localCharacter?.sessionId
           )
           .map((character) => (
             <Character key={character.sessionId} character={character} />
