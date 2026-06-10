@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { FpsView } from '@bao/react-fps';
 import { Provider, ReactReduxContext } from 'react-redux';
 
+import { Character } from '@bao/client/components/Entities/Character';
 import {
   AssetSystem,
   CharacterRenderingSystem,
@@ -9,6 +10,7 @@ import {
   MapRenderingSystem,
   ViewportSystem
 } from '@bao/client/components/Systems';
+import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
 import {
   ChatComponent,
   ChatContext,
@@ -26,11 +28,30 @@ import { GamePageShell, GameStyled } from './Game.styles';
 export type GameComponentProps = GameConnectedProps;
 
 export const Systems: React.FC = () => {
+  const { state } = useContext(GameContext);
+  const localCharacter = resolveLocalCharacter(
+    state.serverState,
+    state.characterId,
+    state.room?.sessionId
+  );
+
   return (
     <LayersStage enableSort>
       <AssetSystem>
         <MapRenderingSystem>
-          <ViewportSystem>
+          <ViewportSystem
+            overlay={
+              localCharacter ? (
+                <Character
+                  key={localCharacter.sessionId}
+                  character={localCharacter}
+                  isLocalPlayer
+                  x={App.canvasWidth / 2}
+                  y={App.canvasHeight / 2}
+                />
+              ) : null
+            }
+          >
             <KeyboardSystem />
             <TiledMap />
             <CharacterRenderingSystem />

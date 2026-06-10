@@ -7,13 +7,7 @@ import {
   Point,
   Text as PixiText
 } from 'pixi.js';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -31,21 +25,23 @@ import { CharacterState } from '@bao/server/schema/CharacterState';
 import { Animation } from '@bao/client/components/Pixi';
 import { selectBodies, selectHeads } from '@bao/client/queries';
 import { useMapContext } from '@bao/client/components/Systems/MapRenderingSystem';
-import { useViewportContext } from '@bao/client/components/Systems/ViewportSystem';
 import { useInterpolatedPosition } from '@bao/client/hooks';
 import { useChatContext } from 'src/components/Chat';
 
 export interface CharacterProps {
   character: CharacterState;
   isLocalPlayer?: boolean;
+  x?: number;
+  y?: number;
 }
 
 export const Character = ({
   character,
-  isLocalPlayer = false
+  isLocalPlayer = false,
+  x: fixedX,
+  y: fixedY
 }: CharacterProps) => {
   const { mapState } = useMapContext();
-  const { localCharacterContainerRef } = useViewportContext();
   const { state: chatState } = useChatContext();
   const bodyRef = useRef<AnimatedSprite>();
   const container = useRef<PixiContainer>();
@@ -89,30 +85,6 @@ export const Character = ({
     !isLocalPlayer
   );
 
-  const assignContainerRef = useCallback(
-    (node: PixiContainer | null) => {
-      container.current = node;
-
-      if (isLocalPlayer) {
-        localCharacterContainerRef.current = node;
-      } else if (localCharacterContainerRef.current === node) {
-        localCharacterContainerRef.current = null;
-      }
-    },
-    [isLocalPlayer, localCharacterContainerRef]
-  );
-
-  useEffect(() => {
-    return () => {
-      if (
-        isLocalPlayer &&
-        localCharacterContainerRef.current === container.current
-      ) {
-        localCharacterContainerRef.current = null;
-      }
-    };
-  }, [isLocalPlayer, localCharacterContainerRef]);
-
   useTick(() => {
     if (character.isMoving && !bodyRef.current?.playing) {
       bodyRef.current?.gotoAndPlay(0);
@@ -122,10 +94,17 @@ export const Character = ({
       bodyRef.current?.gotoAndStop(0);
     }
 
-    if (!isLocalPlayer && container.current) {
-      container.current.x = positionRef.current.x;
-      container.current.y = positionRef.current.y;
+    if (isLocalPlayer) {
+      return;
     }
+
+    const node = container.current;
+    if (!node?.parent) {
+      return;
+    }
+
+    node.x = positionRef.current.x;
+    node.y = positionRef.current.y;
   });
 
   const lastMessage = useMemo(() => {
@@ -162,11 +141,13 @@ export const Character = ({
 
   return (
     <Container
-      ref={assignContainerRef}
+      ref={container}
       accessibleType={CHARACTER_TYPE}
       parentGroup={mapState.groups[ENTITIES_LAYER]}
       key={character.sessionId}
       anchor={0.5}
+      x={isLocalPlayer ? fixedX : undefined}
+      y={isLocalPlayer ? fixedY : undefined}
     >
       <Container x={bodyOffset.x} y={bodyOffset.y}>
         {body && Boolean(body[heading]) && (

@@ -17,13 +17,14 @@ export const CharacterRenderingSystem: React.FC = () => {
   if (characters) {
     return (
       <React.Fragment>
-        {characters.map((character) => (
-          <Character
-            key={character.sessionId}
-            character={character}
-            isLocalPlayer={localCharacter?.sessionId === character.sessionId}
-          />
-        ))}
+        {characters
+          .filter(
+            (character) =>
+              character.sessionId !== localCharacter?.sessionId
+          )
+          .map((character) => (
+            <Character key={character.sessionId} character={character} />
+          ))}
       </React.Fragment>
     );
   }

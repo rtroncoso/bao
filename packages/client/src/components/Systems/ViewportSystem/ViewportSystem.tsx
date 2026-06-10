@@ -25,6 +25,7 @@ import { WorldRoomState } from '@bao/server/schema/WorldRoomState';
 
 export interface ViewportProps {
   children?: React.ReactNode;
+  overlay?: React.ReactNode;
 }
 
 export interface Vector2 {
@@ -48,7 +49,6 @@ export interface ViewportContextState {
   viewportState: ViewportSystemState;
   projectionRef: React.MutableRefObject<Rectangle>;
   displayPositionRef: React.MutableRefObject<Vector2>;
-  localCharacterContainerRef: React.MutableRefObject<PixiContainer | null>;
 }
 
 const DISPLAY_LERP = 1 / 3;
@@ -72,8 +72,7 @@ export const ViewportContext = createContext<ViewportContextState>({
   updateViewportState: null,
   viewportState: createInitialViewportState(),
   projectionRef: { current: initialProjection },
-  displayPositionRef: { current: { x: 0, y: 0 } },
-  localCharacterContainerRef: { current: null }
+  displayPositionRef: { current: { x: 0, y: 0 } }
 });
 
 export const useViewportContext = () => {
@@ -119,12 +118,11 @@ export const ViewportSystem: React.FC<ViewportProps> = (
   const viewport = useRef<PixiContainer>(null);
   const projectionRef = useRef(viewportState.projection);
   const displayPositionRef = useRef({ x: 0, y: 0 });
-  const localCharacterContainerRef = useRef<PixiContainer | null>(null);
   const publishedProjectionTileRef = useRef({ x: Number.NaN, y: Number.NaN });
   const lastSnapKeyRef = useRef<string | null>(null);
   const { state } = useGameContext();
   const { room, serverState, characterId } = state;
-  const { children } = props;
+  const { children, overlay } = props;
 
   const currentCharacter = resolveLocalCharacter(
     serverState,
@@ -237,12 +235,6 @@ export const ViewportSystem: React.FC<ViewportProps> = (
     if (tileChanged) {
       publishedProjectionTileRef.current = { x: tileX, y: tileY };
     }
-
-    const localContainer = localCharacterContainerRef.current;
-    if (localContainer) {
-      localContainer.x = displayPositionRef.current.x;
-      localContainer.y = displayPositionRef.current.y;
-    }
   });
 
   const viewportContext = {
@@ -250,18 +242,20 @@ export const ViewportSystem: React.FC<ViewportProps> = (
     updateViewportState,
     viewportState,
     projectionRef,
-    displayPositionRef,
-    localCharacterContainerRef
+    displayPositionRef
   };
 
   return (
     <ViewportContext.Provider value={viewportContext}>
       {viewportState && (
-        <Container ref={viewport}>
-          {state.debug && <DebugGridSystem />}
-          {children}
-          {state.debug && <DebugTextSystem />}
-        </Container>
+        <>
+          <Container ref={viewport}>
+            {state.debug && <DebugGridSystem />}
+            {children}
+            {state.debug && <DebugTextSystem />}
+          </Container>
+          {overlay}
+        </>
       )}
     </ViewportContext.Provider>
   );
