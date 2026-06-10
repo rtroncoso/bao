@@ -1,4 +1,5 @@
 import { config, validateConfig } from './config'
+import { buildExpressCorsOptions, patchMatchmakeCors } from './cors'
 
 import { monitor } from '@colyseus/monitor';
 import { Server } from 'colyseus';
@@ -12,15 +13,27 @@ validateConfig();
 const port = config.port;
 const app = express();
 
-app.use(cors());
+app.use(cors(buildExpressCorsOptions(config.corsOrigins)));
 app.use(express.json());
 
 const server = http.createServer(app);
 const gameServer = new Server({
   server,
   pingInterval: 2000,
-  pingMaxRetries: 15
+  pingMaxRetries: 15,
+  verifyClient: config.corsOrigins
+    ? (info, callback) => {
+        const origin = info.origin;
+        if (!origin || config.corsOrigins!.includes(origin)) {
+          callback(true);
+        } else {
+          callback(false, 403, 'Forbidden');
+        }
+      }
+    : undefined,
 });
+
+patchMatchmakeCors(gameServer, config.corsOrigins);
 
 // gameServer.simulateLatency(50);
 gameServer.define('world', WorldRoom);
