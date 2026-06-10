@@ -4,7 +4,10 @@ import { getProperty, TILE_SIZE, TileLayer, TmxObject } from '@bao/core';
 import { polygon } from '@bao/client/utils';
 import { Sprite } from 'pixi.js';
 
-import { TMX_SHORE_SPRITE_LAYER, SHORE_SPRITE_OVERLAP_SCALE } from '../constants';
+import {
+  TMX_SHORE_SPRITE_LAYER,
+  SHORE_SPRITE_OVERLAP_SCALE
+} from '../constants';
 
 import { getObjectRenderBounds, ObjectRenderBounds } from '../utils';
 import { getWaterPolygons, WaterPolygon } from './waterPolygons';
@@ -61,8 +64,7 @@ const isPointInWater = (
 const edgeTouchesWater = (
   probes: Array<{ x: number; y: number }>,
   waterPolygons: WaterPolygon[]
-): boolean =>
-  probes.some(({ x, y }) => isPointInWater(x, y, waterPolygons));
+): boolean => probes.some(({ x, y }) => isPointInWater(x, y, waterPolygons));
 
 const sampleEdgePoints = (
   start: number,
@@ -116,7 +118,9 @@ export const getShoreEdgesForBounds = (
     )
   };
 
-  const cornerProbes: Array<[keyof ShoreEdges, keyof ShoreEdges, number, number]> = [
+  const cornerProbes: Array<
+    [keyof ShoreEdges, keyof ShoreEdges, number, number]
+  > = [
     ['top', 'left', left - cornerProbe, top - cornerProbe],
     ['top', 'right', right + cornerProbe, top - cornerProbe],
     ['bottom', 'left', left - cornerProbe, bottom + cornerProbe],
@@ -189,7 +193,11 @@ export const getShoreTileOrientations = (
     return orientations;
   }
 
-  for (let tileY = 0; tileY < Math.ceil(shoreLayer.data.length / mapWidth); tileY++) {
+  for (
+    let tileY = 0;
+    tileY < Math.ceil(shoreLayer.data.length / mapWidth);
+    tileY++
+  ) {
     for (let tileX = 0; tileX < mapWidth; tileX++) {
       const index = tileY * mapWidth + tileX;
       if (shoreLayer.data[index] <= 0) {
@@ -218,7 +226,9 @@ export const getShoreOrientation = (
   orientations.get(Number(id));
 
 /** Map-space top-left of the shore tile grid cell (stable across anchor changes). */
-export const getShoreTileOrigin = (sprite: Sprite): { x: number; y: number } => ({
+export const getShoreTileOrigin = (
+  sprite: Sprite
+): { x: number; y: number } => ({
   x: sprite.x - sprite.anchor.x * TILE_SIZE,
   y: sprite.y - sprite.anchor.y * TILE_SIZE
 });

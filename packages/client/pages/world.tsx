@@ -10,7 +10,5 @@ const WorldRoomContainer = dynamic(
   { ssr: false }
 );
 
-export const getServerSideProps = async () => ({ props: {} });
-
 export const GamePage: NextPage = (props) => <WorldRoomContainer {...props} />;
 export default GamePage;

@@ -38,7 +38,10 @@ export const Water: React.FC<WaterProps> = ({ water = [] }) => {
   const [displacement, setDisplacement] = useState<Texture>();
 
   const shapes = useMemo(
-    () => getWaterPolygons(water).map((polygon) => polygon.map((p) => new Point(p.x, p.y))),
+    () =>
+      getWaterPolygons(water).map((polygon) =>
+        polygon.map((p) => new Point(p.x, p.y))
+      ),
     [water]
   );
 
@@ -113,8 +116,6 @@ export const Water: React.FC<WaterProps> = ({ water = [] }) => {
     waterFilter.uniforms.displacementTexture = displacement;
     waterFilter.uniforms.camera[0] = projection.x / projection.width;
     waterFilter.uniforms.camera[1] = projection.y / projection.height;
-
-    (sprite as unknown as { _boundsID: number })._boundsID++;
   });
 
   if (!filter || !texture || !shapes.length) {

@@ -14,7 +14,8 @@ export interface InterpolatedPosition {
 
 export const useInterpolatedPosition = (
   targetX: number,
-  targetY: number
+  targetY: number,
+  enabled = true
 ): MutableRefObject<InterpolatedPosition> => {
   const positionRef = useRef<InterpolatedPosition>({ x: targetX, y: targetY });
   const initializedRef = useRef(false);
@@ -37,6 +38,10 @@ export const useInterpolatedPosition = (
   }, [targetX, targetY]);
 
   useTick(() => {
+    if (!enabled) {
+      return;
+    }
+
     positionRef.current.x = lerp(
       positionRef.current.x,
       targetX,

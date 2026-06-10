@@ -7,7 +7,13 @@ import {
   Point,
   Text as PixiText
 } from 'pixi.js';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -24,16 +30,22 @@ import {
 import { CharacterState } from '@bao/server/schema/CharacterState';
 import { Animation } from '@bao/client/components/Pixi';
 import { selectBodies, selectHeads } from '@bao/client/queries';
-import { useMapContext } from '@bao/client/components/Systems';
+import { useMapContext } from '@bao/client/components/Systems/MapRenderingSystem';
+import { useViewportContext } from '@bao/client/components/Systems/ViewportSystem';
 import { useInterpolatedPosition } from '@bao/client/hooks';
 import { useChatContext } from 'src/components/Chat';
 
 export interface CharacterProps {
   character: CharacterState;
+  isLocalPlayer?: boolean;
 }
 
-export const Character = ({ character }: CharacterProps) => {
+export const Character = ({
+  character,
+  isLocalPlayer = false
+}: CharacterProps) => {
   const { mapState } = useMapContext();
+  const { localCharacterContainerRef } = useViewportContext();
   const { state: chatState } = useChatContext();
   const bodyRef = useRef<AnimatedSprite>();
   const container = useRef<PixiContainer>();
@@ -71,7 +83,35 @@ export const Character = ({ character }: CharacterProps) => {
     return new Point();
   }, [body]);
 
-  const positionRef = useInterpolatedPosition(character.x, character.y);
+  const positionRef = useInterpolatedPosition(
+    character.x,
+    character.y,
+    !isLocalPlayer
+  );
+
+  const assignContainerRef = useCallback(
+    (node: PixiContainer | null) => {
+      container.current = node;
+
+      if (isLocalPlayer) {
+        localCharacterContainerRef.current = node;
+      } else if (localCharacterContainerRef.current === node) {
+        localCharacterContainerRef.current = null;
+      }
+    },
+    [isLocalPlayer, localCharacterContainerRef]
+  );
+
+  useEffect(() => {
+    return () => {
+      if (
+        isLocalPlayer &&
+        localCharacterContainerRef.current === container.current
+      ) {
+        localCharacterContainerRef.current = null;
+      }
+    };
+  }, [isLocalPlayer, localCharacterContainerRef]);
 
   useTick(() => {
     if (character.isMoving && !bodyRef.current?.playing) {
@@ -82,7 +122,7 @@ export const Character = ({ character }: CharacterProps) => {
       bodyRef.current?.gotoAndStop(0);
     }
 
-    if (container.current) {
+    if (!isLocalPlayer && container.current) {
       container.current.x = positionRef.current.x;
       container.current.y = positionRef.current.y;
     }
@@ -122,7 +162,7 @@ export const Character = ({ character }: CharacterProps) => {
 
   return (
     <Container
-      ref={container}
+      ref={assignContainerRef}
       accessibleType={CHARACTER_TYPE}
       parentGroup={mapState.groups[ENTITIES_LAYER]}
       key={character.sessionId}

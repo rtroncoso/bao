@@ -26,8 +26,17 @@ import {
 } from '@bao/core';
 import { polygon } from '@bao/client/utils';
 import { ObjectsInViewport, SpritesCache } from './types';
-import { ANIMATION_CONFIG, COLLISION_CONFIG, SHORE_TILE_LAYER_INDEX, TMX_SHORE_SPRITE_LAYER } from './constants';
-import { SpatialHashGrid, TileLayerChunk, SHORE_TILE_CHUNK_NAME } from './spatial';
+import {
+  ANIMATION_CONFIG,
+  COLLISION_CONFIG,
+  SHORE_TILE_LAYER_INDEX,
+  TMX_SHORE_SPRITE_LAYER
+} from './constants';
+import {
+  SpatialHashGrid,
+  TileLayerChunk,
+  SHORE_TILE_CHUNK_NAME
+} from './spatial';
 import { CompositeTilemap } from '@pixi/tilemap';
 import {
   getShoreOrientation,
@@ -42,7 +51,10 @@ type ShoreCachedSprite = Sprite & { shoreTileX: number; shoreTileY: number };
 
 const getShoreTileCoords = (sprite: Sprite): { x: number; y: number } => {
   const shoreSprite = sprite as ShoreCachedSprite;
-  if (typeof shoreSprite.shoreTileX === 'number' && typeof shoreSprite.shoreTileY === 'number') {
+  if (
+    typeof shoreSprite.shoreTileX === 'number' &&
+    typeof shoreSprite.shoreTileY === 'number'
+  ) {
     return { x: shoreSprite.shoreTileX, y: shoreSprite.shoreTileY };
   }
 
@@ -155,7 +167,9 @@ export interface ObjectRenderBounds {
 }
 
 /** Render-space AABB matching sprite placement in createSpriteFromObject. */
-export const getObjectRenderBounds = (object: TmxObject): ObjectRenderBounds => ({
+export const getObjectRenderBounds = (
+  object: TmxObject
+): ObjectRenderBounds => ({
   x: getProperty(object, 'x') ?? object.x,
   y: getProperty(object, 'y') ?? object.y,
   width: getProperty(object, 'width') ?? object.width ?? TILE_SIZE,
@@ -276,9 +290,7 @@ export const renderSpriteLayers = (
     .flat()
     .forEach((id) => {
       const sprite =
-        cache[id] ??
-        cache[String(id)] ??
-        cache[Number(id as string)];
+        cache[id] ?? cache[String(id)] ?? cache[Number(id as string)];
       if (!sprite) {
         return;
       }

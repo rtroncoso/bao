@@ -24,7 +24,7 @@ export class WaterFilter extends Filter {
     this.uniforms.displacementTexture = Texture.EMPTY;
 
     this.autoFit = false;
-    this.padding = 0;
+    this.padding = 4;
 
     if (this.isRetina()) {
       this.resolution = 2;

@@ -1,8 +1,14 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { Sprite } from 'pixi.js';
 
-import { SHORE_FILTER_TIME_SCALE, ShoreSpriteFilter } from './ShoreSpriteFilter';
-import { animatedFilters, registerAnimatedFilter } from './effectAnimationRegistry';
+import {
+  SHORE_FILTER_TIME_SCALE,
+  ShoreSpriteFilter
+} from './ShoreSpriteFilter';
+import {
+  animatedFilters,
+  registerAnimatedFilter
+} from './effectAnimationRegistry';
 
 /** One filter per visible shore sprite — Pixi cannot share a Filter across sprites. */
 export const useShoreSpriteFilters = () => {

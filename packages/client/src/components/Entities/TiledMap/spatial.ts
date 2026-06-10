@@ -171,7 +171,11 @@ export class TileChunkCache {
       for (let x = startX; x < endX; x++) {
         const index = y * tmx.width + x;
         if (layer.data[index] > 0) {
-          tilemap.tile(textures[layer.data[index]], x * TILE_SIZE, y * TILE_SIZE);
+          tilemap.tile(
+            textures[layer.data[index]],
+            x * TILE_SIZE,
+            y * TILE_SIZE
+          );
         }
       }
     }
@@ -249,7 +253,11 @@ export class TileChunkCache {
     const { minX, minY, maxX, maxY } = getChunkRange(bounds, chunkSizeTiles);
     const keepKeys = new Set<string>();
 
-    for (let chunkY = minY - marginChunks; chunkY <= maxY + marginChunks; chunkY++) {
+    for (
+      let chunkY = minY - marginChunks;
+      chunkY <= maxY + marginChunks;
+      chunkY++
+    ) {
       for (
         let chunkX = minX - marginChunks;
         chunkX <= maxX + marginChunks;

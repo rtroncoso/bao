@@ -139,7 +139,12 @@ export class ShoreSpriteFilter extends Filter {
     this.resolution = 1;
   }
 
-  syncBounds(originX: number, originY: number, width: number, height: number): void {
+  syncBounds(
+    originX: number,
+    originY: number,
+    width: number,
+    height: number
+  ): void {
     this.uniforms.worldOrigin = [originX, originY];
     this.uniforms.contentSizePx = [width, height];
     this.uniforms.shorePadding = this.padding;

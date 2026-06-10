@@ -48,10 +48,11 @@ export interface ViewportContextState {
   viewportState: ViewportSystemState;
   projectionRef: React.MutableRefObject<Rectangle>;
   displayPositionRef: React.MutableRefObject<Vector2>;
+  localCharacterContainerRef: React.MutableRefObject<PixiContainer | null>;
 }
 
-const CAMERA_LERP = 1 / 3;
 const DISPLAY_LERP = 1 / 3;
+const SNAP_DISTANCE_PX = TILE_SIZE * 2;
 
 export const createInitialViewportState = (): ViewportSystemState => ({
   currentCharacter: null,
@@ -71,7 +72,8 @@ export const ViewportContext = createContext<ViewportContextState>({
   updateViewportState: null,
   viewportState: createInitialViewportState(),
   projectionRef: { current: initialProjection },
-  displayPositionRef: { current: { x: 0, y: 0 } }
+  displayPositionRef: { current: { x: 0, y: 0 } },
+  localCharacterContainerRef: { current: null }
 });
 
 export const useViewportContext = () => {
@@ -117,6 +119,7 @@ export const ViewportSystem: React.FC<ViewportProps> = (
   const viewport = useRef<PixiContainer>(null);
   const projectionRef = useRef(viewportState.projection);
   const displayPositionRef = useRef({ x: 0, y: 0 });
+  const localCharacterContainerRef = useRef<PixiContainer | null>(null);
   const publishedProjectionTileRef = useRef({ x: Number.NaN, y: Number.NaN });
   const lastSnapKeyRef = useRef<string | null>(null);
   const { state } = useGameContext();
@@ -173,7 +176,9 @@ export const ViewportSystem: React.FC<ViewportProps> = (
       return;
     }
 
-    const snapKey = `${currentCharacter.id}:${room?.sessionId ?? ''}:${characterId ?? ''}`;
+    const snapKey = `${currentCharacter.id}:${room?.sessionId ?? ''}:${
+      characterId ?? ''
+    }`;
     if (lastSnapKeyRef.current === snapKey) {
       return;
     }
@@ -184,27 +189,36 @@ export const ViewportSystem: React.FC<ViewportProps> = (
     snapCameraToDisplay(currentCharacter);
   }, [currentCharacter, room?.sessionId, characterId]);
 
-  useTick(() => {
+  useTick((delta = 1) => {
     if (!currentCharacter) {
       return;
     }
 
-    displayPositionRef.current.x = lerp(
-      displayPositionRef.current.x,
-      currentCharacter.x,
-      DISPLAY_LERP
-    );
-    displayPositionRef.current.y = lerp(
-      displayPositionRef.current.y,
-      currentCharacter.y,
-      DISPLAY_LERP
-    );
+    const targetX = currentCharacter.x;
+    const targetY = currentCharacter.y;
+    const dx = Math.abs(displayPositionRef.current.x - targetX);
+    const dy = Math.abs(displayPositionRef.current.y - targetY);
+
+    if (dx > SNAP_DISTANCE_PX || dy > SNAP_DISTANCE_PX) {
+      displayPositionRef.current.x = targetX;
+      displayPositionRef.current.y = targetY;
+    } else {
+      const t = 1 - Math.pow(1 - DISPLAY_LERP, delta);
+      displayPositionRef.current.x = lerp(
+        displayPositionRef.current.x,
+        targetX,
+        t
+      );
+      displayPositionRef.current.y = lerp(
+        displayPositionRef.current.y,
+        targetY,
+        t
+      );
+    }
 
     const { width, height } = projectionRef.current;
-    const targetX = displayPositionRef.current.x - width / 2;
-    const targetY = displayPositionRef.current.y - height / 2;
-    const x = lerp(projectionRef.current.x, targetX, CAMERA_LERP);
-    const y = lerp(projectionRef.current.y, targetY, CAMERA_LERP);
+    const x = displayPositionRef.current.x - width / 2;
+    const y = displayPositionRef.current.y - height / 2;
 
     const projection = {
       ...projectionRef.current,
@@ -223,6 +237,12 @@ export const ViewportSystem: React.FC<ViewportProps> = (
     if (tileChanged) {
       publishedProjectionTileRef.current = { x: tileX, y: tileY };
     }
+
+    const localContainer = localCharacterContainerRef.current;
+    if (localContainer) {
+      localContainer.x = displayPositionRef.current.x;
+      localContainer.y = displayPositionRef.current.y;
+    }
   });
 
   const viewportContext = {
@@ -230,7 +250,8 @@ export const ViewportSystem: React.FC<ViewportProps> = (
     updateViewportState,
     viewportState,
     projectionRef,
-    displayPositionRef
+    displayPositionRef,
+    localCharacterContainerRef
   };
 
   return (

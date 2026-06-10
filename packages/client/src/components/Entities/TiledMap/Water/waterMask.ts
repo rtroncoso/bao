@@ -1,9 +1,4 @@
-import {
-  Graphics,
-  RenderTexture,
-  Renderer,
-  SCALE_MODES
-} from 'pixi.js';
+import { Graphics, RenderTexture, Renderer, SCALE_MODES } from 'pixi.js';
 
 import { WaterPolygon } from '../Shore/waterPolygons';
 

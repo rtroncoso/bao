@@ -90,7 +90,9 @@ export const useMapData = (tmxMap: any): TiledMapData => {
   }, [tmxMap]);
 };
 
-export const useSpatialIndexes = (mapData: TiledMapData): SpatialIndexes | null => {
+export const useSpatialIndexes = (
+  mapData: TiledMapData
+): SpatialIndexes | null => {
   return useMemo(() => {
     if (!mapData.tmx?.width) {
       return null;

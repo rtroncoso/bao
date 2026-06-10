@@ -8,9 +8,9 @@ import {
   getGlobalAnimationTime
 } from './effectAnimationRegistry';
 
-export const EffectsAnimationSystem: React.FC<{ children?: React.ReactNode }> = ({
-  children
-}) => {
+export const EffectsAnimationSystem: React.FC<{
+  children?: React.ReactNode;
+}> = ({ children }) => {
   useTick((delta) => {
     advanceGlobalAnimationTime(delta);
 

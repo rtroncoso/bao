@@ -141,6 +141,7 @@
     "yup": "^0.29.3"
   },
   "scripts": {
+    "clean": "rm -rf .next",
     "dev": "node scripts/dev.js",
     "start": "next start",
     "build": "next build",

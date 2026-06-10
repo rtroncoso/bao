@@ -1,18 +1,28 @@
 import React, { useContext } from 'react';
 
 import { GameContext } from '@bao/client/components/Game';
+import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
 import { Character } from 'src/components/Entities/Character';
 
 export const CharacterRenderingSystem: React.FC = () => {
   const { state } = useContext(GameContext);
-  const { serverState } = state;
+  const { serverState, characterId, room } = state;
   const { characters } = serverState || {};
+  const localCharacter = resolveLocalCharacter(
+    serverState,
+    characterId,
+    room?.sessionId
+  );
 
   if (characters) {
     return (
       <React.Fragment>
         {characters.map((character) => (
-          <Character key={character.sessionId} character={character} />
+          <Character
+            key={character.sessionId}
+            character={character}
+            isLocalPlayer={localCharacter?.sessionId === character.sessionId}
+          />
         ))}
       </React.Fragment>
     );
