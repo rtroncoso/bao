@@ -69,7 +69,7 @@ export const importNpcs = ({ datsDir }) => {
       }
 
       const { objectId, amount } = parseCompositeItem(dropValue);
-      if (!Number.isFinite(objectId)) {
+      if (!Number.isFinite(objectId) || objectId <= 0 || !Number.isFinite(amount)) {
         continue;
       }
 
@@ -95,7 +95,7 @@ export const importNpcs = ({ datsDir }) => {
       }
 
       const { objectId, amount } = parseCompositeItem(shopValue);
-      if (!Number.isFinite(objectId)) {
+      if (!Number.isFinite(objectId) || objectId <= 0 || !Number.isFinite(amount)) {
         continue;
       }
 

@@ -36,7 +36,7 @@ export const sqlValue = (value) => {
   }
 
   if (typeof value === 'number') {
-    return String(value);
+    return Number.isFinite(value) ? String(value) : '0';
   }
 
   if (typeof value === 'boolean') {
@@ -67,9 +67,13 @@ export const parseBool = (value) => {
 };
 
 export const parseCompositeItem = (value) => {
-  const [objectId, amount] = String(value).split('-');
+  const [objectIdPart, amountPart] = String(value).split('-');
+  const objectId = Number.parseInt(objectIdPart, 10);
+  const amountRaw = amountPart?.trim();
+  const amount = amountRaw ? Number.parseInt(amountRaw, 10) : 1;
+
   return {
-    objectId: Number.parseInt(objectId, 10),
-    amount: Number.parseInt(amount ?? '1', 10),
+    objectId: Number.isFinite(objectId) ? objectId : 0,
+    amount: Number.isFinite(amount) ? amount : 1,
   };
 };
