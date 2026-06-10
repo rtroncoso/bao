@@ -8,13 +8,16 @@ export interface OnLeaveParameters {
 
 export class OnLeaveCommand extends Command<ChatRoom, OnLeaveParameters> {
   execute({ client }: OnLeaveParameters) {
-    const { characters } = this.room;
-    const index = characters.findIndex(
-      (item) => item.sessionId === client.sessionId
-    );
-
-    if (index !== -1) {
-      characters.splice(index, 1);
+    const character = this.room.characterByChatSession.get(client.sessionId);
+    if (!character) {
+      return;
     }
+
+    const index = this.room.characters.indexOf(character);
+    if (index !== -1) {
+      this.room.characters.splice(index, 1);
+    }
+
+    this.room.characterByChatSession.delete(client.sessionId);
   }
 }

@@ -19,6 +19,10 @@ export const DebugGridSystem = () => {
   const filterRef = useRef<Filter | null>(null);
 
   useEffect(() => {
+    if (!DEBUG_SHOW_PIXI_TILE_GRID) {
+      return;
+    }
+
     try {
       const gridFilter = new Filter(vertex, fragment);
       gridFilter.uniforms.time = 0;

@@ -107,37 +107,45 @@ export const Character = ({
     node.y = positionRef.current.y;
   });
 
-  const lastMessage = useMemo(() => {
-    const messages = [...chatState.messages].reverse();
-    const [message] = messages.filter((message) =>
-      message.character ? message.character?.id === character.id : false
-    );
-    return message;
-  }, [chatState.messages.length]);
+  const headDisplay = character.sessionId
+    ? chatState.headDisplayBySession[character.sessionId]
+    : undefined;
 
   useEffect(() => {
-    if (lastMessage && chatMessageRef.current) {
-      if (chatTimeoutId) clearTimeout(chatTimeoutId);
-      easing.removeAll();
-      chatMessageRef.current.y = headOffset.y;
-      chatMessageRef.current.alpha = 0;
+    if (!chatMessageRef.current || headDisplay === undefined) {
+      return;
+    }
 
+    if (chatTimeoutId) clearTimeout(chatTimeoutId);
+    easing.removeAll();
+
+    if (!headDisplay.text) {
       easing.add(
         chatMessageRef.current,
-        { y: headOffset.y - 4 - TILE_SIZE / 2, alpha: 1 },
+        { y: headOffset.y, alpha: 0 },
         { duration: 300 }
       );
-
-      const timeoutId = setTimeout(() => {
-        easing.add(
-          chatMessageRef.current,
-          { y: headOffset.y, alpha: 0 },
-          { duration: 300 }
-        );
-      }, 3000);
-      setChatTimeoutId(timeoutId);
+      return;
     }
-  }, [lastMessage, chatMessageRef.current]);
+
+    chatMessageRef.current.y = headOffset.y;
+    chatMessageRef.current.alpha = 0;
+
+    easing.add(
+      chatMessageRef.current,
+      { y: headOffset.y - 4 - TILE_SIZE / 2, alpha: 1 },
+      { duration: 300 }
+    );
+
+    const timeoutId = setTimeout(() => {
+      easing.add(
+        chatMessageRef.current,
+        { y: headOffset.y, alpha: 0 },
+        { duration: 300 }
+      );
+    }, 3000);
+    setChatTimeoutId(timeoutId);
+  }, [headDisplay?.token, headOffset.y]);
 
   return (
     <Container
@@ -161,12 +169,12 @@ export const Character = ({
           </>
         )}
       </Container>
-      {lastMessage && (
+      {headDisplay !== undefined && (
         <Text
           ref={chatMessageRef}
           anchor={[0.5, 1.0]}
           x={TILE_SIZE / 2}
-          text={lastMessage.message}
+          text={headDisplay.text}
           style={{
             ...chatStyle,
             breakWords: true,

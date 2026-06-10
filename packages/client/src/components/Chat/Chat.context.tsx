@@ -31,12 +31,24 @@ export interface ChatComponentRouterState {
   characterId?: number;
 }
 
+export interface HeadDisplay {
+  text: string;
+  token: number;
+}
+
+export interface ClearHeadPayload {
+  character?: Message['character'];
+  timestamp: number;
+}
+
 export interface ChatContextState {
   client?: Client;
   connected?: boolean;
   focused?: boolean;
   room?: Room<ChatRoom>;
   messages: ArraySchema<Message>;
+  /** Speech bubbles above characters — separate from the chat log. */
+  headDisplayBySession: Record<string, HeadDisplay>;
 }
 
 export interface ChatContextProps {
@@ -53,7 +65,8 @@ export interface ChatContextProps {
 export const createChatInitialState = (): ChatContextState => ({
   connected: false,
   focused: false,
-  messages: new ArraySchema<Message>()
+  messages: new ArraySchema<Message>(),
+  headDisplayBySession: {}
 });
 
 export const createChatOptions = (): ChatContextContainerOptions => ({
@@ -133,19 +146,53 @@ export const ChatContextContainer = <P extends ChatConnectedProps>(
     );
 
     const handleRoomMessage = useCallback(
-      (type: 'message', message: Message) => {
+      (type: string, payload: Message | ClearHeadPayload) => {
+        if (type === 'clearHead') {
+          const { character, timestamp } = payload as ClearHeadPayload;
+          const sessionId = character?.sessionId;
+          if (!sessionId) {
+            return;
+          }
+
+          updateState((draft) => {
+            draft.headDisplayBySession[sessionId] = {
+              text: '',
+              token: timestamp
+            };
+          });
+          return;
+        }
+
+        const message = payload as Message;
+        if (typeof message?.message !== 'string' || !message.message.trim()) {
+          return;
+        }
+
         updateState((draft) => {
           draft.messages.push(message);
+          const sessionId = message.character?.sessionId;
+          if (sessionId) {
+            draft.headDisplayBySession[sessionId] = {
+              text: message.message,
+              token: message.timestamp
+            };
+          }
         });
       },
-      [state, setState]
+      [updateState]
     );
 
     const handleJoinRoom = useCallback(async () => {
       try {
         const client = new Client(process.env.NEXT_PUBLIC_BAO_SERVER);
+        const sessionId = gameState.room?.sessionId;
+        if (!sessionId) {
+          return router.push('/');
+        }
+
         const room = await client.joinOrCreate<ChatRoom>(options.room, {
           characterId: gameState.characterId,
+          sessionId,
           token
         });
 

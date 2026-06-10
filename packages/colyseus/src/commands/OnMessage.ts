@@ -10,10 +10,7 @@ export interface OnMessageParameters {
 
 export class OnMessageCommand extends Command<ChatRoom, OnMessageParameters> {
   async execute({ client, message }: OnMessageParameters) {
-    const { characters } = this.room;
-    const character = characters.find(
-      (item) => item.sessionId === client.sessionId
-    );
+    const character = this.room.characterByChatSession.get(client.sessionId);
     this.room.broadcastMessage({ message, character });
   }
 }

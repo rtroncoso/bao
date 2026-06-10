@@ -12,8 +12,8 @@ import {
   DebugGridSystem,
   DebugTextSystem
 } from '@bao/client/components/Systems/DebugSystem';
-import { useWaterDebugPortal } from '@bao/client/components/Entities/TiledMap/Water';
-import { useShgDebugPortal } from '@bao/client/components/Entities/TiledMap/useShgDebugPortal';
+import { useGameDebugPortal } from '@bao/client/components/Entities/TiledMap/useGameDebugPortal';
+import { DEBUG_SHOW_PIXI_TILE_GRID } from '@bao/client/components/Entities/TiledMap/debugFlags';
 import { useGameContext } from '@bao/client/components/Game';
 import {
   SetStateCallback,
@@ -128,8 +128,7 @@ export const ViewportSystem: React.FC<ViewportProps> = (
   const { room, serverState, characterId } = state;
   const { children, overlay } = props;
 
-  useWaterDebugPortal(Boolean(state.debug), projectionRef);
-  useShgDebugPortal(Boolean(state.debug), projectionRef);
+  useGameDebugPortal(Boolean(state.debug), projectionRef);
 
   const currentCharacter = resolveLocalCharacter(
     serverState,
@@ -255,7 +254,7 @@ export const ViewportSystem: React.FC<ViewportProps> = (
       {viewportState && (
         <>
           <Container ref={viewport}>
-            {state.debug && <DebugGridSystem />}
+            {state.debug && DEBUG_SHOW_PIXI_TILE_GRID && <DebugGridSystem />}
             {children}
             {state.debug && <DebugTextSystem />}
           </Container>

@@ -8,6 +8,7 @@ import { OnLeaveCommand } from '@bao/server/commands/OnLeaveChat';
 import { AuthService } from '@bao/server/services/AuthService';
 import { CharacterState } from '@bao/server/schema/CharacterState';
 import { Message, MessageOptions } from '@bao/server/schema/MessageState';
+import { OnClearHeadCommand } from '@bao/server/commands/OnClearHead';
 import {
   OnMessageCommand,
   OnMessageParameters
@@ -29,6 +30,8 @@ export interface BroadcastMessageParams {
 
 export class ChatRoom extends Room<WorldRoomState> {
   characters = new ArraySchema<CharacterState>();
+  /** Chat-room client sessionId → world character (world sessionId on character). */
+  characterByChatSession = new Map<string, CharacterState>();
   authService: AuthService = new AuthService(this);
   dispatcher = new Dispatcher(this);
 
@@ -40,6 +43,9 @@ export class ChatRoom extends Room<WorldRoomState> {
         message,
         client
       });
+    });
+    this.onMessage('clearHead', (client) => {
+      this.dispatcher.dispatch(new OnClearHeadCommand(), { client });
     });
   }
 
@@ -74,6 +80,7 @@ export class ChatRoom extends Room<WorldRoomState> {
   }: BroadcastMessageParams) {
     const timestamp = Date.now();
     this.broadcast(
+      'message',
       new Message({
         character,
         message,

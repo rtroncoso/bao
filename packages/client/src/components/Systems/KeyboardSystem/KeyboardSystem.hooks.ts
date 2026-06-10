@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useChatContext } from 'src/components/Chat';
 
 export function useKeyPress(targetKey: string) {
@@ -30,32 +30,37 @@ export function useKeyPress(targetKey: string) {
 }
 
 export function usePressedKeys() {
-  const [keys, setKeys] = useState<Array<string>>([]);
+  const [keys, setKeys] = useState<string[]>([]);
   const { state } = useChatContext();
+  const chatFocusedRef = useRef(state.focused);
+  chatFocusedRef.current = state.focused;
 
   useEffect(() => {
-    if (state.focused && keys.length) {
+    if (state.focused) {
       setKeys([]);
     }
+  }, [state.focused]);
 
-    const blurHandler = () => {
-      setKeys([]);
-    };
-
-    const downHandler = ({ key }: { key: string }) => {
-      if (!state.focused && keys.indexOf(key.toLowerCase()) === -1) {
-        keys.push(key.toLowerCase());
-        setKeys([...keys.reverse()]);
+  useEffect(() => {
+    const downHandler = ({ key }: KeyboardEvent) => {
+      if (chatFocusedRef.current) {
+        return;
       }
+
+      const lower = key.toLowerCase();
+      setKeys((prev) => (prev.includes(lower) ? prev : [...prev, lower]));
     };
 
-    const upHandler = ({ key }: { key: string }) => {
-      const index = keys.indexOf(key.toLowerCase());
-      if (!state.focused && index !== -1) {
-        keys.splice(index, 1);
-        setKeys([...keys.reverse()]);
+    const upHandler = ({ key }: KeyboardEvent) => {
+      if (chatFocusedRef.current) {
+        return;
       }
+
+      const lower = key.toLowerCase();
+      setKeys((prev) => prev.filter((k) => k !== lower));
     };
+
+    const blurHandler = () => setKeys([]);
 
     window.addEventListener('blur', blurHandler);
     window.addEventListener('keydown', downHandler);
@@ -66,7 +71,7 @@ export function usePressedKeys() {
       window.removeEventListener('keydown', downHandler);
       window.removeEventListener('keyup', upHandler);
     };
-  }, [keys, state.focused]);
+  }, []);
 
-  return keys;
+  return state.focused ? [] : keys;
 }

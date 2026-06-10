@@ -1,26 +1,35 @@
 import React, { useContext, useEffect } from 'react';
 
 import { GameContext } from '@bao/client/components/Game';
+import { useChatContext } from 'src/components/Chat';
 import { usePressedKeys } from './KeyboardSystem.hooks';
-import { useViewportContext } from '../ViewportSystem';
 
 export interface KeyboardInputProps {}
 
-export const KeyboardSystem: React.FC<KeyboardInputProps> = (props) => {
+export const KeyboardSystem: React.FC<KeyboardInputProps> = () => {
   const { callbacks, state } = useContext(GameContext);
+  const { state: chatState } = useChatContext();
   const inputs = usePressedKeys();
 
   useEffect(() => {
-    if (state?.room) {
-      callbacks.sendRoomMessage('input', { inputs });
+    if (!state?.room) {
+      return;
     }
-  }, [inputs]);
+
+    callbacks.sendRoomMessage('input', {
+      inputs: chatState.focused ? [] : inputs
+    });
+  }, [inputs, chatState.focused, state?.room, callbacks]);
 
   useEffect(() => {
     const handleContextMenu = (event: MouseEvent) => {
       event.preventDefault();
     };
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (chatState.focused) {
+        return;
+      }
+
       const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
       const commandKey = isMac ? event.metaKey : event.ctrlKey;
       const key = event.key.toLowerCase();
@@ -43,7 +52,7 @@ export const KeyboardSystem: React.FC<KeyboardInputProps> = (props) => {
       window.removeEventListener('contextmenu', handleContextMenu);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [callbacks]);
+  }, [callbacks, chatState.focused]);
 
   return null;
 };

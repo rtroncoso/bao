@@ -118,7 +118,7 @@ export class OnJoinCommand extends Command<WorldRoom, OnJoinParameters> {
       character.sessionId = client.sessionId;
       character.moveTo(20, 65);
       this.state.characters.push(character);
-      this.room.presence.sadd(`character:${character.id}`, character);
+      this.room.presence.sadd(`session:${client.sessionId}`, character);
     } catch (error) {
       throw toJoinServerError(error);
     }

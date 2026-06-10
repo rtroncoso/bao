@@ -19,7 +19,9 @@ export class OnLeaveCommand extends Command<WorldRoom, OnLeaveParameters> {
       );
 
       if (index !== -1) {
-        this.state.characters.splice(index);
+        const character = this.state.characters[index];
+        this.state.characters.splice(index, 1);
+        this.room.presence.srem(`session:${client.sessionId}`, character);
       }
     }
   }
