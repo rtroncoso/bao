@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 
 import { GameContext } from '@bao/client/components/Game';
 import { useChatContext } from 'src/components/Chat';
@@ -6,20 +6,34 @@ import { usePressedKeys } from './KeyboardSystem.hooks';
 
 export interface KeyboardInputProps {}
 
+const inputsKey = (inputs: string[]) => inputs.join('\0');
+
 export const KeyboardSystem: React.FC<KeyboardInputProps> = () => {
   const { callbacks, state } = useContext(GameContext);
   const { state: chatState } = useChatContext();
   const inputs = usePressedKeys();
+  const lastSentKeyRef = useRef<string | null>(null);
+  const roomRef = useRef(state?.room);
+
+  roomRef.current = state?.room;
 
   useEffect(() => {
-    if (!state?.room) {
+    const room = roomRef.current;
+    if (!room) {
+      lastSentKeyRef.current = null;
       return;
     }
 
-    callbacks.sendRoomMessage('input', {
-      inputs: chatState.focused ? [] : inputs
-    });
-  }, [inputs, chatState.focused, state?.room, callbacks]);
+    const payload = chatState.focused ? [] : inputs;
+    const key = inputsKey(payload);
+
+    if (key === lastSentKeyRef.current) {
+      return;
+    }
+
+    lastSentKeyRef.current = key;
+    room.send('input', { inputs: payload });
+  }, [inputs, chatState.focused, state?.room]);
 
   useEffect(() => {
     const handleContextMenu = (event: MouseEvent) => {

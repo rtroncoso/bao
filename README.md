@@ -15,7 +15,7 @@ Complete repository for **bao** game client, servers and tools.
 You can fiddle around this implementation by going to the [Demo Site](https://bao.rtroncoso.com)
 
 > **Credentials:** demo / demo123
-> **Tip:** Press **Command+G** or **Ctrl+G** to view debug info
+> **Tip:** Press **Command+G** (Mac) or **Ctrl+G** (Windows/linux) to view debug info
 
 ## Getting Started
 

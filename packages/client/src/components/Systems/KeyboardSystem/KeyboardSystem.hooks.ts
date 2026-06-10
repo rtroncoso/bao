@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useChatContext } from 'src/components/Chat';
 
+const EMPTY_KEYS: string[] = [];
+
 export function useKeyPress(targetKey: string) {
   const [keyPressed, setKeyPressed] = useState(false);
 
@@ -73,5 +75,5 @@ export function usePressedKeys() {
     };
   }, []);
 
-  return state.focused ? [] : keys;
+  return state.focused ? EMPTY_KEYS : keys;
 }

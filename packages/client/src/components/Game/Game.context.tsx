@@ -84,22 +84,23 @@ export const GameContainer = <P extends GameConnectedProps>(
       });
     }, []);
 
-    const handleSendRoomMessage = useCallback(
-      (messageType, parameters) => {
-        if (state.room) {
-          return state.room.send(messageType, parameters);
-        }
+    const roomRef = useRef(state.room);
+    roomRef.current = state.room;
 
-        console.warn(
-          `[world:handleSendRoomMessage]: Sending message to closed room ${messageType}:${JSON.stringify(
-            parameters,
-            Object.getOwnPropertyNames(parameters),
-            2
-          )}`
-        );
-      },
-      [state]
-    );
+    const handleSendRoomMessage = useCallback((messageType, parameters) => {
+      const room = roomRef.current;
+      if (room) {
+        return room.send(messageType, parameters);
+      }
+
+      console.warn(
+        `[world:handleSendRoomMessage]: Sending message to closed room ${messageType}:${JSON.stringify(
+          parameters,
+          Object.getOwnPropertyNames(parameters),
+          2
+        )}`
+      );
+    }, []);
 
     const handleLeaveRoom = useCallback(
       (error?: Error) => {
