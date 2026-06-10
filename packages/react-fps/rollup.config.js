@@ -10,12 +10,12 @@ export default {
   input: "./src/index.ts",
   output: [
     {
-      file: packageJson.main,
+      file: "./build/index.js",
       format: "cjs",
       sourcemap: true,
     },
     {
-      file: packageJson.module,
+      file: "./build/index.es.js",
       format: "esm",
       sourcemap: true,
     },
