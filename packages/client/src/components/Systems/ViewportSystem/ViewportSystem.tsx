@@ -90,6 +90,16 @@ export const resolveLocalCharacter = (
     return null;
   }
 
+  // Prefer Colyseus session id so duplicate API character ids (beta testing)
+  // each resolve to this client's avatar, not the first match in the room.
+  if (sessionId) {
+    for (const character of serverState.characters) {
+      if (character.sessionId === sessionId) {
+        return character;
+      }
+    }
+  }
+
   if (characterId) {
     const id = parseInt(String(characterId), 10);
     if (!Number.isNaN(id)) {
@@ -97,14 +107,6 @@ export const resolveLocalCharacter = (
         if (character.id === id) {
           return character;
         }
-      }
-    }
-  }
-
-  if (sessionId) {
-    for (const character of serverState.characters) {
-      if (character.sessionId === sessionId) {
-        return character;
       }
     }
   }
@@ -179,9 +181,7 @@ export const ViewportSystem: React.FC<ViewportProps> = (
       return;
     }
 
-    const snapKey = `${currentCharacter.id}:${room?.sessionId ?? ''}:${
-      characterId ?? ''
-    }`;
+    const snapKey = room?.sessionId ?? characterId ?? '';
     if (lastSnapKeyRef.current === snapKey) {
       return;
     }
