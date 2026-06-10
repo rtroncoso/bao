@@ -1,0 +1,93 @@
+{
+  "mapId": 42,
+  "npcs": [
+    {
+      "npcId": 547,
+      "x": 80,
+      "y": 43
+    },
+    {
+      "npcId": 531,
+      "x": 47,
+      "y": 47
+    }
+  ],
+  "objects": [],
+  "tileExits": [
+    {
+      "x": 41,
+      "y": 7,
+      "targetMapId": 41,
+      "targetX": 41,
+      "targetY": 93
+    },
+    {
+      "x": 42,
+      "y": 7,
+      "targetMapId": 41,
+      "targetX": 42,
+      "targetY": 93
+    },
+    {
+      "x": 43,
+      "y": 7,
+      "targetMapId": 41,
+      "targetX": 43,
+      "targetY": 93
+    },
+    {
+      "x": 44,
+      "y": 7,
+      "targetMapId": 41,
+      "targetX": 44,
+      "targetY": 93
+    },
+    {
+      "x": 45,
+      "y": 7,
+      "targetMapId": 41,
+      "targetX": 44,
+      "targetY": 93
+    },
+    {
+      "x": 41,
+      "y": 94,
+      "targetMapId": 43,
+      "targetX": 41,
+      "targetY": 8
+    },
+    {
+      "x": 42,
+      "y": 94,
+      "targetMapId": 43,
+      "targetX": 42,
+      "targetY": 8
+    },
+    {
+      "x": 43,
+      "y": 94,
+      "targetMapId": 43,
+      "targetX": 43,
+      "targetY": 8
+    },
+    {
+      "x": 44,
+      "y": 94,
+      "targetMapId": 43,
+      "targetX": 44,
+      "targetY": 8
+    }
+  ],
+  "info": {
+    "id": 42,
+    "name": "Catacumbas Ullathorpe-Nix.",
+    "musicNum": 9,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "BOSQUE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": false,
+    "pk": false
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "mapId": 269,
+  "npcs": [
+    {
+      "npcId": 501,
+      "x": 59,
+      "y": 67
+    }
+  ],
+  "objects": [],
+  "tileExits": [
+    {
+      "x": 58,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 45,
+      "targetY": 48
+    },
+    {
+      "x": 59,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 45,
+      "targetY": 48
+    },
+    {
+      "x": 60,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 46,
+      "targetY": 48
+    },
+    {
+      "x": 61,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 46,
+      "targetY": 48
+    }
+  ],
+  "info": {
+    "id": 269,
+    "name": "Interior de la Montaña.",
+    "musicNum": 110,
+    "magiaSinEfecto": true,
+    "noEncriptarMP": false,
+    "terreno": "NIEVE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": false
+  }
+}

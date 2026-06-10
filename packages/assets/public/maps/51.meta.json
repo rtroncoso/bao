@@ -1,0 +1,75 @@
+{
+  "mapId": 51,
+  "npcs": [],
+  "objects": [],
+  "tileExits": [
+    {
+      "x": 92,
+      "y": 45,
+      "targetMapId": 52,
+      "targetX": 10,
+      "targetY": 45
+    },
+    {
+      "x": 92,
+      "y": 46,
+      "targetMapId": 52,
+      "targetX": 10,
+      "targetY": 46
+    },
+    {
+      "x": 92,
+      "y": 47,
+      "targetMapId": 52,
+      "targetX": 10,
+      "targetY": 47
+    },
+    {
+      "x": 92,
+      "y": 48,
+      "targetMapId": 52,
+      "targetX": 10,
+      "targetY": 48
+    },
+    {
+      "x": 13,
+      "y": 81,
+      "targetMapId": 50,
+      "targetX": 91,
+      "targetY": 81
+    },
+    {
+      "x": 13,
+      "y": 82,
+      "targetMapId": 50,
+      "targetX": 91,
+      "targetY": 82
+    },
+    {
+      "x": 13,
+      "y": 83,
+      "targetMapId": 50,
+      "targetX": 91,
+      "targetY": 83
+    },
+    {
+      "x": 13,
+      "y": 84,
+      "targetMapId": 50,
+      "targetX": 91,
+      "targetY": 84
+    }
+  ],
+  "info": {
+    "id": 51,
+    "name": "Minas de Plata.",
+    "musicNum": 9,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "BOSQUE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": false
+  }
+}

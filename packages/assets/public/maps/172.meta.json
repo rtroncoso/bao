@@ -1,0 +1,197 @@
+{
+  "mapId": 172,
+  "npcs": [
+    {
+      "npcId": 500,
+      "x": 19,
+      "y": 66
+    },
+    {
+      "npcId": 500,
+      "x": 22,
+      "y": 66
+    },
+    {
+      "npcId": 500,
+      "x": 25,
+      "y": 66
+    },
+    {
+      "npcId": 500,
+      "x": 28,
+      "y": 66
+    },
+    {
+      "npcId": 500,
+      "x": 31,
+      "y": 66
+    },
+    {
+      "npcId": 500,
+      "x": 19,
+      "y": 69
+    },
+    {
+      "npcId": 500,
+      "x": 22,
+      "y": 69
+    },
+    {
+      "npcId": 500,
+      "x": 25,
+      "y": 69
+    },
+    {
+      "npcId": 500,
+      "x": 28,
+      "y": 69
+    },
+    {
+      "npcId": 500,
+      "x": 31,
+      "y": 69
+    },
+    {
+      "npcId": 504,
+      "x": 71,
+      "y": 73
+    },
+    {
+      "npcId": 504,
+      "x": 73,
+      "y": 73
+    },
+    {
+      "npcId": 504,
+      "x": 75,
+      "y": 73
+    },
+    {
+      "npcId": 504,
+      "x": 77,
+      "y": 73
+    },
+    {
+      "npcId": 504,
+      "x": 79,
+      "y": 73
+    },
+    {
+      "npcId": 504,
+      "x": 71,
+      "y": 76
+    },
+    {
+      "npcId": 504,
+      "x": 73,
+      "y": 76
+    },
+    {
+      "npcId": 504,
+      "x": 75,
+      "y": 76
+    },
+    {
+      "npcId": 504,
+      "x": 77,
+      "y": 76
+    },
+    {
+      "npcId": 504,
+      "x": 79,
+      "y": 76
+    }
+  ],
+  "objects": [],
+  "tileExits": [
+    {
+      "x": 29,
+      "y": 7,
+      "targetMapId": 60,
+      "targetX": 87,
+      "targetY": 15
+    },
+    {
+      "x": 30,
+      "y": 7,
+      "targetMapId": 60,
+      "targetX": 87,
+      "targetY": 15
+    },
+    {
+      "x": 31,
+      "y": 7,
+      "targetMapId": 60,
+      "targetX": 87,
+      "targetY": 15
+    },
+    {
+      "x": 32,
+      "y": 7,
+      "targetMapId": 60,
+      "targetX": 87,
+      "targetY": 15
+    },
+    {
+      "x": 33,
+      "y": 7,
+      "targetMapId": 60,
+      "targetX": 87,
+      "targetY": 15
+    },
+    {
+      "x": 77,
+      "y": 94,
+      "targetMapId": 173,
+      "targetX": 77,
+      "targetY": 8
+    },
+    {
+      "x": 78,
+      "y": 94,
+      "targetMapId": 173,
+      "targetX": 78,
+      "targetY": 8
+    },
+    {
+      "x": 79,
+      "y": 94,
+      "targetMapId": 173,
+      "targetX": 79,
+      "targetY": 8
+    },
+    {
+      "x": 80,
+      "y": 94,
+      "targetMapId": 173,
+      "targetX": 80,
+      "targetY": 8
+    },
+    {
+      "x": 81,
+      "y": 94,
+      "targetMapId": 173,
+      "targetX": 81,
+      "targetY": 8
+    },
+    {
+      "x": 82,
+      "y": 94,
+      "targetMapId": 173,
+      "targetX": 82,
+      "targetY": 8
+    }
+  ],
+  "info": {
+    "id": 172,
+    "name": "Ducto de escape.",
+    "musicNum": 15,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "NIEVE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": false
+  }
+}

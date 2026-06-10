@@ -1,0 +1,153 @@
+{
+  "mapId": 184,
+  "npcs": [
+    {
+      "npcId": 589,
+      "x": 40,
+      "y": 14
+    },
+    {
+      "npcId": 589,
+      "x": 80,
+      "y": 14
+    },
+    {
+      "npcId": 586,
+      "x": 48,
+      "y": 15
+    },
+    {
+      "npcId": 587,
+      "x": 90,
+      "y": 24
+    },
+    {
+      "npcId": 585,
+      "x": 58,
+      "y": 31
+    },
+    {
+      "npcId": 587,
+      "x": 20,
+      "y": 32
+    },
+    {
+      "npcId": 585,
+      "x": 80,
+      "y": 36
+    },
+    {
+      "npcId": 586,
+      "x": 48,
+      "y": 42
+    },
+    {
+      "npcId": 586,
+      "x": 35,
+      "y": 44
+    },
+    {
+      "npcId": 587,
+      "x": 90,
+      "y": 46
+    },
+    {
+      "npcId": 588,
+      "x": 23,
+      "y": 51
+    },
+    {
+      "npcId": 585,
+      "x": 44,
+      "y": 56
+    },
+    {
+      "npcId": 584,
+      "x": 73,
+      "y": 57
+    },
+    {
+      "npcId": 587,
+      "x": 31,
+      "y": 62
+    },
+    {
+      "npcId": 585,
+      "x": 56,
+      "y": 65
+    },
+    {
+      "npcId": 584,
+      "x": 23,
+      "y": 67
+    },
+    {
+      "npcId": 584,
+      "x": 74,
+      "y": 73
+    },
+    {
+      "npcId": 587,
+      "x": 85,
+      "y": 74
+    },
+    {
+      "npcId": 587,
+      "x": 57,
+      "y": 75
+    },
+    {
+      "npcId": 588,
+      "x": 23,
+      "y": 86
+    },
+    {
+      "npcId": 586,
+      "x": 86,
+      "y": 89
+    }
+  ],
+  "objects": [],
+  "tileExits": [
+    {
+      "x": 52,
+      "y": 93,
+      "targetMapId": 139,
+      "targetX": 53,
+      "targetY": 53
+    },
+    {
+      "x": 53,
+      "y": 93,
+      "targetMapId": 139,
+      "targetX": 53,
+      "targetY": 53
+    },
+    {
+      "x": 54,
+      "y": 93,
+      "targetMapId": 139,
+      "targetX": 53,
+      "targetY": 53
+    },
+    {
+      "x": 55,
+      "y": 93,
+      "targetMapId": 139,
+      "targetX": 53,
+      "targetY": 53
+    }
+  ],
+  "info": {
+    "id": 184,
+    "name": "Dungeon Inferno.",
+    "musicNum": 58,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "NIEVE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": false
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "mapId": 166,
+  "npcs": [
+    {
+      "npcId": 541,
+      "x": 27,
+      "y": 8
+    },
+    {
+      "npcId": 541,
+      "x": 59,
+      "y": 12
+    },
+    {
+      "npcId": 517,
+      "x": 89,
+      "y": 16
+    },
+    {
+      "npcId": 537,
+      "x": 41,
+      "y": 45
+    },
+    {
+      "npcId": 537,
+      "x": 71,
+      "y": 55
+    },
+    {
+      "npcId": 541,
+      "x": 24,
+      "y": 65
+    },
+    {
+      "npcId": 537,
+      "x": 33,
+      "y": 70
+    },
+    {
+      "npcId": 542,
+      "x": 45,
+      "y": 75
+    },
+    {
+      "npcId": 541,
+      "x": 59,
+      "y": 84
+    },
+    {
+      "npcId": 537,
+      "x": 94,
+      "y": 84
+    }
+  ],
+  "objects": [
+    {
+      "objectId": 378,
+      "amount": 1,
+      "x": 18,
+      "y": 10
+    },
+    {
+      "objectId": 378,
+      "amount": 1,
+      "x": 78,
+      "y": 66
+    },
+    {
+      "objectId": 378,
+      "amount": 1,
+      "x": 18,
+      "y": 87
+    }
+  ],
+  "tileExits": [
+    {
+      "x": 14,
+      "y": 10,
+      "targetMapId": 7,
+      "targetX": 50,
+      "targetY": 10
+    },
+    {
+      "x": 74,
+      "y": 66,
+      "targetMapId": 17,
+      "targetX": 82,
+      "targetY": 15
+    },
+    {
+      "x": 14,
+      "y": 87,
+      "targetMapId": 24,
+      "targetX": 80,
+      "targetY": 30
+    }
+  ],
+  "info": {
+    "id": 166,
+    "name": "Dungeon Dragon.",
+    "musicNum": 14,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "NIEVE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": false
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "mapId": 116,
+  "npcs": [
+    {
+      "npcId": 549,
+      "x": 79,
+      "y": 15
+    },
+    {
+      "npcId": 554,
+      "x": 25,
+      "y": 48
+    },
+    {
+      "npcId": 543,
+      "x": 61,
+      "y": 48
+    },
+    {
+      "npcId": 555,
+      "x": 25,
+      "y": 53
+    },
+    {
+      "npcId": 507,
+      "x": 85,
+      "y": 54
+    },
+    {
+      "npcId": 507,
+      "x": 89,
+      "y": 54
+    },
+    {
+      "npcId": 507,
+      "x": 93,
+      "y": 54
+    },
+    {
+      "npcId": 507,
+      "x": 88,
+      "y": 58
+    },
+    {
+      "npcId": 507,
+      "x": 91,
+      "y": 58
+    },
+    {
+      "npcId": 536,
+      "x": 63,
+      "y": 80
+    },
+    {
+      "npcId": 536,
+      "x": 66,
+      "y": 80
+    }
+  ],
+  "objects": [],
+  "tileExits": [
+    {
+      "x": 36,
+      "y": 94,
+      "targetMapId": 115,
+      "targetX": 32,
+      "targetY": 8
+    },
+    {
+      "x": 37,
+      "y": 94,
+      "targetMapId": 115,
+      "targetX": 33,
+      "targetY": 8
+    },
+    {
+      "x": 38,
+      "y": 94,
+      "targetMapId": 115,
+      "targetX": 34,
+      "targetY": 8
+    },
+    {
+      "x": 39,
+      "y": 94,
+      "targetMapId": 115,
+      "targetX": 35,
+      "targetY": 8
+    },
+    {
+      "x": 40,
+      "y": 94,
+      "targetMapId": 115,
+      "targetX": 36,
+      "targetY": 8
+    },
+    {
+      "x": 41,
+      "y": 94,
+      "targetMapId": 115,
+      "targetX": 37,
+      "targetY": 8
+    },
+    {
+      "x": 84,
+      "y": 94,
+      "targetMapId": 115,
+      "targetX": 84,
+      "targetY": 8
+    },
+    {
+      "x": 85,
+      "y": 94,
+      "targetMapId": 115,
+      "targetX": 85,
+      "targetY": 8
+    },
+    {
+      "x": 86,
+      "y": 94,
+      "targetMapId": 115,
+      "targetX": 86,
+      "targetY": 8
+    }
+  ],
+  "info": {
+    "id": 116,
+    "name": "Dungeon Marabel.",
+    "musicNum": 15,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "BOSQUE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": false
+  }
+}

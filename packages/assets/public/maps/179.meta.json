@@ -1,0 +1,235 @@
+{
+  "mapId": 179,
+  "npcs": [
+    {
+      "npcId": 500,
+      "x": 58,
+      "y": 15
+    },
+    {
+      "npcId": 500,
+      "x": 87,
+      "y": 16
+    },
+    {
+      "npcId": 500,
+      "x": 29,
+      "y": 20
+    },
+    {
+      "npcId": 535,
+      "x": 84,
+      "y": 21
+    },
+    {
+      "npcId": 535,
+      "x": 57,
+      "y": 32
+    },
+    {
+      "npcId": 535,
+      "x": 51,
+      "y": 47
+    },
+    {
+      "npcId": 500,
+      "x": 83,
+      "y": 47
+    },
+    {
+      "npcId": 500,
+      "x": 51,
+      "y": 74
+    },
+    {
+      "npcId": 535,
+      "x": 18,
+      "y": 78
+    },
+    {
+      "npcId": 535,
+      "x": 52,
+      "y": 88
+    }
+  ],
+  "objects": [
+    {
+      "objectId": 230,
+      "amount": 1,
+      "x": 26,
+      "y": 57
+    },
+    {
+      "objectId": 229,
+      "amount": 1,
+      "x": 31,
+      "y": 57
+    },
+    {
+      "objectId": 228,
+      "amount": 1,
+      "x": 28,
+      "y": 58
+    },
+    {
+      "objectId": 230,
+      "amount": 1,
+      "x": 33,
+      "y": 58
+    },
+    {
+      "objectId": 230,
+      "amount": 1,
+      "x": 30,
+      "y": 59
+    },
+    {
+      "objectId": 228,
+      "amount": 1,
+      "x": 47,
+      "y": 75
+    },
+    {
+      "objectId": 231,
+      "amount": 1,
+      "x": 44,
+      "y": 76
+    },
+    {
+      "objectId": 229,
+      "amount": 1,
+      "x": 43,
+      "y": 77
+    },
+    {
+      "objectId": 228,
+      "amount": 1,
+      "x": 48,
+      "y": 77
+    },
+    {
+      "objectId": 231,
+      "amount": 1,
+      "x": 45,
+      "y": 78
+    },
+    {
+      "objectId": 229,
+      "amount": 1,
+      "x": 51,
+      "y": 78
+    },
+    {
+      "objectId": 229,
+      "amount": 1,
+      "x": 41,
+      "y": 80
+    },
+    {
+      "objectId": 231,
+      "amount": 1,
+      "x": 43,
+      "y": 80
+    },
+    {
+      "objectId": 228,
+      "amount": 1,
+      "x": 44,
+      "y": 80
+    },
+    {
+      "objectId": 229,
+      "amount": 1,
+      "x": 47,
+      "y": 80
+    },
+    {
+      "objectId": 231,
+      "amount": 1,
+      "x": 48,
+      "y": 80
+    },
+    {
+      "objectId": 231,
+      "amount": 1,
+      "x": 51,
+      "y": 80
+    },
+    {
+      "objectId": 231,
+      "amount": 1,
+      "x": 42,
+      "y": 82
+    },
+    {
+      "objectId": 231,
+      "amount": 1,
+      "x": 46,
+      "y": 82
+    },
+    {
+      "objectId": 231,
+      "amount": 1,
+      "x": 44,
+      "y": 83
+    },
+    {
+      "objectId": 228,
+      "amount": 1,
+      "x": 48,
+      "y": 83
+    },
+    {
+      "objectId": 231,
+      "amount": 1,
+      "x": 48,
+      "y": 84
+    },
+    {
+      "objectId": 228,
+      "amount": 1,
+      "x": 51,
+      "y": 84
+    },
+    {
+      "objectId": 231,
+      "amount": 1,
+      "x": 47,
+      "y": 85
+    },
+    {
+      "objectId": 228,
+      "amount": 1,
+      "x": 43,
+      "y": 86
+    }
+  ],
+  "tileExits": [
+    {
+      "x": 53,
+      "y": 7,
+      "targetMapId": 213,
+      "targetX": 75,
+      "targetY": 84
+    },
+    {
+      "x": 54,
+      "y": 7,
+      "targetMapId": 213,
+      "targetX": 76,
+      "targetY": 84
+    }
+  ],
+  "info": {
+    "id": 179,
+    "name": "Minas de Oro.",
+    "musicNum": 74,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "BOSQUE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": false
+  }
+}

@@ -1,0 +1,488 @@
+{
+  "mapId": 33,
+  "npcs": [
+    {
+      "npcId": 505,
+      "x": 28,
+      "y": 27
+    },
+    {
+      "npcId": 505,
+      "x": 47,
+      "y": 33
+    },
+    {
+      "npcId": 510,
+      "x": 38,
+      "y": 40
+    },
+    {
+      "npcId": 505,
+      "x": 79,
+      "y": 43
+    },
+    {
+      "npcId": 505,
+      "x": 36,
+      "y": 45
+    },
+    {
+      "npcId": 505,
+      "x": 44,
+      "y": 59
+    },
+    {
+      "npcId": 505,
+      "x": 70,
+      "y": 59
+    },
+    {
+      "npcId": 505,
+      "x": 23,
+      "y": 67
+    },
+    {
+      "npcId": 505,
+      "x": 34,
+      "y": 70
+    },
+    {
+      "npcId": 505,
+      "x": 47,
+      "y": 71
+    },
+    {
+      "npcId": 510,
+      "x": 52,
+      "y": 71
+    },
+    {
+      "npcId": 505,
+      "x": 60,
+      "y": 71
+    },
+    {
+      "npcId": 505,
+      "x": 38,
+      "y": 82
+    },
+    {
+      "npcId": 505,
+      "x": 59,
+      "y": 83
+    },
+    {
+      "npcId": 505,
+      "x": 82,
+      "y": 86
+    },
+    {
+      "npcId": 510,
+      "x": 86,
+      "y": 89
+    },
+    {
+      "npcId": 505,
+      "x": 90,
+      "y": 90
+    }
+  ],
+  "objects": [
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 26,
+      "y": 20
+    },
+    {
+      "objectId": 190,
+      "amount": 1,
+      "x": 42,
+      "y": 20
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 43,
+      "y": 20
+    },
+    {
+      "objectId": 189,
+      "amount": 1,
+      "x": 25,
+      "y": 21
+    },
+    {
+      "objectId": 189,
+      "amount": 1,
+      "x": 26,
+      "y": 21
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 27,
+      "y": 21
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 43,
+      "y": 21
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 44,
+      "y": 21
+    },
+    {
+      "objectId": 189,
+      "amount": 1,
+      "x": 25,
+      "y": 22
+    },
+    {
+      "objectId": 189,
+      "amount": 1,
+      "x": 26,
+      "y": 22
+    },
+    {
+      "objectId": 190,
+      "amount": 1,
+      "x": 27,
+      "y": 22
+    },
+    {
+      "objectId": 191,
+      "amount": 1,
+      "x": 43,
+      "y": 22
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 44,
+      "y": 22
+    },
+    {
+      "objectId": 191,
+      "amount": 1,
+      "x": 26,
+      "y": 23
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 25,
+      "y": 24
+    },
+    {
+      "objectId": 190,
+      "amount": 1,
+      "x": 26,
+      "y": 24
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 27,
+      "y": 24
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 26,
+      "y": 25
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 24,
+      "y": 28
+    },
+    {
+      "objectId": 190,
+      "amount": 1,
+      "x": 22,
+      "y": 29
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 23,
+      "y": 29
+    },
+    {
+      "objectId": 191,
+      "amount": 1,
+      "x": 24,
+      "y": 29
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 23,
+      "y": 30
+    },
+    {
+      "objectId": 190,
+      "amount": 1,
+      "x": 23,
+      "y": 31
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 24,
+      "y": 31
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 23,
+      "y": 32
+    },
+    {
+      "objectId": 191,
+      "amount": 1,
+      "x": 23,
+      "y": 33
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 24,
+      "y": 33
+    },
+    {
+      "objectId": 190,
+      "amount": 1,
+      "x": 36,
+      "y": 33
+    },
+    {
+      "objectId": 191,
+      "amount": 1,
+      "x": 37,
+      "y": 33
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 33,
+      "y": 34
+    },
+    {
+      "objectId": 190,
+      "amount": 1,
+      "x": 31,
+      "y": 35
+    },
+    {
+      "objectId": 189,
+      "amount": 1,
+      "x": 34,
+      "y": 35
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 35,
+      "y": 35
+    },
+    {
+      "objectId": 191,
+      "amount": 1,
+      "x": 31,
+      "y": 36
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 34,
+      "y": 36
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 33,
+      "y": 37
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 35,
+      "y": 37
+    },
+    {
+      "objectId": 189,
+      "amount": 1,
+      "x": 36,
+      "y": 38
+    },
+    {
+      "objectId": 190,
+      "amount": 1,
+      "x": 34,
+      "y": 39
+    },
+    {
+      "objectId": 191,
+      "amount": 1,
+      "x": 33,
+      "y": 40
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 23,
+      "y": 44
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 24,
+      "y": 44
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 26,
+      "y": 44
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 22,
+      "y": 45
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 27,
+      "y": 45
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 21,
+      "y": 46
+    },
+    {
+      "objectId": 191,
+      "amount": 1,
+      "x": 24,
+      "y": 47
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 25,
+      "y": 47
+    },
+    {
+      "objectId": 190,
+      "amount": 1,
+      "x": 26,
+      "y": 47
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 29,
+      "y": 47
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 30,
+      "y": 47
+    },
+    {
+      "objectId": 190,
+      "amount": 1,
+      "x": 25,
+      "y": 48
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 31,
+      "y": 48
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 58,
+      "y": 69
+    },
+    {
+      "objectId": 191,
+      "amount": 1,
+      "x": 59,
+      "y": 69
+    },
+    {
+      "objectId": 188,
+      "amount": 1,
+      "x": 57,
+      "y": 70
+    },
+    {
+      "objectId": 189,
+      "amount": 1,
+      "x": 58,
+      "y": 70
+    },
+    {
+      "objectId": 190,
+      "amount": 1,
+      "x": 58,
+      "y": 71
+    }
+  ],
+  "tileExits": [
+    {
+      "x": 53,
+      "y": 94,
+      "targetMapId": 22,
+      "targetX": 52,
+      "targetY": 64
+    },
+    {
+      "x": 54,
+      "y": 94,
+      "targetMapId": 22,
+      "targetX": 52,
+      "targetY": 64
+    },
+    {
+      "x": 55,
+      "y": 94,
+      "targetMapId": 22,
+      "targetX": 52,
+      "targetY": 64
+    },
+    {
+      "x": 56,
+      "y": 94,
+      "targetMapId": 22,
+      "targetX": 52,
+      "targetY": 64
+    }
+  ],
+  "info": {
+    "id": 33,
+    "name": "Minas de Hierro.",
+    "musicNum": 9,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "BOSQUE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": false,
+    "pk": false
+  }
+}

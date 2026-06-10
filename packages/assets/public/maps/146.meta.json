@@ -1,0 +1,71 @@
+{
+  "mapId": 146,
+  "npcs": [
+    {
+      "npcId": 551,
+      "x": 72,
+      "y": 69
+    },
+    {
+      "npcId": 551,
+      "x": 81,
+      "y": 69
+    },
+    {
+      "npcId": 553,
+      "x": 60,
+      "y": 71
+    },
+    {
+      "npcId": 555,
+      "x": 77,
+      "y": 72
+    },
+    {
+      "npcId": 550,
+      "x": 55,
+      "y": 74
+    },
+    {
+      "npcId": 517,
+      "x": 63,
+      "y": 75
+    }
+  ],
+  "objects": [],
+  "tileExits": [
+    {
+      "x": 63,
+      "y": 94,
+      "targetMapId": 142,
+      "targetX": 63,
+      "targetY": 8
+    },
+    {
+      "x": 64,
+      "y": 94,
+      "targetMapId": 142,
+      "targetX": 64,
+      "targetY": 8
+    },
+    {
+      "x": 65,
+      "y": 94,
+      "targetMapId": 142,
+      "targetX": 65,
+      "targetY": 8
+    }
+  ],
+  "info": {
+    "id": 146,
+    "name": "Dungeon Veriil. (Fuerte)",
+    "musicNum": 18,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "NIEVE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": false
+  }
+}

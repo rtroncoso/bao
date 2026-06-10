@@ -123,12 +123,10 @@ export class OnJoinCommand extends Command<WorldRoom, OnJoinParameters> {
         throw new ServerError(409, 'USER_LOGGED_IN');
       }
 
-      const mapId =
-        apiCharacter.mapId ?? apiCharacter.world ?? DEFAULT_MAP_ID;
+      const mapId = apiCharacter.mapId ?? apiCharacter.world ?? DEFAULT_MAP_ID;
       const x = apiCharacter.x ?? DEFAULT_SPAWN_X;
       const y = apiCharacter.y ?? DEFAULT_SPAWN_Y;
-      const worldX =
-        apiCharacter.worldX ?? mapId * PLAYABLE_WIDTH + x;
+      const worldX = apiCharacter.worldX ?? mapId * PLAYABLE_WIDTH + x;
       const worldY = apiCharacter.worldY ?? y;
 
       const character = new CharacterState();

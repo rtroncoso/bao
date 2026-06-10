@@ -19,7 +19,7 @@ export class MapTransitionSystem {
   computeWorldCoords(mapId: number, localX: number, localY: number) {
     return {
       worldX: mapId * PLAYABLE_WIDTH + localX,
-      worldY: localY,
+      worldY: localY
     };
   }
 
@@ -77,7 +77,7 @@ export class MapTransitionSystem {
       x: character.tile.x,
       y: character.tile.y,
       worldX: character.worldX,
-      worldY: character.worldY,
+      worldY: character.worldY
     });
   }
 }

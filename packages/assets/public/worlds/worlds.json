@@ -1,0 +1,2036 @@
+{
+  "maps": [
+    {
+      "fileName": "../maps/1.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/2.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 0,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/3.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 0,
+      "y": 5632
+    },
+    {
+      "fileName": "../maps/4.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 0,
+      "y": 8448
+    },
+    {
+      "fileName": "../maps/5.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 10752,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/6.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 13440,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/7.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 16128,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/8.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 18816,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/9.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 21504,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/10.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 24192,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/11.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 2688,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/12.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 5376,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/13.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 8064,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/14.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 2688,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/15.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 10752,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/16.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 13440,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/17.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 16128,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/18.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 5376,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/19.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 8064,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/20.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 13440,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/21.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 53760,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/22.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 2688,
+      "y": 8448
+    },
+    {
+      "fileName": "../maps/23.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 5376,
+      "y": 8448
+    },
+    {
+      "fileName": "../maps/24.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 8064,
+      "y": 8448
+    },
+    {
+      "fileName": "../maps/25.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 2688,
+      "y": 5632
+    },
+    {
+      "fileName": "../maps/26.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 5376,
+      "y": 5632
+    },
+    {
+      "fileName": "../maps/27.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 8064,
+      "y": 5632
+    },
+    {
+      "fileName": "../maps/28.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 5376,
+      "y": 11264
+    },
+    {
+      "fileName": "../maps/29.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 2688,
+      "y": 11264
+    },
+    {
+      "fileName": "../maps/30.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 2688,
+      "y": 14080
+    },
+    {
+      "fileName": "../maps/31.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 0,
+      "y": 14080
+    },
+    {
+      "fileName": "../maps/32.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 0,
+      "y": 11264
+    },
+    {
+      "fileName": "../maps/33.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 86016,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/34.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 88704,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/35.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 91392,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/36.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 94080,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/37.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 96768,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/38.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 99456,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/39.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 102144,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/40.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 104832,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/41.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 107520,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/42.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 110208,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/43.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 112896,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/44.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 115584,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/45.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 118272,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/46.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 120960,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/47.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 123648,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/48.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 126336,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/49.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 129024,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/50.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 131712,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/51.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 134400,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/52.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 137088,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/53.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 139776,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/54.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 142464,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/55.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 145152,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/56.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 147840,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/57.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 150528,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/58.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 153216,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/59.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 155904,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/60.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 158592,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/61.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 161280,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/62.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 26880,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/63.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 26880,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/64.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 29568,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/65.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 172032,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/66.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 174720,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/67.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 177408,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/68.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 180096,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/69.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 182784,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/70.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 185472,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/71.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 188160,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/72.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 190848,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/73.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 193536,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/74.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 196224,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/75.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 198912,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/76.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 201600,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/77.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 204288,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/78.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 206976,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/79.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 209664,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/80.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 212352,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/81.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 215040,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/82.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 217728,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/83.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 220416,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/84.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 223104,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/85.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 225792,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/86.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 228480,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/87.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 231168,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/88.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 233856,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/89.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 0,
+      "y": 16896
+    },
+    {
+      "fileName": "../maps/90.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 2688,
+      "y": 16896
+    },
+    {
+      "fileName": "../maps/91.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 5376,
+      "y": 14080
+    },
+    {
+      "fileName": "../maps/92.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 10752,
+      "y": 14080
+    },
+    {
+      "fileName": "../maps/93.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 8064,
+      "y": 14080
+    },
+    {
+      "fileName": "../maps/94.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 8064,
+      "y": 11264
+    },
+    {
+      "fileName": "../maps/95.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 10752,
+      "y": 11264
+    },
+    {
+      "fileName": "../maps/96.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 10752,
+      "y": 8448
+    },
+    {
+      "fileName": "../maps/97.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 10752,
+      "y": 5632
+    },
+    {
+      "fileName": "../maps/98.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 10752,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/99.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 13440,
+      "y": 5632
+    },
+    {
+      "fileName": "../maps/100.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 16128,
+      "y": 5632
+    },
+    {
+      "fileName": "../maps/101.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 16128,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/102.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 18816,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/103.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 18816,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/104.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 24192,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/105.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 24192,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/106.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 282240,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/107.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 284928,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/108.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 287616,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/109.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 290304,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/110.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 292992,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/111.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 26880,
+      "y": 22528
+    },
+    {
+      "fileName": "../maps/112.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 29568,
+      "y": 22528
+    },
+    {
+      "fileName": "../maps/113.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 26880,
+      "y": 28160
+    },
+    {
+      "fileName": "../maps/114.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 26880,
+      "y": 25344
+    },
+    {
+      "fileName": "../maps/115.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 306432,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/116.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 309120,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/117.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 21504,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/118.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 21504,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/119.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 317184,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/120.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 319872,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/121.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 322560,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/122.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 325248,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/123.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 327936,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/124.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 330624,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/125.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 333312,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/126.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 336000,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/127.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 338688,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/128.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 341376,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/129.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 344064,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/130.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 346752,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/131.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 349440,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/132.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 352128,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/133.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 354816,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/134.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 357504,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/135.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 360192,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/136.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 362880,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/137.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 365568,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/138.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 368256,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/139.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 370944,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/140.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 373632,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/141.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 376320,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/142.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 379008,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/143.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 381696,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/144.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 384384,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/145.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 387072,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/146.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 389760,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/147.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 392448,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/148.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 395136,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/149.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 397824,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/150.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 10752,
+      "y": 16896
+    },
+    {
+      "fileName": "../maps/151.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 8064,
+      "y": 16896
+    },
+    {
+      "fileName": "../maps/152.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 26880,
+      "y": 5632
+    },
+    {
+      "fileName": "../maps/153.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 26880,
+      "y": 8448
+    },
+    {
+      "fileName": "../maps/154.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 26880,
+      "y": 11264
+    },
+    {
+      "fileName": "../maps/155.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 26880,
+      "y": 14080
+    },
+    {
+      "fileName": "../maps/156.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 5376,
+      "y": 16896
+    },
+    {
+      "fileName": "../maps/157.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 419328,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/158.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 422016,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/159.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 424704,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/160.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 427392,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/161.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 430080,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/162.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 432768,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/163.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 435456,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/164.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 438144,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/165.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 440832,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/166.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 443520,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/167.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 446208,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/168.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 448896,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/169.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 451584,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/170.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 454272,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/171.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 456960,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/172.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 459648,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/173.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 462336,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/174.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 465024,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/175.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 467712,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/176.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 470400,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/177.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 473088,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/178.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 475776,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/179.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 478464,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/180.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 481152,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/181.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 16128,
+      "y": 16896
+    },
+    {
+      "fileName": "../maps/182.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 18816,
+      "y": 16896
+    },
+    {
+      "fileName": "../maps/183.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 21504,
+      "y": 16896
+    },
+    {
+      "fileName": "../maps/184.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 491904,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/185.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 494592,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/186.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 497280,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/187.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 499968,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/188.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 502656,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/189.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 505344,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/190.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 508032,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/191.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 510720,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/192.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 513408,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/193.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 516096,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/194.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 518784,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/195.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 521472,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/196.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 524160,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/197.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 526848,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/198.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 529536,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/199.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 532224,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/200.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 534912,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/201.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 537600,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/202.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 540288,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/203.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 542976,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/204.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 545664,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/205.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 548352,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/206.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 551040,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/207.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 553728,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/208.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 556416,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/209.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 24192,
+      "y": 16896
+    },
+    {
+      "fileName": "../maps/210.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 561792,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/211.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 564480,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/212.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 567168,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/213.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 569856,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/214.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 0,
+      "y": 28160
+    },
+    {
+      "fileName": "../maps/215.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 0,
+      "y": 25344
+    },
+    {
+      "fileName": "../maps/216.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 0,
+      "y": 22528
+    },
+    {
+      "fileName": "../maps/217.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 0,
+      "y": 19712
+    },
+    {
+      "fileName": "../maps/218.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 2688,
+      "y": 19712
+    },
+    {
+      "fileName": "../maps/219.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 5376,
+      "y": 19712
+    },
+    {
+      "fileName": "../maps/220.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 8064,
+      "y": 19712
+    },
+    {
+      "fileName": "../maps/221.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 10752,
+      "y": 19712
+    },
+    {
+      "fileName": "../maps/222.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 13440,
+      "y": 19712
+    },
+    {
+      "fileName": "../maps/223.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 13440,
+      "y": 16896
+    },
+    {
+      "fileName": "../maps/224.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 13440,
+      "y": 14080
+    },
+    {
+      "fileName": "../maps/225.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 602112,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/226.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 604800,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/227.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 607488,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/228.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 610176,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/229.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 612864,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/230.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 615552,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/231.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 618240,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/232.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 620928,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/233.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 623616,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/234.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 626304,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/235.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 628992,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/236.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 631680,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/237.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 634368,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/238.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 637056,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/239.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 639744,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/240.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 26880,
+      "y": 16896
+    },
+    {
+      "fileName": "../maps/241.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 26880,
+      "y": 19712
+    },
+    {
+      "fileName": "../maps/242.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 647808,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/243.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 650496,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/244.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 653184,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/245.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 655872,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/246.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 658560,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/247.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 661248,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/248.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 663936,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/249.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 666624,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/250.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 669312,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/251.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 672000,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/252.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 674688,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/253.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 677376,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/254.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 680064,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/255.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 682752,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/256.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 685440,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/257.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 688128,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/258.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 690816,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/259.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 693504,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/260.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 696192,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/261.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 698880,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/262.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 701568,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/263.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 704256,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/264.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 706944,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/265.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 709632,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/266.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 712320,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/267.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 715008,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/268.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 717696,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/269.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 720384,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/270.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 723072,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/271.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 725760,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/272.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 728448,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/273.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 731136,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/274.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 733824,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/275.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 736512,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/276.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 739200,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/277.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 741888,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/278.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 744576,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/279.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 747264,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/280.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 749952,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/281.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 752640,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/282.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 755328,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/283.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 758016,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/284.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 760704,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/285.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 763392,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/286.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 766080,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/287.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 768768,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/288.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 771456,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/289.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 774144,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/290.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 776832,
+      "y": 0
+    }
+  ],
+  "onlyShowAdjacentMaps": false,
+  "type": "world"
+}

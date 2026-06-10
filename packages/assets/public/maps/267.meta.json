@@ -1,0 +1,88 @@
+{
+  "mapId": 267,
+  "npcs": [
+    {
+      "npcId": 500,
+      "x": 51,
+      "y": 26
+    },
+    {
+      "npcId": 582,
+      "x": 51,
+      "y": 30
+    },
+    {
+      "npcId": 500,
+      "x": 28,
+      "y": 36
+    },
+    {
+      "npcId": 592,
+      "x": 29,
+      "y": 37
+    },
+    {
+      "npcId": 500,
+      "x": 41,
+      "y": 61
+    },
+    {
+      "npcId": 592,
+      "x": 66,
+      "y": 67
+    },
+    {
+      "npcId": 500,
+      "x": 65,
+      "y": 68
+    },
+    {
+      "npcId": 582,
+      "x": 28,
+      "y": 74
+    }
+  ],
+  "objects": [],
+  "tileExits": [
+    {
+      "x": 92,
+      "y": 67,
+      "targetMapId": 266,
+      "targetX": 10,
+      "targetY": 67
+    },
+    {
+      "x": 92,
+      "y": 68,
+      "targetMapId": 266,
+      "targetX": 10,
+      "targetY": 68
+    },
+    {
+      "x": 92,
+      "y": 69,
+      "targetMapId": 266,
+      "targetX": 10,
+      "targetY": 69
+    },
+    {
+      "x": 92,
+      "y": 70,
+      "targetMapId": 266,
+      "targetX": 10,
+      "targetY": 70
+    }
+  ],
+  "info": {
+    "id": 267,
+    "name": "Interior de la Montaña.",
+    "musicNum": 110,
+    "magiaSinEfecto": true,
+    "noEncriptarMP": false,
+    "terreno": "NIEVE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": false
+  }
+}

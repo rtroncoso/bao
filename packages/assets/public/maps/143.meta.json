@@ -1,0 +1,142 @@
+{
+  "mapId": 143,
+  "npcs": [],
+  "objects": [
+    {
+      "objectId": 378,
+      "amount": 1,
+      "x": 33,
+      "y": 25
+    },
+    {
+      "objectId": 378,
+      "amount": 1,
+      "x": 37,
+      "y": 25
+    },
+    {
+      "objectId": 378,
+      "amount": 1,
+      "x": 64,
+      "y": 77
+    },
+    {
+      "objectId": 378,
+      "amount": 1,
+      "x": 64,
+      "y": 82
+    }
+  ],
+  "tileExits": [
+    {
+      "x": 29,
+      "y": 25,
+      "targetMapId": 48,
+      "targetX": 50,
+      "targetY": 50
+    },
+    {
+      "x": 33,
+      "y": 25,
+      "targetMapId": 48,
+      "targetX": 37,
+      "targetY": 54
+    },
+    {
+      "x": 9,
+      "y": 37,
+      "targetMapId": 141,
+      "targetX": 91,
+      "targetY": 37
+    },
+    {
+      "x": 9,
+      "y": 38,
+      "targetMapId": 141,
+      "targetX": 91,
+      "targetY": 38
+    },
+    {
+      "x": 9,
+      "y": 39,
+      "targetMapId": 141,
+      "targetX": 91,
+      "targetY": 39
+    },
+    {
+      "x": 9,
+      "y": 40,
+      "targetMapId": 141,
+      "targetX": 91,
+      "targetY": 40
+    },
+    {
+      "x": 60,
+      "y": 77,
+      "targetMapId": 48,
+      "targetX": 56,
+      "targetY": 56
+    },
+    {
+      "x": 60,
+      "y": 82,
+      "targetMapId": 143,
+      "targetX": 28,
+      "targetY": 27
+    },
+    {
+      "x": 36,
+      "y": 94,
+      "targetMapId": 144,
+      "targetX": 36,
+      "targetY": 8
+    },
+    {
+      "x": 37,
+      "y": 94,
+      "targetMapId": 144,
+      "targetX": 37,
+      "targetY": 8
+    },
+    {
+      "x": 38,
+      "y": 94,
+      "targetMapId": 144,
+      "targetX": 38,
+      "targetY": 8
+    },
+    {
+      "x": 39,
+      "y": 94,
+      "targetMapId": 144,
+      "targetX": 39,
+      "targetY": 8
+    },
+    {
+      "x": 40,
+      "y": 94,
+      "targetMapId": 144,
+      "targetX": 40,
+      "targetY": 8
+    },
+    {
+      "x": 41,
+      "y": 94,
+      "targetMapId": 144,
+      "targetX": 41,
+      "targetY": 8
+    }
+  ],
+  "info": {
+    "id": 143,
+    "name": "Dungeon Veriil.",
+    "musicNum": 18,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "NIEVE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": false
+  }
+}

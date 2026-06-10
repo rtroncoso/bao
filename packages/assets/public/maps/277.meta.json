@@ -1,0 +1,79 @@
+{
+  "mapId": 277,
+  "npcs": [],
+  "objects": [
+    {
+      "objectId": 838,
+      "amount": 1,
+      "x": 57,
+      "y": 25
+    },
+    {
+      "objectId": 827,
+      "amount": 1,
+      "x": 51,
+      "y": 26
+    },
+    {
+      "objectId": 8,
+      "amount": 1,
+      "x": 58,
+      "y": 30
+    },
+    {
+      "objectId": 814,
+      "amount": 1,
+      "x": 53,
+      "y": 52
+    },
+    {
+      "objectId": 814,
+      "amount": 1,
+      "x": 61,
+      "y": 52
+    },
+    {
+      "objectId": 815,
+      "amount": 1,
+      "x": 57,
+      "y": 54
+    },
+    {
+      "objectId": 814,
+      "amount": 1,
+      "x": 53,
+      "y": 57
+    },
+    {
+      "objectId": 814,
+      "amount": 1,
+      "x": 61,
+      "y": 57
+    },
+    {
+      "objectId": 378,
+      "amount": 1,
+      "x": 52,
+      "y": 71
+    },
+    {
+      "objectId": 378,
+      "amount": 1,
+      "x": 55,
+      "y": 71
+    }
+  ],
+  "tileExits": [],
+  "info": {
+    "id": 277,
+    "name": "Mapa para Casamientos. (Isla)",
+    "musicNum": 10,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "BOSQUE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": true
+  }
+}

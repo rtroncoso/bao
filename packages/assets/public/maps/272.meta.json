@@ -1,0 +1,97 @@
+{
+  "mapId": 272,
+  "npcs": [],
+  "objects": [
+    {
+      "objectId": 819,
+      "amount": 1,
+      "x": 41,
+      "y": 8
+    },
+    {
+      "objectId": 819,
+      "amount": 1,
+      "x": 42,
+      "y": 8
+    },
+    {
+      "objectId": 819,
+      "amount": 1,
+      "x": 43,
+      "y": 8
+    },
+    {
+      "objectId": 819,
+      "amount": 1,
+      "x": 44,
+      "y": 8
+    },
+    {
+      "objectId": 819,
+      "amount": 1,
+      "x": 45,
+      "y": 8
+    },
+    {
+      "objectId": 819,
+      "amount": 1,
+      "x": 46,
+      "y": 8
+    },
+    {
+      "objectId": 472,
+      "amount": 1,
+      "x": 40,
+      "y": 77
+    },
+    {
+      "objectId": 819,
+      "amount": 1,
+      "x": 49,
+      "y": 93
+    },
+    {
+      "objectId": 819,
+      "amount": 1,
+      "x": 50,
+      "y": 93
+    },
+    {
+      "objectId": 819,
+      "amount": 1,
+      "x": 51,
+      "y": 93
+    },
+    {
+      "objectId": 819,
+      "amount": 1,
+      "x": 52,
+      "y": 93
+    },
+    {
+      "objectId": 819,
+      "amount": 1,
+      "x": 53,
+      "y": 93
+    },
+    {
+      "objectId": 819,
+      "amount": 1,
+      "x": 54,
+      "y": 93
+    }
+  ],
+  "tileExits": [],
+  "info": {
+    "id": 272,
+    "name": "Mapa de GMs. (rings)",
+    "musicNum": 28,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "DESIERTO",
+    "zona": "DUNGEON",
+    "restringir": "GM",
+    "backup": true,
+    "pk": true
+  }
+}

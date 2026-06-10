@@ -26,7 +26,7 @@ export class CharacterService {
       `${config.apiBaseUrl}/admin/characters/${characterId}/position`,
       {
         accountId,
-        ...payload,
+        ...payload
       },
       { headers }
     );

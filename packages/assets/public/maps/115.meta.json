@@ -1,0 +1,247 @@
+{
+  "mapId": 115,
+  "npcs": [
+    {
+      "npcId": 554,
+      "x": 78,
+      "y": 14
+    },
+    {
+      "npcId": 554,
+      "x": 83,
+      "y": 14
+    },
+    {
+      "npcId": 554,
+      "x": 87,
+      "y": 14
+    },
+    {
+      "npcId": 540,
+      "x": 16,
+      "y": 18
+    },
+    {
+      "npcId": 540,
+      "x": 24,
+      "y": 18
+    },
+    {
+      "npcId": 540,
+      "x": 16,
+      "y": 23
+    },
+    {
+      "npcId": 540,
+      "x": 24,
+      "y": 24
+    },
+    {
+      "npcId": 540,
+      "x": 16,
+      "y": 29
+    },
+    {
+      "npcId": 540,
+      "x": 25,
+      "y": 29
+    },
+    {
+      "npcId": 509,
+      "x": 92,
+      "y": 30
+    },
+    {
+      "npcId": 540,
+      "x": 16,
+      "y": 33
+    },
+    {
+      "npcId": 540,
+      "x": 25,
+      "y": 33
+    },
+    {
+      "npcId": 507,
+      "x": 68,
+      "y": 38
+    },
+    {
+      "npcId": 507,
+      "x": 71,
+      "y": 38
+    },
+    {
+      "npcId": 507,
+      "x": 74,
+      "y": 38
+    },
+    {
+      "npcId": 507,
+      "x": 77,
+      "y": 38
+    },
+    {
+      "npcId": 554,
+      "x": 27,
+      "y": 49
+    },
+    {
+      "npcId": 510,
+      "x": 50,
+      "y": 50
+    },
+    {
+      "npcId": 510,
+      "x": 53,
+      "y": 50
+    },
+    {
+      "npcId": 510,
+      "x": 55,
+      "y": 50
+    },
+    {
+      "npcId": 510,
+      "x": 58,
+      "y": 50
+    },
+    {
+      "npcId": 536,
+      "x": 61,
+      "y": 62
+    },
+    {
+      "npcId": 536,
+      "x": 58,
+      "y": 66
+    },
+    {
+      "npcId": 536,
+      "x": 64,
+      "y": 66
+    },
+    {
+      "npcId": 554,
+      "x": 23,
+      "y": 82
+    },
+    {
+      "npcId": 554,
+      "x": 21,
+      "y": 85
+    },
+    {
+      "npcId": 554,
+      "x": 25,
+      "y": 85
+    },
+    {
+      "npcId": 554,
+      "x": 82,
+      "y": 88
+    },
+    {
+      "npcId": 554,
+      "x": 87,
+      "y": 88
+    },
+    {
+      "npcId": 554,
+      "x": 92,
+      "y": 88
+    }
+  ],
+  "objects": [],
+  "tileExits": [
+    {
+      "x": 32,
+      "y": 7,
+      "targetMapId": 116,
+      "targetX": 36,
+      "targetY": 93
+    },
+    {
+      "x": 33,
+      "y": 7,
+      "targetMapId": 116,
+      "targetX": 37,
+      "targetY": 93
+    },
+    {
+      "x": 34,
+      "y": 7,
+      "targetMapId": 116,
+      "targetX": 38,
+      "targetY": 93
+    },
+    {
+      "x": 35,
+      "y": 7,
+      "targetMapId": 116,
+      "targetX": 39,
+      "targetY": 93
+    },
+    {
+      "x": 36,
+      "y": 7,
+      "targetMapId": 116,
+      "targetX": 40,
+      "targetY": 93
+    },
+    {
+      "x": 37,
+      "y": 7,
+      "targetMapId": 116,
+      "targetX": 41,
+      "targetY": 93
+    },
+    {
+      "x": 84,
+      "y": 7,
+      "targetMapId": 116,
+      "targetX": 84,
+      "targetY": 93
+    },
+    {
+      "x": 85,
+      "y": 7,
+      "targetMapId": 116,
+      "targetX": 85,
+      "targetY": 93
+    },
+    {
+      "x": 86,
+      "y": 7,
+      "targetMapId": 116,
+      "targetX": 86,
+      "targetY": 93
+    },
+    {
+      "x": 44,
+      "y": 94,
+      "targetMapId": 76,
+      "targetX": 47,
+      "targetY": 50
+    },
+    {
+      "x": 45,
+      "y": 94,
+      "targetMapId": 76,
+      "targetX": 47,
+      "targetY": 50
+    }
+  ],
+  "info": {
+    "id": 115,
+    "name": "Dungeon Marabel.",
+    "musicNum": 15,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "BOSQUE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": false
+  }
+}

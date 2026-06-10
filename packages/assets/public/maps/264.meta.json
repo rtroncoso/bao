@@ -1,0 +1,218 @@
+{
+  "mapId": 264,
+  "npcs": [
+    {
+      "npcId": 500,
+      "x": 33,
+      "y": 24
+    },
+    {
+      "npcId": 582,
+      "x": 71,
+      "y": 27
+    },
+    {
+      "npcId": 582,
+      "x": 37,
+      "y": 31
+    },
+    {
+      "npcId": 500,
+      "x": 71,
+      "y": 40
+    },
+    {
+      "npcId": 500,
+      "x": 52,
+      "y": 61
+    },
+    {
+      "npcId": 500,
+      "x": 22,
+      "y": 75
+    }
+  ],
+  "objects": [],
+  "tileExits": [
+    {
+      "x": 65,
+      "y": 7,
+      "targetMapId": 265,
+      "targetX": 40,
+      "targetY": 93
+    },
+    {
+      "x": 66,
+      "y": 7,
+      "targetMapId": 265,
+      "targetX": 41,
+      "targetY": 93
+    },
+    {
+      "x": 67,
+      "y": 7,
+      "targetMapId": 265,
+      "targetX": 42,
+      "targetY": 93
+    },
+    {
+      "x": 68,
+      "y": 7,
+      "targetMapId": 265,
+      "targetX": 43,
+      "targetY": 93
+    },
+    {
+      "x": 17,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 39,
+      "targetY": 62
+    },
+    {
+      "x": 18,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 39,
+      "targetY": 62
+    },
+    {
+      "x": 19,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 40,
+      "targetY": 62
+    },
+    {
+      "x": 20,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 40,
+      "targetY": 62
+    },
+    {
+      "x": 36,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 44,
+      "targetY": 62
+    },
+    {
+      "x": 37,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 44,
+      "targetY": 62
+    },
+    {
+      "x": 38,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 45,
+      "targetY": 62
+    },
+    {
+      "x": 39,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 45,
+      "targetY": 62
+    },
+    {
+      "x": 53,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 49,
+      "targetY": 62
+    },
+    {
+      "x": 54,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 49,
+      "targetY": 62
+    },
+    {
+      "x": 55,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 50,
+      "targetY": 62
+    },
+    {
+      "x": 56,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 50,
+      "targetY": 62
+    },
+    {
+      "x": 73,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 57,
+      "targetY": 62
+    },
+    {
+      "x": 74,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 57,
+      "targetY": 62
+    },
+    {
+      "x": 75,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 58,
+      "targetY": 62
+    },
+    {
+      "x": 76,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 58,
+      "targetY": 62
+    },
+    {
+      "x": 85,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 62,
+      "targetY": 62
+    },
+    {
+      "x": 86,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 62,
+      "targetY": 62
+    },
+    {
+      "x": 87,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 63,
+      "targetY": 62
+    },
+    {
+      "x": 88,
+      "y": 94,
+      "targetMapId": 180,
+      "targetX": 63,
+      "targetY": 62
+    }
+  ],
+  "info": {
+    "id": 264,
+    "name": "Interior de la Montaña.",
+    "musicNum": 110,
+    "magiaSinEfecto": true,
+    "noEncriptarMP": false,
+    "terreno": "NIEVE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": false
+  }
+}

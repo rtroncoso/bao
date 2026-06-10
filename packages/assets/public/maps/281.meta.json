@@ -1,0 +1,98 @@
+{
+  "mapId": 281,
+  "npcs": [
+    {
+      "npcId": 599,
+      "x": 71,
+      "y": 16
+    },
+    {
+      "npcId": 600,
+      "x": 30,
+      "y": 23
+    },
+    {
+      "npcId": 599,
+      "x": 47,
+      "y": 27
+    },
+    {
+      "npcId": 545,
+      "x": 67,
+      "y": 34
+    },
+    {
+      "npcId": 599,
+      "x": 34,
+      "y": 39
+    },
+    {
+      "npcId": 598,
+      "x": 64,
+      "y": 49
+    },
+    {
+      "npcId": 545,
+      "x": 31,
+      "y": 57
+    },
+    {
+      "npcId": 598,
+      "x": 21,
+      "y": 78
+    },
+    {
+      "npcId": 598,
+      "x": 51,
+      "y": 78
+    },
+    {
+      "npcId": 599,
+      "x": 80,
+      "y": 79
+    }
+  ],
+  "objects": [],
+  "tileExits": [
+    {
+      "x": 45,
+      "y": 94,
+      "targetMapId": 28,
+      "targetX": 49,
+      "targetY": 58
+    },
+    {
+      "x": 46,
+      "y": 94,
+      "targetMapId": 28,
+      "targetX": 50,
+      "targetY": 58
+    },
+    {
+      "x": 47,
+      "y": 94,
+      "targetMapId": 28,
+      "targetX": 50,
+      "targetY": 58
+    },
+    {
+      "x": 48,
+      "y": 94,
+      "targetMapId": 28,
+      "targetX": 51,
+      "targetY": 58
+    }
+  ],
+  "info": {
+    "id": 281,
+    "name": "Mausoleo",
+    "musicNum": 59,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "BOSQUE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": false
+  }
+}

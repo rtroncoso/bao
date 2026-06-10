@@ -1,0 +1,914 @@
+{
+  "mapId": 61,
+  "npcs": [
+    {
+      "npcId": 91,
+      "x": 49,
+      "y": 48
+    },
+    {
+      "npcId": 91,
+      "x": 66,
+      "y": 59
+    },
+    {
+      "npcId": 91,
+      "x": 56,
+      "y": 60
+    },
+    {
+      "npcId": 91,
+      "x": 47,
+      "y": 66
+    },
+    {
+      "npcId": 91,
+      "x": 71,
+      "y": 66
+    },
+    {
+      "npcId": 44,
+      "x": 23,
+      "y": 82
+    },
+    {
+      "npcId": 41,
+      "x": 82,
+      "y": 84
+    }
+  ],
+  "objects": [
+    {
+      "objectId": 158,
+      "amount": 12,
+      "x": 49,
+      "y": 45
+    },
+    {
+      "objectId": 472,
+      "amount": 1,
+      "x": 51,
+      "y": 46
+    },
+    {
+      "objectId": 158,
+      "amount": 12,
+      "x": 47,
+      "y": 47
+    },
+    {
+      "objectId": 158,
+      "amount": 12,
+      "x": 51,
+      "y": 47
+    },
+    {
+      "objectId": 472,
+      "amount": 1,
+      "x": 46,
+      "y": 51
+    },
+    {
+      "objectId": 158,
+      "amount": 12,
+      "x": 48,
+      "y": 51
+    },
+    {
+      "objectId": 757,
+      "amount": 1,
+      "x": 58,
+      "y": 57
+    },
+    {
+      "objectId": 472,
+      "amount": 1,
+      "x": 67,
+      "y": 58
+    },
+    {
+      "objectId": 158,
+      "amount": 12,
+      "x": 68,
+      "y": 58
+    },
+    {
+      "objectId": 158,
+      "amount": 12,
+      "x": 65,
+      "y": 59
+    },
+    {
+      "objectId": 757,
+      "amount": 1,
+      "x": 53,
+      "y": 60
+    },
+    {
+      "objectId": 757,
+      "amount": 1,
+      "x": 61,
+      "y": 77
+    },
+    {
+      "objectId": 837,
+      "amount": 1,
+      "x": 20,
+      "y": 78
+    },
+    {
+      "objectId": 838,
+      "amount": 1,
+      "x": 23,
+      "y": 78
+    },
+    {
+      "objectId": 837,
+      "amount": 1,
+      "x": 26,
+      "y": 78
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 93,
+      "y": 81
+    },
+    {
+      "objectId": 806,
+      "amount": 1,
+      "x": 18,
+      "y": 83
+    },
+    {
+      "objectId": 779,
+      "amount": 1,
+      "x": 23,
+      "y": 83
+    },
+    {
+      "objectId": 49,
+      "amount": 1,
+      "x": 65,
+      "y": 83
+    },
+    {
+      "objectId": 806,
+      "amount": 1,
+      "x": 18,
+      "y": 84
+    },
+    {
+      "objectId": 49,
+      "amount": 1,
+      "x": 43,
+      "y": 84
+    },
+    {
+      "objectId": 50,
+      "amount": 1,
+      "x": 70,
+      "y": 84
+    },
+    {
+      "objectId": 806,
+      "amount": 1,
+      "x": 18,
+      "y": 85
+    },
+    {
+      "objectId": 50,
+      "amount": 1,
+      "x": 50,
+      "y": 85
+    },
+    {
+      "objectId": 50,
+      "amount": 1,
+      "x": 31,
+      "y": 86
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 39,
+      "y": 86
+    },
+    {
+      "objectId": 49,
+      "amount": 1,
+      "x": 59,
+      "y": 87
+    },
+    {
+      "objectId": 249,
+      "amount": 1,
+      "x": 21,
+      "y": 89
+    },
+    {
+      "objectId": 61,
+      "amount": 1,
+      "x": 24,
+      "y": 89
+    },
+    {
+      "objectId": 249,
+      "amount": 1,
+      "x": 81,
+      "y": 89
+    },
+    {
+      "objectId": 222,
+      "amount": 1,
+      "x": 84,
+      "y": 89
+    },
+    {
+      "objectId": 50,
+      "amount": 1,
+      "x": 43,
+      "y": 90
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 94,
+      "y": 90
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 33,
+      "y": 91
+    },
+    {
+      "objectId": 49,
+      "amount": 1,
+      "x": 49,
+      "y": 91
+    },
+    {
+      "objectId": 50,
+      "amount": 1,
+      "x": 67,
+      "y": 91
+    },
+    {
+      "objectId": 49,
+      "amount": 1,
+      "x": 72,
+      "y": 91
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 98,
+      "y": 91
+    }
+  ],
+  "tileExits": [
+    {
+      "x": 9,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 9,
+      "targetY": 93
+    },
+    {
+      "x": 10,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 10,
+      "targetY": 93
+    },
+    {
+      "x": 11,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 11,
+      "targetY": 93
+    },
+    {
+      "x": 12,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 12,
+      "targetY": 93
+    },
+    {
+      "x": 13,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 13,
+      "targetY": 93
+    },
+    {
+      "x": 14,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 14,
+      "targetY": 93
+    },
+    {
+      "x": 15,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 15,
+      "targetY": 93
+    },
+    {
+      "x": 16,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 16,
+      "targetY": 93
+    },
+    {
+      "x": 17,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 17,
+      "targetY": 93
+    },
+    {
+      "x": 18,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 18,
+      "targetY": 93
+    },
+    {
+      "x": 19,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 19,
+      "targetY": 93
+    },
+    {
+      "x": 20,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 20,
+      "targetY": 93
+    },
+    {
+      "x": 21,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 21,
+      "targetY": 93
+    },
+    {
+      "x": 22,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 22,
+      "targetY": 93
+    },
+    {
+      "x": 23,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 23,
+      "targetY": 93
+    },
+    {
+      "x": 24,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 24,
+      "targetY": 93
+    },
+    {
+      "x": 25,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 25,
+      "targetY": 93
+    },
+    {
+      "x": 26,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 26,
+      "targetY": 93
+    },
+    {
+      "x": 27,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 27,
+      "targetY": 93
+    },
+    {
+      "x": 28,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 28,
+      "targetY": 93
+    },
+    {
+      "x": 29,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 29,
+      "targetY": 93
+    },
+    {
+      "x": 30,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 30,
+      "targetY": 93
+    },
+    {
+      "x": 31,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 31,
+      "targetY": 93
+    },
+    {
+      "x": 32,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 32,
+      "targetY": 93
+    },
+    {
+      "x": 33,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 33,
+      "targetY": 93
+    },
+    {
+      "x": 34,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 34,
+      "targetY": 93
+    },
+    {
+      "x": 35,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 35,
+      "targetY": 93
+    },
+    {
+      "x": 36,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 36,
+      "targetY": 93
+    },
+    {
+      "x": 37,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 37,
+      "targetY": 93
+    },
+    {
+      "x": 38,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 38,
+      "targetY": 93
+    },
+    {
+      "x": 39,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 39,
+      "targetY": 93
+    },
+    {
+      "x": 40,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 40,
+      "targetY": 93
+    },
+    {
+      "x": 41,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 41,
+      "targetY": 93
+    },
+    {
+      "x": 42,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 42,
+      "targetY": 93
+    },
+    {
+      "x": 43,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 43,
+      "targetY": 93
+    },
+    {
+      "x": 44,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 44,
+      "targetY": 93
+    },
+    {
+      "x": 45,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 45,
+      "targetY": 93
+    },
+    {
+      "x": 46,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 46,
+      "targetY": 93
+    },
+    {
+      "x": 47,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 47,
+      "targetY": 93
+    },
+    {
+      "x": 48,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 48,
+      "targetY": 93
+    },
+    {
+      "x": 49,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 49,
+      "targetY": 93
+    },
+    {
+      "x": 50,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 50,
+      "targetY": 93
+    },
+    {
+      "x": 51,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 51,
+      "targetY": 93
+    },
+    {
+      "x": 52,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 52,
+      "targetY": 93
+    },
+    {
+      "x": 53,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 53,
+      "targetY": 93
+    },
+    {
+      "x": 54,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 54,
+      "targetY": 93
+    },
+    {
+      "x": 55,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 55,
+      "targetY": 93
+    },
+    {
+      "x": 56,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 56,
+      "targetY": 93
+    },
+    {
+      "x": 57,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 57,
+      "targetY": 93
+    },
+    {
+      "x": 58,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 58,
+      "targetY": 93
+    },
+    {
+      "x": 59,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 59,
+      "targetY": 93
+    },
+    {
+      "x": 60,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 60,
+      "targetY": 93
+    },
+    {
+      "x": 61,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 61,
+      "targetY": 93
+    },
+    {
+      "x": 62,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 62,
+      "targetY": 93
+    },
+    {
+      "x": 63,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 63,
+      "targetY": 93
+    },
+    {
+      "x": 64,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 64,
+      "targetY": 93
+    },
+    {
+      "x": 65,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 65,
+      "targetY": 93
+    },
+    {
+      "x": 66,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 66,
+      "targetY": 93
+    },
+    {
+      "x": 67,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 67,
+      "targetY": 93
+    },
+    {
+      "x": 68,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 68,
+      "targetY": 93
+    },
+    {
+      "x": 69,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 69,
+      "targetY": 93
+    },
+    {
+      "x": 70,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 70,
+      "targetY": 93
+    },
+    {
+      "x": 71,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 71,
+      "targetY": 93
+    },
+    {
+      "x": 72,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 72,
+      "targetY": 93
+    },
+    {
+      "x": 73,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 73,
+      "targetY": 93
+    },
+    {
+      "x": 74,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 74,
+      "targetY": 93
+    },
+    {
+      "x": 75,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 75,
+      "targetY": 93
+    },
+    {
+      "x": 76,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 76,
+      "targetY": 93
+    },
+    {
+      "x": 77,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 77,
+      "targetY": 93
+    },
+    {
+      "x": 78,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 78,
+      "targetY": 93
+    },
+    {
+      "x": 79,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 79,
+      "targetY": 93
+    },
+    {
+      "x": 80,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 80,
+      "targetY": 93
+    },
+    {
+      "x": 81,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 81,
+      "targetY": 93
+    },
+    {
+      "x": 82,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 82,
+      "targetY": 93
+    },
+    {
+      "x": 83,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 83,
+      "targetY": 93
+    },
+    {
+      "x": 84,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 84,
+      "targetY": 93
+    },
+    {
+      "x": 85,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 85,
+      "targetY": 93
+    },
+    {
+      "x": 86,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 86,
+      "targetY": 93
+    },
+    {
+      "x": 87,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 87,
+      "targetY": 93
+    },
+    {
+      "x": 88,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 88,
+      "targetY": 93
+    },
+    {
+      "x": 89,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 89,
+      "targetY": 93
+    },
+    {
+      "x": 90,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 90,
+      "targetY": 93
+    },
+    {
+      "x": 91,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 91,
+      "targetY": 93
+    },
+    {
+      "x": 92,
+      "y": 7,
+      "targetMapId": 137,
+      "targetX": 92,
+      "targetY": 93
+    },
+    {
+      "x": 49,
+      "y": 94,
+      "targetMapId": 60,
+      "targetX": 49,
+      "targetY": 8
+    },
+    {
+      "x": 50,
+      "y": 94,
+      "targetMapId": 60,
+      "targetX": 50,
+      "targetY": 8
+    },
+    {
+      "x": 51,
+      "y": 94,
+      "targetMapId": 60,
+      "targetX": 51,
+      "targetY": 8
+    },
+    {
+      "x": 52,
+      "y": 94,
+      "targetMapId": 60,
+      "targetX": 52,
+      "targetY": 8
+    },
+    {
+      "x": 53,
+      "y": 94,
+      "targetMapId": 60,
+      "targetX": 53,
+      "targetY": 8
+    },
+    {
+      "x": 54,
+      "y": 94,
+      "targetMapId": 60,
+      "targetX": 54,
+      "targetY": 8
+    }
+  ],
+  "info": {
+    "id": 61,
+    "name": "Ciudad de Banderbill. (Muelle)",
+    "musicNum": 12,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "BOSQUE",
+    "zona": "CIUDAD",
+    "restringir": "No",
+    "backup": true,
+    "pk": true
+  }
+}

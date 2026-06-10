@@ -1,0 +1,113 @@
+{
+  "mapId": 142,
+  "npcs": [
+    {
+      "npcId": 549,
+      "x": 68,
+      "y": 36
+    },
+    {
+      "npcId": 554,
+      "x": 82,
+      "y": 40
+    },
+    {
+      "npcId": 554,
+      "x": 88,
+      "y": 40
+    },
+    {
+      "npcId": 553,
+      "x": 85,
+      "y": 43
+    },
+    {
+      "npcId": 549,
+      "x": 53,
+      "y": 74
+    },
+    {
+      "npcId": 549,
+      "x": 74,
+      "y": 75
+    }
+  ],
+  "objects": [
+    {
+      "objectId": 378,
+      "amount": 1,
+      "x": 54,
+      "y": 43
+    }
+  ],
+  "tileExits": [
+    {
+      "x": 63,
+      "y": 7,
+      "targetMapId": 146,
+      "targetX": 63,
+      "targetY": 93
+    },
+    {
+      "x": 64,
+      "y": 7,
+      "targetMapId": 146,
+      "targetX": 64,
+      "targetY": 93
+    },
+    {
+      "x": 65,
+      "y": 7,
+      "targetMapId": 146,
+      "targetX": 65,
+      "targetY": 93
+    },
+    {
+      "x": 50,
+      "y": 43,
+      "targetMapId": 141,
+      "targetX": 85,
+      "targetY": 91
+    },
+    {
+      "x": 48,
+      "y": 93,
+      "targetMapId": 141,
+      "targetX": 48,
+      "targetY": 8
+    },
+    {
+      "x": 49,
+      "y": 93,
+      "targetMapId": 141,
+      "targetX": 49,
+      "targetY": 8
+    },
+    {
+      "x": 50,
+      "y": 93,
+      "targetMapId": 141,
+      "targetX": 50,
+      "targetY": 8
+    },
+    {
+      "x": 51,
+      "y": 93,
+      "targetMapId": 141,
+      "targetX": 51,
+      "targetY": 8
+    }
+  ],
+  "info": {
+    "id": 142,
+    "name": "Dungeon Veriil.",
+    "musicNum": 18,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "NIEVE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": false
+  }
+}

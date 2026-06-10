@@ -196,11 +196,7 @@ export class MovementSystem {
 
       if (
         heading === character.heading &&
-        !this.isTileBlocked(
-          targetTile,
-          character.mapId,
-          character.sessionId
-        )
+        !this.isTileBlocked(targetTile, character.mapId, character.sessionId)
       ) {
         character.targetTile = targetTile;
       } else {

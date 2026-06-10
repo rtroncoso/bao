@@ -11,7 +11,10 @@ export class MapRegistry {
   private readonly mapSpawnService = new MapSpawnService();
   private readonly loadedMaps = new Set<number>();
   private readonly mapRefCounts = new Map<number, number>();
-  private readonly tileExitsByMap = new Map<number, Map<string, TileExitRecord>>();
+  private readonly tileExitsByMap = new Map<
+    number,
+    Map<string, TileExitRecord>
+  >();
 
   constructor(private readonly room: WorldRoom) {}
 
@@ -31,7 +34,7 @@ export class MapRegistry {
       exitIndex.set(this.exitKey(exit.x, exit.y), {
         targetMapId: exit.targetMapId,
         targetX: exit.targetX,
-        targetY: exit.targetY,
+        targetY: exit.targetY
       });
     }
 

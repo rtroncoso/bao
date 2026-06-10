@@ -1,0 +1,83 @@
+{
+  "mapId": 48,
+  "npcs": [
+    {
+      "npcId": 553,
+      "x": 43,
+      "y": 50
+    },
+    {
+      "npcId": 553,
+      "x": 43,
+      "y": 59
+    }
+  ],
+  "objects": [
+    {
+      "objectId": 378,
+      "amount": 1,
+      "x": 40,
+      "y": 49
+    },
+    {
+      "objectId": 378,
+      "amount": 1,
+      "x": 61,
+      "y": 49
+    },
+    {
+      "objectId": 378,
+      "amount": 1,
+      "x": 40,
+      "y": 62
+    },
+    {
+      "objectId": 378,
+      "amount": 1,
+      "x": 61,
+      "y": 62
+    }
+  ],
+  "tileExits": [
+    {
+      "x": 36,
+      "y": 49,
+      "targetMapId": 143,
+      "targetX": 30,
+      "targetY": 27
+    },
+    {
+      "x": 57,
+      "y": 49,
+      "targetMapId": 48,
+      "targetX": 45,
+      "targetY": 55
+    },
+    {
+      "x": 36,
+      "y": 62,
+      "targetMapId": 48,
+      "targetX": 45,
+      "targetY": 55
+    },
+    {
+      "x": 57,
+      "y": 62,
+      "targetMapId": 143,
+      "targetX": 28,
+      "targetY": 27
+    }
+  ],
+  "info": {
+    "id": 48,
+    "name": "Dungeon Veriil. (Dungeon Dragon)",
+    "musicNum": 14,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "BOSQUE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": false
+  }
+}

@@ -1,0 +1,379 @@
+{
+  "mapId": 273,
+  "npcs": [],
+  "objects": [
+    {
+      "objectId": 836,
+      "amount": 1,
+      "x": 19,
+      "y": 43
+    },
+    {
+      "objectId": 840,
+      "amount": 1,
+      "x": 21,
+      "y": 43
+    },
+    {
+      "objectId": 836,
+      "amount": 1,
+      "x": 23,
+      "y": 43
+    },
+    {
+      "objectId": 836,
+      "amount": 1,
+      "x": 31,
+      "y": 43
+    },
+    {
+      "objectId": 840,
+      "amount": 1,
+      "x": 33,
+      "y": 43
+    },
+    {
+      "objectId": 836,
+      "amount": 1,
+      "x": 35,
+      "y": 43
+    },
+    {
+      "objectId": 839,
+      "amount": 1,
+      "x": 43,
+      "y": 43
+    },
+    {
+      "objectId": 838,
+      "amount": 1,
+      "x": 45,
+      "y": 43
+    },
+    {
+      "objectId": 839,
+      "amount": 1,
+      "x": 47,
+      "y": 43
+    },
+    {
+      "objectId": 843,
+      "amount": 1,
+      "x": 63,
+      "y": 43
+    },
+    {
+      "objectId": 841,
+      "amount": 1,
+      "x": 65,
+      "y": 43
+    },
+    {
+      "objectId": 843,
+      "amount": 1,
+      "x": 67,
+      "y": 43
+    },
+    {
+      "objectId": 836,
+      "amount": 1,
+      "x": 75,
+      "y": 43
+    },
+    {
+      "objectId": 840,
+      "amount": 1,
+      "x": 77,
+      "y": 43
+    },
+    {
+      "objectId": 836,
+      "amount": 1,
+      "x": 79,
+      "y": 43
+    },
+    {
+      "objectId": 836,
+      "amount": 1,
+      "x": 87,
+      "y": 43
+    },
+    {
+      "objectId": 840,
+      "amount": 1,
+      "x": 89,
+      "y": 43
+    },
+    {
+      "objectId": 836,
+      "amount": 1,
+      "x": 91,
+      "y": 43
+    },
+    {
+      "objectId": 729,
+      "amount": 1,
+      "x": 21,
+      "y": 45
+    },
+    {
+      "objectId": 729,
+      "amount": 1,
+      "x": 33,
+      "y": 45
+    },
+    {
+      "objectId": 729,
+      "amount": 1,
+      "x": 45,
+      "y": 45
+    },
+    {
+      "objectId": 729,
+      "amount": 1,
+      "x": 65,
+      "y": 45
+    },
+    {
+      "objectId": 729,
+      "amount": 1,
+      "x": 77,
+      "y": 45
+    },
+    {
+      "objectId": 729,
+      "amount": 1,
+      "x": 89,
+      "y": 45
+    },
+    {
+      "objectId": 806,
+      "amount": 1,
+      "x": 18,
+      "y": 47
+    },
+    {
+      "objectId": 807,
+      "amount": 1,
+      "x": 21,
+      "y": 47
+    },
+    {
+      "objectId": 808,
+      "amount": 1,
+      "x": 24,
+      "y": 47
+    },
+    {
+      "objectId": 806,
+      "amount": 1,
+      "x": 30,
+      "y": 47
+    },
+    {
+      "objectId": 807,
+      "amount": 1,
+      "x": 33,
+      "y": 47
+    },
+    {
+      "objectId": 808,
+      "amount": 1,
+      "x": 36,
+      "y": 47
+    },
+    {
+      "objectId": 806,
+      "amount": 1,
+      "x": 42,
+      "y": 47
+    },
+    {
+      "objectId": 807,
+      "amount": 1,
+      "x": 45,
+      "y": 47
+    },
+    {
+      "objectId": 808,
+      "amount": 1,
+      "x": 48,
+      "y": 47
+    },
+    {
+      "objectId": 806,
+      "amount": 1,
+      "x": 62,
+      "y": 47
+    },
+    {
+      "objectId": 807,
+      "amount": 1,
+      "x": 65,
+      "y": 47
+    },
+    {
+      "objectId": 808,
+      "amount": 1,
+      "x": 68,
+      "y": 47
+    },
+    {
+      "objectId": 806,
+      "amount": 1,
+      "x": 74,
+      "y": 47
+    },
+    {
+      "objectId": 807,
+      "amount": 1,
+      "x": 77,
+      "y": 47
+    },
+    {
+      "objectId": 808,
+      "amount": 1,
+      "x": 80,
+      "y": 47
+    },
+    {
+      "objectId": 806,
+      "amount": 1,
+      "x": 86,
+      "y": 47
+    },
+    {
+      "objectId": 807,
+      "amount": 1,
+      "x": 89,
+      "y": 47
+    },
+    {
+      "objectId": 808,
+      "amount": 1,
+      "x": 92,
+      "y": 47
+    },
+    {
+      "objectId": 806,
+      "amount": 1,
+      "x": 18,
+      "y": 48
+    },
+    {
+      "objectId": 808,
+      "amount": 1,
+      "x": 24,
+      "y": 48
+    },
+    {
+      "objectId": 806,
+      "amount": 1,
+      "x": 30,
+      "y": 48
+    },
+    {
+      "objectId": 808,
+      "amount": 1,
+      "x": 36,
+      "y": 48
+    },
+    {
+      "objectId": 806,
+      "amount": 1,
+      "x": 42,
+      "y": 48
+    },
+    {
+      "objectId": 808,
+      "amount": 1,
+      "x": 48,
+      "y": 48
+    },
+    {
+      "objectId": 806,
+      "amount": 1,
+      "x": 62,
+      "y": 49
+    },
+    {
+      "objectId": 808,
+      "amount": 1,
+      "x": 68,
+      "y": 49
+    },
+    {
+      "objectId": 806,
+      "amount": 1,
+      "x": 74,
+      "y": 49
+    },
+    {
+      "objectId": 808,
+      "amount": 1,
+      "x": 80,
+      "y": 49
+    },
+    {
+      "objectId": 806,
+      "amount": 1,
+      "x": 86,
+      "y": 49
+    },
+    {
+      "objectId": 808,
+      "amount": 1,
+      "x": 92,
+      "y": 49
+    },
+    {
+      "objectId": 249,
+      "amount": 1,
+      "x": 21,
+      "y": 53
+    },
+    {
+      "objectId": 249,
+      "amount": 1,
+      "x": 33,
+      "y": 53
+    },
+    {
+      "objectId": 249,
+      "amount": 1,
+      "x": 45,
+      "y": 53
+    },
+    {
+      "objectId": 249,
+      "amount": 1,
+      "x": 65,
+      "y": 54
+    },
+    {
+      "objectId": 249,
+      "amount": 1,
+      "x": 77,
+      "y": 54
+    },
+    {
+      "objectId": 249,
+      "amount": 1,
+      "x": 89,
+      "y": 54
+    }
+  ],
+  "tileExits": [],
+  "info": {
+    "id": 273,
+    "name": "Mapa de GMs. (rings de Clanes)",
+    "musicNum": 28,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "DESIERTO",
+    "zona": "DUNGEON",
+    "restringir": "GM",
+    "backup": true,
+    "pk": true
+  }
+}

@@ -1,0 +1,1176 @@
+{
+  "mapId": 274,
+  "npcs": [],
+  "objects": [
+    {
+      "objectId": 845,
+      "amount": 1,
+      "x": 36,
+      "y": 22
+    },
+    {
+      "objectId": 841,
+      "amount": 1,
+      "x": 39,
+      "y": 22
+    },
+    {
+      "objectId": 793,
+      "amount": 1,
+      "x": 41,
+      "y": 22
+    },
+    {
+      "objectId": 840,
+      "amount": 1,
+      "x": 43,
+      "y": 22
+    },
+    {
+      "objectId": 793,
+      "amount": 1,
+      "x": 45,
+      "y": 22
+    },
+    {
+      "objectId": 841,
+      "amount": 1,
+      "x": 47,
+      "y": 22
+    },
+    {
+      "objectId": 845,
+      "amount": 1,
+      "x": 50,
+      "y": 22
+    },
+    {
+      "objectId": 795,
+      "amount": 1,
+      "x": 34,
+      "y": 24
+    },
+    {
+      "objectId": 745,
+      "amount": 1,
+      "x": 38,
+      "y": 24
+    },
+    {
+      "objectId": 773,
+      "amount": 1,
+      "x": 43,
+      "y": 24
+    },
+    {
+      "objectId": 745,
+      "amount": 1,
+      "x": 48,
+      "y": 24
+    },
+    {
+      "objectId": 795,
+      "amount": 1,
+      "x": 52,
+      "y": 24
+    },
+    {
+      "objectId": 791,
+      "amount": 1,
+      "x": 43,
+      "y": 27
+    },
+    {
+      "objectId": 795,
+      "amount": 1,
+      "x": 69,
+      "y": 28
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 70,
+      "y": 28
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 71,
+      "y": 28
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 72,
+      "y": 28
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 73,
+      "y": 28
+    },
+    {
+      "objectId": 729,
+      "amount": 1,
+      "x": 75,
+      "y": 28
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 77,
+      "y": 28
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 78,
+      "y": 28
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 79,
+      "y": 28
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 80,
+      "y": 28
+    },
+    {
+      "objectId": 795,
+      "amount": 1,
+      "x": 81,
+      "y": 28
+    },
+    {
+      "objectId": 804,
+      "amount": 1,
+      "x": 43,
+      "y": 29
+    },
+    {
+      "objectId": 805,
+      "amount": 1,
+      "x": 41,
+      "y": 30
+    },
+    {
+      "objectId": 805,
+      "amount": 1,
+      "x": 43,
+      "y": 30
+    },
+    {
+      "objectId": 805,
+      "amount": 1,
+      "x": 45,
+      "y": 30
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 69,
+      "y": 31
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 70,
+      "y": 31
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 71,
+      "y": 31
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 72,
+      "y": 31
+    },
+    {
+      "objectId": 724,
+      "amount": 1,
+      "x": 75,
+      "y": 31
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 78,
+      "y": 31
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 79,
+      "y": 31
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 80,
+      "y": 31
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 81,
+      "y": 31
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 73,
+      "y": 33
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 77,
+      "y": 33
+    },
+    {
+      "objectId": 795,
+      "amount": 1,
+      "x": 34,
+      "y": 34
+    },
+    {
+      "objectId": 795,
+      "amount": 1,
+      "x": 52,
+      "y": 34
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 69,
+      "y": 34
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 70,
+      "y": 34
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 71,
+      "y": 34
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 72,
+      "y": 34
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 73,
+      "y": 34
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 77,
+      "y": 34
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 78,
+      "y": 34
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 79,
+      "y": 34
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 80,
+      "y": 34
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 81,
+      "y": 34
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 70,
+      "y": 36
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 73,
+      "y": 36
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 77,
+      "y": 36
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 80,
+      "y": 36
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 69,
+      "y": 37
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 70,
+      "y": 37
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 71,
+      "y": 37
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 72,
+      "y": 37
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 73,
+      "y": 37
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 77,
+      "y": 37
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 78,
+      "y": 37
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 79,
+      "y": 37
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 80,
+      "y": 37
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 81,
+      "y": 37
+    },
+    {
+      "objectId": 242,
+      "amount": 1,
+      "x": 43,
+      "y": 38
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 34,
+      "y": 39
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 37,
+      "y": 39
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 40,
+      "y": 39
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 46,
+      "y": 39
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 49,
+      "y": 39
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 52,
+      "y": 39
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 69,
+      "y": 39
+    },
+    {
+      "objectId": 726,
+      "amount": 1,
+      "x": 81,
+      "y": 39
+    },
+    {
+      "objectId": 831,
+      "amount": 1,
+      "x": 34,
+      "y": 40
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 37,
+      "y": 40
+    },
+    {
+      "objectId": 831,
+      "amount": 1,
+      "x": 40,
+      "y": 40
+    },
+    {
+      "objectId": 831,
+      "amount": 1,
+      "x": 46,
+      "y": 40
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 49,
+      "y": 40
+    },
+    {
+      "objectId": 831,
+      "amount": 1,
+      "x": 52,
+      "y": 40
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 69,
+      "y": 40
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 70,
+      "y": 40
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 71,
+      "y": 40
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 72,
+      "y": 40
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 78,
+      "y": 40
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 79,
+      "y": 40
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 80,
+      "y": 40
+    },
+    {
+      "objectId": 727,
+      "amount": 1,
+      "x": 81,
+      "y": 40
+    },
+    {
+      "objectId": 242,
+      "amount": 1,
+      "x": 75,
+      "y": 44
+    },
+    {
+      "objectId": 725,
+      "amount": 1,
+      "x": 70,
+      "y": 45
+    },
+    {
+      "objectId": 725,
+      "amount": 1,
+      "x": 72,
+      "y": 45
+    },
+    {
+      "objectId": 725,
+      "amount": 1,
+      "x": 78,
+      "y": 45
+    },
+    {
+      "objectId": 725,
+      "amount": 1,
+      "x": 80,
+      "y": 45
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 75,
+      "y": 46
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 75,
+      "y": 48
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 75,
+      "y": 50
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 29,
+      "y": 53
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 35,
+      "y": 53
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 41,
+      "y": 53
+    },
+    {
+      "objectId": 145,
+      "amount": 1,
+      "x": 29,
+      "y": 54
+    },
+    {
+      "objectId": 831,
+      "amount": 1,
+      "x": 35,
+      "y": 54
+    },
+    {
+      "objectId": 146,
+      "amount": 1,
+      "x": 41,
+      "y": 54
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 29,
+      "y": 58
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 41,
+      "y": 58
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 29,
+      "y": 59
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 41,
+      "y": 59
+    },
+    {
+      "objectId": 717,
+      "amount": 1,
+      "x": 54,
+      "y": 62
+    },
+    {
+      "objectId": 717,
+      "amount": 1,
+      "x": 58,
+      "y": 62
+    },
+    {
+      "objectId": 717,
+      "amount": 1,
+      "x": 62,
+      "y": 62
+    },
+    {
+      "objectId": 717,
+      "amount": 1,
+      "x": 70,
+      "y": 62
+    },
+    {
+      "objectId": 717,
+      "amount": 1,
+      "x": 74,
+      "y": 62
+    },
+    {
+      "objectId": 717,
+      "amount": 1,
+      "x": 78,
+      "y": 62
+    },
+    {
+      "objectId": 242,
+      "amount": 1,
+      "x": 66,
+      "y": 63
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 29,
+      "y": 64
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 41,
+      "y": 64
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 52,
+      "y": 64
+    },
+    {
+      "objectId": 644,
+      "amount": 1,
+      "x": 54,
+      "y": 64
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 56,
+      "y": 64
+    },
+    {
+      "objectId": 371,
+      "amount": 1,
+      "x": 58,
+      "y": 64
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 60,
+      "y": 64
+    },
+    {
+      "objectId": 870,
+      "amount": 1,
+      "x": 62,
+      "y": 64
+    },
+    {
+      "objectId": 869,
+      "amount": 1,
+      "x": 70,
+      "y": 64
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 72,
+      "y": 64
+    },
+    {
+      "objectId": 871,
+      "amount": 1,
+      "x": 74,
+      "y": 64
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 76,
+      "y": 64
+    },
+    {
+      "objectId": 872,
+      "amount": 1,
+      "x": 78,
+      "y": 64
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 80,
+      "y": 64
+    },
+    {
+      "objectId": 358,
+      "amount": 1,
+      "x": 29,
+      "y": 65
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 35,
+      "y": 65
+    },
+    {
+      "objectId": 456,
+      "amount": 1,
+      "x": 41,
+      "y": 65
+    },
+    {
+      "objectId": 569,
+      "amount": 1,
+      "x": 68,
+      "y": 65
+    },
+    {
+      "objectId": 831,
+      "amount": 1,
+      "x": 35,
+      "y": 66
+    },
+    {
+      "objectId": 573,
+      "amount": 1,
+      "x": 66,
+      "y": 66
+    },
+    {
+      "objectId": 567,
+      "amount": 1,
+      "x": 56,
+      "y": 67
+    },
+    {
+      "objectId": 566,
+      "amount": 1,
+      "x": 57,
+      "y": 67
+    },
+    {
+      "objectId": 567,
+      "amount": 1,
+      "x": 62,
+      "y": 67
+    },
+    {
+      "objectId": 566,
+      "amount": 1,
+      "x": 63,
+      "y": 67
+    },
+    {
+      "objectId": 567,
+      "amount": 1,
+      "x": 69,
+      "y": 67
+    },
+    {
+      "objectId": 570,
+      "amount": 1,
+      "x": 75,
+      "y": 67
+    },
+    {
+      "objectId": 569,
+      "amount": 1,
+      "x": 76,
+      "y": 68
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 54,
+      "y": 69
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 59,
+      "y": 69
+    },
+    {
+      "objectId": 717,
+      "amount": 1,
+      "x": 64,
+      "y": 69
+    },
+    {
+      "objectId": 717,
+      "amount": 1,
+      "x": 68,
+      "y": 69
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 73,
+      "y": 69
+    },
+    {
+      "objectId": 850,
+      "amount": 1,
+      "x": 78,
+      "y": 69
+    },
+    {
+      "objectId": 711,
+      "amount": 1,
+      "x": 54,
+      "y": 71
+    },
+    {
+      "objectId": 566,
+      "amount": 1,
+      "x": 57,
+      "y": 71
+    },
+    {
+      "objectId": 703,
+      "amount": 1,
+      "x": 59,
+      "y": 71
+    },
+    {
+      "objectId": 569,
+      "amount": 1,
+      "x": 61,
+      "y": 71
+    },
+    {
+      "objectId": 242,
+      "amount": 1,
+      "x": 66,
+      "y": 71
+    },
+    {
+      "objectId": 567,
+      "amount": 1,
+      "x": 71,
+      "y": 71
+    },
+    {
+      "objectId": 643,
+      "amount": 1,
+      "x": 73,
+      "y": 71
+    },
+    {
+      "objectId": 568,
+      "amount": 1,
+      "x": 76,
+      "y": 71
+    },
+    {
+      "objectId": 642,
+      "amount": 1,
+      "x": 78,
+      "y": 71
+    },
+    {
+      "objectId": 567,
+      "amount": 1,
+      "x": 56,
+      "y": 72
+    },
+    {
+      "objectId": 571,
+      "amount": 1,
+      "x": 56,
+      "y": 73
+    },
+    {
+      "objectId": 566,
+      "amount": 1,
+      "x": 60,
+      "y": 73
+    },
+    {
+      "objectId": 573,
+      "amount": 1,
+      "x": 65,
+      "y": 73
+    },
+    {
+      "objectId": 535,
+      "amount": 1,
+      "x": 66,
+      "y": 73
+    },
+    {
+      "objectId": 572,
+      "amount": 1,
+      "x": 68,
+      "y": 73
+    },
+    {
+      "objectId": 571,
+      "amount": 1,
+      "x": 57,
+      "y": 74
+    },
+    {
+      "objectId": 814,
+      "amount": 1,
+      "x": 62,
+      "y": 74
+    },
+    {
+      "objectId": 814,
+      "amount": 1,
+      "x": 70,
+      "y": 74
+    },
+    {
+      "objectId": 868,
+      "amount": 1,
+      "x": 54,
+      "y": 75
+    },
+    {
+      "objectId": 571,
+      "amount": 1,
+      "x": 65,
+      "y": 75
+    },
+    {
+      "objectId": 571,
+      "amount": 1,
+      "x": 67,
+      "y": 75
+    },
+    {
+      "objectId": 566,
+      "amount": 1,
+      "x": 56,
+      "y": 76
+    },
+    {
+      "objectId": 569,
+      "amount": 1,
+      "x": 57,
+      "y": 76
+    },
+    {
+      "objectId": 567,
+      "amount": 1,
+      "x": 76,
+      "y": 76
+    },
+    {
+      "objectId": 570,
+      "amount": 1,
+      "x": 53,
+      "y": 77
+    },
+    {
+      "objectId": 573,
+      "amount": 1,
+      "x": 55,
+      "y": 77
+    },
+    {
+      "objectId": 570,
+      "amount": 1,
+      "x": 71,
+      "y": 77
+    },
+    {
+      "objectId": 570,
+      "amount": 1,
+      "x": 77,
+      "y": 77
+    },
+    {
+      "objectId": 242,
+      "amount": 1,
+      "x": 66,
+      "y": 79
+    },
+    {
+      "objectId": 568,
+      "amount": 1,
+      "x": 75,
+      "y": 79
+    },
+    {
+      "objectId": 571,
+      "amount": 1,
+      "x": 71,
+      "y": 80
+    },
+    {
+      "objectId": 814,
+      "amount": 1,
+      "x": 65,
+      "y": 81
+    },
+    {
+      "objectId": 814,
+      "amount": 1,
+      "x": 67,
+      "y": 81
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 53,
+      "y": 82
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 57,
+      "y": 82
+    },
+    {
+      "objectId": 570,
+      "amount": 1,
+      "x": 59,
+      "y": 82
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 62,
+      "y": 82
+    },
+    {
+      "objectId": 571,
+      "amount": 1,
+      "x": 64,
+      "y": 82
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 70,
+      "y": 82
+    },
+    {
+      "objectId": 567,
+      "amount": 1,
+      "x": 73,
+      "y": 82
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 75,
+      "y": 82
+    },
+    {
+      "objectId": 832,
+      "amount": 1,
+      "x": 79,
+      "y": 82
+    }
+  ],
+  "tileExits": [
+    {
+      "x": 25,
+      "y": 54,
+      "targetMapId": 34,
+      "targetX": 50,
+      "targetY": 50
+    },
+    {
+      "x": 37,
+      "y": 54,
+      "targetMapId": 1,
+      "targetX": 50,
+      "targetY": 50
+    },
+    {
+      "x": 25,
+      "y": 65,
+      "targetMapId": 59,
+      "targetX": 50,
+      "targetY": 50
+    },
+    {
+      "x": 37,
+      "y": 65,
+      "targetMapId": 62,
+      "targetX": 50,
+      "targetY": 50
+    }
+  ],
+  "info": {
+    "id": 274,
+    "name": "Mapa de GMs. (Partenón de los Dioses / Biblioteca)",
+    "musicNum": 10,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "DESIERTO",
+    "zona": "DUNGEON",
+    "restringir": "GM",
+    "backup": true,
+    "pk": true
+  }
+}

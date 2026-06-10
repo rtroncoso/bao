@@ -1,0 +1,158 @@
+{
+  "mapId": 40,
+  "npcs": [
+    {
+      "npcId": 500,
+      "x": 50,
+      "y": 18
+    },
+    {
+      "npcId": 510,
+      "x": 73,
+      "y": 21
+    },
+    {
+      "npcId": 523,
+      "x": 75,
+      "y": 21
+    },
+    {
+      "npcId": 535,
+      "x": 73,
+      "y": 27
+    },
+    {
+      "npcId": 510,
+      "x": 33,
+      "y": 32
+    },
+    {
+      "npcId": 500,
+      "x": 77,
+      "y": 32
+    },
+    {
+      "npcId": 523,
+      "x": 52,
+      "y": 34
+    },
+    {
+      "npcId": 510,
+      "x": 73,
+      "y": 34
+    },
+    {
+      "npcId": 523,
+      "x": 75,
+      "y": 34
+    },
+    {
+      "npcId": 500,
+      "x": 30,
+      "y": 36
+    },
+    {
+      "npcId": 535,
+      "x": 34,
+      "y": 39
+    },
+    {
+      "npcId": 500,
+      "x": 47,
+      "y": 54
+    },
+    {
+      "npcId": 535,
+      "x": 29,
+      "y": 55
+    },
+    {
+      "npcId": 535,
+      "x": 51,
+      "y": 55
+    },
+    {
+      "npcId": 535,
+      "x": 29,
+      "y": 77
+    }
+  ],
+  "objects": [
+    {
+      "objectId": 17,
+      "amount": 100,
+      "x": 29,
+      "y": 64
+    }
+  ],
+  "tileExits": [
+    {
+      "x": 45,
+      "y": 7,
+      "targetMapId": 1,
+      "targetX": 32,
+      "targetY": 54
+    },
+    {
+      "x": 46,
+      "y": 7,
+      "targetMapId": 1,
+      "targetX": 32,
+      "targetY": 55
+    },
+    {
+      "x": 47,
+      "y": 7,
+      "targetMapId": 1,
+      "targetX": 33,
+      "targetY": 55
+    },
+    {
+      "x": 48,
+      "y": 7,
+      "targetMapId": 1,
+      "targetX": 32,
+      "targetY": 55
+    },
+    {
+      "x": 45,
+      "y": 94,
+      "targetMapId": 41,
+      "targetX": 45,
+      "targetY": 8
+    },
+    {
+      "x": 46,
+      "y": 94,
+      "targetMapId": 41,
+      "targetX": 46,
+      "targetY": 8
+    },
+    {
+      "x": 47,
+      "y": 94,
+      "targetMapId": 41,
+      "targetX": 47,
+      "targetY": 8
+    },
+    {
+      "x": 48,
+      "y": 94,
+      "targetMapId": 41,
+      "targetX": 48,
+      "targetY": 8
+    }
+  ],
+  "info": {
+    "id": 40,
+    "name": "Catacumbas Ullathorpe-Nix.",
+    "musicNum": 9,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "BOSQUE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": true,
+    "pk": false
+  }
+}

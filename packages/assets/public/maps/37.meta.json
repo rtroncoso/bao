@@ -1,0 +1,486 @@
+{
+  "mapId": 37,
+  "npcs": [
+    {
+      "npcId": 506,
+      "x": 34,
+      "y": 24
+    },
+    {
+      "npcId": 500,
+      "x": 40,
+      "y": 24
+    },
+    {
+      "npcId": 506,
+      "x": 32,
+      "y": 25
+    },
+    {
+      "npcId": 500,
+      "x": 37,
+      "y": 25
+    },
+    {
+      "npcId": 500,
+      "x": 51,
+      "y": 25
+    },
+    {
+      "npcId": 500,
+      "x": 55,
+      "y": 25
+    },
+    {
+      "npcId": 506,
+      "x": 64,
+      "y": 25
+    },
+    {
+      "npcId": 506,
+      "x": 67,
+      "y": 25
+    },
+    {
+      "npcId": 504,
+      "x": 73,
+      "y": 25
+    },
+    {
+      "npcId": 504,
+      "x": 79,
+      "y": 25
+    },
+    {
+      "npcId": 506,
+      "x": 35,
+      "y": 26
+    },
+    {
+      "npcId": 500,
+      "x": 41,
+      "y": 26
+    },
+    {
+      "npcId": 500,
+      "x": 48,
+      "y": 26
+    },
+    {
+      "npcId": 500,
+      "x": 53,
+      "y": 26
+    },
+    {
+      "npcId": 506,
+      "x": 66,
+      "y": 26
+    },
+    {
+      "npcId": 504,
+      "x": 70,
+      "y": 26
+    },
+    {
+      "npcId": 504,
+      "x": 76,
+      "y": 26
+    },
+    {
+      "npcId": 501,
+      "x": 69,
+      "y": 39
+    },
+    {
+      "npcId": 501,
+      "x": 65,
+      "y": 41
+    },
+    {
+      "npcId": 501,
+      "x": 72,
+      "y": 41
+    },
+    {
+      "npcId": 500,
+      "x": 68,
+      "y": 42
+    },
+    {
+      "npcId": 501,
+      "x": 69,
+      "y": 45
+    },
+    {
+      "npcId": 500,
+      "x": 39,
+      "y": 49
+    },
+    {
+      "npcId": 500,
+      "x": 42,
+      "y": 50
+    },
+    {
+      "npcId": 500,
+      "x": 38,
+      "y": 52
+    },
+    {
+      "npcId": 500,
+      "x": 41,
+      "y": 52
+    },
+    {
+      "npcId": 500,
+      "x": 44,
+      "y": 53
+    },
+    {
+      "npcId": 500,
+      "x": 40,
+      "y": 54
+    },
+    {
+      "npcId": 504,
+      "x": 83,
+      "y": 66
+    },
+    {
+      "npcId": 504,
+      "x": 79,
+      "y": 68
+    },
+    {
+      "npcId": 504,
+      "x": 85,
+      "y": 68
+    },
+    {
+      "npcId": 504,
+      "x": 38,
+      "y": 76
+    },
+    {
+      "npcId": 504,
+      "x": 42,
+      "y": 76
+    }
+  ],
+  "objects": [],
+  "tileExits": [
+    {
+      "x": 5,
+      "y": 4,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 86
+    },
+    {
+      "x": 12,
+      "y": 16,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 16
+    },
+    {
+      "x": 90,
+      "y": 16,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 16
+    },
+    {
+      "x": 12,
+      "y": 17,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 17
+    },
+    {
+      "x": 90,
+      "y": 17,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 17
+    },
+    {
+      "x": 12,
+      "y": 18,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 18
+    },
+    {
+      "x": 90,
+      "y": 18,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 18
+    },
+    {
+      "x": 12,
+      "y": 19,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 19
+    },
+    {
+      "x": 90,
+      "y": 19,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 19
+    },
+    {
+      "x": 12,
+      "y": 20,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 20
+    },
+    {
+      "x": 90,
+      "y": 20,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 20
+    },
+    {
+      "x": 12,
+      "y": 21,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 21
+    },
+    {
+      "x": 90,
+      "y": 21,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 21
+    },
+    {
+      "x": 12,
+      "y": 22,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 22
+    },
+    {
+      "x": 90,
+      "y": 22,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 22
+    },
+    {
+      "x": 12,
+      "y": 48,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 48
+    },
+    {
+      "x": 90,
+      "y": 48,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 48
+    },
+    {
+      "x": 12,
+      "y": 49,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 49
+    },
+    {
+      "x": 90,
+      "y": 49,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 49
+    },
+    {
+      "x": 12,
+      "y": 50,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 50
+    },
+    {
+      "x": 90,
+      "y": 50,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 50
+    },
+    {
+      "x": 12,
+      "y": 51,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 51
+    },
+    {
+      "x": 90,
+      "y": 51,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 51
+    },
+    {
+      "x": 12,
+      "y": 52,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 52
+    },
+    {
+      "x": 90,
+      "y": 52,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 52
+    },
+    {
+      "x": 12,
+      "y": 53,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 53
+    },
+    {
+      "x": 90,
+      "y": 53,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 53
+    },
+    {
+      "x": 12,
+      "y": 54,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 54
+    },
+    {
+      "x": 90,
+      "y": 54,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 54
+    },
+    {
+      "x": 12,
+      "y": 80,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 80
+    },
+    {
+      "x": 90,
+      "y": 80,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 80
+    },
+    {
+      "x": 12,
+      "y": 81,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 81
+    },
+    {
+      "x": 90,
+      "y": 81,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 81
+    },
+    {
+      "x": 12,
+      "y": 82,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 82
+    },
+    {
+      "x": 90,
+      "y": 82,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 82
+    },
+    {
+      "x": 12,
+      "y": 83,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 83
+    },
+    {
+      "x": 90,
+      "y": 83,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 83
+    },
+    {
+      "x": 12,
+      "y": 84,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 84
+    },
+    {
+      "x": 90,
+      "y": 84,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 84
+    },
+    {
+      "x": 12,
+      "y": 85,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 85
+    },
+    {
+      "x": 90,
+      "y": 85,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 85
+    },
+    {
+      "x": 12,
+      "y": 86,
+      "targetMapId": 168,
+      "targetX": 91,
+      "targetY": 86
+    },
+    {
+      "x": 90,
+      "y": 86,
+      "targetMapId": 168,
+      "targetX": 10,
+      "targetY": 86
+    }
+  ],
+  "info": {
+    "id": 37,
+    "name": "Newbie Dungeon.",
+    "musicNum": 7,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "BOSQUE",
+    "zona": "DUNGEON",
+    "restringir": "NEWBIE",
+    "backup": false,
+    "pk": true
+  }
+}

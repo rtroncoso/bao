@@ -1,0 +1,385 @@
+{
+  "mapId": 276,
+  "npcs": [],
+  "objects": [
+    {
+      "objectId": 826,
+      "amount": 1,
+      "x": 64,
+      "y": 32
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 72,
+      "y": 34
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 73,
+      "y": 34
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 74,
+      "y": 34
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 75,
+      "y": 34
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 76,
+      "y": 34
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 77,
+      "y": 34
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 78,
+      "y": 34
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 79,
+      "y": 34
+    },
+    {
+      "objectId": 828,
+      "amount": 1,
+      "x": 67,
+      "y": 36
+    },
+    {
+      "objectId": 830,
+      "amount": 1,
+      "x": 58,
+      "y": 39
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 72,
+      "y": 39
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 73,
+      "y": 39
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 74,
+      "y": 39
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 75,
+      "y": 39
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 76,
+      "y": 39
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 77,
+      "y": 39
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 78,
+      "y": 39
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 79,
+      "y": 39
+    },
+    {
+      "objectId": 825,
+      "amount": 1,
+      "x": 65,
+      "y": 40
+    },
+    {
+      "objectId": 826,
+      "amount": 1,
+      "x": 59,
+      "y": 46
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 36,
+      "y": 48
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 37,
+      "y": 48
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 38,
+      "y": 48
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 39,
+      "y": 48
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 40,
+      "y": 48
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 41,
+      "y": 48
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 42,
+      "y": 48
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 43,
+      "y": 48
+    },
+    {
+      "objectId": 827,
+      "amount": 1,
+      "x": 67,
+      "y": 48
+    },
+    {
+      "objectId": 828,
+      "amount": 1,
+      "x": 50,
+      "y": 51
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 36,
+      "y": 52
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 37,
+      "y": 52
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 38,
+      "y": 52
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 39,
+      "y": 52
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 40,
+      "y": 52
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 41,
+      "y": 52
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 42,
+      "y": 52
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 43,
+      "y": 52
+    },
+    {
+      "objectId": 829,
+      "amount": 1,
+      "x": 60,
+      "y": 54
+    },
+    {
+      "objectId": 825,
+      "amount": 1,
+      "x": 54,
+      "y": 55
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 72,
+      "y": 58
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 73,
+      "y": 58
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 74,
+      "y": 58
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 75,
+      "y": 58
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 76,
+      "y": 58
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 77,
+      "y": 58
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 78,
+      "y": 58
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 79,
+      "y": 58
+    },
+    {
+      "objectId": 827,
+      "amount": 1,
+      "x": 69,
+      "y": 59
+    },
+    {
+      "objectId": 829,
+      "amount": 1,
+      "x": 48,
+      "y": 60
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 72,
+      "y": 62
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 73,
+      "y": 62
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 74,
+      "y": 62
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 75,
+      "y": 62
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 76,
+      "y": 62
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 77,
+      "y": 62
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 78,
+      "y": 62
+    },
+    {
+      "objectId": 653,
+      "amount": 1,
+      "x": 79,
+      "y": 62
+    },
+    {
+      "objectId": 830,
+      "amount": 1,
+      "x": 63,
+      "y": 63
+    },
+    {
+      "objectId": 828,
+      "amount": 1,
+      "x": 53,
+      "y": 66
+    }
+  ],
+  "tileExits": [],
+  "info": {
+    "id": 276,
+    "name": "Oasis",
+    "musicNum": 50,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "BOSQUE",
+    "zona": "CAMPO",
+    "restringir": "No",
+    "backup": false,
+    "pk": false
+  }
+}

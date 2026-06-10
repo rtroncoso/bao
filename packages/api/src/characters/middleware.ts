@@ -64,7 +64,11 @@ export const updatePosition: ApiRequestHandler = async (req, res, next) => {
   }
 }
 
-export const adminUpdatePosition: ApiRequestHandler = async (req, res, next) => {
+export const adminUpdatePosition: ApiRequestHandler = async (
+  req,
+  res,
+  next
+) => {
   try {
     const body = validateUpdatePosition(req)
     const accountId = Number(req.body?.accountId)

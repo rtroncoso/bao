@@ -1,0 +1,143 @@
+{
+  "mapId": 45,
+  "npcs": [
+    {
+      "npcId": 500,
+      "x": 35,
+      "y": 45
+    },
+    {
+      "npcId": 510,
+      "x": 39,
+      "y": 47
+    },
+    {
+      "npcId": 500,
+      "x": 89,
+      "y": 47
+    },
+    {
+      "npcId": 535,
+      "x": 79,
+      "y": 50
+    },
+    {
+      "npcId": 510,
+      "x": 84,
+      "y": 50
+    },
+    {
+      "npcId": 535,
+      "x": 38,
+      "y": 51
+    },
+    {
+      "npcId": 510,
+      "x": 71,
+      "y": 52
+    },
+    {
+      "npcId": 510,
+      "x": 37,
+      "y": 56
+    },
+    {
+      "npcId": 535,
+      "x": 37,
+      "y": 74
+    },
+    {
+      "npcId": 510,
+      "x": 59,
+      "y": 74
+    },
+    {
+      "npcId": 535,
+      "x": 79,
+      "y": 74
+    },
+    {
+      "npcId": 500,
+      "x": 46,
+      "y": 75
+    }
+  ],
+  "objects": [],
+  "tileExits": [
+    {
+      "x": 92,
+      "y": 72,
+      "targetMapId": 44,
+      "targetX": 10,
+      "targetY": 72
+    },
+    {
+      "x": 92,
+      "y": 73,
+      "targetMapId": 44,
+      "targetX": 10,
+      "targetY": 73
+    },
+    {
+      "x": 92,
+      "y": 74,
+      "targetMapId": 44,
+      "targetX": 10,
+      "targetY": 74
+    },
+    {
+      "x": 92,
+      "y": 75,
+      "targetMapId": 44,
+      "targetX": 10,
+      "targetY": 75
+    },
+    {
+      "x": 92,
+      "y": 76,
+      "targetMapId": 44,
+      "targetX": 10,
+      "targetY": 76
+    },
+    {
+      "x": 9,
+      "y": 84,
+      "targetMapId": 34,
+      "targetX": 12,
+      "targetY": 90
+    },
+    {
+      "x": 10,
+      "y": 84,
+      "targetMapId": 34,
+      "targetX": 12,
+      "targetY": 91
+    },
+    {
+      "x": 11,
+      "y": 84,
+      "targetMapId": 34,
+      "targetX": 13,
+      "targetY": 91
+    },
+    {
+      "x": 12,
+      "y": 84,
+      "targetMapId": 34,
+      "targetX": 13,
+      "targetY": 90
+    }
+  ],
+  "info": {
+    "id": 45,
+    "name": "Catacumbas Ullathorpe-Nix.",
+    "musicNum": 9,
+    "magiaSinEfecto": false,
+    "noEncriptarMP": false,
+    "terreno": "BOSQUE",
+    "zona": "DUNGEON",
+    "restringir": "No",
+    "backup": false,
+    "pk": false
+  }
+}
