@@ -9,6 +9,9 @@
     "start": "turbo run start",
     "dev": "turbo run dev --filter=@bao/api --filter=@bao/client --filter=@bao/server --filter=@bao/core",
     "dev:db": "docker compose up -d mysql",
+    "db:migrate": "pnpm --filter @bao/api migrate",
+    "db:seed": "pnpm --filter @bao/assets seed",
+    "db:seed:apply": "pnpm --filter @bao/assets seed -- --apply",
     "format": "turbo run prettier",
     "format:check": "turbo run prettier:check",
     "prepare": "husky"
