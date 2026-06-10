@@ -24,6 +24,10 @@ import { App } from '@bao/core/constants/game';
 import { TILE_SIZE } from '@bao/core';
 import { CharacterState } from '@bao/server/schema/CharacterState';
 import { WorldRoomState } from '@bao/server/schema/WorldRoomState';
+import {
+  getCharacterWorldPixels,
+  useWorldContext
+} from '@bao/client/components/Systems/WorldSystem';
 
 export interface ViewportProps {
   children?: React.ReactNode;
@@ -125,6 +129,7 @@ export const ViewportSystem: React.FC<ViewportProps> = (
   const publishedProjectionTileRef = useRef({ x: Number.NaN, y: Number.NaN });
   const lastSnapKeyRef = useRef<string | null>(null);
   const { state } = useGameContext();
+  const { worlds } = useWorldContext();
   const { room, serverState, characterId } = state;
   const { children, overlay } = props;
 
@@ -186,8 +191,9 @@ export const ViewportSystem: React.FC<ViewportProps> = (
     }
 
     lastSnapKeyRef.current = snapKey;
-    displayPositionRef.current.x = currentCharacter.x;
-    displayPositionRef.current.y = currentCharacter.y;
+    const worldPixels = getCharacterWorldPixels(currentCharacter, worlds);
+    displayPositionRef.current.x = worldPixels.x;
+    displayPositionRef.current.y = worldPixels.y;
     snapCameraToDisplay(currentCharacter);
   }, [currentCharacter, room?.sessionId, characterId]);
 
@@ -196,8 +202,9 @@ export const ViewportSystem: React.FC<ViewportProps> = (
       return;
     }
 
-    const targetX = currentCharacter.x;
-    const targetY = currentCharacter.y;
+    const worldPixels = getCharacterWorldPixels(currentCharacter, worlds);
+    const targetX = worldPixels.x;
+    const targetY = worldPixels.y;
     const dx = Math.abs(displayPositionRef.current.x - targetX);
     const dy = Math.abs(displayPositionRef.current.y - targetY);
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Container } from '@inlet/react-pixi';
 
 import {
@@ -25,7 +25,19 @@ import {
 } from './hooks';
 import { useBorderPrefetch } from './useBorderPrefetch';
 
-const TiledMapContent: React.FC<{ currentMap: Tiled }> = ({ currentMap }) => {
+interface TiledMapContentProps {
+  mapId: number;
+  currentMap: Tiled;
+  worldOffsetX: number;
+  worldOffsetY: number;
+}
+
+const TiledMapPrimaryContent: React.FC<TiledMapContentProps> = ({
+  mapId,
+  currentMap,
+  worldOffsetX,
+  worldOffsetY
+}) => {
   const mapData = useMapData(currentMap);
   const spatialIndexes = useSpatialIndexes(mapData);
   const { mapState } = useMapContext();
@@ -33,6 +45,10 @@ const TiledMapContent: React.FC<{ currentMap: Tiled }> = ({ currentMap }) => {
   const renderTargets = useRenderTargets();
   const getShoreSpriteFilter = useShoreSpriteFilters();
   const shoreOrientations = useShoreOrientations(mapData);
+  const mapWorldOffset = useMemo(
+    () => ({ x: worldOffsetX, y: worldOffsetY }),
+    [worldOffsetX, worldOffsetY]
+  );
 
   const { objectsCache, spritesCache } = useSpriteCache(
     mapData.objects,
@@ -41,7 +57,6 @@ const TiledMapContent: React.FC<{ currentMap: Tiled }> = ({ currentMap }) => {
   );
 
   useTriggerHandling(mapData.triggers, renderTargets.spritesLayer);
-  useBorderPrefetch();
 
   useViewportRendering(
     mapData,
@@ -51,7 +66,8 @@ const TiledMapContent: React.FC<{ currentMap: Tiled }> = ({ currentMap }) => {
     textures,
     renderTargets,
     getShoreSpriteFilter,
-    shoreOrientations
+    shoreOrientations,
+    { mapWorldOffset }
   );
 
   return (
@@ -74,18 +90,87 @@ const TiledMapContent: React.FC<{ currentMap: Tiled }> = ({ currentMap }) => {
           ref={renderTargets.objectsLayer}
           parentGroup={mapState?.groups[ENTITIES_LAYER]}
         />
-        <MapEntityLayer />
+        <MapEntityLayer mapId={mapId} />
       </Container>
     </EffectsAnimationSystem>
   );
 };
 
-export const TiledMap: React.FC = () => {
-  const { currentMap, isLoading } = useWorldContext();
+const TiledMapNeighborContent: React.FC<TiledMapContentProps> = ({
+  currentMap,
+  worldOffsetX,
+  worldOffsetY
+}) => {
+  const mapData = useMapData(currentMap);
+  const spatialIndexes = useSpatialIndexes(mapData);
+  const { mapState } = useMapContext();
+  const textures = useTextures();
+  const renderTargets = useRenderTargets();
+  const mapWorldOffset = useMemo(
+    () => ({ x: worldOffsetX, y: worldOffsetY }),
+    [worldOffsetX, worldOffsetY]
+  );
 
-  if (isLoading || !currentMap) {
+  useViewportRendering(
+    mapData,
+    spatialIndexes,
+    {},
+    {},
+    textures,
+    renderTargets,
+    null,
+    null,
+    { mapWorldOffset, terrainOnly: true }
+  );
+
+  return (
+    <Container ref={renderTargets.container}>
+      <Container
+        ref={renderTargets.tilesLayer}
+        parentGroup={mapState?.groups[TILES_LAYER]}
+      />
+      <Container
+        ref={renderTargets.shoreLayer}
+        parentGroup={mapState?.groups[SHORE_LAYER]}
+      />
+    </Container>
+  );
+};
+
+export const TiledMap: React.FC = () => {
+  const { activeMaps, currentMapId, isLoading } = useWorldContext();
+
+  useBorderPrefetch();
+
+  if (isLoading && activeMaps.length === 0) {
     return null;
   }
 
-  return <TiledMapContent currentMap={currentMap} />;
+  if (activeMaps.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      {activeMaps.map(({ mapId, map, offsetX, offsetY }) => (
+        <Container key={mapId} x={offsetX} y={offsetY}>
+          {mapId === currentMapId ? (
+            <TiledMapPrimaryContent
+              mapId={mapId}
+              currentMap={map}
+              worldOffsetX={offsetX}
+              worldOffsetY={offsetY}
+            />
+          ) : (
+            <TiledMapNeighborContent
+              mapId={mapId}
+              currentMap={map}
+              worldOffsetX={offsetX}
+              worldOffsetY={offsetY}
+            />
+          )}
+        </Container>
+      ))}
+    </>
+  );
 };

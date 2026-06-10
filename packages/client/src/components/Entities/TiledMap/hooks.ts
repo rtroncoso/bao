@@ -206,13 +206,16 @@ export const useRenderTargets = () => {
   const spritesLayer = useRef<PixiContainer>();
   const objectsLayer = useRef<PixiContainer>();
 
-  return {
-    container,
-    tilesLayer,
-    shoreLayer,
-    spritesLayer,
-    objectsLayer
-  };
+  return useMemo(
+    () => ({
+      container,
+      tilesLayer,
+      shoreLayer,
+      spritesLayer,
+      objectsLayer
+    }),
+    []
+  );
 };
 
 export const useTriggerHandling = (
@@ -297,6 +300,11 @@ export const useShoreOrientations = (mapData: TiledMapData) => {
   );
 };
 
+export interface ViewportRenderingOptions {
+  mapWorldOffset?: { x: number; y: number };
+  terrainOnly?: boolean;
+}
+
 export const useViewportRendering = (
   mapData: TiledMapData,
   spatialIndexes: SpatialIndexes | null,
@@ -304,9 +312,12 @@ export const useViewportRendering = (
   spritesCache: SpritesCache,
   textures: any[],
   renderTargets: any,
-  getShoreSpriteFilter: ReturnType<typeof useShoreSpriteFilterPool>,
-  shoreOrientations: Map<string | number, ShoreEdges>
+  getShoreSpriteFilter: ReturnType<typeof useShoreSpriteFilterPool> | null,
+  shoreOrientations: Map<string | number, ShoreEdges> | null,
+  options: ViewportRenderingOptions = {}
 ) => {
+  const mapWorldOffset = options.mapWorldOffset ?? { x: 0, y: 0 };
+  const terrainOnly = options.terrainOnly ?? false;
   const { viewportState, projectionRef } = useViewportContext();
   const { mapState } = useMapContext();
   const tileCullingPx = TILE_CULLING_TILES * TILE_SIZE;
@@ -324,25 +335,37 @@ export const useViewportRendering = (
     [mapData.sprites]
   );
 
+  const toLocalProjection = useCallback(
+    (projection: Rectangle) =>
+      new Rectangle(
+        projection.x - mapWorldOffset.x,
+        projection.y - mapWorldOffset.y,
+        projection.width,
+        projection.height
+      ),
+    [mapWorldOffset.x, mapWorldOffset.y]
+  );
+
   const syncViewportLayers = useCallback(
     (projection: Rectangle) => {
       if (!textures.length || !spatialIndexes) {
         return;
       }
 
+      const localProjection = toLocalProjection(projection);
       const tileBounds = calculateProjectionMatrix(
         mapData.tmx,
-        projection,
+        localProjection,
         tileCullingPx
       );
       const objectBounds = calculateProjectionMatrix(
         mapData.tmx,
-        projection,
+        localProjection,
         objectCullingPx
       );
       const spriteBounds = calculateProjectionMatrix(
         mapData.tmx,
-        projection,
+        localProjection,
         objectCullingPx + SHORE_SPRITE_EXTRA_CULL_PX
       );
 
@@ -373,23 +396,25 @@ export const useViewportRendering = (
         mapState?.groups[SHORE_LAYER]
       );
 
-      renderSpriteLayers(
-        spritesInViewport,
-        renderTargets.spritesLayer,
-        spritesCache,
-        {
-          getShoreSpriteFilter,
-          shoreGroup: mapState?.groups[SHORE_LAYER],
-          shoreOrientations,
-          shoreTarget: renderTargets.shoreLayer
-        }
-      );
+      if (!terrainOnly && getShoreSpriteFilter && shoreOrientations) {
+        renderSpriteLayers(
+          spritesInViewport,
+          renderTargets.spritesLayer,
+          spritesCache,
+          {
+            getShoreSpriteFilter,
+            shoreGroup: mapState?.groups[SHORE_LAYER],
+            shoreOrientations,
+            shoreTarget: renderTargets.shoreLayer
+          }
+        );
 
-      renderSpriteLayers(
-        objectsInViewport,
-        renderTargets.objectsLayer,
-        objectsCache
-      );
+        renderSpriteLayers(
+          objectsInViewport,
+          renderTargets.objectsLayer,
+          objectsCache
+        );
+      }
 
       tileChunkCache.current.evictOutside(
         tileBounds,
@@ -402,7 +427,7 @@ export const useViewportRendering = (
         tmx: mapData.tmx,
         tileCullingPx,
         objectCullingPx,
-        cullProjection: projection,
+        cullProjection: localProjection,
         tileBounds: {
           x: tileBounds.x,
           y: tileBounds.y,
@@ -438,7 +463,9 @@ export const useViewportRendering = (
       shoreOrientations,
       tileCullingPx,
       objectCullingPx,
-      shoreSpriteObjects
+      shoreSpriteObjects,
+      toLocalProjection,
+      terrainOnly
     ]
   );
 

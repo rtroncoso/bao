@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { Message } from '@bao/server/schema/MessageState';
 import { ChatRoom } from '@bao/server/rooms/ChatRoom';
 import { useGameContext } from '@bao/client/components/Game/Game.context';
+import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
 import {
   SetStateCallback,
   UpdateStateCallback,
@@ -219,12 +220,32 @@ export const ChatContextContainer = <P extends ChatConnectedProps>(
     }, [gameState, handleRoomError, handleRoomMessage, setState, token]);
 
     useEffect(() => {
-      if (gameState.connected) {
-        handleJoinRoom();
+      if (!gameState.connected || !gameState.room?.sessionId || !token) {
+        return;
       }
 
-      return handleLeaveRoom;
-    }, [gameState.connected]);
+      const localCharacter = resolveLocalCharacter(
+        gameState.serverState,
+        gameState.characterId,
+        gameState.room.sessionId
+      );
+
+      if (!localCharacter) {
+        return;
+      }
+
+      handleJoinRoom();
+
+      return () => {
+        handleLeaveRoom();
+      };
+    }, [
+      gameState.characterId,
+      gameState.connected,
+      gameState.room?.sessionId,
+      gameState.serverState,
+      token
+    ]);
 
     const callbacks = {
       setState,

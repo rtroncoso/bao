@@ -32,7 +32,9 @@ export class MapEntitySystem {
         const entity = new MapNpcEntityState();
         entity.id = `npc:${mapId}:${index}`;
         entity.npcId = spawn.npcId;
-        entity.graphicId = spawn.npcId;
+        entity.bodyId = spawn.bodyId;
+        entity.headId = spawn.headId;
+        entity.heading = spawn.heading;
         entity.x = spawn.x;
         entity.y = spawn.y;
         return entity;
@@ -44,7 +46,7 @@ export class MapEntitySystem {
         const entity = new MapObjectEntityState();
         entity.id = `object:${mapId}:${index}`;
         entity.objectId = spawn.objectId;
-        entity.graphicId = spawn.objectId;
+        entity.graphicId = spawn.graphicId;
         entity.amount = spawn.amount;
         entity.x = spawn.x;
         entity.y = spawn.y;

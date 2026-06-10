@@ -45,27 +45,46 @@ const getQuadrantWithHysteresis = (
 };
 
 export const useBorderPrefetch = () => {
-  const { prefetchForCharacter, currentMapId } = useWorldContext();
+  const { prefetchForCharacter, currentMapId, worlds } = useWorldContext();
   const { viewportState } = useViewportContext();
   const quadrantRef = useRef<WorldQuadrant | null>(null);
+  const lastPrefetchKeyRef = useRef<string | null>(null);
+  const hadWorldsRef = useRef(false);
+
+  useEffect(() => {
+    if (worlds && !hadWorldsRef.current) {
+      hadWorldsRef.current = true;
+      quadrantRef.current = null;
+      lastPrefetchKeyRef.current = null;
+    }
+  }, [worlds]);
 
   useEffect(() => {
     const character = viewportState?.currentCharacter;
     if (!character) {
+      quadrantRef.current = null;
+      lastPrefetchKeyRef.current = null;
       return;
     }
 
     const mapId = character.mapId ?? currentMapId;
     const { x, y } = character.tile;
     const quadrant = getQuadrantWithHysteresis(x, y, quadrantRef.current);
-    quadrantRef.current = quadrant;
+    const prefetchKey = `${mapId}:${quadrant}:${worlds ? 'w' : 'n'}`;
 
+    if (lastPrefetchKeyRef.current === prefetchKey) {
+      return;
+    }
+
+    quadrantRef.current = quadrant;
+    lastPrefetchKeyRef.current = prefetchKey;
     void prefetchForCharacter(mapId, x, y, quadrant);
   }, [
     currentMapId,
     prefetchForCharacter,
     viewportState?.currentCharacter?.mapId,
     viewportState?.currentCharacter?.tile.x,
-    viewportState?.currentCharacter?.tile.y
+    viewportState?.currentCharacter?.tile.y,
+    worlds
   ]);
 };

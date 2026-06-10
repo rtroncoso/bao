@@ -19,10 +19,40 @@ export interface OnJoinParameters {
   auth: jwt.JwtPayload | string;
 }
 
-const DEFAULT_MAP_ID = 34;
-const DEFAULT_SPAWN_X = 44;
-const DEFAULT_SPAWN_Y = 88;
+const DEFAULT_MAP_ID = 1;
+const DEFAULT_SPAWN_X = 50;
+const DEFAULT_SPAWN_Y = 50;
 const PLAYABLE_WIDTH = 84;
+
+const resolveWorldTile = (
+  apiCharacter: {
+    mapId?: number;
+    world?: number;
+    x?: number;
+    y?: number;
+    worldX?: number;
+    worldY?: number;
+  },
+  mapId: number,
+  x: number,
+  y: number
+) => {
+  if (apiCharacter.worldX !== undefined && apiCharacter.worldY !== undefined) {
+    return {
+      worldX: apiCharacter.worldX,
+      worldY: apiCharacter.worldY
+    };
+  }
+
+  if (mapId === DEFAULT_MAP_ID) {
+    return { worldX: x, worldY: y };
+  }
+
+  return {
+    worldX: mapId * PLAYABLE_WIDTH + x,
+    worldY: y
+  };
+};
 
 function getAccountId(auth: jwt.JwtPayload | string): number | undefined {
   if (typeof auth !== 'object' || auth === null) {
@@ -78,8 +108,6 @@ function toJoinServerError(error: unknown): ServerError {
 }
 
 export class OnJoinCommand extends Command<WorldRoom, OnJoinParameters> {
-  accountService: AccountService = new AccountService();
-
   async execute({ client, options, auth }: OnJoinParameters) {
     try {
       const accountId = getAccountId(auth);
@@ -97,7 +125,10 @@ export class OnJoinCommand extends Command<WorldRoom, OnJoinParameters> {
         `[OnJoinWorld] joining account=${accountId} character=${characterId}`
       );
 
-      const account = await this.accountService.findOne(accountId);
+      const accountService = new AccountService({
+        authToken: options.token
+      });
+      const account = await accountService.findOne(accountId);
 
       if (!account || typeof account !== 'object') {
         throw new ServerError(502, 'INVALID_API_RESPONSE');
@@ -126,8 +157,7 @@ export class OnJoinCommand extends Command<WorldRoom, OnJoinParameters> {
       const mapId = apiCharacter.mapId ?? apiCharacter.world ?? DEFAULT_MAP_ID;
       const x = apiCharacter.x ?? DEFAULT_SPAWN_X;
       const y = apiCharacter.y ?? DEFAULT_SPAWN_Y;
-      const worldX = apiCharacter.worldX ?? mapId * PLAYABLE_WIDTH + x;
-      const worldY = apiCharacter.worldY ?? y;
+      const { worldX, worldY } = resolveWorldTile(apiCharacter, mapId, x, y);
 
       const character = new CharacterState();
       character.id = apiCharacter.id;
@@ -148,7 +178,7 @@ export class OnJoinCommand extends Command<WorldRoom, OnJoinParameters> {
       await this.room.mapRegistry.ensureMap(mapId, options.token);
       this.room.mapRegistry.registerCharacter(mapId);
       this.state.characters.push(character);
-      this.room.presence.sadd(`character:${character.id}`, character);
+      this.room.presence.sadd(`session:${client.sessionId}`, character);
     } catch (error) {
       throw toJoinServerError(error);
     }

@@ -29,13 +29,13 @@
   "dependencies": {
     "@bao/core": "workspace:*",
     "@bao/env": "workspace:*",
+    "@aws-sdk/client-s3": "^3.750.0",
     "cli-progress": "^3.8.2",
     "commander": "^6.0.0",
     "dotenv": "^16.0.3",
     "esm": "^3.2.25",
     "mysql2": "^3.11.0",
-    "pixi.js": "^6.0.0",
-    "s3": "^4.4.0"
+    "pixi.js": "^6.0.0"
   },
   "devDependencies": {
     "tsx": "^4.19.0"

@@ -17,6 +17,7 @@ const MIGRATIONS = [
   '2026-06-09_world_integration.sql',
   '2020-11-09_characters.sql',
   '2026-06-10_character_world_position.sql',
+  '2026-06-11_default_spawn_ullathorpe.sql',
 ];
 
 const parseArgs = () => {

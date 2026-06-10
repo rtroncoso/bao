@@ -125,4 +125,4 @@ pnpm staging
 pnpm production
 ```
 
-S3 credentials: `.env.staging` / `.env.production` in this package.
+S3 credentials: repo root `.env` (`AWS_S3_*` or `BAO_S3_*`). Optional overlay: `.env.staging` / `.env.production` in repo root or this package.

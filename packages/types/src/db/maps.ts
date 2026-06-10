@@ -17,6 +17,9 @@ export interface MapNpcSpawnRow {
   npcId: number
   x: number
   y: number
+  bodyId: number
+  headId: number
+  heading: number
 }
 
 export interface MapObjectSpawnRow {
@@ -26,6 +29,7 @@ export interface MapObjectSpawnRow {
   amount: number
   x: number
   y: number
+  graphicId: number
 }
 
 export interface MapTileExitRow {

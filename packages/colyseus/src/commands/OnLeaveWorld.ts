@@ -33,9 +33,7 @@ export class OnLeaveCommand extends Command<WorldRoom, OnLeaveParameters> {
     this.room.mapRegistry.unregisterCharacter(character.mapId);
     this.room.movementSystem.unblockCharacter(character);
     this.state.characters.splice(index, 1);
-    if (character.id) {
-      this.room.presence.srem(`character:${character.id}`, character);
-    }
+    this.room.presence.srem(`session:${client.sessionId}`, character);
     this.room.accountIdBySession.delete(client.sessionId);
     this.room.authTokenBySession.delete(client.sessionId);
   }

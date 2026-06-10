@@ -1,112 +1,204 @@
+import {
+  DeleteObjectsCommand,
+  ListObjectsV2Command,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import cliProgress from 'cli-progress';
 import program from 'commander';
 import dotenv from 'dotenv';
-import fs from 'fs';
+import fs, { createReadStream } from 'fs';
 import path from 'path';
-import s3 from 's3';
+import { fileURLToPath } from 'url';
 
-import packageJson from '../package.json';
+import { envString, loadRootEnv } from '@bao/env';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const PACKAGE_ROOT = path.resolve(__dirname, '..');
+const PUBLIC_DIR = path.join(PACKAGE_ROOT, 'public');
+
+const packageJson = JSON.parse(
+  fs.readFileSync(path.join(PACKAGE_ROOT, 'package.json'), 'utf8')
+);
 
 const progress = new cliProgress.SingleBar(
   { etaBuffer: 1000 },
   cliProgress.Presets.shades_classic
 );
 
+const resolveS3Env = (name) =>
+  envString(`BAO_S3_${name}`) ?? envString(`AWS_S3_${name}`);
+
+const loadDeployEnv = (environment) => {
+  const repoRoot = loadRootEnv(PACKAGE_ROOT);
+
+  const overlayPaths = [
+    path.join(PACKAGE_ROOT, `.env.${environment}`),
+    path.join(repoRoot, `.env.${environment}`),
+  ];
+
+  for (const overlayPath of overlayPaths) {
+    if (fs.existsSync(overlayPath)) {
+      dotenv.config({ path: overlayPath, override: true });
+      return overlayPath;
+    }
+  }
+
+  return path.join(repoRoot, '.env');
+};
+
+const walkFiles = (rootDir) => {
+  const files = [];
+
+  const visit = (currentDir) => {
+    for (const entry of fs.readdirSync(currentDir, { withFileTypes: true })) {
+      const fullPath = path.join(currentDir, entry.name);
+      if (entry.isDirectory()) {
+        visit(fullPath);
+      } else if (entry.isFile()) {
+        files.push(fullPath);
+      }
+    }
+  };
+
+  visit(rootDir);
+  return files;
+};
+
+const toPosixKey = (filePath, rootDir) =>
+  path.relative(rootDir, filePath).split(path.sep).join('/');
+
+const listRemoteKeys = async (client, bucket) => {
+  const keys = new Set();
+  let continuationToken;
+
+  do {
+    const response = await client.send(
+      new ListObjectsV2Command({
+        Bucket: bucket,
+        ContinuationToken: continuationToken,
+      })
+    );
+
+    for (const object of response.Contents ?? []) {
+      if (object.Key) {
+        keys.add(object.Key);
+      }
+    }
+
+    continuationToken = response.IsTruncated
+      ? response.NextContinuationToken
+      : undefined;
+  } while (continuationToken);
+
+  return keys;
+};
+
+const deleteRemoteKeys = async (client, bucket, keys) => {
+  const batchSize = 1000;
+
+  for (let index = 0; index < keys.length; index += batchSize) {
+    const batch = keys.slice(index, index + batchSize);
+    if (batch.length === 0) {
+      continue;
+    }
+
+    await client.send(
+      new DeleteObjectsCommand({
+        Bucket: bucket,
+        Delete: {
+          Objects: batch.map((Key) => ({ Key })),
+        },
+      })
+    );
+  }
+};
+
 program
   .version(packageJson.version)
   .name('deploy')
-  .usage('[global options]')
+  .usage('[options]')
   .option('-d, --debug', 'Show additional debug info')
   .option(
     '-e, --environment <environment>',
-    'Environment options (staging/production)'
+    'Optional overlay: .env.staging or .env.production (default: staging)',
+    'staging'
   )
-  .action(async (dir, cmd) => {
+  .action(async () => {
     try {
       const debug = program.debug || false;
       const environment = program.environment || 'staging';
-      console.log(process.cwd());
+      const envPath = loadDeployEnv(environment);
 
-      const environmentPath = path.resolve(
-        process.cwd(),
-        `.env.${environment}`
-      );
-      if (!fs.existsSync(environmentPath)) {
-        throw {
-          message:
-            'Config file for desired environment does not exist\n' +
-            `Please create and configure the \`.env.${environment}\` file.`,
-        };
+      if (debug) {
+        console.log(`[deploy] env: ${envPath}`);
+        console.log(`[deploy] public: ${PUBLIC_DIR}`);
       }
 
-      dotenv.config({
-        debug: debug === true ? true : undefined,
-        path: environmentPath,
-      });
+      const bucket = resolveS3Env('BUCKET');
+      const accessKey = resolveS3Env('ACCESS_KEY');
+      const secretKey = resolveS3Env('SECRET_KEY');
+      const region = resolveS3Env('REGION');
 
-      const {
-        BAO_S3_BUCKET,
-        BAO_S3_ACCESS_KEY,
-        BAO_S3_SECRET_KEY,
-        BAO_S3_REGION,
-      } = process.env;
-      console.log(BAO_S3_BUCKET, BAO_S3_ACCESS_KEY, BAO_S3_SECRET_KEY, BAO_S3_REGION);
+      if (!bucket || !accessKey || !secretKey) {
+        throw new Error(
+          'Missing S3 credentials. Set AWS_S3_BUCKET, AWS_S3_ACCESS_KEY, and ' +
+            'AWS_S3_SECRET_KEY in the repo root .env (or BAO_S3_* equivalents). ' +
+            `Optional overlay: .env.${environment}`
+        );
+      }
 
-      const client = s3.createClient({
-        maxAsyncS3: 20, // this is the default
-        s3RetryCount: 3, // this is the default
-        s3RetryDelay: 1000, // this is the default
-        multipartUploadThreshold: 20971520, // this is the default (20 MB)
-        multipartUploadSize: 15728640, // this is the default (15 MB)
-        s3Options: {
-          accessKeyId: BAO_S3_ACCESS_KEY,
-          secretAccessKey: BAO_S3_SECRET_KEY,
-          region: BAO_S3_REGION ? BAO_S3_REGION : null,
+      if (!fs.existsSync(PUBLIC_DIR)) {
+        throw new Error(`Public assets directory not found: ${PUBLIC_DIR}`);
+      }
+
+      const client = new S3Client({
+        region: region ?? 'us-east-1',
+        credentials: {
+          accessKeyId: accessKey,
+          secretAccessKey: secretKey,
         },
       });
 
-      const params = {
-        localDir: path.resolve(process.cwd(), 'public'),
-        deleteRemoved: true, // default false, whether to remove s3 objects
-        // that have no corresponding local file.
-
-        s3Params: {
-          Bucket: BAO_S3_BUCKET,
-          Prefix: '',
-          // other options supported by putObject, except Body and ContentLength.
-          // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property
-        },
-      };
-
-      const uploader = client.uploadDir(params);
-
-      uploader.on('error', function (err) {
-        console.log(err);
-        throw err;
-      });
-      uploader.on('progress', function () {
-        if (uploader.progressAmount === 0) {
-          progress.start(
-            uploader.progressTotal || uploader.progressMd5Total,
-            0
-          );
-        }
-        progress.update(uploader.progressAmount || uploader.progressMd5Amount);
-      });
-      uploader.on('end', function () {
-        progress.stop();
-        console.log('Upload complete!');
-        process.exit(0);
-      });
-    } catch (ex) {
-      console.log(ex);
-      console.error(
-        `\x1b[31m[deploy script] error while running deploy script:`,
-        JSON.stringify(ex, Object.getOwnPropertyNames(ex), 2),
-        '\x1b[0m'
+      const localFiles = walkFiles(PUBLIC_DIR);
+      const localKeys = new Set(
+        localFiles.map((filePath) => toPosixKey(filePath, PUBLIC_DIR))
       );
 
-      // process.exit(1);
+      console.log(`[deploy] syncing ${localFiles.length} file(s) to s3://${bucket}/`);
+
+      const remoteKeys = await listRemoteKeys(client, bucket);
+      const keysToDelete = [...remoteKeys].filter((key) => !localKeys.has(key));
+
+      if (keysToDelete.length > 0) {
+        console.log(`[deploy] removing ${keysToDelete.length} remote file(s)`);
+        await deleteRemoteKeys(client, bucket, keysToDelete);
+      }
+
+      progress.start(localFiles.length, 0);
+
+      for (const filePath of localFiles) {
+        const key = toPosixKey(filePath, PUBLIC_DIR);
+        await client.send(
+          new PutObjectCommand({
+            Bucket: bucket,
+            Key: key,
+            Body: createReadStream(filePath),
+          })
+        );
+        progress.increment();
+      }
+
+      progress.stop();
+      console.log('Upload complete!');
+      process.exit(0);
+    } catch (error) {
+      progress.stop();
+      console.error(
+        '\x1b[31m[deploy] failed:\x1b[0m',
+        error?.message ?? error
+      );
+      process.exit(1);
     }
   });
 

@@ -45,15 +45,21 @@ export const findSpawns = async (
   }
 
   const qb = new QueryBuilder()
-  qb.select('*')
-  qb.from('map_npc_spawns')
-  qb.where('mapId', mapId)
+  qb.select(
+    'mns.id, mns.mapId, mns.npcId, mns.x, mns.y, n.body AS bodyId, n.head AS headId, n.heading'
+  )
+  qb.from('map_npc_spawns AS mns')
+  qb.join('npcs AS n', 'n.id = mns.npcId', 'inner')
+  qb.where('mns.mapId', mapId)
   const npcs = await db.executeQuery<MapNpcSpawnRow>(qb.get())
 
   qb.reset()
-  qb.select('*')
-  qb.from('map_object_spawns')
-  qb.where('mapId', mapId)
+  qb.select(
+    'mos.id, mos.mapId, mos.objectId, mos.amount, mos.x, mos.y, o.graphicId'
+  )
+  qb.from('map_object_spawns AS mos')
+  qb.join('objects AS o', 'o.id = mos.objectId', 'inner')
+  qb.where('mos.mapId', mapId)
   const objects = await db.executeQuery<MapObjectSpawnRow>(qb.get())
 
   qb.reset()

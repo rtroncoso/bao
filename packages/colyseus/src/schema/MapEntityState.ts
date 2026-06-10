@@ -8,7 +8,13 @@ export class MapNpcEntityState extends Schema {
   public npcId = 0;
 
   @type('uint16')
-  public graphicId = 0;
+  public bodyId = 0;
+
+  @type('uint16')
+  public headId = 0;
+
+  @type('uint8')
+  public heading = 3;
 
   @type('int32')
   public x = 0;

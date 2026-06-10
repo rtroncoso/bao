@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { type AxiosResponse } from 'axios';
 
 import { config } from '@/config';
 
@@ -8,6 +8,9 @@ export interface MapSpawnNpc {
   npcId: number;
   x: number;
   y: number;
+  bodyId: number;
+  headId: number;
+  heading: number;
 }
 
 export interface MapSpawnObject {
@@ -17,6 +20,7 @@ export interface MapSpawnObject {
   amount: number;
   x: number;
   y: number;
+  graphicId: number;
 }
 
 export interface MapSpawnsResponse {
@@ -40,15 +44,23 @@ export class MapSpawnService {
     authToken?: string
   ): Promise<MapSpawnsResponse> {
     const headers: Record<string, string> = {};
+    let url: string;
+
     if (authToken) {
       headers['x-auth'] = authToken;
+      url = `${config.apiBaseUrl}/client/maps/${mapId}/spawns`;
     } else if (process.env.ADMIN_API_KEY) {
       headers['x-admin-key'] = process.env.ADMIN_API_KEY;
+      url = `${config.apiBaseUrl}/admin/maps/${mapId}/spawns`;
+    } else {
+      throw new Error(
+        'Map spawns require a player token or ADMIN_API_KEY in .env'
+      );
     }
 
-    return axios.get<MapSpawnsResponse>(
-      `${config.apiBaseUrl}/admin/maps/${mapId}/spawns`,
-      { headers }
-    );
+    const response = (await axios.get(url, {
+      headers
+    })) as unknown as AxiosResponse<MapSpawnsResponse>;
+    return response.data;
   }
 }

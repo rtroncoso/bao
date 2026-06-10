@@ -152,6 +152,7 @@ const runDeploy = async () => {
   await new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [deployPath, ...process.argv.slice(3)], {
       stdio: 'inherit',
+      cwd: PACKAGE_ROOT,
     });
 
     child.on('error', reject);
