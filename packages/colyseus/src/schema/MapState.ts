@@ -1,4 +1,9 @@
-import { Schema, type } from '@colyseus/schema';
+import { ArraySchema, Schema, type } from '@colyseus/schema';
+
+import {
+  MapNpcEntityState,
+  MapObjectEntityState
+} from '@/schema/MapEntityState';
 
 export class TilePosition extends Schema {
   @type('int32')
@@ -15,9 +20,18 @@ export class TilePosition extends Schema {
 }
 
 export class MapState extends Schema {
+  @type('uint16')
+  public mapId = 0;
+
   @type('string')
   public sessionId?: string;
 
   @type('string')
   public name?: string;
+
+  @type([MapNpcEntityState])
+  public npcs = new ArraySchema<MapNpcEntityState>();
+
+  @type([MapObjectEntityState])
+  public objects = new ArraySchema<MapObjectEntityState>();
 }

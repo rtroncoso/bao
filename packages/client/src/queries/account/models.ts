@@ -21,8 +21,11 @@ export interface CharacterModel {
   shield: number;
   weapon: number;
   world: number;
+  mapId: number;
   x: number;
   y: number;
+  worldX: number;
+  worldY: number;
 }
 
 export interface AccountModel {

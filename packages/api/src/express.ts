@@ -9,6 +9,8 @@ import errors from './errors'
 import { route as objects } from './objects'
 import { route as accounts } from './accounts'
 import { route as characters } from './characters'
+import { route as maps } from './maps'
+import { adminAuth } from './middleware/adminAuth'
 
 let instance: express.Application | null = null
 
@@ -34,10 +36,12 @@ export default function initExpress(app: express.Application): void {
   app.use('/admin/accounts', accounts.admin)
   app.use('/admin/objects', objects.admin)
   app.use('/admin/characters', characters.admin)
+  app.use('/admin/maps', adminAuth, maps.admin)
 
   app.use('/client/objects', objects.client)
   app.use('/client/accounts', accounts.client)
   app.use('/client/characters', characters.client)
+  app.use('/client/maps', maps.client)
 
   const errorHandler: ApiErrorRequestHandler = (err, _req, res, _next) => {
     const apiError = err as ApiError

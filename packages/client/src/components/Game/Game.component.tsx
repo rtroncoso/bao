@@ -8,7 +8,8 @@ import {
   CharacterRenderingSystem,
   KeyboardSystem,
   MapRenderingSystem,
-  ViewportSystem
+  ViewportSystem,
+  WorldSystem
 } from '@bao/client/components/Systems';
 import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
 import {
@@ -38,25 +39,27 @@ export const Systems: React.FC = () => {
   return (
     <LayersStage enableSort>
       <AssetSystem>
-        <MapRenderingSystem>
-          <ViewportSystem
-            overlay={
-              localCharacter ? (
-                <Character
-                  key={localCharacter.sessionId}
-                  character={localCharacter}
-                  isLocalPlayer
-                  x={App.canvasWidth / 2}
-                  y={App.canvasHeight / 2}
-                />
-              ) : null
-            }
-          >
-            <KeyboardSystem />
-            <TiledMap />
-            <CharacterRenderingSystem />
-          </ViewportSystem>
-        </MapRenderingSystem>
+        <WorldSystem>
+          <MapRenderingSystem>
+            <ViewportSystem
+              overlay={
+                localCharacter ? (
+                  <Character
+                    key={localCharacter.sessionId}
+                    character={localCharacter}
+                    isLocalPlayer
+                    x={App.canvasWidth / 2}
+                    y={App.canvasHeight / 2}
+                  />
+                ) : null
+              }
+            >
+              <KeyboardSystem />
+              <TiledMap />
+              <CharacterRenderingSystem />
+            </ViewportSystem>
+          </MapRenderingSystem>
+        </WorldSystem>
       </AssetSystem>
     </LayersStage>
   );

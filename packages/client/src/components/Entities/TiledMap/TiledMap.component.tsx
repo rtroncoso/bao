@@ -1,7 +1,6 @@
 import React from 'react';
 import { Container } from '@inlet/react-pixi';
 
-import TMX_MAP from '../../../../../assets/public/maps/34.json';
 import {
   TILES_LAYER,
   SHORE_LAYER,
@@ -9,9 +8,10 @@ import {
   ENTITIES_LAYER,
   Tiled
 } from '@bao/core';
-import { useMapContext } from '@bao/client/components/Systems';
+import { useMapContext, useWorldContext } from '@bao/client/components/Systems';
 import { Water } from './Water';
 import { EffectsAnimationSystem } from './Shore';
+import { MapEntityLayer } from './MapEntityLayer.component';
 import {
   useMapData,
   useSpatialIndexes,
@@ -23,9 +23,10 @@ import {
   useTriggerHandling,
   useViewportRendering
 } from './hooks';
+import { useBorderPrefetch } from './useBorderPrefetch';
 
-export const TiledMap: React.FC = () => {
-  const mapData = useMapData(TMX_MAP as unknown as Tiled);
+const TiledMapContent: React.FC<{ currentMap: Tiled }> = ({ currentMap }) => {
+  const mapData = useMapData(currentMap);
   const spatialIndexes = useSpatialIndexes(mapData);
   const { mapState } = useMapContext();
   const textures = useTextures();
@@ -40,6 +41,7 @@ export const TiledMap: React.FC = () => {
   );
 
   useTriggerHandling(mapData.triggers, renderTargets.spritesLayer);
+  useBorderPrefetch();
 
   useViewportRendering(
     mapData,
@@ -72,7 +74,18 @@ export const TiledMap: React.FC = () => {
           ref={renderTargets.objectsLayer}
           parentGroup={mapState?.groups[ENTITIES_LAYER]}
         />
+        <MapEntityLayer />
       </Container>
     </EffectsAnimationSystem>
   );
+};
+
+export const TiledMap: React.FC = () => {
+  const { currentMap, isLoading } = useWorldContext();
+
+  if (isLoading || !currentMap) {
+    return null;
+  }
+
+  return <TiledMapContent currentMap={currentMap} />;
 };

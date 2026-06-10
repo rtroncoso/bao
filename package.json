@@ -10,8 +10,9 @@
     "dev": "turbo run dev --filter=@bao/api --filter=@bao/client --filter=@bao/server --filter=@bao/core",
     "dev:db": "docker compose up -d mysql",
     "db:migrate": "pnpm --filter @bao/api migrate",
-    "db:seed": "pnpm --filter @bao/assets seed",
-    "db:seed:apply": "pnpm --filter @bao/assets seed -- --apply",
+    "db:seed": "pnpm exec bao seed",
+    "db:seed:apply": "pnpm exec bao seed apply",
+    "convert:maps": "pnpm exec bao convert maps",
     "format": "turbo run prettier",
     "format:check": "turbo run prettier:check",
     "prepare": "husky"
@@ -23,6 +24,7 @@
     "packages/ui/src/**/*.{ts,tsx}": "prettier --write"
   },
   "devDependencies": {
+    "@bao/assets": "workspace:*",
     "cross-env": "^7.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^9.2.1",

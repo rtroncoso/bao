@@ -36,6 +36,32 @@ export interface CharacterInventoryParams {
   user?: unknown
 }
 
+export interface CharacterUpdatePositionParams {
+  id: number | string
+  accountId: number | string
+  mapId: number
+  x: number
+  y: number
+  worldX: number
+  worldY: number
+}
+
+export interface CharacterUpdatePositionBody {
+  mapId: number
+  x: number
+  y: number
+  worldX: number
+  worldY: number
+}
+
+export interface MapFindParams {
+  ids?: Array<number | string>
+}
+
+export interface MapFindOneParams {
+  id?: number | string
+}
+
 export interface ObjectFindParams {
   ids?: Array<number | string>
   user?: unknown

@@ -1,29 +1,13 @@
 #!/usr/bin/env node
 import path from 'path';
 import { fileURLToPath } from 'url';
+
+import { printHelp } from './cli/help.js';
 import { runSeed } from './seed/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PACKAGE_ROOT = path.resolve(__dirname, '..');
-
-const printHelp = () => {
-  console.log(`bao — assets tooling
-
-Usage:
-  bao seed [options]     Generate idempotent world seed SQL
-  bao import dats        Deprecated alias for "bao seed"
-  bao deploy             Deploy assets (see src/deploy.js)
-
-Seed options:
-  --dats <dir>           AO Dat source (default: public/dats)
-  --maps-meta <dir>      Map meta sidecars (default: public/maps)
-  --output <dir>         SQL output directory (default: seeds/)
-  --only <types>         Subset: objects,npcs,spells,maps,cities,balance,crafting,faction,config
-  --apply                Execute generated SQL against MySQL
-  --dry-run              Parse and log counts only
-  --debug                Verbose logging
-`);
-};
+const PUBLIC_DIR = path.join(PACKAGE_ROOT, 'public');
 
 const parseArgs = (argv) => {
   const options = {
@@ -36,6 +20,16 @@ const parseArgs = (argv) => {
     apply: false,
     dryRun: false,
     debug: false,
+    convertMaps: [],
+    convertAll: false,
+    worlds: true,
+    meta: true,
+    inputDir: path.join(PUBLIC_DIR, 'maps', 'old'),
+    convertOutputDir: path.join(PUBLIC_DIR, 'maps'),
+    initDir: path.join(PUBLIC_DIR, 'init'),
+    publicDir: PUBLIC_DIR,
+    tilesetsType: 'tilesets',
+    noCrop: false,
   };
 
   const args = argv.filter((arg) => arg !== '--');
@@ -46,13 +40,24 @@ const parseArgs = (argv) => {
 
   options.command = args.shift();
 
+  if (options.command === 'help') {
+    return options;
+  }
+
   if (options.command === 'import' && args[0] === 'dats') {
     options.subcommand = 'import-dats';
     args.shift();
-  }
-
-  if (options.command === 'seed') {
-    options.subcommand = 'seed';
+  } else if (options.command === 'convert' && args[0] === 'maps') {
+    options.subcommand = 'convert-maps';
+    args.shift();
+  } else if (options.command === 'seed') {
+    if (args[0] === 'apply') {
+      options.subcommand = 'seed-apply';
+      options.apply = true;
+      args.shift();
+    } else {
+      options.subcommand = 'seed';
+    }
   }
 
   while (args.length > 0) {
@@ -66,7 +71,13 @@ const parseArgs = (argv) => {
         options.mapsMetaDir = path.resolve(args.shift() ?? options.mapsMetaDir);
         break;
       case '--output':
-        options.outputDir = path.resolve(args.shift() ?? options.outputDir);
+        if (options.subcommand === 'convert-maps') {
+          options.convertOutputDir = path.resolve(
+            args.shift() ?? options.convertOutputDir
+          );
+        } else {
+          options.outputDir = path.resolve(args.shift() ?? options.outputDir);
+        }
         break;
       case '--only':
         options.only = args.shift() ?? null;
@@ -80,13 +91,52 @@ const parseArgs = (argv) => {
       case '--debug':
         options.debug = true;
         break;
+      case '--maps':
+        options.convertMaps = (args.shift() ?? '')
+          .split(',')
+          .map((value) => Number.parseInt(value.trim(), 10))
+          .filter((id) => Number.isFinite(id));
+        break;
+      case '--all':
+        options.convertAll = true;
+        break;
+      case '--worlds':
+        options.worlds = true;
+        break;
+      case '--no-worlds':
+        options.worlds = false;
+        break;
+      case '--meta':
+        options.meta = true;
+        break;
+      case '--no-meta':
+        options.meta = false;
+        break;
+      case '--input':
+        options.inputDir = path.resolve(args.shift() ?? options.inputDir);
+        break;
+      case '--init':
+        options.initDir = path.resolve(args.shift() ?? options.initDir);
+        break;
+      case '--public':
+        options.publicDir = path.resolve(args.shift() ?? options.publicDir);
+        if (options.subcommand !== 'convert-maps') {
+          options.convertOutputDir = path.join(options.publicDir, 'maps');
+        }
+        break;
+      case '--tilesets-type':
+        options.tilesetsType = args.shift() ?? options.tilesetsType;
+        break;
+      case '--no-crop':
+        options.noCrop = true;
+        break;
       case '--help':
       case '-h':
         printHelp();
         process.exit(0);
         break;
       default:
-        console.error(`Unknown option: ${arg}`);
+        console.error(`Unknown option: ${arg}\n`);
         printHelp();
         process.exit(1);
     }
@@ -115,12 +165,49 @@ const runDeploy = async () => {
   });
 };
 
+const runConvertMaps = async (options) => {
+  const { patchPixiForHeadless } = await import('./lib/patchPixi.js');
+  patchPixiForHeadless();
+
+  await import('./lib/registerCoreAliases.js');
+
+  const { convertMaps } = await import('./convert/maps.js');
+  const result = await convertMaps({
+    all: options.convertAll,
+    debug: options.debug,
+    dryRun: options.dryRun,
+    inputDir: options.inputDir,
+    initDir: options.initDir,
+    maps: options.convertMaps,
+    meta: options.meta,
+    noCrop: options.noCrop,
+    outputDir: options.convertOutputDir,
+    publicDir: options.publicDir,
+    tilesetsType: options.tilesetsType,
+    worlds: options.worlds,
+  });
+
+  const skipped =
+    result.skipped?.length > 0
+      ? ` (skipped ${result.skipped.length}: ${result.skipped.join(', ')})`
+      : '';
+
+  console.log(
+    `[bao] converted ${result.total} map(s): ${result.converted.join(', ')}${skipped}`
+  );
+};
+
 const main = async () => {
   const options = parseArgs(process.argv.slice(2));
 
-  if (!options.command || options.command === '--help' || options.command === '-h') {
+  if (
+    !options.command ||
+    options.command === 'help' ||
+    options.command === '--help' ||
+    options.command === '-h'
+  ) {
     printHelp();
-    process.exit(options.command ? 0 : 1);
+    process.exit(0);
   }
 
   if (options.subcommand === 'import-dats') {
@@ -128,7 +215,11 @@ const main = async () => {
     options.subcommand = 'seed';
   }
 
-  if (options.subcommand === 'seed' || options.command === 'seed') {
+  if (
+    options.subcommand === 'seed' ||
+    options.subcommand === 'seed-apply' ||
+    options.command === 'seed'
+  ) {
     const summary = await runSeed(options);
 
     console.log('Seed complete:');
@@ -145,16 +236,25 @@ const main = async () => {
     return;
   }
 
+  if (options.subcommand === 'convert-maps') {
+    await runConvertMaps(options);
+    return;
+  }
+
   if (options.command === 'deploy') {
     await runDeploy();
     return;
   }
 
+  console.error(`Unknown command: ${options.command}\n`);
   printHelp();
   process.exit(1);
 };
 
 main().catch((error) => {
   console.error(error.message ?? error);
+  if (error.stack) {
+    console.error(error.stack);
+  }
   process.exit(1);
 });

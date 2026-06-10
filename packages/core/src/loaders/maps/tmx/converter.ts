@@ -28,8 +28,9 @@ import {
   TRIGGER_LAYER,
   TRIGGER_ROOF,
   TRIGGER_TYPE,
-  WATER_TYPE
+  WATER_TYPE,
 } from '@bao/core/constants/game/Map';
+import { BorderNeighbor, makeBorderTriggersLayer } from '@bao/core/loaders/maps/world';
 import {
   createProperty,
   findInTileSets,
@@ -169,14 +170,14 @@ export const makeRect = ({
   data,
   graphic,
   meta = {},
-  name = graphic.id,
+  name,
   tile,
   type,
 }: MakeRectParameters) => {
   const object = new TmxObject();
 
   object.type = type;
-  object.name = name;
+  object.name = name ?? graphic?.id ?? '';
   object.id = ++objectId;
   object.x = tile.x * TILE_SIZE;
   object.y = tile.y * TILE_SIZE;
@@ -789,22 +790,28 @@ export const processLayer = ({
 };
 
 export interface ConvertLayersToTmxParameters {
+  borderNeighbors?: BorderNeighbor[];
+  clientOnly?: boolean;
   crop?: boolean;
   layers: Tile[][][];
   name?: string;
   number?: number;
   resources: SpriteSheetResources;
+  tilesetsType?: string;
 }
 
 /**
  * Convert Map Layers from JSON format to TMX
  */
 export const convertLayersToTmx = ({
+  borderNeighbors = [],
+  clientOnly = false,
   crop = true,
   layers = [],
   name = 'Map',
   number = 1,
   resources = {},
+  tilesetsType = config.tilesetsType,
 }: ConvertLayersToTmxParameters) => {
   const tmx = new Tiled();
   const tileSets = [];
@@ -814,9 +821,9 @@ export const convertLayersToTmx = ({
   range(1, TILESET_SPRITESHEETS + 1).forEach((s) => {
     const tileset = new TileSet();
     tileset.firstgid = (s - 1) * (ATLAS_COLUMNS * ATLAS_COLUMNS) + 1;
-    tileset.spriteSheetSource = getSpriteSheetFilePath(s, config.tilesetsType);
-    tileset.imagePath = getSpriteSheetImagePath(s, config.tilesetsType);
-    tileset.source = getTileSetFilePath(s, config.tilesetsType);
+    tileset.spriteSheetSource = getSpriteSheetFilePath(s, tilesetsType);
+    tileset.imagePath = getSpriteSheetImagePath(s, tilesetsType);
+    tileset.source = getTileSetFilePath(s, tilesetsType);
     tileset.name = `Tile Set ${s}`;
     tileSets.push(tileset);
   });
@@ -847,10 +854,19 @@ export const convertLayersToTmx = ({
   });
 
   tmx.layers.push(makeWaterLayer({ layers }));
-  tmx.layers.push(makeObjectsLayer({ layers }));
-  tmx.layers.push(makeNpcsLayer({ layers }));
-  tmx.layers.push(makeTileExitsLayer({ layers }));
+
+  if (!clientOnly) {
+    tmx.layers.push(makeObjectsLayer({ layers }));
+    tmx.layers.push(makeNpcsLayer({ layers }));
+    tmx.layers.push(makeTileExitsLayer({ layers }));
+  }
+
   tmx.layers.push(...makeTriggersLayer({ layers }));
+
+  if (borderNeighbors.length > 0) {
+    tmx.layers.push(makeBorderTriggersLayer({ neighbors: borderNeighbors }));
+  }
+
   tmx.layers.push(makeCollisionLayer({ layers }));
   return tmx;
 };

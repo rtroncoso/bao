@@ -3,6 +3,7 @@ import type {
   CharacterFindOneQuery,
   CharacterFindQuery,
   CharacterInventoryQuery,
+  CharacterUpdatePositionBody,
 } from '@bao/types'
 
 export const validateFind = (req: AuthenticatedRequest): CharacterFindQuery => {
@@ -33,4 +34,34 @@ export const validateInventory = (
   return {
     characterId,
   }
+}
+
+export const validateUpdatePosition = (
+  req: AuthenticatedRequest
+): CharacterUpdatePositionBody => {
+  const body = req.body as Partial<CharacterUpdatePositionBody>
+  const mapId = Number(body.mapId)
+  const x = Number(body.x)
+  const y = Number(body.y)
+  const worldX = Number(body.worldX)
+  const worldY = Number(body.worldY)
+
+  if (
+    !Number.isFinite(mapId) ||
+    !Number.isFinite(x) ||
+    !Number.isFinite(y) ||
+    !Number.isFinite(worldX) ||
+    !Number.isFinite(worldY)
+  ) {
+    throw new Error('INVALID_VALUE')
+  }
+
+  const MAP_WIDTH = 84
+  const MAP_HEIGHT = 88
+
+  if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT) {
+    throw new Error('INVALID_VALUE')
+  }
+
+  return { mapId, x, y, worldX, worldY }
 }

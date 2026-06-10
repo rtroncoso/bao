@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@bao/assets':
+        specifier: workspace:*
+        version: link:packages/assets
       cross-env:
         specifier: ^7.0.0
         version: 7.0.3
@@ -144,6 +147,9 @@ importers:
 
   packages/assets:
     dependencies:
+      '@bao/core':
+        specifier: workspace:*
+        version: link:../core
       '@bao/env':
         specifier: workspace:*
         version: link:../env
@@ -162,6 +168,9 @@ importers:
       mysql2:
         specifier: ^3.11.0
         version: 3.22.5(@types/node@22.19.20)
+      pixi.js:
+        specifier: ^6.0.0
+        version: 6.5.10
       s3:
         specifier: ^4.4.0
         version: 4.4.0

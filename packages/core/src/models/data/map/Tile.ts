@@ -51,7 +51,11 @@ export class Tile {
   }
 
   isWater() {
-    const id = Number((this.animation as Graphic).id);
-    return this.animation && id >= 1505 && id <= 1520;
+    if (!this.animation) {
+      return false;
+    }
+
+    const id = Number(this.animation.id);
+    return id >= 1505 && id <= 1520;
   }
 }

@@ -27,6 +27,7 @@ pnpm migrate -- --only 2026-06-09_world_integration.sql
 | `2020-11-09_full.sql` | Base schema: objects, attributes, classes, accounts, … |
 | `2026-06-09_world_integration.sql` | World tables: maps, npcs, spells, spawns, balance, config |
 | `2020-11-09_characters.sql` | Character tables for API/Colyseus gameplay |
+| `2026-06-10_character_world_position.sql` | `mapId`, `worldX`, `worldY` on `characters` |
 
 ## MySQL caveat
 
