@@ -9,10 +9,21 @@
     "start": "turbo run start",
     "dev": "turbo run dev --filter=@bao/api --filter=@bao/client --filter=@bao/server --filter=@bao/core",
     "dev:db": "docker compose up -d mysql",
-    "format": "turbo run prettier"
+    "format": "turbo run prettier",
+    "format:check": "turbo run prettier:check",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "packages/api/src/**/*.{js,ts,jsx,tsx}": "prettier --write",
+    "packages/client/src/**/*.{js,ts,jsx,tsx}": "prettier --write",
+    "packages/colyseus/src/**/*.{js,ts,jsx,tsx}": "prettier --write",
+    "packages/ui/src/**/*.{ts,tsx}": "prettier --write"
   },
   "devDependencies": {
     "cross-env": "^7.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^9.2.1",
+    "prettier": "^2.8.3",
     "turbo": "^2.0.0",
     "typescript": "^5.6.0"
   },

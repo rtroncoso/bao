@@ -11,6 +11,15 @@ importers:
       cross-env:
         specifier: ^7.0.0
         version: 7.0.3
+      husky:
+        specifier: ^9.1.7
+        version: 9.1.7
+      lint-staged:
+        specifier: ^9.2.1
+        version: 9.5.0
+      prettier:
+        specifier: ^2.8.3
+        version: 2.8.8
       turbo:
         specifier: ^2.0.0
         version: 2.9.16
@@ -2812,6 +2821,7 @@ packages:
 
   '@pixi/layers@1.0.11':
     resolution: {integrity: sha512-E9jVR7kWMbBBhyaoX4Vi/rZAk4QFMDFiwvZF5xXZ2sBKh1/2aaTD2oQB3QHtekQ0IYXjyxgRRVEpeYTlZgz5xA==}
+    engines: {node: '>=14', npm: '>=7'}
     peerDependencies:
       '@pixi/canvas-renderer': ^6.0.4
       '@pixi/constants': ^6.0.4
@@ -8299,6 +8309,11 @@ packages:
   human-signals@2.1.0:
     resolution: {integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==}
     engines: {node: '>=10.17.0'}
+
+  husky@9.1.7:
+    resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   i18next-express-middleware@1.0.2:
     resolution: {integrity: sha512-Z1+ML9oy+bqt9NZW7t6kz3nlco/O186M2L/RtiCKQs9o79Cx2+ACbQ6B0mqrHrWdQlWhAAndwwBzAAiDB4e94w==}
@@ -24553,6 +24568,8 @@ snapshots:
       - supports-color
 
   human-signals@2.1.0: {}
+
+  husky@9.1.7: {}
 
   i18next-express-middleware@1.0.2:
     dependencies:

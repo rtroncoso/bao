@@ -22,6 +22,9 @@
     },
     "prettier": {
       "cache": false
+    },
+    "prettier:check": {
+      "cache": false
     }
   }
 }

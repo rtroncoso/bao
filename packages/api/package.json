@@ -12,7 +12,8 @@
     "lint:fix": "eslint src --fix",
     "format": "prettier src/**/**",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prettier": "prettier -w \"src/**/*.{js,ts,jsx,tsx}\""
+    "prettier": "prettier -w \"src/**/*.{js,ts,jsx,tsx}\"",
+    "prettier:check": "prettier --check \"src/**/*.{js,ts,jsx,tsx}\""
   },
   "repository": {
     "type": "git",
