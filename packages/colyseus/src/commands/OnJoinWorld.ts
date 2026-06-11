@@ -19,7 +19,7 @@ export interface OnJoinParameters {
   auth: jwt.JwtPayload | string;
 }
 
-const DEFAULT_MAP_ID = 1;
+const DEFAULT_MAP_ID = 34;
 const DEFAULT_SPAWN_X = 50;
 const DEFAULT_SPAWN_Y = 50;
 const PLAYABLE_WIDTH = 84;
@@ -42,10 +42,6 @@ const resolveWorldTile = (
       worldX: apiCharacter.worldX,
       worldY: apiCharacter.worldY
     };
-  }
-
-  if (mapId === DEFAULT_MAP_ID) {
-    return { worldX: x, worldY: y };
   }
 
   return {

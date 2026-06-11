@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import { createRequire } from 'node:module';
 import {
   parseBool,
   parseCompositeItem,
@@ -7,6 +8,9 @@ import {
   readLatin1File,
   upsertSql,
 } from '../lib/iniParser.js';
+
+const require = createRequire(import.meta.url);
+const { legacyHeadingToHeading } = require('@bao/core/constants/game/Game');
 
 const TRAINER_NPC_TYPE = 3;
 
@@ -41,7 +45,7 @@ export const importNpcs = ({ datsDir }) => {
           npcType: Number.parseInt(fields.NpcType ?? '0', 10),
           head: Number.parseInt(fields.Head ?? '0', 10),
           body: Number.parseInt(fields.Body ?? '0', 10),
-          heading: Number.parseInt(fields.Heading ?? '3', 10),
+          heading: legacyHeadingToHeading(Number.parseInt(fields.Heading ?? '3', 10)),
           movement: Number.parseInt(fields.Movement ?? '0', 10),
           attackable: parseBool(fields.Attackable) ? 1 : 0,
           hostile: parseBool(fields.Hostile) ? 1 : 0,

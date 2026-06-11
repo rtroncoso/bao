@@ -41,7 +41,6 @@ import {
   useViewportContext
 } from '@bao/client/components/Systems';
 import { polygon } from '@bao/client/utils';
-
 import { SpatialIndexes, SpritesCache, TiledMapData } from './types';
 import {
   POOL_SIZES,

@@ -1,3 +1,4 @@
+import { buildExpressCorsOptions } from '@bao/env'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import express from 'express'
@@ -19,7 +20,7 @@ export const getInstance = () => instance
 export default function initExpress(app: express.Application): void {
   instance = app
   app.set('port', config.app.port)
-  app.use(cors())
+  app.use(cors(buildExpressCorsOptions(config.corsOrigins)))
   app.use(bodyParser.json({ limit: '50mb' }))
   app.use(bodyParser.raw({ limit: '50mb' }))
   app.use(

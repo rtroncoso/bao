@@ -15,6 +15,11 @@ import { selectToken } from '@bao/client/queries/account';
 import { State } from '@bao/client/store';
 
 import { WorldRoomState } from '@bao/server/schema/WorldRoomState';
+import { createBaoClient } from '@bao/client/lib/colyseusClient';
+import {
+  formatColyseusConnectError,
+  getBaoServerUrl
+} from '@bao/client/lib/baoUrls';
 
 export interface GameConnectedProps {
   token?: string | null;
@@ -164,8 +169,10 @@ export const GameContainer = <P extends GameConnectedProps>(
 
       joiningRef.current = true;
 
+      const serverUrl = getBaoServerUrl();
+
       try {
-        const client = new Client(process.env.NEXT_PUBLIC_BAO_SERVER);
+        const client = createBaoClient();
         const room = await client.joinOrCreate<WorldRoomState>(options.room, {
           characterId: state.characterId,
           token
@@ -184,9 +191,13 @@ export const GameContainer = <P extends GameConnectedProps>(
         });
 
         return true;
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const message = formatColyseusConnectError(error, serverUrl);
+        const matchMake = error as { code?: number };
         console.error(
-          `[world:handleJoinRoom]: code=${error?.code} message=${error?.message}`,
+          `[world:handleJoinRoom]: code=${
+            matchMake?.code ?? 'n/a'
+          } message=${message}`,
           error
         );
 

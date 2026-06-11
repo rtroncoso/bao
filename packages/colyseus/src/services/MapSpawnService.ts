@@ -11,6 +11,7 @@ export interface MapSpawnNpc {
   bodyId: number;
   headId: number;
   heading: number;
+  description: string | null;
 }
 
 export interface MapSpawnObject {
@@ -21,6 +22,7 @@ export interface MapSpawnObject {
   x: number;
   y: number;
   graphicId: number;
+  objectType: number;
 }
 
 export interface MapSpawnsResponse {

@@ -31,7 +31,7 @@ import {
   WATER_TYPE,
 } from '@bao/core/constants/game/Map';
 import { BorderNeighbor, makeBorderTriggersLayer } from '@bao/core/loaders/maps/world';
-import { buildServerSpawnMask, isServerSpawnTile } from '@bao/core/loaders/maps/coords';
+import { isServerSpawnTile } from '@bao/core/loaders/maps/coords';
 import {
   createProperty,
   findInTileSets,
@@ -44,7 +44,11 @@ import {
   getSpriteSheetImagePath,
   getTileSetFilePath
 } from '@bao/core/loaders/spritesheets';
-import { getGraphicsFileName } from '@bao/core/loaders/util';
+import { getDimensions } from '@bao/core/loaders/graphics/util';
+import {
+  resolvePlacementGraphic,
+  tileCoordsToScreenFromSize,
+} from '@bao/core/loaders/maps/screen';
 import {
   GroupLayer,
   ObjectLayer,
@@ -131,22 +135,25 @@ export const makeImageLayer = ({
   visible = true
 }) => {
   const { graphic } = tile;
+  const placementGraphic = resolvePlacementGraphic(graphic) ?? graphic;
+  const { width, height } = getDimensions(placementGraphic);
+  const screen = tileCoordsToScreenFromSize(tile.x, tile.y, width, height);
   const index = getTileIndex(frame.x, frame.y, ATLAS_COLUMNS);
   const layer = new ImageLayer();
 
   layer.visible = visible;
   layer.image = graphic.path;
-  layer.offsetx = tile.x * TILE_SIZE - tile.offsetX;
-  layer.offsety = tile.y * TILE_SIZE - tile.offsetY;
+  layer.offsetx = screen.x;
+  layer.offsety = screen.y;
 
-  createProperty(layer, 'x', layer.offsetx);
-  createProperty(layer, 'y', layer.offsety);
+  createProperty(layer, 'x', screen.x);
+  createProperty(layer, 'y', screen.y);
   createProperty(layer, 'layer', tile.layer);
-  createProperty(layer, 'width', graphic.width);
-  createProperty(layer, 'height', graphic.height);
+  createProperty(layer, 'width', width);
+  createProperty(layer, 'height', height);
   createProperty(layer, 'graphicId', graphic.id);
-  createProperty(layer, 'offsetx', layer.offsetx + tile.offsetX);
-  createProperty(layer, 'offsety', layer.offsety + tile.offsetY);
+  createProperty(layer, 'offsetx', tile.x * TILE_SIZE);
+  createProperty(layer, 'offsety', tile.y * TILE_SIZE);
 
   if (tileSet) {
     createProperty(layer, 'gid', tileSet.firstgid + index);
@@ -187,18 +194,19 @@ export const makeRect = ({
 
   if (meta) {
     if (graphic) {
-      const fileName = graphic.frames.length > 0
-        ? (graphic.frames[0] as Graphic).fileName
-        : graphic.fileName;
-      const fullFileName = getGraphicsFileName(fileName);
-      const texture = Texture.from(fullFileName);
+      const placementGraphic = resolvePlacementGraphic(graphic) ?? graphic;
+      const { width, height } = getDimensions(placementGraphic);
+      const screen = tileCoordsToScreenFromSize(tile.x, tile.y, width, height);
       createProperty(object, 'graphicId', graphic.id);
-      createProperty(object, 'width', texture.width);
-      createProperty(object, 'height', texture.height);
+      createProperty(object, 'width', width);
+      createProperty(object, 'height', height);
+      createProperty(object, 'x', screen.x);
+      createProperty(object, 'y', screen.y);
+    } else {
+      createProperty(object, 'x', object.x - tile.offsetX);
+      createProperty(object, 'y', object.y - tile.offsetY);
     }
 
-    createProperty(object, 'x', object.x - tile.offsetX);
-    createProperty(object, 'y', object.y - tile.offsetY);
     createProperty(object, 'layer', tile.layer);
     createProperty(object, 'offsetx', object.x);
     createProperty(object, 'offsety', object.y);
@@ -676,7 +684,6 @@ export interface ProcessLayerParameters {
   clientOnly?: boolean;
   offset?: { x: number, y: number };
   resources: SpriteSheetResources;
-  serverSpawnMask?: Set<string>;
   tileSets: TileSet[];
   tmx: Tiled;
 }
@@ -688,7 +695,6 @@ export const processLayer = ({
   clientOnly = false,
   offset = { x: 0, y: 0 },
   resources = {},
-  serverSpawnMask,
   tileSets = [],
   tmx,
 }: ProcessLayerParameters) => (layer: Tile[][], index: number) => {
@@ -723,9 +729,6 @@ export const processLayer = ({
       const tile = layer[y][x];
       const tileIndex = y * TILED_MAP_SIZE[0] + x;
       tilesData[tileIndex] = 0;
-      if (clientOnly && serverSpawnMask?.has(`${x},${y}`)) {
-        continue;
-      }
       if (clientOnly && isServerSpawnTile(tile)) {
         continue;
       }
@@ -836,18 +839,16 @@ export const convertLayersToTmx = ({
     layers = layers.map(layer => (
       cropLayer({
         layer,
-        x1: MAP_BORDER_X,
-        y1: MAP_BORDER_Y,
+        x1: MAP_BORDER_X - 1,
+        y1: MAP_BORDER_Y - 1,
         x2: TILED_MAP_SIZE[0],
         y2: TILED_MAP_SIZE[1]
       })
     ));
   }
 
-  const serverSpawnMask = clientOnly ? buildServerSpawnMask(layers) : undefined;
-
   layers.forEach((l, i) => {
-    const process = processLayer({ clientOnly, serverSpawnMask, tmx, resources, tileSets });
+    const process = processLayer({ clientOnly, tmx, resources, tileSets });
     tmx.layers.push(process(l, i));
   });
 
@@ -861,11 +862,11 @@ export const convertLayersToTmx = ({
 
   tmx.layers.push(...makeTriggersLayer({ layers }));
 
-  if (!clientOnly) {
-    if (borderNeighbors.length > 0) {
-      tmx.layers.push(makeBorderTriggersLayer({ neighbors: borderNeighbors }));
-    }
+  if (borderNeighbors.length > 0) {
+    tmx.layers.push(makeBorderTriggersLayer({ neighbors: borderNeighbors }));
+  }
 
+  if (!clientOnly) {
     tmx.layers.push(makeCollisionLayer({ layers }));
   }
 

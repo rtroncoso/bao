@@ -1,5 +1,5 @@
 import { ArraySchema } from '@colyseus/schema';
-import { Client, Room } from 'colyseus.js';
+import { Room } from 'colyseus.js';
 import { useRouter } from 'next/router';
 import React, {
   createContext,
@@ -12,6 +12,11 @@ import { useSelector } from 'react-redux';
 import { Message } from '@bao/server/schema/MessageState';
 import { ChatRoom } from '@bao/server/rooms/ChatRoom';
 import { useGameContext } from '@bao/client/components/Game/Game.context';
+import { createBaoClient } from '@bao/client/lib/colyseusClient';
+import {
+  formatColyseusConnectError,
+  getBaoServerUrl
+} from '@bao/client/lib/baoUrls';
 import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
 import {
   SetStateCallback,
@@ -184,8 +189,10 @@ export const ChatContextContainer = <P extends ChatConnectedProps>(
     );
 
     const handleJoinRoom = useCallback(async () => {
+      const serverUrl = getBaoServerUrl();
+
       try {
-        const client = new Client(process.env.NEXT_PUBLIC_BAO_SERVER);
+        const client = createBaoClient();
         const sessionId = gameState.room?.sessionId;
         if (!sessionId) {
           return router.push('/');
@@ -206,13 +213,13 @@ export const ChatContextContainer = <P extends ChatConnectedProps>(
           client,
           room
         });
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(
-          `[chat:handleJoinRoom]: Error ${JSON.stringify(
+          `[chat:handleJoinRoom]: ${formatColyseusConnectError(
             error,
-            Object.getOwnPropertyNames(error),
-            2
-          )}`
+            serverUrl
+          )}`,
+          error
         );
 
         return router.push('/');

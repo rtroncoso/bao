@@ -47,7 +47,10 @@ export class Tile {
   }
 
   toScreen() {
-    return { x: (this.x - this.offsetX) * TILE_SIZE, y: (this.y - this.offsetY) * TILE_SIZE };
+    return {
+      x: this.x * TILE_SIZE - this.offsetX,
+      y: this.y * TILE_SIZE - this.offsetY,
+    };
   }
 
   isWater() {

@@ -26,7 +26,7 @@ export const getCharacterWorldPixels = (
   character: CharacterState,
   worlds: WorldsJson | null
 ): MapWorldOffset => {
-  const offset = getMapWorldOffset(character.mapId ?? 1, worlds);
+  const offset = getMapWorldOffset(character.mapId ?? 34, worlds);
 
   return {
     x: offset.x + character.x,

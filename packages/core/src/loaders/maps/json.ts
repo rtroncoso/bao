@@ -13,6 +13,7 @@ import {
   TRIGGER_LAYER,
 } from '@bao/core/constants/game/Map';
 import { getDimensions, JsonGraphicState } from '@bao/core/loaders/graphics';
+import { resolvePlacementGraphic } from '@bao/core/loaders/maps/screen';
 import { findAnimation, findGraphic } from '@bao/core/loaders/util';
 import { Graphic, MapObject, Tile } from '@bao/core/models';
 
@@ -71,7 +72,7 @@ export const parseJsonTile: ParseJsonTileWrapper<JsonTile, Tile> = ({
     }
 
     if (graphic) {
-      dimensions = getDimensions(graphic);
+      dimensions = getDimensions(resolvePlacementGraphic(graphic) ?? graphic);
     }
   }
 

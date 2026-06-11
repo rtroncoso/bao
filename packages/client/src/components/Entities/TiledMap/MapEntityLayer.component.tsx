@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Container, Sprite } from '@inlet/react-pixi';
 import { useSelector } from 'react-redux';
 
-import { getTexture, Graphic, TILE_SIZE } from '@bao/core';
+import { getTexture, Graphic, tileCoordsToScreen, TILE_SIZE } from '@bao/core';
 import { Animation } from '@bao/client/components/Pixi';
 import { useGameContext } from '@bao/client/components/Game/Game.context';
 import { useMapContext } from '@bao/client/components/Systems';
@@ -10,7 +10,9 @@ import { selectGraphics } from '@bao/client/queries';
 import { State } from '@bao/client/store';
 
 import { ENTITIES_LAYER } from '@bao/core/constants/game/Map';
+import { DOOR, isServerRenderedObject } from '@bao/core/constants/game/Object';
 import { MapNpcEntity } from './MapNpcEntity.component';
+import { useMapInteractionContext } from '@bao/client/components/Systems/MapInteractionSystem';
 
 const hasAnimationFrames = (graphic: Graphic) =>
   Array.isArray(graphic.frames) && graphic.frames.length > 0;
@@ -23,6 +25,8 @@ export const MapEntityLayer: React.FC<MapEntityLayerProps> = ({ mapId }) => {
   const graphics = useSelector((state: State) => selectGraphics(state));
   const { mapState } = useMapContext();
   const { state: gameState } = useGameContext();
+  const { onNpcClick, onObjectClick, isPlayerAdjacentTo } =
+    useMapInteractionContext();
 
   const { npcs, objects } = useMemo(() => {
     const maps = gameState?.serverState?.maps;
@@ -42,7 +46,9 @@ export const MapEntityLayer: React.FC<MapEntityLayerProps> = ({ mapId }) => {
     }
     if (currentMap.objects) {
       for (const entity of currentMap.objects) {
-        objectList.push(entity);
+        if (isServerRenderedObject(entity.objectType)) {
+          objectList.push(entity);
+        }
       }
     }
 
@@ -58,8 +64,10 @@ export const MapEntityLayer: React.FC<MapEntityLayerProps> = ({ mapId }) => {
           bodyId={entity.bodyId}
           headId={entity.headId}
           heading={entity.heading}
+          description={entity.description}
           x={entity.x}
           y={entity.y}
+          onClick={() => onNpcClick(entity.id, entity.description)}
         />
       ))}
       {objects.map((entity) => {
@@ -68,11 +76,28 @@ export const MapEntityLayer: React.FC<MapEntityLayerProps> = ({ mapId }) => {
           return null;
         }
 
-        const x = entity.x * TILE_SIZE;
-        const y = entity.y * TILE_SIZE;
+        const { x, y } = tileCoordsToScreen(entity.x, entity.y, graphic);
+        const isDoor = entity.objectType === DOOR;
+        const canInteract = isDoor && isPlayerAdjacentTo(entity.x, entity.y);
+
+        const handlePointerDown = () => {
+          if (isDoor && canInteract) {
+            onObjectClick(entity.id, entity.x, entity.y, DOOR);
+          }
+        };
 
         if (hasAnimationFrames(graphic)) {
-          return <Animation key={entity.id} animation={graphic} x={x} y={y} />;
+          return (
+            <Container
+              key={entity.id}
+              x={x}
+              y={y}
+              interactive={isDoor}
+              pointerdown={handlePointerDown}
+            >
+              <Animation animation={graphic} x={0} y={0} />
+            </Container>
+          );
         }
 
         const texture = getTexture(graphic);
@@ -80,7 +105,16 @@ export const MapEntityLayer: React.FC<MapEntityLayerProps> = ({ mapId }) => {
           return null;
         }
 
-        return <Sprite key={entity.id} texture={texture} x={x} y={y} />;
+        return (
+          <Sprite
+            key={entity.id}
+            texture={texture}
+            x={x}
+            y={y}
+            interactive={isDoor}
+            pointerdown={handlePointerDown}
+          />
+        );
       })}
     </Container>
   );

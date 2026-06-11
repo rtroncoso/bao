@@ -20,6 +20,7 @@ export interface MapNpcSpawnRow {
   bodyId: number
   headId: number
   heading: number
+  description: string | null
 }
 
 export interface MapObjectSpawnRow {
@@ -30,6 +31,7 @@ export interface MapObjectSpawnRow {
   x: number
   y: number
   graphicId: number
+  objectType: number
 }
 
 export interface MapTileExitRow {

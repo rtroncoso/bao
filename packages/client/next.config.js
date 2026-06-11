@@ -12,7 +12,23 @@ process.env.NEXT_PUBLIC_BAO_API ??=
 process.env.NEXT_PUBLIC_BAO_SERVER ??=
   `ws://localhost:${serverPort}`;
 process.env.NEXT_PUBLIC_BAO_ASSETS ??=
-  'https://bao-assets.rtroncoso.com';
+  'http://localhost:8787';
+
+if (process.env.VERCEL) {
+  const requiredPublicEnv = [
+    'NEXT_PUBLIC_BAO_API',
+    'NEXT_PUBLIC_BAO_SERVER',
+    'NEXT_PUBLIC_BAO_ASSETS'
+  ];
+
+  for (const key of requiredPublicEnv) {
+    if (!process.env[key]) {
+      throw new Error(
+        `Missing ${key} for Vercel deployment. Set it in the Vercel project environment.`
+      );
+    }
+  }
+}
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

@@ -46,7 +46,7 @@ export const findSpawns = async (
 
   const qb = new QueryBuilder()
   qb.select(
-    'mns.id, mns.mapId, mns.npcId, mns.x, mns.y, n.body AS bodyId, n.head AS headId, n.heading'
+    'mns.id, mns.mapId, mns.npcId, mns.x, mns.y, n.body AS bodyId, n.head AS headId, n.heading, n.description'
   )
   qb.from('map_npc_spawns AS mns')
   qb.join('npcs AS n', 'n.id = mns.npcId', 'inner')
@@ -55,7 +55,7 @@ export const findSpawns = async (
 
   qb.reset()
   qb.select(
-    'mos.id, mos.mapId, mos.objectId, mos.amount, mos.x, mos.y, o.graphicId'
+    'mos.id, mos.mapId, mos.objectId, mos.amount, mos.x, mos.y, o.graphicId, o.object_typeId AS objectType'
   )
   qb.from('map_object_spawns AS mos')
   qb.join('objects AS o', 'o.id = mos.objectId', 'inner')

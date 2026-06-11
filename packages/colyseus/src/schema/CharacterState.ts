@@ -25,7 +25,7 @@ export class CharacterState extends Schema {
   public headId?: number;
 
   @type('uint16')
-  public mapId = 1;
+  public mapId = 34;
 
   @type(TilePosition)
   public tile = new TilePosition();

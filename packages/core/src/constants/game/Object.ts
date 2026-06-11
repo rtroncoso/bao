@@ -36,4 +36,11 @@ export const DIRT = 35;
 export const HIDDEN_OBJECTS = [
   TREE,
   SIGN,
+  DOOR,
 ];
+
+/** Object types rendered by Colyseus instead of baked TMX (must match HIDDEN_OBJECTS). */
+export const SERVER_RENDERED_OBJECTS = HIDDEN_OBJECTS;
+
+export const isServerRenderedObject = (objectType: number): boolean =>
+  SERVER_RENDERED_OBJECTS.includes(objectType);

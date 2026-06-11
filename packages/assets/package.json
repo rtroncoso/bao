@@ -20,6 +20,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "serve public -l 8787 --cors",
     "seed": "node bin/bao.js seed",
     "seed:apply": "node bin/bao.js seed apply",
     "convert": "node bin/bao.js convert maps",
@@ -39,6 +40,7 @@
     "pixi.js": "^6.0.0"
   },
   "devDependencies": {
+    "serve": "^14.2.4",
     "tsx": "^4.19.0"
   }
 }

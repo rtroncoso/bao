@@ -1,6 +1,6 @@
 import { envNumber, envString, loadRootEnv, requireEnv } from '@bao/env';
 
-import { parseCorsOrigins } from './cors';
+import { parseCorsOrigins } from '@bao/env';
 
 loadRootEnv(__dirname);
 

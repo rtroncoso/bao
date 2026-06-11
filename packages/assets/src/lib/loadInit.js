@@ -40,7 +40,8 @@ export const loadTilesetResources = (texturesDir, tilesetsType = 'tilesets', amo
       continue;
     }
 
-    const source = `${tilesetsType}/${tilesetsType}-${index}.json`;
+    // Keys must match getSpriteSheetFilePath(index, tilesetsType) used in convertLayersToTmx.
+    const source = `${tilesetsType}-${index}.json`;
     resources[source] = {
       data: readJsonFile(jsonPath),
     };

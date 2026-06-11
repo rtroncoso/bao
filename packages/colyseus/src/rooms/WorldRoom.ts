@@ -6,6 +6,10 @@ import { ArraySchema } from '@colyseus/schema';
 
 import { OnJoinCommand } from '@bao/server/commands/OnJoinWorld';
 import { InputParameters, OnInputCommand } from '@bao/server/commands/OnInput';
+import {
+  InteractParameters,
+  OnInteractCommand
+} from '@bao/server/commands/OnInteract';
 import { OnLeaveCommand } from '@bao/server/commands/OnLeaveWorld';
 import { AuthService } from '@bao/server/services/AuthService';
 import { MapRegistry } from '@bao/server/services/MapRegistry';
@@ -36,6 +40,13 @@ export class WorldRoom extends Room<WorldRoomState> {
 
     this.onMessage('input', (client, message: InputParameters) => {
       this.dispatcher.dispatch(new OnInputCommand(), {
+        ...message,
+        client
+      });
+    });
+
+    this.onMessage('interact', (client, message: InteractParameters) => {
+      this.dispatcher.dispatch(new OnInteractCommand(), {
         ...message,
         client
       });

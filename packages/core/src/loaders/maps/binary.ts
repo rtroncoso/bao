@@ -137,6 +137,17 @@ export interface GetBinaryLayersParameters {
  * Parses binary formatted `Map` structure from array buffer
  * into a layered format (analog to JSON)
  */
+/**
+ * Binary tiles from {@link getBinaryTiles} are 1-indexed (1..MAP_SIZE).
+ * {@link mapLayers} expects 0-indexed dense rows — normalize here.
+ */
+export const normalizeBinaryTileRows = (
+  tiles: LayeredTile[][]
+): LayeredTile[][] =>
+  range(0, MAP_SIZE).map((y) =>
+    range(0, MAP_SIZE).map((x) => tiles[y]?.[x] ?? null)
+  );
+
 export const getBinaryLayers = ({
   animations,
   datFile,
@@ -154,24 +165,30 @@ export const getBinaryLayers = ({
     translateExits: true
   });
 
+  const rows = normalizeBinaryTileRows(tiles);
+
   const parse = parseJsonTile({ graphics, animations, objects });
   const parseJson = ({ layer, x, y }) => {
+    const layeredTile = rows[y]?.[x];
+    if (!layeredTile) {
+      return null;
+    }
+
     const g = {};
-    let tile = tiles[y][x];
-    tile.graphics.forEach((v, i) => g[i + 1] = v);
+    layeredTile.graphics.forEach((v, i) => g[i + 1] = v);
     const jsonTile: JsonTile = {
       g,
-      b: tile.blocked,
-      t: tile.trigger,
-      o: tile.object,
-      n: tile.npc,
-      te: tile.tileExit
+      b: layeredTile.blocked,
+      t: layeredTile.trigger,
+      o: layeredTile.object,
+      n: layeredTile.npc,
+      te: layeredTile.tileExit
     };
 
     return parse({ data: jsonTile, layer, x, y });
   };
 
-  return mapLayers({ rows: tiles, process: parseJson });
+  return mapLayers({ rows, process: parseJson });
 };
 
 

@@ -16,6 +16,9 @@ export class MapNpcEntityState extends Schema {
   @type('uint8')
   public heading = 0;
 
+  @type('string')
+  public description = '';
+
   @type('int32')
   public x = 0;
 
@@ -35,6 +38,12 @@ export class MapObjectEntityState extends Schema {
 
   @type('uint16')
   public amount = 1;
+
+  @type('uint8')
+  public objectType = 0;
+
+  @type('boolean')
+  public isOpen = false;
 
   @type('int32')
   public x = 0;

@@ -229,22 +229,20 @@ export interface BuildWorldsJsonParameters {
   overrides?: Record<number, { x?: number; y?: number }>;
 }
 
+type GridPlacementSource = 'edge' | 'fallback';
+
 /**
  * Auto-layouts maps into a Tiled world JSON from connectivity graph.
+ * Uses fixpoint edge propagation so maps are placed relative to exit links,
+ * not only the first BFS path from the root map.
  */
 export const buildWorldsJson = ({
   mapIds,
   tileExitsByMap,
   overrides = {},
 }: BuildWorldsJsonParameters): WorldsJson => {
-  const positions: Record<number, { x: number; y: number }> = {};
-  const visited = new Set<number>();
-  const gridOccupancy = new Map<string, number>();
-  const queue: Array<{ mapId: number; gridX: number; gridY: number }> = [];
-
   const sortedIds = [...mapIds].sort((a, b) => a - b);
   const rootMapId = sortedIds[0] ?? 1;
-  queue.push({ mapId: rootMapId, gridX: 0, gridY: 0 });
 
   const directionDelta: Record<BorderDirection, { dx: number; dy: number }> = {
     north: { dx: 0, dy: -1 },
@@ -254,63 +252,112 @@ export const buildWorldsJson = ({
   };
 
   const gridKey = (gridX: number, gridY: number) => `${gridX},${gridY}`;
+  const gridPos = new Map<number, { gridX: number; gridY: number }>();
+  const placementSource = new Map<number, GridPlacementSource>();
+  const gridOccupancy = new Map<string, number>();
 
-  while (queue.length > 0) {
-    const current = queue.shift();
-    if (!current || visited.has(current.mapId)) {
-      continue;
+  const releaseMap = (mapId: number) => {
+    const pos = gridPos.get(mapId);
+    if (!pos) {
+      return;
     }
 
-    const key = gridKey(current.gridX, current.gridY);
-    const occupyingMapId = gridOccupancy.get(key);
-    if (occupyingMapId !== undefined && occupyingMapId !== current.mapId) {
-      continue;
+    gridOccupancy.delete(gridKey(pos.gridX, pos.gridY));
+    gridPos.delete(mapId);
+    placementSource.delete(mapId);
+  };
+
+  const tryPlaceMap = (
+    mapId: number,
+    gridX: number,
+    gridY: number,
+    source: GridPlacementSource
+  ): boolean => {
+    if (!sortedIds.includes(mapId)) {
+      return false;
     }
 
-    visited.add(current.mapId);
-    gridOccupancy.set(key, current.mapId);
-    positions[current.mapId] = {
-      x: current.gridX * MAP_PIXEL_WIDTH,
-      y: current.gridY * MAP_PIXEL_HEIGHT,
-    };
+    const key = gridKey(gridX, gridY);
+    const occupant = gridOccupancy.get(key);
+    if (occupant !== undefined && occupant !== mapId) {
+      return false;
+    }
 
-    const neighbors = computeBorderNeighbors(tileExitsByMap[current.mapId] ?? []);
-    for (const neighbor of neighbors) {
-      if (visited.has(neighbor.targetMapId) || !mapIds.includes(neighbor.targetMapId)) {
+    const existing = gridPos.get(mapId);
+    if (existing) {
+      if (existing.gridX === gridX && existing.gridY === gridY) {
+        return false;
+      }
+
+      if (source === 'edge' && placementSource.get(mapId) === 'fallback') {
+        releaseMap(mapId);
+      } else {
+        return false;
+      }
+    }
+
+    gridPos.set(mapId, { gridX, gridY });
+    placementSource.set(mapId, source);
+    gridOccupancy.set(key, mapId);
+    return true;
+  };
+
+  const edges: Array<{ from: number; to: number; direction: BorderDirection }> = [];
+  for (const mapId of sortedIds) {
+    for (const neighbor of computeBorderNeighbors(tileExitsByMap[mapId] ?? [])) {
+      if (sortedIds.includes(neighbor.targetMapId)) {
+        edges.push({
+          from: mapId,
+          to: neighbor.targetMapId,
+          direction: neighbor.direction,
+        });
+      }
+    }
+  }
+
+  tryPlaceMap(rootMapId, 0, 0, 'edge');
+
+  let changed = true;
+  let iterations = 0;
+  const maxIterations = Math.max(sortedIds.length * 4, 8);
+
+  while (changed && iterations < maxIterations) {
+    changed = false;
+    iterations += 1;
+
+    for (const { from, to, direction } of edges) {
+      const fromPos = gridPos.get(from);
+      if (!fromPos) {
         continue;
       }
 
-      const delta = directionDelta[neighbor.direction];
-      const nextGridX = current.gridX + delta.dx;
-      const nextGridY = current.gridY + delta.dy;
-      const nextKey = gridKey(nextGridX, nextGridY);
-      const nextOccupant = gridOccupancy.get(nextKey);
-
-      if (nextOccupant !== undefined && nextOccupant !== neighbor.targetMapId) {
-        continue;
+      const delta = directionDelta[direction];
+      if (tryPlaceMap(to, fromPos.gridX + delta.dx, fromPos.gridY + delta.dy, 'edge')) {
+        changed = true;
       }
-
-      queue.push({
-        mapId: neighbor.targetMapId,
-        gridX: nextGridX,
-        gridY: nextGridY,
-      });
     }
   }
 
   let fallbackColumn = 0;
   for (const mapId of sortedIds) {
-    if (!positions[mapId]) {
-      while (gridOccupancy.has(gridKey(fallbackColumn, 0))) {
-        fallbackColumn += 1;
-      }
-      gridOccupancy.set(gridKey(fallbackColumn, 0), mapId);
-      positions[mapId] = {
-        x: fallbackColumn * MAP_PIXEL_WIDTH,
-        y: 0,
-      };
+    if (gridPos.has(mapId)) {
+      continue;
+    }
+
+    while (gridOccupancy.has(gridKey(fallbackColumn, 0))) {
       fallbackColumn += 1;
     }
+
+    tryPlaceMap(mapId, fallbackColumn, 0, 'fallback');
+    fallbackColumn += 1;
+  }
+
+  const positions: Record<number, { x: number; y: number }> = {};
+  for (const [mapId, pos] of gridPos.entries()) {
+    positions[mapId] = {
+      x: pos.gridX * MAP_PIXEL_WIDTH,
+      y: pos.gridY * MAP_PIXEL_HEIGHT,
+    };
   }
 
   const maps: WorldMapEntry[] = sortedIds.map((mapId) => {

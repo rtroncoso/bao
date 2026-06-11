@@ -49,7 +49,7 @@ export const Character = ({
   const { worlds } = useWorldContext();
   const { state: chatState } = useChatContext();
   const mapOffset = useMemo(
-    () => getMapWorldOffset(character.mapId ?? 1, worlds),
+    () => getMapWorldOffset(character.mapId ?? 34, worlds),
     [character.mapId, worlds]
   );
   const bodyRef = useRef<AnimatedSprite>();

@@ -7,7 +7,7 @@
     "test": "cross-env NODE_ENV=testing turbo run test",
     "build": "turbo run build",
     "start": "turbo run start",
-    "dev": "turbo run dev --filter=@bao/api --filter=@bao/client --filter=@bao/server --filter=@bao/core",
+    "dev": "turbo run dev --filter=@bao/api --filter=@bao/assets --filter=@bao/client --filter=@bao/server --filter=@bao/core",
     "dev:db": "docker compose up -d mysql",
     "db:migrate": "pnpm --filter @bao/api migrate",
     "db:seed": "pnpm exec bao seed",

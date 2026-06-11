@@ -7,6 +7,7 @@ import {
   AssetSystem,
   CharacterRenderingSystem,
   KeyboardSystem,
+  MapInteractionSystem,
   MapRenderingSystem,
   ViewportSystem,
   WorldSystem
@@ -41,23 +42,25 @@ export const Systems: React.FC = () => {
       <AssetSystem>
         <WorldSystem>
           <MapRenderingSystem>
-            <ViewportSystem
-              overlay={
-                localCharacter ? (
-                  <Character
-                    key={localCharacter.sessionId}
-                    character={localCharacter}
-                    isLocalPlayer
-                    x={App.canvasWidth / 2}
-                    y={App.canvasHeight / 2}
-                  />
-                ) : null
-              }
-            >
-              <KeyboardSystem />
-              <TiledMap />
-              <CharacterRenderingSystem />
-            </ViewportSystem>
+            <MapInteractionSystem>
+              <ViewportSystem
+                overlay={
+                  localCharacter ? (
+                    <Character
+                      key={localCharacter.sessionId}
+                      character={localCharacter}
+                      isLocalPlayer
+                      x={App.canvasWidth / 2}
+                      y={App.canvasHeight / 2}
+                    />
+                  ) : null
+                }
+              >
+                <KeyboardSystem />
+                <TiledMap />
+                <CharacterRenderingSystem />
+              </ViewportSystem>
+            </MapInteractionSystem>
           </MapRenderingSystem>
         </WorldSystem>
       </AssetSystem>
