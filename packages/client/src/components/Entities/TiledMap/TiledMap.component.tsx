@@ -53,7 +53,8 @@ const TiledMapPrimaryContent: React.FC<TiledMapContentProps> = ({
   const { objectsCache, spritesCache } = useSpriteCache(
     mapData.objects,
     mapData.sprites,
-    mapData.tmx
+    mapData.tmx,
+    textures
   );
 
   useTriggerHandling(mapData.triggers, renderTargets.spritesLayer);

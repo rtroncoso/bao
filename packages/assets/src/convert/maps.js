@@ -19,6 +19,7 @@ const { buildWorldsJson, computeBorderNeighbors } = require(
 const { convertLayersToTmx } = require('@bao/core/loaders/maps/tmx/converter');
 const { extractMapMeta } = require('@bao/core/loaders/maps/meta');
 const { getBinaryLayers, getBinaryTiles } = require('@bao/core/loaders/maps/binary');
+const { extractBlockedTilesFromLayers } = require('@bao/core/loaders/maps/blocking');
 const { parseMapDat } = require('@bao/core/loaders/maps/dat');
 const { validateConvertedMaps } = require('./validateMapSpawns.js');
 
@@ -110,7 +111,6 @@ export const convertMaps = async (options) => {
     const mapMeta = extractMapMeta(mapId, tiles);
     tileExitsByMap[mapId] = mapMeta.tileExits;
 
-    const borderNeighbors = computeBorderNeighbors(mapMeta.tileExits);
     const layers = getBinaryLayers({
       animations: initData.animations,
       datFile,
@@ -119,6 +119,10 @@ export const convertMaps = async (options) => {
       mapFile,
       objects: initData.objects,
     });
+
+    mapMeta.blockedTiles = extractBlockedTilesFromLayers(layers);
+
+    const borderNeighbors = computeBorderNeighbors(mapMeta.tileExits);
 
     const tmx = convertLayersToTmx({
       borderNeighbors,

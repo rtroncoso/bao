@@ -42,6 +42,12 @@ export class MovementSystem {
     mapId: number,
     excludeSessionId?: string
   ) {
+    if (
+      this.room?.mapRegistry?.isTileStaticallyBlocked(mapId, tile.x, tile.y)
+    ) {
+      return true;
+    }
+
     const blockedTile = this.blockedTiles.get(this.tileKey(mapId, tile));
     return (
       !!blockedTile && excludeSessionId !== blockedTile?.character?.sessionId

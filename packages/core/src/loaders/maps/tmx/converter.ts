@@ -762,7 +762,12 @@ export const processLayer = ({
       if (clientOnly && isServerSpawnTile(tile)) {
         continue;
       }
-      if (clientOnly && tile?.graphic && serverRenderedSpawnGraphics) {
+      if (
+        clientOnly &&
+        tile?.graphic &&
+        serverRenderedSpawnGraphics &&
+        tile.layer < OBJECT_LAYER
+      ) {
         const serverGraphicId = serverRenderedSpawnGraphics.get(`${x},${y}`);
         const placementGraphic = resolvePlacementGraphic(tile.graphic);
         if (

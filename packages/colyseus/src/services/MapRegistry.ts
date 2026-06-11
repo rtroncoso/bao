@@ -15,6 +15,7 @@ export class MapRegistry {
     number,
     Map<string, TileExitRecord>
   >();
+  private readonly blockedTilesByMap = new Map<number, Set<string>>();
 
   constructor(private readonly room: WorldRoom) {}
 
@@ -39,6 +40,12 @@ export class MapRegistry {
     }
 
     this.tileExitsByMap.set(mapId, exitIndex);
+    this.blockedTilesByMap.set(
+      mapId,
+      new Set(
+        (spawns.blockedTiles ?? []).map((tile) => this.exitKey(tile.x, tile.y))
+      )
+    );
     this.loadedMaps.add(mapId);
     await this.room.mapEntitySystem.hydrateMap(mapId, authToken);
   }
@@ -53,6 +60,7 @@ export class MapRegistry {
       this.mapRefCounts.delete(mapId);
       this.loadedMaps.delete(mapId);
       this.tileExitsByMap.delete(mapId);
+      this.blockedTilesByMap.delete(mapId);
       this.room.state.maps.delete(String(mapId));
       return;
     }
@@ -62,5 +70,9 @@ export class MapRegistry {
 
   getTileExit(mapId: number, x: number, y: number): TileExitRecord | null {
     return this.tileExitsByMap.get(mapId)?.get(this.exitKey(x, y)) ?? null;
+  }
+
+  isTileStaticallyBlocked(mapId: number, x: number, y: number): boolean {
+    return this.blockedTilesByMap.get(mapId)?.has(this.exitKey(x, y)) ?? false;
   }
 }

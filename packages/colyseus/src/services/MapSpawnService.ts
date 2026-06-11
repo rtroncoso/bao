@@ -25,6 +25,13 @@ export interface MapSpawnObject {
   objectType: number;
 }
 
+export interface MapBlockedTile {
+  id: number;
+  mapId: number;
+  x: number;
+  y: number;
+}
+
 export interface MapSpawnsResponse {
   map: { id: number; name: string };
   npcs: MapSpawnNpc[];
@@ -38,6 +45,7 @@ export interface MapSpawnsResponse {
     targetX: number;
     targetY: number;
   }>;
+  blockedTiles: MapBlockedTile[];
 }
 
 export class MapSpawnService {

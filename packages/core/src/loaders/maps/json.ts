@@ -64,7 +64,8 @@ export const parseJsonTile: ParseJsonTileWrapper<JsonTile, Tile> = ({
 
   if (graphic) {
     if (graphic.frames.length > 0) {
-      animation = findAnimation({ animations, id: g[layer] });
+      animation =
+        findAnimation({ animations, id: g[layer] }) ?? graphic;
       const frameGraphic = _.get(animation, 'frames.0');
       if (frameGraphic) {
         graphic = frameGraphic;

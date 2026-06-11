@@ -12,7 +12,8 @@ import {
   Rectangle,
   Container as PixiContainer,
   AnimatedSprite,
-  Sprite
+  Sprite,
+  Texture
 } from 'pixi.js';
 import { pointPolygon } from 'intersects';
 import {
@@ -145,7 +146,8 @@ export const useSpritePools = () => {
 export const useSpriteCache = (
   objects: TmxObject[],
   sprites: TmxObject[],
-  tmx: any
+  tmx: any,
+  textures: Texture[] = []
 ) => {
   const graphics = useSelector(selectGraphics);
   const { mapState } = useMapContext();
@@ -162,7 +164,8 @@ export const useSpriteCache = (
           graphics,
           mapState,
           animationsPool,
-          spritesPool
+          spritesPool,
+          textures
         )
       );
       setObjectsCache(
@@ -171,11 +174,21 @@ export const useSpriteCache = (
           graphics,
           mapState,
           animationsPool,
-          spritesPool
+          spritesPool,
+          textures
         )
       );
     }
-  }, [tmx, graphics, mapState, objects, sprites, animationsPool, spritesPool]);
+  }, [
+    tmx,
+    graphics,
+    mapState,
+    objects,
+    sprites,
+    animationsPool,
+    spritesPool,
+    textures
+  ]);
 
   return { objectsCache, spritesCache };
 };

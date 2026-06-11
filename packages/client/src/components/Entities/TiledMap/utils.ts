@@ -133,19 +133,30 @@ export const createSpriteFromObject = (
   graphics: any,
   mapState: any,
   animationsPool: AnimatedSprite[],
-  spritesPool: Sprite[]
+  spritesPool: Sprite[],
+  textures?: Texture[]
 ): Sprite | AnimatedSprite => {
   const x = getProperty(object, 'x');
   const y = getProperty(object, 'y');
   const layerNumber = getProperty(object, 'layer');
   const graphicId = getProperty(object, 'graphicId');
+  const gid = Number(getProperty(object, 'gid'));
 
   const graphic = graphics[graphicId];
+  const objectWidth = Number(getProperty(object, 'width'));
+  const objectHeight = Number(getProperty(object, 'height'));
+  const isAnimated = Boolean(graphic?.frames?.length);
+  const isAtlasSprite =
+    !isAnimated &&
+    (!objectWidth || objectWidth <= TILE_SIZE) &&
+    (!objectHeight || objectHeight <= TILE_SIZE);
+
   const sprite = getSpriteFromPoolOrNew(graphic, animationsPool, spritesPool);
+  if (isAtlasSprite && textures?.[gid]) {
+    sprite.texture = textures[gid];
+  }
   sprite.position.set(x, y);
   sprite.scale.set(1, 1);
-
-  const texture = sprite.texture;
 
   if (Number(layerNumber) === TMX_SHORE_SPRITE_LAYER) {
     sprite.width = TILE_SIZE;
@@ -153,9 +164,12 @@ export const createSpriteFromObject = (
     const shoreSprite = sprite as ShoreCachedSprite;
     shoreSprite.shoreTileX = x;
     shoreSprite.shoreTileY = y;
-  } else if (texture?.width && texture?.height) {
-    sprite.width = texture.width;
-    sprite.height = texture.height;
+  } else if (objectWidth && objectHeight) {
+    sprite.width = objectWidth;
+    sprite.height = objectHeight;
+  } else if (sprite.texture?.width && sprite.texture?.height) {
+    sprite.width = sprite.texture.width;
+    sprite.height = sprite.texture.height;
   }
 
   if (Number(layerNumber) !== TMX_SHORE_SPRITE_LAYER) {
@@ -176,7 +190,8 @@ export const generateObjectsCache = (
   graphics: any,
   mapState: any,
   animationsPool: AnimatedSprite[],
-  spritesPool: Sprite[]
+  spritesPool: Sprite[],
+  textures?: Texture[]
 ): SpritesCache => {
   const cache: SpritesCache = {};
 
@@ -186,7 +201,8 @@ export const generateObjectsCache = (
       graphics,
       mapState,
       animationsPool,
-      spritesPool
+      spritesPool,
+      textures
     );
   });
 

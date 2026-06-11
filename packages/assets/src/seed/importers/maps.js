@@ -30,6 +30,7 @@ export const importMaps = ({ mapsMetaDir }) => {
     'DELETE FROM `map_tile_exits`;',
     'DELETE FROM `map_object_spawns`;',
     'DELETE FROM `map_npc_spawns`;',
+    'DELETE FROM `map_blocked_tiles`;',
   ];
 
   for (const { mapId, meta } of metaFiles) {
@@ -69,6 +70,18 @@ export const importMaps = ({ mapsMetaDir }) => {
     for (const tileExit of meta.tileExits ?? []) {
       statements.push(
         `INSERT INTO \`map_tile_exits\` (\`mapId\`, \`x\`, \`y\`, \`targetMapId\`, \`targetX\`, \`targetY\`) VALUES (${mapId}, ${tileExit.x}, ${tileExit.y}, ${tileExit.targetMapId}, ${tileExit.targetX}, ${tileExit.targetY});`,
+      );
+    }
+
+    const blockedTiles = meta.blockedTiles ?? [];
+    const blockedBatchSize = 500;
+    for (let index = 0; index < blockedTiles.length; index += blockedBatchSize) {
+      const batch = blockedTiles.slice(index, index + blockedBatchSize);
+      const values = batch
+        .map((tile) => `(${mapId}, ${tile.x}, ${tile.y})`)
+        .join(', ');
+      statements.push(
+        `INSERT INTO \`map_blocked_tiles\` (\`mapId\`, \`x\`, \`y\`) VALUES ${values};`,
       );
     }
   }

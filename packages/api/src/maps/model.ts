@@ -1,4 +1,5 @@
 import type {
+  MapBlockedTileRow,
   MapNpcSpawnRow,
   MapObjectSpawnRow,
   MapRow,
@@ -68,5 +69,11 @@ export const findSpawns = async (
   qb.where('mapId', mapId)
   const tileExits = await db.executeQuery<MapTileExitRow>(qb.get())
 
-  return { map, npcs, objects, tileExits }
+  qb.reset()
+  qb.select('*')
+  qb.from('map_blocked_tiles')
+  qb.where('mapId', mapId)
+  const blockedTiles = await db.executeQuery<MapBlockedTileRow>(qb.get())
+
+  return { map, npcs, objects, tileExits, blockedTiles }
 }

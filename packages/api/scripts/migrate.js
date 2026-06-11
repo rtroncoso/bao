@@ -18,6 +18,8 @@ const MIGRATIONS = [
   '2020-11-09_characters.sql',
   '2026-06-10_character_world_position.sql',
   '2026-06-11_default_spawn_ullathorpe.sql',
+  '2026-06-12_default_spawn_nix.sql',
+  '2026-06-12_map_blocked_tiles.sql',
 ];
 
 const parseArgs = () => {
@@ -170,7 +172,46 @@ const main = async () => {
   }
 };
 
+const formatMigrationError = (error) => {
+  if (error instanceof AggregateError) {
+    return error.errors
+      .map((entry) => (entry instanceof Error ? entry.message : String(entry)))
+      .filter(Boolean)
+      .join('\n');
+  }
+
+  if (error instanceof Error) {
+    return error.message || error.stack || String(error);
+  }
+
+  return String(error);
+};
+
 main().catch((error) => {
-  console.error(error instanceof Error ? error.message : error);
+  const message = formatMigrationError(error);
+
+  if (message) {
+    console.error(message);
+  } else {
+    console.error('Migration failed with an unknown error.');
+  }
+
+  if (
+    message.includes('ECONNREFUSED') ||
+    (error instanceof AggregateError &&
+      error.errors.some(
+        (entry) => entry instanceof Error && entry.message.includes('ECONNREFUSED')
+      ))
+  ) {
+    console.error('\nMySQL is not reachable. Start it with: pnpm dev:db');
+  }
+
+  if (message.includes('Access denied')) {
+    console.error(
+      '\nMySQL credentials in .env do not match the server. ' +
+        'Local docker compose uses MYSQL_USER=root with an empty MYSQL_PASSWORD (see .env.example).'
+    );
+  }
+
   process.exit(1);
 });

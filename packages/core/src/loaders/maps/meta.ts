@@ -23,11 +23,17 @@ export interface MapTileExit {
   targetY: number;
 }
 
+export interface MapBlockedTile {
+  x: number;
+  y: number;
+}
+
 export interface MapMeta {
   mapId: number;
   npcs: MapNpcSpawn[];
   objects: MapObjectSpawn[];
   tileExits: MapTileExit[];
+  blockedTiles?: MapBlockedTile[];
 }
 
 /**

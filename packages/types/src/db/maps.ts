@@ -44,9 +44,17 @@ export interface MapTileExitRow {
   targetY: number
 }
 
+export interface MapBlockedTileRow {
+  id: number
+  mapId: number
+  x: number
+  y: number
+}
+
 export interface MapSpawnsResponse {
   map: MapRow
   npcs: MapNpcSpawnRow[]
   objects: MapObjectSpawnRow[]
   tileExits: MapTileExitRow[]
+  blockedTiles: MapBlockedTileRow[]
 }
