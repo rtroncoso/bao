@@ -49,8 +49,26 @@ export class MapTransitionSystem {
 
     this.mapRegistry.unregisterCharacter(previousMapId);
     this.mapRegistry.registerCharacter(character.mapId);
-    await this.mapRegistry.ensureMap(character.mapId, authToken);
+    await this.mapRegistry.ensureMapsInInterest(
+      character.mapId,
+      character.tile.x,
+      character.tile.y,
+      authToken
+    );
+    this.mapRegistry.pruneMapsOutsideInterest();
     this.room.movementSystem.blockTile(character.tile, character);
+
+    const accountId = this.room.accountIdBySession.get(character.sessionId);
+    if (accountId) {
+      try {
+        await this.persistPosition(character, accountId);
+      } catch (error) {
+        console.error(
+          '[MapTransitionSystem] failed to persist position:',
+          error
+        );
+      }
+    }
 
     return true;
   }

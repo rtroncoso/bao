@@ -160,9 +160,22 @@ export const convertMaps = async (options) => {
 
   if (worlds && convertedMapIds.length > 0) {
     const overridesPath = path.join(publicDir, 'worlds', 'overrides.json');
+    const allMapIds = listMapIds(inputDir).filter((id) =>
+      fs.existsSync(path.join(outputDir, `${id}.meta.json`))
+    );
+    const worldsTileExits = { ...tileExitsByMap };
+    for (const mapId of allMapIds) {
+      if (worldsTileExits[mapId]) {
+        continue;
+      }
+      const metaPath = path.join(outputDir, `${mapId}.meta.json`);
+      const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+      worldsTileExits[mapId] = meta.tileExits ?? [];
+    }
+
     const worldsJson = buildWorldsJson({
-      mapIds: convertedMapIds,
-      tileExitsByMap,
+      mapIds: allMapIds.length ? allMapIds : convertedMapIds,
+      tileExitsByMap: worldsTileExits,
       overrides: loadWorldOverrides(overridesPath),
     });
 

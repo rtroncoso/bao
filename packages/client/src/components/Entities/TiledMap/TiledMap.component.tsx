@@ -30,13 +30,15 @@ interface TiledMapContentProps {
   currentMap: Tiled;
   worldOffsetX: number;
   worldOffsetY: number;
+  isCurrentMap?: boolean;
 }
 
-const TiledMapPrimaryContent: React.FC<TiledMapContentProps> = ({
+const TiledMapMapContent: React.FC<TiledMapContentProps> = ({
   mapId,
   currentMap,
   worldOffsetX,
-  worldOffsetY
+  worldOffsetY,
+  isCurrentMap = false
 }) => {
   const mapData = useMapData(currentMap);
   const spatialIndexes = useSpatialIndexes(mapData);
@@ -57,7 +59,10 @@ const TiledMapPrimaryContent: React.FC<TiledMapContentProps> = ({
     textures
   );
 
-  useTriggerHandling(mapData.triggers, renderTargets.spritesLayer);
+  useTriggerHandling(
+    isCurrentMap ? mapData.triggers : [],
+    renderTargets.spritesLayer
+  );
 
   useViewportRendering(
     mapData,
@@ -91,50 +96,9 @@ const TiledMapPrimaryContent: React.FC<TiledMapContentProps> = ({
           ref={renderTargets.objectsLayer}
           parentGroup={mapState?.groups[ENTITIES_LAYER]}
         />
-        <MapEntityLayer mapId={mapId} />
+        <MapEntityLayer mapId={mapId} mapWorldOffset={mapWorldOffset} />
       </Container>
     </EffectsAnimationSystem>
-  );
-};
-
-const TiledMapNeighborContent: React.FC<TiledMapContentProps> = ({
-  currentMap,
-  worldOffsetX,
-  worldOffsetY
-}) => {
-  const mapData = useMapData(currentMap);
-  const spatialIndexes = useSpatialIndexes(mapData);
-  const { mapState } = useMapContext();
-  const textures = useTextures();
-  const renderTargets = useRenderTargets();
-  const mapWorldOffset = useMemo(
-    () => ({ x: worldOffsetX, y: worldOffsetY }),
-    [worldOffsetX, worldOffsetY]
-  );
-
-  useViewportRendering(
-    mapData,
-    spatialIndexes,
-    {},
-    {},
-    textures,
-    renderTargets,
-    null,
-    null,
-    { mapWorldOffset, terrainOnly: true }
-  );
-
-  return (
-    <Container ref={renderTargets.container}>
-      <Container
-        ref={renderTargets.tilesLayer}
-        parentGroup={mapState?.groups[TILES_LAYER]}
-      />
-      <Container
-        ref={renderTargets.shoreLayer}
-        parentGroup={mapState?.groups[SHORE_LAYER]}
-      />
-    </Container>
   );
 };
 
@@ -155,21 +119,13 @@ export const TiledMap: React.FC = () => {
     <>
       {activeMaps.map(({ mapId, map, offsetX, offsetY }) => (
         <Container key={mapId} x={offsetX} y={offsetY}>
-          {mapId === currentMapId ? (
-            <TiledMapPrimaryContent
-              mapId={mapId}
-              currentMap={map}
-              worldOffsetX={offsetX}
-              worldOffsetY={offsetY}
-            />
-          ) : (
-            <TiledMapNeighborContent
-              mapId={mapId}
-              currentMap={map}
-              worldOffsetX={offsetX}
-              worldOffsetY={offsetY}
-            />
-          )}
+          <TiledMapMapContent
+            mapId={mapId}
+            currentMap={map}
+            worldOffsetX={offsetX}
+            worldOffsetY={offsetY}
+            isCurrentMap={mapId === currentMapId}
+          />
         </Container>
       ))}
     </>

@@ -12,6 +12,7 @@ export interface MapSpawnNpc {
   headId: number;
   heading: number;
   description: string | null;
+  hostile: number;
 }
 
 export interface MapSpawnObject {

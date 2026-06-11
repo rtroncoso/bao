@@ -13,6 +13,7 @@ import {
 } from '@/schema/MapEntityState';
 import { MapState } from '@/schema/MapState';
 import { MapSpawnService } from '@/services/MapSpawnService';
+import { TileCoord } from '@/services/MapRegistry';
 import { WorldRoom } from '@/rooms/WorldRoom';
 import { config } from '@/config';
 
@@ -21,6 +22,7 @@ interface DoorVariantConfig {
   closedObjectId: number;
   openGraphicId: number;
   closedGraphicId: number;
+  blockedTiles: TileCoord[];
 }
 
 interface ObjectAttributeRow {
@@ -43,6 +45,16 @@ export class MapEntitySystem {
 
   constructor(room: WorldRoom) {
     this.room = room;
+  }
+
+  clearMap(mapId: number) {
+    this.loadedMaps.delete(mapId);
+
+    for (const key of [...this.doorConfigs.keys()]) {
+      if (key.startsWith(`object:${mapId}:`)) {
+        this.doorConfigs.delete(key);
+      }
+    }
   }
 
   private async fetchObjects(
@@ -80,7 +92,14 @@ export class MapEntitySystem {
   }
 
   private async buildDoorConfigs(
-    spawns: Array<{ id: string; objectId: number; objectType: number }>
+    mapId: number,
+    spawns: Array<{
+      id: string;
+      objectId: number;
+      objectType: number;
+      x: number;
+      y: number;
+    }>
   ) {
     const doorObjectIds = [
       ...new Set(
@@ -142,14 +161,59 @@ export class MapEntitySystem {
         openObjectId,
         closedObjectId,
         openGraphicId,
-        closedGraphicId
+        closedGraphicId,
+        blockedTiles: this.room.mapRegistry.findDoorBlockedTiles(
+          mapId,
+          spawn.x,
+          spawn.y
+        )
       });
     }
   }
 
+  private registerNpcBlocking(
+    mapId: number,
+    x: number,
+    y: number,
+    hostile: boolean
+  ) {
+    if (!hostile) {
+      return;
+    }
+
+    this.room.mapRegistry.setRuntimeBlockedTiles(mapId, [{ x, y }], true);
+  }
+
+  private registerDoorBlocking(
+    mapId: number,
+    entityId: string,
+    isOpen: boolean
+  ) {
+    const doorConfig = this.doorConfigs.get(entityId);
+    if (!doorConfig?.blockedTiles.length) {
+      return;
+    }
+
+    this.room.mapRegistry.setDoorTilesOpen(
+      mapId,
+      doorConfig.blockedTiles,
+      isOpen
+    );
+    this.room.mapRegistry.setRuntimeBlockedTiles(
+      mapId,
+      doorConfig.blockedTiles,
+      !isOpen
+    );
+  }
+
   async hydrateMap(mapId: number, authToken?: string) {
+    const existing = this.room.state.maps.get(String(mapId));
+    if (existing) {
+      return existing;
+    }
+
     if (this.loadedMaps.has(mapId)) {
-      return this.room.state.maps.get(String(mapId));
+      this.loadedMaps.delete(mapId);
     }
 
     const spawns = await this.mapSpawnService.fetchSpawns(mapId, authToken);
@@ -166,8 +230,10 @@ export class MapEntitySystem {
         entity.headId = spawn.headId;
         entity.heading = legacyHeadingToHeading(spawn.heading ?? 3);
         entity.description = spawn.description ?? '';
+        entity.hostile = Boolean(spawn.hostile);
         entity.x = spawn.x;
         entity.y = spawn.y;
+        this.registerNpcBlocking(mapId, spawn.x, spawn.y, entity.hostile);
         return entity;
       })
     );
@@ -187,10 +253,13 @@ export class MapEntitySystem {
       });
 
     await this.buildDoorConfigs(
+      mapId,
       objectEntities.map((entity) => ({
         id: entity.id,
         objectId: entity.objectId,
-        objectType: entity.objectType
+        objectType: entity.objectType,
+        x: entity.x,
+        y: entity.y
       }))
     );
 
@@ -198,6 +267,7 @@ export class MapEntitySystem {
       const doorConfig = this.doorConfigs.get(entity.id);
       if (doorConfig) {
         entity.isOpen = entity.objectId === doorConfig.openObjectId;
+        this.registerDoorBlocking(mapId, entity.id, entity.isOpen);
       }
     }
 
@@ -239,10 +309,12 @@ export class MapEntitySystem {
       entity.objectId = doorConfig.closedObjectId;
       entity.graphicId = doorConfig.closedGraphicId;
       entity.isOpen = false;
+      this.registerDoorBlocking(mapId, entityId, false);
     } else {
       entity.objectId = doorConfig.openObjectId;
       entity.graphicId = doorConfig.openGraphicId;
       entity.isOpen = true;
+      this.registerDoorBlocking(mapId, entityId, true);
     }
 
     return true;

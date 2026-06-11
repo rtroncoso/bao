@@ -47,7 +47,7 @@ export const findSpawns = async (
 
   const qb = new QueryBuilder()
   qb.select(
-    'mns.id, mns.mapId, mns.npcId, mns.x, mns.y, n.body AS bodyId, n.head AS headId, n.heading, n.description'
+    'mns.id, mns.mapId, mns.npcId, mns.x, mns.y, n.body AS bodyId, n.head AS headId, n.heading, n.description, n.hostile'
   )
   qb.from('map_npc_spawns AS mns')
   qb.join('npcs AS n', 'n.id = mns.npcId', 'inner')

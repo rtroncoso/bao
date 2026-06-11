@@ -609,11 +609,7 @@ export const makeNpcsLayer = ({ layers }) => {
       const { graphic } = tile;
       const npc = makeNpc({
         graphic,
-        tile: {
-          ...tile,
-          x: tile.npc.x,
-          y: tile.npc.y
-        } as Tile
+        tile
       });
 
       createProperty(npc, 'npcId', tile.npc.id);
@@ -644,11 +640,7 @@ export const makeObjectsLayer = ({ layers }) => {
       const { graphic } = tile.object;
       const object = makeObject({
         graphic,
-        tile: {
-          ...tile,
-          x: tile.object.x,
-          y: tile.object.y,
-        } as Tile
+        tile
       });
 
       createProperty(object, 'type', tile.object.type);

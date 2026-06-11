@@ -102,6 +102,21 @@ export const createAnimationPool = (size: number): AnimatedSprite[] => {
   );
 };
 
+const bindPooledDestroy = <T extends Sprite | AnimatedSprite>(
+  sprite: T,
+  pool: T[],
+  baseDestroy: typeof Sprite.prototype.destroy
+) => {
+  sprite.destroy = function destroy(
+    options?: boolean | import('pixi.js').IDestroyOptions
+  ) {
+    if (!pool.includes(sprite)) {
+      pool.push(sprite);
+    }
+    return baseDestroy.call(this, options);
+  };
+};
+
 export const getSpriteFromPoolOrNew = (
   graphic: Graphic,
   animationsPool: AnimatedSprite[],
@@ -109,10 +124,7 @@ export const getSpriteFromPoolOrNew = (
 ): Sprite | AnimatedSprite => {
   if (graphic.frames.length > 0) {
     const sprite = animationsPool.pop() || new AnimatedSprite([Texture.EMPTY]);
-    sprite.destroy = (options) => {
-      animationsPool.push(sprite);
-      return sprite.destroy(options);
-    };
+    bindPooledDestroy(sprite, animationsPool, AnimatedSprite.prototype.destroy);
     sprite.textures = graphic.frames.map(getTexture);
     sprite.animationSpeed = graphic.speed;
     sprite.gotoAndPlay(0);
@@ -120,10 +132,7 @@ export const getSpriteFromPoolOrNew = (
   }
 
   const sprite = spritesPool.pop() || new Sprite(Texture.EMPTY);
-  sprite.destroy = (options) => {
-    spritesPool.push(sprite);
-    return sprite.destroy(options);
-  };
+  bindPooledDestroy(sprite, spritesPool, Sprite.prototype.destroy);
   sprite.texture = getTexture(graphic);
   return sprite;
 };

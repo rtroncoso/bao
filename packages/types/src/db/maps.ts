@@ -21,6 +21,7 @@ export interface MapNpcSpawnRow {
   headId: number
   heading: number
   description: string | null
+  hostile: number
 }
 
 export interface MapObjectSpawnRow {

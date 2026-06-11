@@ -54,11 +54,22 @@ export class Tile {
   }
 
   isWater() {
-    if (!this.animation) {
+    if (this.animation) {
+      const animationId = Number(this.animation.id);
+      if (animationId >= 1505 && animationId <= 1520) {
+        return true;
+      }
+    }
+
+    if (!this.graphic) {
       return false;
     }
 
-    const id = Number(this.animation.id);
-    return id >= 1505 && id <= 1520;
+    const graphicId = Number(this.graphic.id);
+    if (graphicId >= 6000 && graphicId <= 6063) {
+      return true;
+    }
+
+    return Number((this.graphic as Graphic).fileName) === 12052;
   }
 }

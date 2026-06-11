@@ -115,15 +115,17 @@ export const GameContainer = <P extends GameConnectedProps>(
           );
         }
 
-        if (state.room) {
-          state.room.leave(true);
+        const room = roomRef.current;
+        if (room) {
+          room.leave(true);
+          roomRef.current = undefined;
           router.push('/');
           return;
         }
 
         console.warn(`[world:handleLeaveRoom]: trying to leave a closed room`);
       },
-      [router, resetState, state]
+      [router]
     );
 
     const handleRoomError = useCallback(
@@ -223,9 +225,23 @@ export const GameContainer = <P extends GameConnectedProps>(
       }
 
       return () => {
-        handleLeaveRoom();
+        const room = roomRef.current;
+        if (room) {
+          room.leave(true);
+          roomRef.current = undefined;
+        }
       };
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- join once per character/token
     }, [state.characterId, token]);
+
+    useEffect(() => {
+      const handlePageHide = () => {
+        roomRef.current?.leave(true);
+      };
+
+      window.addEventListener('pagehide', handlePageHide);
+      return () => window.removeEventListener('pagehide', handlePageHide);
+    }, []);
 
     const callbacks = {
       joinRoom: handleJoinRoom,

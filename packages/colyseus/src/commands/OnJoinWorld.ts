@@ -171,7 +171,12 @@ export class OnJoinCommand extends Command<WorldRoom, OnJoinParameters> {
         this.room.authTokenBySession.set(client.sessionId, options.token);
       }
 
-      await this.room.mapRegistry.ensureMap(mapId, options.token);
+      await this.room.mapRegistry.ensureMapsInInterest(
+        mapId,
+        x,
+        y,
+        options.token
+      );
       this.room.mapRegistry.registerCharacter(mapId);
       this.state.characters.push(character);
       this.room.presence.sadd(`session:${client.sessionId}`, character);

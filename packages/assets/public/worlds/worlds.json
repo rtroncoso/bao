@@ -11,22 +11,22 @@
       "fileName": "../maps/2.json",
       "width": 2688,
       "height": 2816,
-      "x": -32256,
-      "y": -36608
+      "x": 0,
+      "y": 2816
     },
     {
       "fileName": "../maps/3.json",
       "width": 2688,
       "height": 2816,
-      "x": -32256,
-      "y": -33792
+      "x": 0,
+      "y": 5632
     },
     {
       "fileName": "../maps/4.json",
       "width": 2688,
       "height": 2816,
-      "x": -32256,
-      "y": -30976
+      "x": 0,
+      "y": 8448
     },
     {
       "fileName": "../maps/5.json",
@@ -74,294 +74,294 @@
       "fileName": "../maps/11.json",
       "width": 2688,
       "height": 2816,
-      "x": -29568,
-      "y": -39424
-    },
-    {
-      "fileName": "../maps/12.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -26880,
-      "y": -39424
-    },
-    {
-      "fileName": "../maps/13.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -24192,
-      "y": -39424
-    },
-    {
-      "fileName": "../maps/14.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -29568,
-      "y": -36608
-    },
-    {
-      "fileName": "../maps/15.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -21504,
-      "y": -39424
-    },
-    {
-      "fileName": "../maps/16.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -18816,
-      "y": -39424
-    },
-    {
-      "fileName": "../maps/17.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -16128,
-      "y": -39424
-    },
-    {
-      "fileName": "../maps/18.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -26880,
-      "y": -36608
-    },
-    {
-      "fileName": "../maps/19.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -24192,
-      "y": -36608
-    },
-    {
-      "fileName": "../maps/20.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -18816,
-      "y": -36608
-    },
-    {
-      "fileName": "../maps/21.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -18816,
-      "y": -42240
-    },
-    {
-      "fileName": "../maps/22.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -29568,
-      "y": -30976
-    },
-    {
-      "fileName": "../maps/23.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -26880,
-      "y": -30976
-    },
-    {
-      "fileName": "../maps/24.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -24192,
-      "y": -30976
-    },
-    {
-      "fileName": "../maps/25.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -29568,
-      "y": -33792
-    },
-    {
-      "fileName": "../maps/26.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -26880,
-      "y": -33792
-    },
-    {
-      "fileName": "../maps/27.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -24192,
-      "y": -33792
-    },
-    {
-      "fileName": "../maps/28.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -26880,
-      "y": -28160
-    },
-    {
-      "fileName": "../maps/29.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -29568,
-      "y": -28160
-    },
-    {
-      "fileName": "../maps/30.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -29568,
-      "y": -25344
-    },
-    {
-      "fileName": "../maps/31.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -32256,
-      "y": -25344
-    },
-    {
-      "fileName": "../maps/32.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -32256,
-      "y": -28160
-    },
-    {
-      "fileName": "../maps/33.json",
-      "width": 2688,
-      "height": 2816,
       "x": 2688,
       "y": 0
     },
     {
-      "fileName": "../maps/34.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -34944,
-      "y": -28160
-    },
-    {
-      "fileName": "../maps/35.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -34944,
-      "y": -30976
-    },
-    {
-      "fileName": "../maps/36.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -34944,
-      "y": -33792
-    },
-    {
-      "fileName": "../maps/37.json",
+      "fileName": "../maps/12.json",
       "width": 2688,
       "height": 2816,
       "x": 5376,
       "y": 0
     },
     {
-      "fileName": "../maps/38.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -37632,
-      "y": -36608
-    },
-    {
-      "fileName": "../maps/39.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -34944,
-      "y": -36608
-    },
-    {
-      "fileName": "../maps/40.json",
+      "fileName": "../maps/13.json",
       "width": 2688,
       "height": 2816,
       "x": 8064,
       "y": 0
     },
     {
-      "fileName": "../maps/41.json",
+      "fileName": "../maps/14.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 2688,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/15.json",
       "width": 2688,
       "height": 2816,
       "x": 10752,
       "y": 0
     },
     {
-      "fileName": "../maps/42.json",
+      "fileName": "../maps/16.json",
       "width": 2688,
       "height": 2816,
       "x": 13440,
       "y": 0
     },
     {
-      "fileName": "../maps/43.json",
+      "fileName": "../maps/17.json",
       "width": 2688,
       "height": 2816,
       "x": 16128,
       "y": 0
     },
     {
+      "fileName": "../maps/18.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 5376,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/19.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 8064,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/20.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 13440,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/21.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 13440,
+      "y": -2816
+    },
+    {
+      "fileName": "../maps/22.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 2688,
+      "y": 8448
+    },
+    {
+      "fileName": "../maps/23.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 5376,
+      "y": 8448
+    },
+    {
+      "fileName": "../maps/24.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 8064,
+      "y": 8448
+    },
+    {
+      "fileName": "../maps/25.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 2688,
+      "y": 5632
+    },
+    {
+      "fileName": "../maps/26.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 5376,
+      "y": 5632
+    },
+    {
+      "fileName": "../maps/27.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 8064,
+      "y": 5632
+    },
+    {
+      "fileName": "../maps/28.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 5376,
+      "y": 11264
+    },
+    {
+      "fileName": "../maps/29.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 2688,
+      "y": 11264
+    },
+    {
+      "fileName": "../maps/30.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 2688,
+      "y": 14080
+    },
+    {
+      "fileName": "../maps/31.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 0,
+      "y": 14080
+    },
+    {
+      "fileName": "../maps/32.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 0,
+      "y": 11264
+    },
+    {
+      "fileName": "../maps/33.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 32256,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/34.json",
+      "width": 2688,
+      "height": 2816,
+      "x": -2688,
+      "y": 11264
+    },
+    {
+      "fileName": "../maps/35.json",
+      "width": 2688,
+      "height": 2816,
+      "x": -2688,
+      "y": 8448
+    },
+    {
+      "fileName": "../maps/36.json",
+      "width": 2688,
+      "height": 2816,
+      "x": -2688,
+      "y": 5632
+    },
+    {
+      "fileName": "../maps/37.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 34944,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/38.json",
+      "width": 2688,
+      "height": 2816,
+      "x": -5376,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/39.json",
+      "width": 2688,
+      "height": 2816,
+      "x": -2688,
+      "y": 2816
+    },
+    {
+      "fileName": "../maps/40.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 37632,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/41.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 40320,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/42.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 43008,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/43.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 45696,
+      "y": 0
+    },
+    {
       "fileName": "../maps/44.json",
       "width": 2688,
       "height": 2816,
-      "x": 18816,
+      "x": 48384,
       "y": 0
     },
     {
       "fileName": "../maps/45.json",
       "width": 2688,
       "height": 2816,
-      "x": -34944,
-      "y": -25344
+      "x": 51072,
+      "y": 0
     },
     {
       "fileName": "../maps/46.json",
       "width": 2688,
       "height": 2816,
-      "x": -37632,
-      "y": -33792
+      "x": -5376,
+      "y": 5632
     },
     {
       "fileName": "../maps/47.json",
       "width": 2688,
       "height": 2816,
-      "x": -26880,
-      "y": -73216
+      "x": 5376,
+      "y": -33792
     },
     {
       "fileName": "../maps/48.json",
       "width": 2688,
       "height": 2816,
-      "x": 21504,
+      "x": 53760,
       "y": 0
     },
     {
       "fileName": "../maps/49.json",
       "width": 2688,
       "height": 2816,
-      "x": 24192,
+      "x": 56448,
       "y": 0
     },
     {
       "fileName": "../maps/50.json",
       "width": 2688,
       "height": 2816,
-      "x": 26880,
+      "x": 59136,
       "y": 0
     },
     {
       "fileName": "../maps/51.json",
       "width": 2688,
       "height": 2816,
-      "x": 29568,
+      "x": 61824,
       "y": 0
     },
     {
       "fileName": "../maps/52.json",
       "width": 2688,
       "height": 2816,
-      "x": 32256,
+      "x": 64512,
       "y": 0
     },
     {
@@ -431,21 +431,21 @@
       "fileName": "../maps/62.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -39424
+      "x": 26880,
+      "y": 0
     },
     {
       "fileName": "../maps/63.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -36608
+      "x": 26880,
+      "y": 2816
     },
     {
       "fileName": "../maps/64.json",
       "width": 2688,
       "height": 2816,
-      "x": 34944,
+      "x": 29568,
       "y": 0
     },
     {
@@ -536,421 +536,421 @@
       "fileName": "../maps/77.json",
       "width": 2688,
       "height": 2816,
-      "x": -29568,
-      "y": -42240
+      "x": 2688,
+      "y": -2816
     },
     {
       "fileName": "../maps/78.json",
       "width": 2688,
       "height": 2816,
-      "x": -37632,
-      "y": -28160
+      "x": -5376,
+      "y": 11264
     },
     {
       "fileName": "../maps/79.json",
       "width": 2688,
       "height": 2816,
-      "x": -37632,
-      "y": -25344
+      "x": -5376,
+      "y": 14080
     },
     {
       "fileName": "../maps/80.json",
       "width": 2688,
       "height": 2816,
-      "x": -37632,
-      "y": -30976
+      "x": -5376,
+      "y": 8448
     },
     {
       "fileName": "../maps/81.json",
       "width": 2688,
       "height": 2816,
-      "x": -26880,
-      "y": -42240
+      "x": 5376,
+      "y": -2816
     },
     {
       "fileName": "../maps/82.json",
       "width": 2688,
       "height": 2816,
-      "x": -24192,
-      "y": -42240
+      "x": 8064,
+      "y": -2816
     },
     {
       "fileName": "../maps/83.json",
       "width": 2688,
       "height": 2816,
-      "x": -29568,
-      "y": -45056
+      "x": 2688,
+      "y": -5632
     },
     {
       "fileName": "../maps/84.json",
       "width": 2688,
       "height": 2816,
-      "x": -26880,
-      "y": -45056
+      "x": 5376,
+      "y": -5632
     },
     {
       "fileName": "../maps/85.json",
       "width": 2688,
       "height": 2816,
-      "x": -29568,
-      "y": -47872
+      "x": 2688,
+      "y": -8448
     },
     {
       "fileName": "../maps/86.json",
       "width": 2688,
       "height": 2816,
-      "x": -29568,
-      "y": -50688
+      "x": 2688,
+      "y": -11264
     },
     {
       "fileName": "../maps/87.json",
       "width": 2688,
       "height": 2816,
-      "x": 37632,
-      "y": 0
+      "x": -2688,
+      "y": 14080
     },
     {
       "fileName": "../maps/88.json",
       "width": 2688,
       "height": 2816,
-      "x": -34944,
-      "y": -22528
+      "x": -2688,
+      "y": 16896
     },
     {
       "fileName": "../maps/89.json",
       "width": 2688,
       "height": 2816,
-      "x": -32256,
-      "y": -22528
+      "x": 0,
+      "y": 16896
     },
     {
       "fileName": "../maps/90.json",
       "width": 2688,
       "height": 2816,
-      "x": -29568,
-      "y": -22528
+      "x": 2688,
+      "y": 16896
     },
     {
       "fileName": "../maps/91.json",
       "width": 2688,
       "height": 2816,
-      "x": -26880,
-      "y": -25344
+      "x": 5376,
+      "y": 14080
     },
     {
       "fileName": "../maps/92.json",
       "width": 2688,
       "height": 2816,
-      "x": -21504,
-      "y": -25344
+      "x": 10752,
+      "y": 14080
     },
     {
       "fileName": "../maps/93.json",
       "width": 2688,
       "height": 2816,
-      "x": -24192,
-      "y": -25344
+      "x": 8064,
+      "y": 14080
     },
     {
       "fileName": "../maps/94.json",
       "width": 2688,
       "height": 2816,
-      "x": -24192,
-      "y": -28160
+      "x": 8064,
+      "y": 11264
     },
     {
       "fileName": "../maps/95.json",
       "width": 2688,
       "height": 2816,
-      "x": -21504,
-      "y": -28160
+      "x": 10752,
+      "y": 11264
     },
     {
       "fileName": "../maps/96.json",
       "width": 2688,
       "height": 2816,
-      "x": -21504,
-      "y": -30976
+      "x": 10752,
+      "y": 8448
     },
     {
       "fileName": "../maps/97.json",
       "width": 2688,
       "height": 2816,
-      "x": -21504,
-      "y": -33792
+      "x": 10752,
+      "y": 5632
     },
     {
       "fileName": "../maps/98.json",
       "width": 2688,
       "height": 2816,
-      "x": -21504,
-      "y": -36608
+      "x": 10752,
+      "y": 2816
     },
     {
       "fileName": "../maps/99.json",
       "width": 2688,
       "height": 2816,
-      "x": 40320,
-      "y": 0
+      "x": 13440,
+      "y": 5632
     },
     {
       "fileName": "../maps/100.json",
       "width": 2688,
       "height": 2816,
-      "x": 43008,
-      "y": 0
+      "x": 16128,
+      "y": 5632
     },
     {
       "fileName": "../maps/101.json",
       "width": 2688,
       "height": 2816,
-      "x": -16128,
-      "y": -36608
+      "x": 16128,
+      "y": 2816
     },
     {
       "fileName": "../maps/102.json",
       "width": 2688,
       "height": 2816,
-      "x": -13440,
-      "y": -36608
+      "x": 18816,
+      "y": 2816
     },
     {
       "fileName": "../maps/103.json",
       "width": 2688,
       "height": 2816,
-      "x": -13440,
-      "y": -39424
+      "x": 18816,
+      "y": 0
     },
     {
       "fileName": "../maps/104.json",
       "width": 2688,
       "height": 2816,
-      "x": -8064,
-      "y": -39424
+      "x": 24192,
+      "y": 0
     },
     {
       "fileName": "../maps/105.json",
       "width": 2688,
       "height": 2816,
-      "x": -8064,
-      "y": -36608
+      "x": 24192,
+      "y": 2816
     },
     {
       "fileName": "../maps/106.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -42240
+      "x": 26880,
+      "y": -2816
     },
     {
       "fileName": "../maps/107.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -45056
+      "x": 26880,
+      "y": -5632
     },
     {
       "fileName": "../maps/108.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -47872
+      "x": 26880,
+      "y": -8448
     },
     {
       "fileName": "../maps/109.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -50688
+      "x": 26880,
+      "y": -11264
     },
     {
       "fileName": "../maps/110.json",
       "width": 2688,
       "height": 2816,
-      "x": 45696,
-      "y": 0
+      "x": 29568,
+      "y": -36608
     },
     {
       "fileName": "../maps/111.json",
       "width": 2688,
       "height": 2816,
-      "x": 48384,
+      "x": 67200,
       "y": 0
     },
     {
       "fileName": "../maps/112.json",
       "width": 2688,
       "height": 2816,
-      "x": 51072,
+      "x": 69888,
       "y": 0
     },
     {
       "fileName": "../maps/113.json",
       "width": 2688,
       "height": 2816,
-      "x": 53760,
+      "x": 72576,
       "y": 0
     },
     {
       "fileName": "../maps/114.json",
       "width": 2688,
       "height": 2816,
-      "x": 56448,
+      "x": 75264,
       "y": 0
     },
     {
       "fileName": "../maps/115.json",
       "width": 2688,
       "height": 2816,
-      "x": 59136,
+      "x": 77952,
       "y": 0
     },
     {
       "fileName": "../maps/116.json",
       "width": 2688,
       "height": 2816,
-      "x": 61824,
+      "x": 80640,
       "y": 0
     },
     {
       "fileName": "../maps/117.json",
       "width": 2688,
       "height": 2816,
-      "x": -10752,
-      "y": -39424
+      "x": 21504,
+      "y": 0
     },
     {
       "fileName": "../maps/118.json",
       "width": 2688,
       "height": 2816,
-      "x": -10752,
-      "y": -36608
+      "x": 21504,
+      "y": 2816
     },
     {
       "fileName": "../maps/119.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -76032
+      "x": 26880,
+      "y": -36608
     },
     {
       "fileName": "../maps/120.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -53504
+      "x": 26880,
+      "y": -14080
     },
     {
       "fileName": "../maps/121.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -56320
+      "x": 26880,
+      "y": -16896
     },
     {
       "fileName": "../maps/122.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -59136
+      "x": 26880,
+      "y": -19712
     },
     {
       "fileName": "../maps/123.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -61952
+      "x": 26880,
+      "y": -22528
     },
     {
       "fileName": "../maps/124.json",
       "width": 2688,
       "height": 2816,
-      "x": -8064,
-      "y": -64768
+      "x": 24192,
+      "y": -25344
     },
     {
       "fileName": "../maps/125.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -67584
+      "x": 26880,
+      "y": -28160
     },
     {
       "fileName": "../maps/126.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -70400
+      "x": 26880,
+      "y": -30976
     },
     {
       "fileName": "../maps/127.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -73216
+      "x": 26880,
+      "y": -33792
     },
     {
       "fileName": "../maps/128.json",
       "width": 2688,
       "height": 2816,
-      "x": -8064,
-      "y": -76032
+      "x": 24192,
+      "y": -36608
     },
     {
       "fileName": "../maps/129.json",
       "width": 2688,
       "height": 2816,
-      "x": -10752,
-      "y": -76032
+      "x": 21504,
+      "y": -36608
     },
     {
       "fileName": "../maps/130.json",
       "width": 2688,
       "height": 2816,
-      "x": -13440,
-      "y": -76032
+      "x": 18816,
+      "y": -36608
     },
     {
       "fileName": "../maps/131.json",
       "width": 2688,
       "height": 2816,
-      "x": -16128,
-      "y": -76032
+      "x": 16128,
+      "y": -36608
     },
     {
       "fileName": "../maps/132.json",
       "width": 2688,
       "height": 2816,
-      "x": -18816,
-      "y": -76032
+      "x": 13440,
+      "y": -36608
     },
     {
       "fileName": "../maps/133.json",
       "width": 2688,
       "height": 2816,
-      "x": -21504,
-      "y": -76032
+      "x": 10752,
+      "y": -36608
     },
     {
       "fileName": "../maps/134.json",
       "width": 2688,
       "height": 2816,
-      "x": -24192,
-      "y": -76032
+      "x": 8064,
+      "y": -36608
     },
     {
       "fileName": "../maps/135.json",
       "width": 2688,
       "height": 2816,
-      "x": -26880,
-      "y": -76032
+      "x": 5376,
+      "y": -36608
     },
     {
       "fileName": "../maps/136.json",
       "width": 2688,
       "height": 2816,
-      "x": -29568,
-      "y": -76032
+      "x": 2688,
+      "y": -36608
     },
     {
       "fileName": "../maps/137.json",
@@ -963,113 +963,113 @@
       "fileName": "../maps/138.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -64768
+      "x": 26880,
+      "y": -25344
     },
     {
       "fileName": "../maps/139.json",
       "width": 2688,
       "height": 2816,
-      "x": 64512,
-      "y": 0
+      "x": 29568,
+      "y": -19712
     },
     {
       "fileName": "../maps/140.json",
-      "width": 2688,
-      "height": 2816,
-      "x": 67200,
-      "y": 0
-    },
-    {
-      "fileName": "../maps/141.json",
-      "width": 2688,
-      "height": 2816,
-      "x": 69888,
-      "y": 0
-    },
-    {
-      "fileName": "../maps/142.json",
-      "width": 2688,
-      "height": 2816,
-      "x": 72576,
-      "y": 0
-    },
-    {
-      "fileName": "../maps/143.json",
-      "width": 2688,
-      "height": 2816,
-      "x": 75264,
-      "y": 0
-    },
-    {
-      "fileName": "../maps/144.json",
-      "width": 2688,
-      "height": 2816,
-      "x": 77952,
-      "y": 0
-    },
-    {
-      "fileName": "../maps/145.json",
-      "width": 2688,
-      "height": 2816,
-      "x": 80640,
-      "y": 0
-    },
-    {
-      "fileName": "../maps/146.json",
       "width": 2688,
       "height": 2816,
       "x": 83328,
       "y": 0
     },
     {
+      "fileName": "../maps/141.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 86016,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/142.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 88704,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/143.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 91392,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/144.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 94080,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/145.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 96768,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/146.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 99456,
+      "y": 0
+    },
+    {
       "fileName": "../maps/147.json",
       "width": 2688,
       "height": 2816,
-      "x": -10752,
-      "y": -64768
+      "x": 21504,
+      "y": -25344
     },
     {
       "fileName": "../maps/148.json",
       "width": 2688,
       "height": 2816,
-      "x": -13440,
-      "y": -64768
+      "x": 18816,
+      "y": -25344
     },
     {
       "fileName": "../maps/149.json",
       "width": 2688,
       "height": 2816,
-      "x": -16128,
-      "y": -64768
+      "x": 16128,
+      "y": -25344
     },
     {
       "fileName": "../maps/150.json",
       "width": 2688,
       "height": 2816,
-      "x": -21504,
-      "y": -22528
+      "x": 10752,
+      "y": 16896
     },
     {
       "fileName": "../maps/151.json",
       "width": 2688,
       "height": 2816,
-      "x": -24192,
-      "y": -22528
+      "x": 8064,
+      "y": 16896
     },
     {
       "fileName": "../maps/152.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -33792
+      "x": 26880,
+      "y": 5632
     },
     {
       "fileName": "../maps/153.json",
       "width": 2688,
       "height": 2816,
-      "x": -5376,
-      "y": -30976
+      "x": 26880,
+      "y": 8448
     },
     {
       "fileName": "../maps/154.json",
@@ -1089,113 +1089,113 @@
       "fileName": "../maps/156.json",
       "width": 2688,
       "height": 2816,
-      "x": -26880,
-      "y": -22528
+      "x": 5376,
+      "y": 16896
     },
     {
       "fileName": "../maps/157.json",
       "width": 2688,
       "height": 2816,
-      "x": -26880,
-      "y": -64768
+      "x": 5376,
+      "y": -25344
     },
     {
       "fileName": "../maps/158.json",
       "width": 2688,
       "height": 2816,
-      "x": -29568,
-      "y": -64768
+      "x": 2688,
+      "y": -25344
     },
     {
       "fileName": "../maps/159.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -29568,
-      "y": -67584
-    },
-    {
-      "fileName": "../maps/160.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -26880,
-      "y": -67584
-    },
-    {
-      "fileName": "../maps/161.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -24192,
-      "y": -67584
-    },
-    {
-      "fileName": "../maps/162.json",
-      "width": 2688,
-      "height": 2816,
-      "x": 86016,
-      "y": 0
-    },
-    {
-      "fileName": "../maps/163.json",
-      "width": 2688,
-      "height": 2816,
-      "x": 88704,
-      "y": 0
-    },
-    {
-      "fileName": "../maps/164.json",
-      "width": 2688,
-      "height": 2816,
-      "x": 91392,
-      "y": 0
-    },
-    {
-      "fileName": "../maps/165.json",
-      "width": 2688,
-      "height": 2816,
-      "x": 94080,
-      "y": 0
-    },
-    {
-      "fileName": "../maps/166.json",
-      "width": 2688,
-      "height": 2816,
-      "x": 96768,
-      "y": 0
-    },
-    {
-      "fileName": "../maps/167.json",
-      "width": 2688,
-      "height": 2816,
-      "x": 99456,
-      "y": 0
-    },
-    {
-      "fileName": "../maps/168.json",
       "width": 2688,
       "height": 2816,
       "x": 102144,
       "y": 0
     },
     {
-      "fileName": "../maps/169.json",
+      "fileName": "../maps/160.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 5376,
+      "y": -28160
+    },
+    {
+      "fileName": "../maps/161.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 8064,
+      "y": -28160
+    },
+    {
+      "fileName": "../maps/162.json",
       "width": 2688,
       "height": 2816,
       "x": 104832,
       "y": 0
     },
     {
-      "fileName": "../maps/170.json",
+      "fileName": "../maps/163.json",
       "width": 2688,
       "height": 2816,
       "x": 107520,
       "y": 0
     },
     {
+      "fileName": "../maps/164.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 110208,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/165.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 112896,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/166.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 115584,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/167.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 118272,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/168.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 120960,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/169.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 123648,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/170.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 126336,
+      "y": 0
+    },
+    {
       "fileName": "../maps/171.json",
       "width": 2688,
       "height": 2816,
-      "x": -13440,
-      "y": -42240
+      "x": 18816,
+      "y": -2816
     },
     {
       "fileName": "../maps/172.json",
@@ -1208,71 +1208,71 @@
       "fileName": "../maps/173.json",
       "width": 2688,
       "height": 2816,
-      "x": 110208,
-      "y": 0
+      "x": 2688,
+      "y": -28160
     },
     {
       "fileName": "../maps/174.json",
       "width": 2688,
       "height": 2816,
-      "x": 112896,
+      "x": 129024,
       "y": 0
     },
     {
       "fileName": "../maps/175.json",
       "width": 2688,
       "height": 2816,
-      "x": 115584,
+      "x": 131712,
       "y": 0
     },
     {
       "fileName": "../maps/176.json",
       "width": 2688,
       "height": 2816,
-      "x": 118272,
-      "y": 0
+      "x": 2688,
+      "y": -22528
     },
     {
       "fileName": "../maps/177.json",
       "width": 2688,
       "height": 2816,
-      "x": 120960,
+      "x": 134400,
       "y": 0
     },
     {
       "fileName": "../maps/178.json",
       "width": 2688,
       "height": 2816,
-      "x": 123648,
+      "x": 137088,
       "y": 0
     },
     {
       "fileName": "../maps/179.json",
       "width": 2688,
       "height": 2816,
-      "x": 126336,
+      "x": 139776,
       "y": 0
     },
     {
       "fileName": "../maps/180.json",
       "width": 2688,
       "height": 2816,
-      "x": -26880,
-      "y": -50688
+      "x": 5376,
+      "y": -11264
     },
     {
       "fileName": "../maps/181.json",
       "width": 2688,
       "height": 2816,
-      "x": -16128,
-      "y": -22528
+      "x": 16128,
+      "y": 16896
     },
     {
       "fileName": "../maps/182.json",
       "width": 2688,
       "height": 2816,
-      "x": -13440,
-      "y": -22528
+      "x": 18816,
+      "y": 16896
     },
     {
       "fileName": "../maps/183.json",
@@ -1285,119 +1285,119 @@
       "fileName": "../maps/184.json",
       "width": 2688,
       "height": 2816,
-      "x": 129024,
-      "y": 0
+      "x": 29568,
+      "y": -22528
     },
     {
       "fileName": "../maps/185.json",
       "width": 2688,
       "height": 2816,
-      "x": -29568,
-      "y": -53504
+      "x": 2688,
+      "y": -14080
     },
     {
       "fileName": "../maps/186.json",
       "width": 2688,
       "height": 2816,
-      "x": 131712,
-      "y": 0
+      "x": 5376,
+      "y": -14080
     },
     {
       "fileName": "../maps/187.json",
       "width": 2688,
       "height": 2816,
-      "x": 134400,
-      "y": 0
+      "x": 8064,
+      "y": -14080
     },
     {
       "fileName": "../maps/188.json",
       "width": 2688,
       "height": 2816,
-      "x": -29568,
-      "y": -56320
+      "x": 2688,
+      "y": -16896
     },
     {
       "fileName": "../maps/189.json",
       "width": 2688,
       "height": 2816,
-      "x": 137088,
-      "y": 0
+      "x": 5376,
+      "y": -16896
     },
     {
       "fileName": "../maps/190.json",
       "width": 2688,
       "height": 2816,
-      "x": 139776,
-      "y": 0
+      "x": 8064,
+      "y": -16896
     },
     {
       "fileName": "../maps/191.json",
       "width": 2688,
       "height": 2816,
-      "x": -29568,
-      "y": -59136
+      "x": 2688,
+      "y": -19712
     },
     {
       "fileName": "../maps/192.json",
       "width": 2688,
       "height": 2816,
-      "x": -26880,
-      "y": -59136
+      "x": 5376,
+      "y": -19712
     },
     {
       "fileName": "../maps/193.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -29568,
-      "y": -61952
-    },
-    {
-      "fileName": "../maps/194.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -26880,
-      "y": -61952
-    },
-    {
-      "fileName": "../maps/195.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -24192,
-      "y": -64768
-    },
-    {
-      "fileName": "../maps/196.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -21504,
-      "y": -64768
-    },
-    {
-      "fileName": "../maps/197.json",
-      "width": 2688,
-      "height": 2816,
-      "x": -18816,
-      "y": -64768
-    },
-    {
-      "fileName": "../maps/198.json",
       "width": 2688,
       "height": 2816,
       "x": 142464,
       "y": 0
     },
     {
-      "fileName": "../maps/199.json",
+      "fileName": "../maps/194.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 5376,
+      "y": -22528
+    },
+    {
+      "fileName": "../maps/195.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 8064,
+      "y": -25344
+    },
+    {
+      "fileName": "../maps/196.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 10752,
+      "y": -25344
+    },
+    {
+      "fileName": "../maps/197.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 13440,
+      "y": -25344
+    },
+    {
+      "fileName": "../maps/198.json",
       "width": 2688,
       "height": 2816,
       "x": 145152,
       "y": 0
     },
     {
-      "fileName": "../maps/200.json",
+      "fileName": "../maps/199.json",
       "width": 2688,
       "height": 2816,
       "x": 147840,
+      "y": 0
+    },
+    {
+      "fileName": "../maps/200.json",
+      "width": 2688,
+      "height": 2816,
+      "x": 150528,
       "y": 0
     },
     {
@@ -1411,49 +1411,49 @@
       "fileName": "../maps/202.json",
       "width": 2688,
       "height": 2816,
-      "x": -21504,
-      "y": -42240
+      "x": 10752,
+      "y": -2816
     },
     {
       "fileName": "../maps/203.json",
       "width": 2688,
       "height": 2816,
-      "x": -16128,
-      "y": -42240
+      "x": 16128,
+      "y": -2816
     },
     {
       "fileName": "../maps/204.json",
       "width": 2688,
       "height": 2816,
-      "x": -16128,
-      "y": -45056
+      "x": 16128,
+      "y": -5632
     },
     {
       "fileName": "../maps/205.json",
       "width": 2688,
       "height": 2816,
-      "x": -18816,
-      "y": -45056
+      "x": 13440,
+      "y": -5632
     },
     {
       "fileName": "../maps/206.json",
       "width": 2688,
       "height": 2816,
-      "x": -18816,
-      "y": -47872
+      "x": 13440,
+      "y": -8448
     },
     {
       "fileName": "../maps/207.json",
       "width": 2688,
       "height": 2816,
-      "x": -16128,
-      "y": -47872
+      "x": 16128,
+      "y": -8448
     },
     {
       "fileName": "../maps/208.json",
       "width": 2688,
       "height": 2816,
-      "x": 150528,
+      "x": 153216,
       "y": 0
     },
     {
@@ -1467,127 +1467,127 @@
       "fileName": "../maps/210.json",
       "width": 2688,
       "height": 2816,
-      "x": -37632,
-      "y": -22528
+      "x": -5376,
+      "y": 16896
     },
     {
       "fileName": "../maps/211.json",
       "width": 2688,
       "height": 2816,
-      "x": -40320,
-      "y": -28160
+      "x": -8064,
+      "y": 11264
     },
     {
       "fileName": "../maps/212.json",
       "width": 2688,
       "height": 2816,
-      "x": -40320,
-      "y": -25344
+      "x": -8064,
+      "y": 14080
     },
     {
       "fileName": "../maps/213.json",
       "width": 2688,
       "height": 2816,
-      "x": -40320,
-      "y": -22528
+      "x": -8064,
+      "y": 16896
     },
     {
       "fileName": "../maps/214.json",
       "width": 2688,
       "height": 2816,
-      "x": 153216,
-      "y": 0
+      "x": -8064,
+      "y": 19712
     },
     {
       "fileName": "../maps/215.json",
       "width": 2688,
       "height": 2816,
-      "x": 155904,
-      "y": 0
+      "x": -5376,
+      "y": 19712
     },
     {
       "fileName": "../maps/216.json",
       "width": 2688,
       "height": 2816,
-      "x": 158592,
-      "y": 0
+      "x": -2688,
+      "y": 19712
     },
     {
       "fileName": "../maps/217.json",
       "width": 2688,
       "height": 2816,
-      "x": 161280,
-      "y": 0
+      "x": 0,
+      "y": 19712
     },
     {
       "fileName": "../maps/218.json",
       "width": 2688,
       "height": 2816,
-      "x": 163968,
-      "y": 0
+      "x": 2688,
+      "y": 19712
     },
     {
       "fileName": "../maps/219.json",
       "width": 2688,
       "height": 2816,
-      "x": 166656,
-      "y": 0
+      "x": 5376,
+      "y": 19712
     },
     {
       "fileName": "../maps/220.json",
       "width": 2688,
       "height": 2816,
-      "x": 169344,
-      "y": 0
+      "x": 8064,
+      "y": 19712
     },
     {
       "fileName": "../maps/221.json",
       "width": 2688,
       "height": 2816,
-      "x": 172032,
-      "y": 0
+      "x": 10752,
+      "y": 19712
     },
     {
       "fileName": "../maps/222.json",
       "width": 2688,
       "height": 2816,
-      "x": 174720,
-      "y": 0
+      "x": 13440,
+      "y": 19712
     },
     {
       "fileName": "../maps/223.json",
       "width": 2688,
       "height": 2816,
-      "x": -18816,
-      "y": -22528
+      "x": 13440,
+      "y": 16896
     },
     {
       "fileName": "../maps/224.json",
       "width": 2688,
       "height": 2816,
-      "x": -18816,
-      "y": -25344
+      "x": 13440,
+      "y": 14080
     },
     {
       "fileName": "../maps/225.json",
       "width": 2688,
       "height": 2816,
-      "x": -40320,
-      "y": -30976
+      "x": -8064,
+      "y": 8448
     },
     {
       "fileName": "../maps/226.json",
       "width": 2688,
       "height": 2816,
-      "x": -40320,
-      "y": -33792
+      "x": -8064,
+      "y": 5632
     },
     {
       "fileName": "../maps/227.json",
       "width": 2688,
       "height": 2816,
-      "x": -40320,
-      "y": -36608
+      "x": -8064,
+      "y": 2816
     },
     {
       "fileName": "../maps/228.json",
@@ -1684,7 +1684,7 @@
       "fileName": "../maps/241.json",
       "width": 2688,
       "height": 2816,
-      "x": 177408,
+      "x": 155904,
       "y": 0
     },
     {
@@ -1698,336 +1698,336 @@
       "fileName": "../maps/243.json",
       "width": 2688,
       "height": 2816,
-      "x": -26880,
-      "y": -70400
+      "x": 5376,
+      "y": -30976
     },
     {
       "fileName": "../maps/244.json",
       "width": 2688,
       "height": 2816,
-      "x": -24192,
-      "y": -61952
+      "x": 8064,
+      "y": -22528
     },
     {
       "fileName": "../maps/245.json",
       "width": 2688,
       "height": 2816,
-      "x": -24192,
-      "y": -59136
+      "x": 8064,
+      "y": -19712
     },
     {
       "fileName": "../maps/246.json",
       "width": 2688,
       "height": 2816,
-      "x": -21504,
-      "y": -61952
+      "x": 10752,
+      "y": -22528
     },
     {
       "fileName": "../maps/247.json",
       "width": 2688,
       "height": 2816,
-      "x": -21504,
-      "y": -59136
+      "x": 10752,
+      "y": -19712
     },
     {
       "fileName": "../maps/248.json",
       "width": 2688,
       "height": 2816,
-      "x": -21504,
-      "y": -56320
+      "x": 10752,
+      "y": -16896
     },
     {
       "fileName": "../maps/249.json",
       "width": 2688,
       "height": 2816,
-      "x": -21504,
-      "y": -53504
+      "x": 10752,
+      "y": -14080
     },
     {
       "fileName": "../maps/250.json",
       "width": 2688,
       "height": 2816,
-      "x": -21504,
-      "y": -50688
+      "x": 10752,
+      "y": -11264
     },
     {
       "fileName": "../maps/251.json",
       "width": 2688,
       "height": 2816,
-      "x": -21504,
-      "y": -47872
+      "x": 10752,
+      "y": -8448
     },
     {
       "fileName": "../maps/252.json",
       "width": 2688,
       "height": 2816,
-      "x": -21504,
-      "y": -45056
+      "x": 10752,
+      "y": -5632
     },
     {
       "fileName": "../maps/253.json",
       "width": 2688,
       "height": 2816,
-      "x": -24192,
-      "y": -50688
+      "x": 8064,
+      "y": -11264
     },
     {
       "fileName": "../maps/254.json",
       "width": 2688,
       "height": 2816,
-      "x": -24192,
-      "y": -47872
+      "x": 8064,
+      "y": -8448
     },
     {
       "fileName": "../maps/255.json",
       "width": 2688,
       "height": 2816,
-      "x": -24192,
-      "y": -45056
+      "x": 8064,
+      "y": -5632
     },
     {
       "fileName": "../maps/256.json",
       "width": 2688,
       "height": 2816,
-      "x": -26880,
-      "y": -47872
+      "x": 5376,
+      "y": -8448
     },
     {
       "fileName": "../maps/257.json",
       "width": 2688,
       "height": 2816,
-      "x": -13440,
-      "y": -45056
+      "x": 18816,
+      "y": -5632
     },
     {
       "fileName": "../maps/258.json",
       "width": 2688,
       "height": 2816,
-      "x": -13440,
-      "y": -47872
+      "x": 18816,
+      "y": -8448
     },
     {
       "fileName": "../maps/259.json",
       "width": 2688,
       "height": 2816,
-      "x": -13440,
-      "y": -50688
+      "x": 18816,
+      "y": -11264
     },
     {
       "fileName": "../maps/260.json",
       "width": 2688,
       "height": 2816,
-      "x": -13440,
-      "y": -53504
+      "x": 18816,
+      "y": -14080
     },
     {
       "fileName": "../maps/261.json",
       "width": 2688,
       "height": 2816,
-      "x": -13440,
-      "y": -56320
+      "x": 18816,
+      "y": -16896
     },
     {
       "fileName": "../maps/262.json",
       "width": 2688,
       "height": 2816,
-      "x": -10752,
-      "y": -47872
+      "x": 21504,
+      "y": -8448
     },
     {
       "fileName": "../maps/263.json",
       "width": 2688,
       "height": 2816,
-      "x": -8064,
-      "y": -47872
+      "x": 24192,
+      "y": -8448
     },
     {
       "fileName": "../maps/264.json",
       "width": 2688,
       "height": 2816,
-      "x": 180096,
+      "x": 158592,
       "y": 0
     },
     {
       "fileName": "../maps/265.json",
       "width": 2688,
       "height": 2816,
-      "x": 182784,
+      "x": 161280,
       "y": 0
     },
     {
       "fileName": "../maps/266.json",
       "width": 2688,
       "height": 2816,
-      "x": 185472,
+      "x": 163968,
       "y": 0
     },
     {
       "fileName": "../maps/267.json",
       "width": 2688,
       "height": 2816,
-      "x": 188160,
+      "x": 166656,
       "y": 0
     },
     {
       "fileName": "../maps/268.json",
       "width": 2688,
       "height": 2816,
-      "x": 190848,
+      "x": 169344,
       "y": 0
     },
     {
       "fileName": "../maps/269.json",
       "width": 2688,
       "height": 2816,
-      "x": 193536,
+      "x": 172032,
       "y": 0
     },
     {
       "fileName": "../maps/270.json",
       "width": 2688,
       "height": 2816,
-      "x": 196224,
+      "x": 174720,
       "y": 0
     },
     {
       "fileName": "../maps/271.json",
       "width": 2688,
       "height": 2816,
-      "x": 198912,
+      "x": 177408,
       "y": 0
     },
     {
       "fileName": "../maps/272.json",
       "width": 2688,
       "height": 2816,
-      "x": 201600,
+      "x": 180096,
       "y": 0
     },
     {
       "fileName": "../maps/273.json",
       "width": 2688,
       "height": 2816,
-      "x": 204288,
+      "x": 182784,
       "y": 0
     },
     {
       "fileName": "../maps/274.json",
       "width": 2688,
       "height": 2816,
-      "x": 206976,
+      "x": 185472,
       "y": 0
     },
     {
       "fileName": "../maps/275.json",
       "width": 2688,
       "height": 2816,
-      "x": 209664,
+      "x": 188160,
       "y": 0
     },
     {
       "fileName": "../maps/276.json",
       "width": 2688,
       "height": 2816,
-      "x": 212352,
+      "x": 190848,
       "y": 0
     },
     {
       "fileName": "../maps/277.json",
       "width": 2688,
       "height": 2816,
-      "x": 215040,
+      "x": 193536,
       "y": 0
     },
     {
       "fileName": "../maps/278.json",
       "width": 2688,
       "height": 2816,
-      "x": 217728,
+      "x": 196224,
       "y": 0
     },
     {
       "fileName": "../maps/279.json",
       "width": 2688,
       "height": 2816,
-      "x": 220416,
+      "x": 198912,
       "y": 0
     },
     {
       "fileName": "../maps/280.json",
       "width": 2688,
       "height": 2816,
-      "x": 223104,
+      "x": 201600,
       "y": 0
     },
     {
       "fileName": "../maps/281.json",
       "width": 2688,
       "height": 2816,
-      "x": 225792,
+      "x": 204288,
       "y": 0
     },
     {
       "fileName": "../maps/282.json",
       "width": 2688,
       "height": 2816,
-      "x": -43008,
-      "y": -33792
+      "x": -10752,
+      "y": 5632
     },
     {
       "fileName": "../maps/283.json",
       "width": 2688,
       "height": 2816,
-      "x": 228480,
+      "x": 206976,
       "y": 0
     },
     {
       "fileName": "../maps/284.json",
       "width": 2688,
       "height": 2816,
-      "x": 231168,
+      "x": 209664,
       "y": 0
     },
     {
       "fileName": "../maps/285.json",
       "width": 2688,
       "height": 2816,
-      "x": 233856,
+      "x": 212352,
       "y": 0
     },
     {
       "fileName": "../maps/286.json",
       "width": 2688,
       "height": 2816,
-      "x": 236544,
+      "x": 215040,
       "y": 0
     },
     {
       "fileName": "../maps/287.json",
       "width": 2688,
       "height": 2816,
-      "x": 239232,
+      "x": 217728,
       "y": 0
     },
     {
       "fileName": "../maps/288.json",
       "width": 2688,
       "height": 2816,
-      "x": 241920,
+      "x": 220416,
       "y": 0
     },
     {
       "fileName": "../maps/289.json",
       "width": 2688,
       "height": 2816,
-      "x": 244608,
+      "x": 223104,
       "y": 0
     },
     {
       "fileName": "../maps/290.json",
       "width": 2688,
       "height": 2816,
-      "x": 247296,
+      "x": 225792,
       "y": 0
     }
   ],

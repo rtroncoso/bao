@@ -19,6 +19,9 @@ export class MapNpcEntityState extends Schema {
   @type('string')
   public description = '';
 
+  @type('boolean')
+  public hostile = false;
+
   @type('int32')
   public x = 0;
 

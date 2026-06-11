@@ -302,16 +302,41 @@ export const buildWorldsJson = ({
     return true;
   };
 
+  const oppositeDirection: Record<BorderDirection, BorderDirection> = {
+    north: 'south',
+    south: 'north',
+    east: 'west',
+    west: 'east',
+  };
+
+  const edgeKeys = new Set<string>();
   const edges: Array<{ from: number; to: number; direction: BorderDirection }> = [];
+  const addEdge = (
+    from: number,
+    to: number,
+    direction: BorderDirection
+  ) => {
+    const key = `${from}:${to}:${direction}`;
+    if (edgeKeys.has(key)) {
+      return;
+    }
+
+    edgeKeys.add(key);
+    edges.push({ from, to, direction });
+  };
+
   for (const mapId of sortedIds) {
     for (const neighbor of computeBorderNeighbors(tileExitsByMap[mapId] ?? [])) {
-      if (sortedIds.includes(neighbor.targetMapId)) {
-        edges.push({
-          from: mapId,
-          to: neighbor.targetMapId,
-          direction: neighbor.direction,
-        });
+      if (!sortedIds.includes(neighbor.targetMapId)) {
+        continue;
       }
+
+      addEdge(mapId, neighbor.targetMapId, neighbor.direction);
+      addEdge(
+        neighbor.targetMapId,
+        mapId,
+        oppositeDirection[neighbor.direction]
+      );
     }
   }
 
