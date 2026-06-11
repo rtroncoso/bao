@@ -3,7 +3,7 @@
   "npcs": [
     {
       "npcId": 551,
-      "x": 28,
+      "x": 24,
       "y": 58
     }
   ],
@@ -11,133 +11,121 @@
     {
       "objectId": 50,
       "amount": 1,
-      "x": 48,
+      "x": 44,
       "y": 8
     },
     {
       "objectId": 5,
       "amount": 1,
-      "x": 68,
+      "x": 64,
       "y": 9
     },
     {
       "objectId": 5,
       "amount": 1,
-      "x": 68,
+      "x": 64,
       "y": 10
     },
     {
       "objectId": 50,
       "amount": 1,
-      "x": 56,
+      "x": 52,
       "y": 11
     },
     {
       "objectId": 50,
       "amount": 1,
-      "x": 15,
+      "x": 11,
       "y": 12
     },
     {
       "objectId": 50,
       "amount": 1,
-      "x": 37,
+      "x": 33,
       "y": 14
     },
     {
       "objectId": 50,
       "amount": 1,
-      "x": 50,
+      "x": 46,
       "y": 17
     },
     {
       "objectId": 50,
       "amount": 1,
-      "x": 68,
+      "x": 64,
       "y": 18
     },
     {
       "objectId": 50,
       "amount": 1,
-      "x": 24,
+      "x": 20,
       "y": 21
     },
     {
       "objectId": 50,
       "amount": 1,
-      "x": 41,
+      "x": 37,
       "y": 21
     },
     {
       "objectId": 5,
       "amount": 1,
-      "x": 46,
+      "x": 42,
       "y": 41
     },
     {
       "objectId": 5,
       "amount": 1,
-      "x": 56,
+      "x": 52,
       "y": 41
     },
     {
       "objectId": 5,
       "amount": 1,
-      "x": 65,
+      "x": 61,
       "y": 44
     },
     {
       "objectId": 50,
       "amount": 1,
-      "x": 66,
+      "x": 62,
       "y": 47
     },
     {
       "objectId": 378,
       "amount": 1,
-      "x": 45,
+      "x": 41,
       "y": 50
     },
     {
       "objectId": 5,
       "amount": 1,
-      "x": 47,
+      "x": 43,
       "y": 50
     },
     {
       "objectId": 5,
       "amount": 1,
-      "x": 59,
+      "x": 55,
       "y": 51
     },
     {
       "objectId": 50,
       "amount": 1,
-      "x": 43,
+      "x": 39,
       "y": 52
-    },
-    {
-      "objectId": 50,
-      "amount": 1,
-      "x": 11,
-      "y": 57
     },
     {
       "objectId": 651,
       "amount": 1,
-      "x": 23,
+      "x": 19,
       "y": 57
-    },
-    {
-      "objectId": 378,
-      "amount": 1,
-      "x": 12,
-      "y": 58
     },
     {
       "objectId": 50,
       "amount": 1,
-      "x": 66,
+      "x": 62,
       "y": 59
     }
   ],

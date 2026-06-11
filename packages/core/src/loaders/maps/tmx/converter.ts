@@ -32,6 +32,7 @@ import {
 } from '@bao/core/constants/game/Map';
 import { BorderNeighbor, makeBorderTriggersLayer } from '@bao/core/loaders/maps/world';
 import { isServerSpawnTile } from '@bao/core/loaders/maps/coords';
+import { isServerRenderedObject } from '@bao/core/constants/game/Object';
 import {
   createProperty,
   findInTileSets,
@@ -680,10 +681,38 @@ export type SpriteSheetResources = Record<
   }
 >;
 
+export type ServerRenderedSpawnGraphics = Map<string, number>;
+
+export const buildServerRenderedSpawnGraphics = (
+  layers: Tile[][][]
+): ServerRenderedSpawnGraphics => {
+  const entityLayer = layers[OBJECT_LAYER - 1];
+  const spawnGraphics: ServerRenderedSpawnGraphics = new Map();
+
+  if (!entityLayer) {
+    return spawnGraphics;
+  }
+
+  for (let y = 0; y < entityLayer.length; y++) {
+    for (let x = 0; x < entityLayer[y].length; x++) {
+      const tile = entityLayer[y][x];
+      if (tile?.object && isServerRenderedObject(Number(tile.object.type))) {
+        const graphicId = Number(tile.object.graphic?.id ?? tile.graphic?.id);
+        if (Number.isFinite(graphicId)) {
+          spawnGraphics.set(`${x},${y}`, graphicId);
+        }
+      }
+    }
+  }
+
+  return spawnGraphics;
+};
+
 export interface ProcessLayerParameters {
   clientOnly?: boolean;
   offset?: { x: number, y: number };
   resources: SpriteSheetResources;
+  serverRenderedSpawnGraphics?: ServerRenderedSpawnGraphics;
   tileSets: TileSet[];
   tmx: Tiled;
 }
@@ -695,6 +724,7 @@ export const processLayer = ({
   clientOnly = false,
   offset = { x: 0, y: 0 },
   resources = {},
+  serverRenderedSpawnGraphics,
   tileSets = [],
   tmx,
 }: ProcessLayerParameters) => (layer: Tile[][], index: number) => {
@@ -731,6 +761,16 @@ export const processLayer = ({
       tilesData[tileIndex] = 0;
       if (clientOnly && isServerSpawnTile(tile)) {
         continue;
+      }
+      if (clientOnly && tile?.graphic && serverRenderedSpawnGraphics) {
+        const serverGraphicId = serverRenderedSpawnGraphics.get(`${x},${y}`);
+        const placementGraphic = resolvePlacementGraphic(tile.graphic);
+        if (
+          serverGraphicId != null &&
+          placementGraphic?.id === serverGraphicId
+        ) {
+          continue;
+        }
       }
       if (tile && tile.graphic) {
         const { graphic, animation } = tile;
@@ -847,8 +887,18 @@ export const convertLayersToTmx = ({
     ));
   }
 
+  const serverRenderedSpawnGraphics = clientOnly
+    ? buildServerRenderedSpawnGraphics(layers)
+    : undefined;
+
   layers.forEach((l, i) => {
-    const process = processLayer({ clientOnly, tmx, resources, tileSets });
+    const process = processLayer({
+      clientOnly,
+      tmx,
+      resources,
+      serverRenderedSpawnGraphics,
+      tileSets,
+    });
     tmx.layers.push(process(l, i));
   });
 

@@ -2,11 +2,17 @@ const { expect } = require('chai');
 
 const { MAP_SIZE } = require('../dist/constants/game/Map');
 const { LayeredTile } = require('../dist/models');
+const { MapObject, Npc } = require('../dist/models');
 const {
+  AO_INF_MARKER_X_OFFSET,
+  iterate,
   normalizeBinaryTileRows,
   mapBinaryLayers,
   parseBinaryTile,
+  translateInfSpawns,
 } = require('../dist/loaders/maps/binary');
+const { extractMapMeta } = require('../dist/loaders/maps/meta');
+const { toWorldCoords } = require('../dist/loaders/maps/coords');
 const { BufferAdapter } = require('../dist/util/BufferAdapter');
 
 describe('normalizeBinaryTileRows', () => {
@@ -26,6 +32,46 @@ describe('normalizeBinaryTileRows', () => {
     expect(rows[49][49].graphics[0]).to.equal(42);
     expect(rows[0][0].x).to.equal(1);
     expect(rows[0][0].y).to.equal(1);
+  });
+});
+
+describe('translateInfSpawns', () => {
+  it('moves object and NPC markers left by the AO inf X offset', () => {
+    const tiles = mapBinaryLayers((x, y) => new LayeredTile({ x, y, graphics: [0] }));
+
+    tiles[9][13].object = new MapObject({ id: 148, amount: 1, x: 14, y: 10 });
+    tiles[9][13].npc = new Npc({ id: 504, x: 14, y: 10 });
+
+    iterate(translateInfSpawns(tiles));
+
+    expect(tiles[9][13].object).to.equal(null);
+    expect(tiles[9][13].npc).to.equal(null);
+    expect(tiles[9][9].object.id).to.equal(148);
+    expect(tiles[9][9].npc.id).to.equal(504);
+    expect(AO_INF_MARKER_X_OFFSET).to.equal(-4);
+  });
+
+  it('aligns extracted meta coords with the visual tile after translation', () => {
+    const tiles = mapBinaryLayers((x, y) => new LayeredTile({ x, y, graphics: [0] }));
+    const markerX = 22;
+    const markerY = 15;
+    const visualX = markerX + AO_INF_MARKER_X_OFFSET;
+
+    tiles[markerY - 1][markerX - 1].object = new MapObject({
+      id: 148,
+      amount: 1,
+      x: markerX,
+      y: markerY,
+    });
+
+    iterate(translateInfSpawns(tiles));
+
+    const meta = extractMapMeta(1, tiles);
+    const spawn = meta.objects.find((entry) => entry.objectId === 148);
+
+    expect(spawn).to.exist;
+    expect(spawn.x).to.equal(toWorldCoords(visualX, markerY).x);
+    expect(spawn.y).to.equal(toWorldCoords(visualX, markerY).y);
   });
 });
 

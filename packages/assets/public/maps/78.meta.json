@@ -1,7 +1,14 @@
 {
   "mapId": 78,
   "npcs": [],
-  "objects": [],
+  "objects": [
+    {
+      "objectId": 6,
+      "amount": 1,
+      "x": 74,
+      "y": 76
+    }
+  ],
   "tileExits": [
     {
       "x": 2,

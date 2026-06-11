@@ -20,6 +20,7 @@ const { convertLayersToTmx } = require('@bao/core/loaders/maps/tmx/converter');
 const { extractMapMeta } = require('@bao/core/loaders/maps/meta');
 const { getBinaryLayers, getBinaryTiles } = require('@bao/core/loaders/maps/binary');
 const { parseMapDat } = require('@bao/core/loaders/maps/dat');
+const { validateConvertedMaps } = require('./validateMapSpawns.js');
 
 const updateManifest = (manifestPath, mapIds) => {
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
@@ -57,6 +58,7 @@ export const convertMaps = async (options) => {
     outputDir,
     publicDir,
     tilesetsType = 'tilesets',
+    validate = false,
     worlds = true,
   } = options;
 
@@ -180,9 +182,42 @@ export const convertMaps = async (options) => {
     );
   }
 
+  let validationMismatches = [];
+
+  if (validate && convertedMapIds.length > 0 && !dryRun) {
+    validationMismatches = validateConvertedMaps({
+      outputDir,
+      mapIds: convertedMapIds,
+      objects: initData.objects,
+    });
+
+    if (validationMismatches.length > 0) {
+      console.error(
+        `[bao] spawn/bake alignment failed for ${validationMismatches.length} server object(s):`
+      );
+
+      for (const mismatch of validationMismatches.slice(0, 20)) {
+        console.error(
+          `  map ${mismatch.mapId} object ${mismatch.objectId} at (${mismatch.spawnX},${mismatch.spawnY}) — baked sprite at (${mismatch.bakedX},${mismatch.bakedY}), deltaX=${mismatch.deltaX}`
+        );
+      }
+
+      if (validationMismatches.length > 20) {
+        console.error(`  ... and ${validationMismatches.length - 20} more`);
+      }
+
+      throw new Error('Map spawn/bake validation failed');
+    }
+
+    console.log(
+      `[bao] validated spawn/bake alignment for ${convertedMapIds.length} map(s)`
+    );
+  }
+
   return {
     converted: convertedMapIds,
     skipped: skippedMapIds,
     total: convertedMapIds.length,
+    validationMismatches,
   };
 };

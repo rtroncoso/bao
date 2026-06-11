@@ -78,9 +78,16 @@ export const mapBinaryLayers = (process: (x: number, y: number) => LayeredTile):
 );
 
 /**
+ * Legacy AO map editors store `.inf` markers (exits, objects, NPCs) roughly
+ * four tiles east of the visual position in `.map` layers. Shifting left
+ * aligns spawn data with baked graphics.
+ */
+export const AO_INF_MARKER_X_OFFSET = -4;
+
+/**
  * Translates tile exits in x direction by `amount`
  */
-export const translateTileExits = (tiles: LayeredTile[][], amount: number = -4) => (
+export const translateTileExits = (tiles: LayeredTile[][], amount: number = AO_INF_MARKER_X_OFFSET) => (
   (x: number, y: number) => {
     y -= 1;
     x -= 1;
@@ -91,6 +98,32 @@ export const translateTileExits = (tiles: LayeredTile[][], amount: number = -4) 
     }
 
     return tiles[y][x];
+  }
+);
+
+/**
+ * Translates object and NPC spawn markers in x direction by `amount`
+ */
+export const translateInfSpawns = (tiles: LayeredTile[][], amount: number = AO_INF_MARKER_X_OFFSET) => (
+  (x: number, y: number) => {
+    y -= 1;
+    x -= 1;
+
+    const tile = tiles[y][x];
+    const target = tiles[y]?.[x + amount];
+
+    if (target) {
+      if (tile.object) {
+        target.object = tile.object;
+        tile.object = null;
+      }
+      if (tile.npc) {
+        target.npc = tile.npc;
+        tile.npc = null;
+      }
+    }
+
+    return tile;
   }
 );
 
@@ -119,7 +152,10 @@ export const getBinaryTiles = ({
   buffer.skipBytes(HEADER_SIZE);
   infBuffer.skipBytes(INF_HEADER_SIZE);
   const tiles = mapBinaryLayers(parseBinaryTile(buffer, infBuffer));
-  if (translateExits) { iterate(translateTileExits(tiles)) }; // mutates tiles
+  if (translateExits) {
+    iterate(translateTileExits(tiles));
+    iterate(translateInfSpawns(tiles));
+  }
   return tiles;
 };
 

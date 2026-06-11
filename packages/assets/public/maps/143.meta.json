@@ -5,25 +5,25 @@
     {
       "objectId": 378,
       "amount": 1,
+      "x": 21,
+      "y": 19
+    },
+    {
+      "objectId": 378,
+      "amount": 1,
       "x": 25,
       "y": 19
     },
     {
       "objectId": 378,
       "amount": 1,
-      "x": 29,
-      "y": 19
-    },
-    {
-      "objectId": 378,
-      "amount": 1,
-      "x": 56,
+      "x": 52,
       "y": 71
     },
     {
       "objectId": 378,
       "amount": 1,
-      "x": 56,
+      "x": 52,
       "y": 76
     }
   ],

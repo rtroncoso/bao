@@ -30,6 +30,7 @@ const parseArgs = (argv) => {
     publicDir: PUBLIC_DIR,
     tilesetsType: 'tilesets',
     noCrop: false,
+    validate: false,
   };
 
   const args = argv.filter((arg) => arg !== '--');
@@ -130,6 +131,9 @@ const parseArgs = (argv) => {
       case '--no-crop':
         options.noCrop = true;
         break;
+      case '--validate':
+        options.validate = true;
+        break;
       case '--help':
       case '-h':
         printHelp();
@@ -185,6 +189,7 @@ const runConvertMaps = async (options) => {
     outputDir: options.convertOutputDir,
     publicDir: options.publicDir,
     tilesetsType: options.tilesetsType,
+    validate: options.validate,
     worlds: options.worlds,
   });
 

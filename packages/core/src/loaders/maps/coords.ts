@@ -3,6 +3,7 @@ import {
   MAP_BORDER_Y,
   TILED_MAP_SIZE,
 } from '@bao/core/constants/game/Map';
+import { isServerRenderedObject } from '@bao/core/constants/game/Object';
 import { Tile } from '@bao/core/models';
 
 /**
@@ -30,6 +31,13 @@ export const isInteriorSpawnTile = (x: number, y: number) =>
   x < TILED_MAP_SIZE[0] - MAP_BORDER_X - 1 &&
   y < TILED_MAP_SIZE[1] - MAP_BORDER_Y - 1;
 
-/** NPC or ground-object spawn markers — server-only, never baked into client maps. */
-export const isServerSpawnTile = (tile: Pick<Tile, 'npc' | 'object'> | null | undefined) =>
-  !!(tile?.npc || tile?.object);
+/** NPC or server-rendered object spawn markers — not baked into client maps. */
+export const isServerSpawnTile = (tile: Pick<Tile, 'npc' | 'object'> | null | undefined) => {
+  if (!tile) {
+    return false;
+  }
+  if (tile.npc) {
+    return true;
+  }
+  return !!(tile.object && isServerRenderedObject(Number(tile.object.type)));
+};

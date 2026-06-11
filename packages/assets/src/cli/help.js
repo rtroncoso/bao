@@ -41,6 +41,7 @@ Convert maps options:
   --public <dir>       Public assets root (default: public)
   --tilesets-type <t>  Tileset spritesheet type (default: tilesets)
   --no-crop            Skip border crop when converting
+  --validate           Fail if server spawns are misaligned with baked sprites
   --dry-run            Log conversion without writing files
   --debug              Verbose logging
 

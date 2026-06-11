@@ -58,6 +58,7 @@ Convert maps options:
   --public <dir>       Public assets root (default: public)
   --tilesets-type <t>  Tileset spritesheet type (default: tilesets)
   --no-crop            Skip border crop when converting
+  --validate           Fail if server spawns are misaligned with baked sprites
   --dry-run            Log conversion without writing files
   --debug              Verbose logging
 ```
@@ -78,7 +79,7 @@ Pass extra flags after `--` when using pnpm scripts, e.g. `pnpm convert:maps -- 
 2. **Start MySQL** — `pnpm dev:db`
 3. **Migrate** — `pnpm db:migrate` ([details](../api/README.md))
 4. **Copy AO Dat files** — into `public/dats/` ([file list](public/dats/README.md))
-5. **Convert maps** — `npx bao convert maps --maps 34` (writes `public/maps/*.json`, `*.meta.json`, `public/worlds/worlds.json`)
+5. **Convert maps** — `npx bao convert maps --maps 34` (writes `public/maps/*.json`, `*.meta.json`, `public/worlds/worlds.json`). Run `convert maps` before `seed`. Use `--validate` to catch spawn/bake X-offset regressions.
 6. **Seed database** — `npx bao seed apply` (writes `seeds/*.sql`, then applies to MySQL)
 
 Map meta sidecars (`*.meta.json`) are required for the maps importer. Without them, `04_maps.sql` is skipped.

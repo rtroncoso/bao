@@ -3,157 +3,142 @@
   "npcs": [
     {
       "npcId": 17,
-      "x": 57,
+      "x": 53,
       "y": 12
     },
     {
       "npcId": 91,
-      "x": 15,
+      "x": 11,
       "y": 19
     },
     {
       "npcId": 504,
-      "x": 36,
+      "x": 32,
       "y": 23
     },
     {
       "npcId": 504,
-      "x": 53,
+      "x": 49,
       "y": 23
     },
     {
       "npcId": 504,
-      "x": 70,
+      "x": 66,
       "y": 24
     },
     {
       "npcId": 500,
-      "x": 49,
+      "x": 45,
       "y": 27
     },
     {
       "npcId": 504,
-      "x": 59,
+      "x": 55,
       "y": 35
     },
     {
       "npcId": 500,
-      "x": 52,
+      "x": 48,
       "y": 37
     },
     {
       "npcId": 504,
+      "x": 18,
+      "y": 39
+    },
+    {
+      "npcId": 500,
       "x": 22,
       "y": 39
     },
     {
-      "npcId": 500,
-      "x": 26,
-      "y": 39
-    },
-    {
       "npcId": 504,
-      "x": 42,
+      "x": 38,
       "y": 40
     },
     {
       "npcId": 500,
-      "x": 50,
+      "x": 46,
       "y": 41
     },
     {
-      "npcId": 91,
-      "x": 10,
-      "y": 45
-    },
-    {
       "npcId": 504,
-      "x": 74,
+      "x": 70,
       "y": 47
     },
     {
       "npcId": 500,
-      "x": 12,
+      "x": 36,
       "y": 52
     },
     {
       "npcId": 500,
-      "x": 40,
-      "y": 52
-    },
-    {
-      "npcId": 500,
-      "x": 67,
+      "x": 63,
       "y": 53
     },
     {
       "npcId": 504,
-      "x": 30,
+      "x": 26,
       "y": 54
     },
     {
       "npcId": 504,
-      "x": 49,
+      "x": 45,
       "y": 54
-    },
-    {
-      "npcId": 504,
-      "x": 11,
-      "y": 56
     },
     {
       "npcId": 17,
-      "x": 15,
+      "x": 11,
       "y": 57
     },
     {
       "npcId": 506,
-      "x": 30,
+      "x": 26,
       "y": 61
     },
     {
       "npcId": 506,
-      "x": 31,
+      "x": 27,
       "y": 61
     },
     {
       "npcId": 504,
-      "x": 42,
+      "x": 38,
       "y": 65
     },
     {
       "npcId": 500,
-      "x": 33,
+      "x": 29,
       "y": 66
     },
     {
       "npcId": 504,
-      "x": 29,
+      "x": 25,
       "y": 72
-    },
-    {
-      "npcId": 500,
-      "x": 51,
-      "y": 72
-    },
-    {
-      "npcId": 500,
-      "x": 41,
-      "y": 74
-    },
-    {
-      "npcId": 17,
-      "x": 48,
-      "y": 75
-    },
-    {
-      "npcId": 504,
-      "x": 72,
-      "y": 77
     },
     {
       "npcId": 500,
       "x": 47,
+      "y": 72
+    },
+    {
+      "npcId": 500,
+      "x": 37,
+      "y": 74
+    },
+    {
+      "npcId": 17,
+      "x": 44,
+      "y": 75
+    },
+    {
+      "npcId": 504,
+      "x": 68,
+      "y": 77
+    },
+    {
+      "npcId": 500,
+      "x": 43,
       "y": 78
     }
   ],
@@ -161,260 +146,272 @@
     {
       "objectId": 1,
       "amount": 1,
-      "x": 16,
+      "x": 12,
       "y": 7
     },
     {
       "objectId": 151,
       "amount": 1,
-      "x": 38,
+      "x": 34,
       "y": 7
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 39,
+      "x": 35,
       "y": 8
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 68,
+      "x": 64,
       "y": 9
     },
     {
       "objectId": 1,
       "amount": 1,
-      "x": 19,
+      "x": 15,
+      "y": 10
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 31,
       "y": 10
     },
     {
       "objectId": 147,
       "amount": 1,
       "x": 35,
-      "y": 10
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 39,
       "y": 11
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 13,
-      "y": 12
-    },
-    {
-      "objectId": 152,
-      "amount": 1,
-      "x": 21,
-      "y": 12
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 43,
-      "y": 12
+      "x": 72,
+      "y": 11
     },
     {
       "objectId": 147,
       "amount": 1,
       "x": 9,
+      "y": 12
+    },
+    {
+      "objectId": 152,
+      "amount": 1,
+      "x": 17,
+      "y": 12
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 39,
+      "y": 12
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 62,
       "y": 15
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 66,
-      "y": 15
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 33,
+      "x": 29,
       "y": 16
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 74,
+      "x": 70,
       "y": 17
     },
     {
       "objectId": 154,
       "amount": 1,
-      "x": 15,
+      "x": 11,
       "y": 18
     },
     {
       "objectId": 151,
       "amount": 1,
-      "x": 68,
+      "x": 64,
       "y": 18
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 53,
+      "x": 49,
       "y": 19
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 56,
+      "x": 52,
       "y": 19
     },
     {
       "objectId": 151,
       "amount": 1,
-      "x": 34,
+      "x": 30,
       "y": 20
     },
     {
+      "objectId": 147,
+      "amount": 1,
+      "x": 73,
+      "y": 21
+    },
+    {
       "objectId": 151,
       "amount": 1,
-      "x": 42,
+      "x": 38,
       "y": 22
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 30,
-      "y": 23
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 43,
+      "x": 26,
       "y": 23
     },
     {
       "objectId": 147,
       "amount": 1,
       "x": 39,
+      "y": 23
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 35,
       "y": 25
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 66,
+      "x": 62,
       "y": 25
     },
     {
       "objectId": 151,
       "amount": 1,
-      "x": 32,
+      "x": 28,
       "y": 26
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 33,
+      "x": 29,
       "y": 27
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 74,
+      "x": 70,
       "y": 27
     },
     {
       "objectId": 151,
       "amount": 1,
-      "x": 40,
+      "x": 36,
       "y": 29
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 41,
+      "x": 37,
       "y": 29
     },
     {
       "objectId": 151,
       "amount": 1,
-      "x": 52,
+      "x": 48,
       "y": 30
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 36,
+      "x": 32,
       "y": 31
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 64,
+      "x": 60,
       "y": 31
     },
     {
       "objectId": 151,
       "amount": 1,
-      "x": 29,
+      "x": 25,
       "y": 33
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 72,
+      "x": 68,
       "y": 33
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 30,
+      "x": 26,
       "y": 34
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 23,
+      "x": 19,
       "y": 35
     },
     {
       "objectId": 151,
       "amount": 1,
-      "x": 38,
+      "x": 34,
       "y": 35
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 30,
+      "x": 26,
       "y": 36
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 38,
-      "y": 36
-    },
-    {
-      "objectId": 151,
-      "amount": 1,
-      "x": 61,
-      "y": 37
     },
     {
       "objectId": 147,
       "amount": 1,
       "x": 34,
+      "y": 36
+    },
+    {
+      "objectId": 151,
+      "amount": 1,
+      "x": 57,
+      "y": 37
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 30,
       "y": 38
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 13,
+      "x": 9,
       "y": 39
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 16,
+      "x": 12,
       "y": 40
+    },
+    {
+      "objectId": 151,
+      "amount": 1,
+      "x": 47,
+      "y": 41
     },
     {
       "objectId": 151,
@@ -423,69 +420,81 @@
       "y": 41
     },
     {
-      "objectId": 151,
+      "objectId": 147,
       "amount": 1,
-      "x": 55,
-      "y": 41
+      "x": 74,
+      "y": 42
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 32,
+      "x": 28,
       "y": 44
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 19,
+      "x": 15,
       "y": 48
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 22,
+      "x": 18,
       "y": 48
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 34,
+      "x": 30,
       "y": 48
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 62,
+      "x": 58,
       "y": 54
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 70,
+      "x": 66,
       "y": 54
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 24,
+      "x": 20,
+      "y": 55
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 73,
       "y": 55
     },
     {
       "objectId": 151,
       "amount": 1,
-      "x": 37,
+      "x": 33,
       "y": 56
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 45,
+      "x": 41,
       "y": 56
     },
     {
       "objectId": 151,
       "amount": 1,
-      "x": 25,
+      "x": 21,
+      "y": 57
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 24,
       "y": 57
     },
     {
@@ -497,151 +506,151 @@
     {
       "objectId": 147,
       "amount": 1,
-      "x": 32,
-      "y": 57
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 56,
-      "y": 57
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 74,
-      "y": 57
-    },
-    {
-      "objectId": 151,
-      "amount": 1,
-      "x": 21,
-      "y": 58
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
       "x": 52,
+      "y": 57
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 70,
+      "y": 57
+    },
+    {
+      "objectId": 151,
+      "amount": 1,
+      "x": 17,
       "y": 58
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 22,
+      "x": 48,
+      "y": 58
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 18,
       "y": 59
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 41,
+      "x": 37,
       "y": 59
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 47,
-      "y": 59
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 26,
-      "y": 63
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 39,
-      "y": 63
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 54,
-      "y": 63
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 68,
-      "y": 63
-    },
-    {
-      "objectId": 151,
-      "amount": 1,
-      "x": 65,
-      "y": 65
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 58,
-      "y": 67
-    },
-    {
-      "objectId": 147,
-      "amount": 1,
-      "x": 38,
-      "y": 68
     },
     {
       "objectId": 147,
       "amount": 1,
       "x": 43,
-      "y": 68
+      "y": 59
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 22,
+      "y": 63
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 35,
+      "y": 63
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 50,
+      "y": 63
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 64,
+      "y": 63
     },
     {
       "objectId": 151,
       "amount": 1,
-      "x": 51,
+      "x": 61,
+      "y": 65
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 54,
+      "y": 67
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 34,
       "y": 68
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 66,
+      "x": 39,
+      "y": 68
+    },
+    {
+      "objectId": 151,
+      "amount": 1,
+      "x": 47,
+      "y": 68
+    },
+    {
+      "objectId": 147,
+      "amount": 1,
+      "x": 62,
       "y": 69
     },
     {
       "objectId": 151,
       "amount": 1,
-      "x": 29,
+      "x": 74,
+      "y": 71
+    },
+    {
+      "objectId": 151,
+      "amount": 1,
+      "x": 25,
       "y": 72
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 55,
+      "x": 51,
       "y": 73
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 33,
+      "x": 29,
       "y": 78
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 57,
+      "x": 53,
       "y": 78
     },
     {
       "objectId": 151,
       "amount": 1,
-      "x": 27,
+      "x": 23,
       "y": 79
     },
     {
       "objectId": 151,
       "amount": 1,
-      "x": 38,
+      "x": 34,
       "y": 79
     },
     {
       "objectId": 147,
       "amount": 1,
-      "x": 66,
+      "x": 62,
       "y": 80
     }
   ],
