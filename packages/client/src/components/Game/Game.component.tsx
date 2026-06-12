@@ -19,7 +19,7 @@ import {
   useChatContext
 } from '@bao/client/components/Chat';
 import { TiledMap } from '@bao/client/components/Entities';
-import { GameStage, Stage as LayersStage } from '@bao/client/components/Pixi';
+import { GameStage } from '@bao/client/components/Pixi';
 import { App } from '@bao/core/constants';
 
 import { computeSixteenByNineViewport } from '@bao/client/lib/game-viewport';
@@ -38,33 +38,31 @@ export const Systems: React.FC = () => {
   );
 
   return (
-    <LayersStage enableSort>
-      <AssetSystem>
-        <WorldSystem>
-          <MapRenderingSystem>
-            <MapInteractionSystem>
-              <ViewportSystem
-                overlay={
-                  localCharacter ? (
-                    <Character
-                      key={localCharacter.sessionId}
-                      character={localCharacter}
-                      isLocalPlayer
-                      x={App.canvasWidth / 2}
-                      y={App.canvasHeight / 2}
-                    />
-                  ) : null
-                }
-              >
-                <KeyboardSystem />
-                <TiledMap />
-                <CharacterRenderingSystem />
-              </ViewportSystem>
-            </MapInteractionSystem>
-          </MapRenderingSystem>
-        </WorldSystem>
-      </AssetSystem>
-    </LayersStage>
+    <AssetSystem>
+      <WorldSystem>
+        <MapRenderingSystem>
+          <MapInteractionSystem>
+            <ViewportSystem
+              overlay={
+                localCharacter ? (
+                  <Character
+                    key={localCharacter.sessionId}
+                    character={localCharacter}
+                    isLocalPlayer
+                    x={App.canvasWidth / 2}
+                    y={App.canvasHeight / 2}
+                  />
+                ) : null
+              }
+            >
+              <KeyboardSystem />
+              <TiledMap />
+              <CharacterRenderingSystem />
+            </ViewportSystem>
+          </MapInteractionSystem>
+        </MapRenderingSystem>
+      </WorldSystem>
+    </AssetSystem>
   );
 };
 

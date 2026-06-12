@@ -50,7 +50,6 @@ Environment (seed apply):
 
 More:
   Database migrations   packages/api/README.md
-  AO Dat file list      packages/assets/public/dats/README.md
 `;
 
 export const printHelp = () => {

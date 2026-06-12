@@ -1,6 +1,8 @@
 import { PixiComponent } from '@inlet/react-pixi';
 import { Stage as PixiStage } from '@pixi/layers';
 
+import { layersStageRef } from './layersStageRef';
+
 export interface StageProps {
   enableSort: boolean;
 }
@@ -13,15 +15,13 @@ export const Stage = PixiComponent<StageProps, PixiStage>('Stage', {
   },
 
   didMount(instance) {
-    const updateStage = () => {
-      instance.updateStage();
-      this._updateStageRefId = window.requestAnimationFrame(updateStage);
-    };
-    updateStage();
+    layersStageRef.current = instance;
   },
 
   willUnmount(instance) {
-    window.cancelAnimationFrame(this._updateStageRefId);
+    if (layersStageRef.current === instance) {
+      layersStageRef.current = null;
+    }
     instance.destroy();
   }
 });

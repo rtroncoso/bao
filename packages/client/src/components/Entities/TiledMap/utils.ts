@@ -74,21 +74,19 @@ const easing = new Ease({});
 const detachShoreSprite = (sprite: Sprite): void => {
   sprite.filters = null;
   sprite.filterArea = null;
-  sprite.parentGroup = null;
   sprite.visible = false;
   sprite.renderable = false;
 };
 
-const detachShoreBucket = (bucket: import('pixi.js').Container): void => {
-  bucket.children.slice().forEach((child) => {
-    if (child instanceof Sprite) {
-      detachShoreSprite(child);
-    }
-  });
-  bucket.removeChildren();
-  bucket.filters = null;
-  bucket.filterArea = null;
-  bucket.parentGroup = null;
+const hideSpriteFromContainer = (
+  sprite: Sprite,
+  container: import('pixi.js').Container
+): void => {
+  sprite.visible = false;
+  sprite.renderable = false;
+  if (sprite.parent === container) {
+    container.removeChild(sprite);
+  }
 };
 
 export const createSpritePool = (size: number): Sprite[] => {
@@ -190,6 +188,7 @@ export const createSpriteFromObject = (
     sprite.parentGroup = null;
   }
   sprite.accessibleType = `${layerNumber}`;
+  sprite.name = String(object.id);
 
   return sprite;
 };
@@ -325,8 +324,7 @@ export const renderTileLayers = (
     tilesLayer: React.RefObject<any>;
     shoreLayer: React.RefObject<any>;
   },
-  shoreLayerIndex = SHORE_TILE_LAYER_INDEX,
-  shoreGroup?: import('@pixi/layers').Group
+  shoreLayerIndex = SHORE_TILE_LAYER_INDEX
 ) => {
   if (!targets.tilesLayer.current || !targets.shoreLayer.current) {
     return chunks;
@@ -335,40 +333,38 @@ export const renderTileLayers = (
   const visibleChunks = new Set(
     chunks.map(({ displayObject }) => displayObject)
   );
+  const tilesContainer = targets.tilesLayer.current;
   const shoreContainer = targets.shoreLayer.current;
 
-  targets.tilesLayer.current.removeChildren();
-
-  shoreContainer.children.slice().forEach((child) => {
-    if (visibleChunks.has(child)) {
-      return;
-    }
-
-    if (child instanceof CompositeTilemap) {
-      child.filters = null;
-      child.parentGroup = null;
-      shoreContainer.removeChild(child);
-    }
-  });
+  const syncChunkVisibility = (container: typeof tilesContainer) => {
+    container.children.slice().forEach((child) => {
+      child.visible = visibleChunks.has(child);
+    });
+  };
 
   chunks.forEach(({ displayObject, layerIndex }) => {
+    displayObject.visible = true;
     displayObject.filters = null;
 
-    if (layerIndex === shoreLayerIndex) {
-      displayObject.parentGroup = null;
-      if (displayObject.parent !== shoreContainer) {
-        shoreContainer.addChild(displayObject);
-      }
-      return;
-    }
+    const parent =
+      layerIndex === shoreLayerIndex ? shoreContainer : tilesContainer;
 
-    targets.tilesLayer.current.addChild(displayObject);
+    if (displayObject.parent !== parent) {
+      if (displayObject.parent) {
+        displayObject.parent.removeChild(displayObject);
+      }
+      parent.addChild(displayObject);
+    }
   });
+
+  syncChunkVisibility(tilesContainer);
+  syncChunkVisibility(shoreContainer);
 
   return chunks;
 };
 
 export interface SpriteRenderOptions {
+  mapId?: number;
   shoreTarget?: React.RefObject<any>;
   getShoreSpriteFilter?: (edgeMask: number) => ShoreSpriteFilter | undefined;
   shoreOrientations?: Map<string | number, ShoreEdges>;
@@ -383,26 +379,36 @@ export const renderSpriteLayers = (
 ) => {
   const shoreLayer = options?.shoreTarget?.current;
   const isShorePass = Boolean(shoreLayer && options?.getShoreSpriteFilter);
+  const mapId = options?.mapId ?? 0;
+
+  const visibleIds = new Set(
+    Object.values(nodes)
+      .flat()
+      .map((id) => String(id))
+  );
 
   if (target.current) {
-    target.current.removeChildren();
+    target.current.children.slice().forEach((child) => {
+      if (!(child instanceof Sprite)) {
+        return;
+      }
+
+      if (!child.name || !visibleIds.has(child.name)) {
+        hideSpriteFromContainer(child, target.current!);
+      }
+    });
   }
 
-  // Shore buckets are populated only on the sprites pass — never reset on the objects pass.
+  // Shore buckets stay mounted on shoreLayer — only their children are rebuilt.
   if (isShorePass) {
-    resetShoreBuckets();
+    resetShoreBuckets(mapId);
 
     shoreLayer.children.slice().forEach((child) => {
       if (
         child instanceof CompositeTilemap ||
-        child.name === SHORE_TILE_CHUNK_NAME
+        child.name === SHORE_TILE_CHUNK_NAME ||
+        isShoreBucket(child)
       ) {
-        return;
-      }
-
-      if (isShoreBucket(child)) {
-        detachShoreBucket(child);
-        shoreLayer.removeChild(child);
         return;
       }
 
@@ -447,26 +453,37 @@ export const renderSpriteLayers = (
 
         sprite.filters = null;
         sprite.filterArea = null;
-        sprite.parentGroup = null;
         sprite.visible = true;
         sprite.alpha = 1;
         sprite.renderable = true;
 
-        if (edgeMask === 0) {
-          shoreLayer.addChild(sprite);
-        } else {
-          getShoreBucket(edgeMask).addChild(sprite);
+        const shoreParent =
+          edgeMask === 0 ? shoreLayer : getShoreBucket(mapId, edgeMask);
+
+        if (sprite.parent !== shoreParent) {
+          if (sprite.parent) {
+            sprite.parent.removeChild(sprite);
+          }
+          shoreParent.addChild(sprite);
         }
         return;
       }
 
       sprite.filterArea = null;
       sprite.filters = null;
-      target.current?.addChild(sprite);
+      sprite.visible = true;
+      sprite.renderable = true;
+
+      if (target.current && sprite.parent !== target.current) {
+        if (sprite.parent) {
+          sprite.parent.removeChild(sprite);
+        }
+        target.current.addChild(sprite);
+      }
     });
 
   if (isShorePass) {
-    mountShoreBuckets(shoreLayer, options!.getShoreSpriteFilter!);
+    mountShoreBuckets(mapId, shoreLayer, options!.getShoreSpriteFilter!);
   }
 
   return nodes;

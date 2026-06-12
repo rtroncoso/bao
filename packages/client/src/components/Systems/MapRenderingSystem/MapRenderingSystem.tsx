@@ -7,13 +7,8 @@ import React, {
 import range from 'lodash/fp/range';
 
 import { Group } from '@pixi/layers';
-import { Layer, Stage } from '@bao/client/components/Pixi';
-import {
-  CHARACTER_TYPE,
-  ENTITIES_LAYER,
-  MAP_LAYERS,
-  TILE_SIZE
-} from '@bao/core';
+import { Layer, Stage, LayersStageUpdate } from '@bao/client/components/Pixi';
+import { ENTITIES_LAYER, MAP_LAYERS, TILE_SIZE } from '@bao/core';
 import { Sprite } from 'pixi.js';
 
 import { SetStateCallback, useLocalStateReducer } from '@bao/client/hooks';
@@ -43,11 +38,7 @@ export const useMapContext = () => {
 export const MapRenderingSystem: React.FC = ({ children }) => {
   const [mapState, setMapState] = useLocalStateReducer(createInitialMapState());
   const handleLayerSort = useCallback((sprite: Sprite) => {
-    if (sprite.accessibleType === CHARACTER_TYPE) {
-      return (sprite.zOrder = sprite.y + TILE_SIZE / 2);
-    }
-
-    return (sprite.zOrder = sprite.y + sprite.height);
+    return (sprite.zOrder = sprite.y + TILE_SIZE / 2);
   }, []);
 
   useEffect(() => {
@@ -77,6 +68,7 @@ export const MapRenderingSystem: React.FC = ({ children }) => {
           <Layer key={index} group={layer} />
         ))}
         {Boolean(mapState.groups.length) && children}
+        {Boolean(mapState.groups.length) && <LayersStageUpdate />}
       </Stage>
     </MapContext.Provider>
   );

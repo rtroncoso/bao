@@ -754,6 +754,9 @@ export const processLayer = ({
       if (clientOnly && isServerSpawnTile(tile)) {
         continue;
       }
+      if (clientOnly && tile?.isWater?.()) {
+        continue;
+      }
       if (
         clientOnly &&
         tile?.graphic &&
@@ -775,13 +778,18 @@ export const processLayer = ({
         tilesData[tileIndex] = 0;
 
         if (animation && (animation as Graphic).frames.length > 0) {
-          const object = makeAnimation({ graphic: animation, tile, data });
-          objects.push(object);
+          if (!clientOnly || !tile.isWater?.()) {
+            const object = makeAnimation({ graphic: animation, tile, data });
+            objects.push(object);
+          }
         }
 
         if (data) {
           const { frame, tileSet } = data;
           if (tile.layer > TILES_LAYER) {
+            if (clientOnly && tile.isWater?.()) {
+              continue;
+            }
             const object = makeSprite({ graphic, tile, data });
             const visible = frame.w > TILE_SIZE || frame.h > TILE_SIZE;
             const image = makeImageLayer({ frame, tile, tileSet, visible });

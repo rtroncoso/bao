@@ -13,6 +13,7 @@ import {
   makeNpcsLayer,
   makeObjectsLayer,
 } from '@bao/core/loaders/maps/tmx/converter';
+import { isPlayableTile, toWorldCoords } from '@bao/core/loaders/maps/coords';
 import { GroupLayer, Tile, TmxObject } from '@bao/core/models';
 
 export interface BlockedTile {
@@ -93,7 +94,11 @@ export const extractBlockedTilesFromLayers = (
   }
 
   return Array.from(tileSet, (key) => {
-    const [x, y] = key.split(',').map(Number);
-    return { x, y };
-  });
+    const [croppedX, croppedY] = key.split(',').map(Number);
+    const world = toWorldCoords(
+      croppedX + (MAP_BORDER_X - 1),
+      croppedY + (MAP_BORDER_Y - 1)
+    );
+    return world;
+  }).filter(({ x, y }) => isPlayableTile(x, y));
 };

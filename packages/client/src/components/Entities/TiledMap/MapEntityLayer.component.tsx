@@ -63,6 +63,8 @@ export const MapEntityLayer: React.FC<MapEntityLayerProps> = ({
 
   const currentMap = gameState?.serverState?.maps?.get(String(mapId));
 
+  const entitiesGroup = mapState?.groups[ENTITIES_LAYER];
+
   const npcs = useMemo(() => {
     if (!currentMap?.npcs || !viewport) {
       return currentMap?.npcs ? [...currentMap.npcs] : [];
@@ -129,8 +131,12 @@ export const MapEntityLayer: React.FC<MapEntityLayerProps> = ({
     mapWorldOffset.y
   ]);
 
+  if (!entitiesGroup) {
+    return null;
+  }
+
   return (
-    <Container parentGroup={mapState?.groups[ENTITIES_LAYER]}>
+    <Container>
       {npcs.map((entity) => (
         <MapNpcEntity
           key={entity.id}
@@ -166,6 +172,7 @@ export const MapEntityLayer: React.FC<MapEntityLayerProps> = ({
               key={entity.id}
               x={x}
               y={y}
+              parentGroup={entitiesGroup}
               interactive={isDoor}
               pointerdown={handlePointerDown}
             >
@@ -185,6 +192,7 @@ export const MapEntityLayer: React.FC<MapEntityLayerProps> = ({
             texture={texture}
             x={x}
             y={y}
+            parentGroup={entitiesGroup}
             interactive={isDoor}
             pointerdown={handlePointerDown}
           />

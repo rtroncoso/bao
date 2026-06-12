@@ -10,13 +10,12 @@ import {
 } from '@bao/core';
 import { useMapContext, useWorldContext } from '@bao/client/components/Systems';
 import { Water } from './Water';
-import { EffectsAnimationSystem } from './Shore';
+import { EffectsAnimationSystem, useShoreSpriteFilters } from './Shore';
 import { MapEntityLayer } from './MapEntityLayer.component';
 import {
   useMapData,
   useSpatialIndexes,
   useShoreOrientations,
-  useShoreSpriteFilters,
   useSpriteCache,
   useTextures,
   useRenderTargets,
@@ -45,7 +44,7 @@ const TiledMapMapContent: React.FC<TiledMapContentProps> = ({
   const { mapState } = useMapContext();
   const textures = useTextures();
   const renderTargets = useRenderTargets();
-  const getShoreSpriteFilter = useShoreSpriteFilters();
+  const getShoreSpriteFilter = useShoreSpriteFilters(mapId);
   const shoreOrientations = useShoreOrientations(mapData);
   const mapWorldOffset = useMemo(
     () => ({ x: worldOffsetX, y: worldOffsetY }),
@@ -73,12 +72,12 @@ const TiledMapMapContent: React.FC<TiledMapContentProps> = ({
     renderTargets,
     getShoreSpriteFilter,
     shoreOrientations,
-    { mapWorldOffset }
+    { mapId, mapWorldOffset, publishDebug: isCurrentMap }
   );
 
   return (
-    <EffectsAnimationSystem>
-      <Water water={mapData.water} />
+    <>
+      <Water water={mapData.water} mapWorldOffset={mapWorldOffset} />
       <Container ref={renderTargets.container}>
         <Container
           ref={renderTargets.tilesLayer}
@@ -98,7 +97,7 @@ const TiledMapMapContent: React.FC<TiledMapContentProps> = ({
         />
         <MapEntityLayer mapId={mapId} mapWorldOffset={mapWorldOffset} />
       </Container>
-    </EffectsAnimationSystem>
+    </>
   );
 };
 
@@ -116,7 +115,7 @@ export const TiledMap: React.FC = () => {
   }
 
   return (
-    <>
+    <EffectsAnimationSystem>
       {activeMaps.map(({ mapId, map, offsetX, offsetY }) => (
         <Container key={mapId} x={offsetX} y={offsetY}>
           <TiledMapMapContent
@@ -128,6 +127,6 @@ export const TiledMap: React.FC = () => {
           />
         </Container>
       ))}
-    </>
+    </EffectsAnimationSystem>
   );
 };

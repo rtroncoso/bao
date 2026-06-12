@@ -6,7 +6,7 @@ import {
   Tiled
 } from '@bao/core';
 
-import TMX_MAP from '../../../../../../assets/public/maps/34.json';
+import { useWorldContext } from '@bao/client/components/Systems/WorldSystem';
 import { getWaterPolygons } from '../Shore/waterPolygons';
 
 import type { Rectangle } from '@bao/client/components/Systems/ViewportSystem';
@@ -15,8 +15,8 @@ const DEBUG_HOST_ID = 'game-debug-overlay';
 const DEBUG_LAYER_ID = 'game-debug-water';
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-const getMapWater = () =>
-  getWaterFromObjectLayers(getObjectLayersFromTmx(TMX_MAP as unknown as Tiled));
+type Point = { x: number; y: number };
+type Polygon = Point[];
 
 const setViewBox = (svg: SVGSVGElement, projection: Rectangle) => {
   svg.setAttribute(
@@ -25,12 +25,40 @@ const setViewBox = (svg: SVGSVGElement, projection: Rectangle) => {
   );
 };
 
+const offsetPolygons = (
+  polygons: Polygon[],
+  offsetX: number,
+  offsetY: number
+): Polygon[] =>
+  polygons.map((polygon) =>
+    polygon.map(({ x, y }) => ({ x: x + offsetX, y: y + offsetY }))
+  );
+
+const collectWaterPolygonsForMaps = (
+  activeMaps: Array<{
+    map: Tiled;
+    offsetX: number;
+    offsetY: number;
+  }>
+): Polygon[] =>
+  activeMaps.flatMap(({ map, offsetX, offsetY }) =>
+    offsetPolygons(
+      getWaterPolygons(getWaterFromObjectLayers(getObjectLayersFromTmx(map))),
+      offsetX,
+      offsetY
+    )
+  );
+
 /** Paints water polygon debug into a DOM overlay synced to the live camera each frame. */
 export const useWaterDebugPortal = (
   enabled: boolean,
   projectionRef: React.MutableRefObject<Rectangle>
 ): void => {
-  const shapes = useMemo(() => getWaterPolygons(getMapWater()), []);
+  const { activeMaps } = useWorldContext();
+  const shapes = useMemo(
+    () => collectWaterPolygonsForMaps(activeMaps),
+    [activeMaps]
+  );
   const projectionRefStable = useRef(projectionRef);
   projectionRefStable.current = projectionRef;
 
@@ -40,10 +68,7 @@ export const useWaterDebugPortal = (
       return;
     }
 
-    const existing = document.getElementById(DEBUG_LAYER_ID);
-    if (existing) {
-      existing.remove();
-    }
+    document.getElementById(DEBUG_LAYER_ID)?.remove();
 
     if (!enabled || !shapes.length) {
       return;

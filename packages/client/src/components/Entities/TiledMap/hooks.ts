@@ -1,11 +1,4 @@
-import {
-  useMemo,
-  useState,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useCallback
-} from 'react';
+import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { useTick } from '@inlet/react-pixi';
 import { useSelector } from 'react-redux';
 import {
@@ -69,8 +62,9 @@ import {
   handleRoofTrigger
 } from './utils';
 import { SpatialHashGrid, TileChunkCache } from './spatial';
-import { spatialDebugRef } from './spatialDebug';
+import { spatialDebugRef, offsetBounds } from './spatialDebug';
 import {
+  disposeShoreBucketsForMap,
   getShoreOrientations,
   ShoreEdges,
   useShoreSpriteFilters as useShoreSpriteFilterPool
@@ -310,8 +304,10 @@ export const useShoreOrientations = (mapData: TiledMapData) => {
 };
 
 export interface ViewportRenderingOptions {
+  mapId?: number;
   mapWorldOffset?: { x: number; y: number };
   terrainOnly?: boolean;
+  publishDebug?: boolean;
 }
 
 export const useViewportRendering = (
@@ -326,15 +322,15 @@ export const useViewportRendering = (
   options: ViewportRenderingOptions = {}
 ) => {
   const mapWorldOffset = options.mapWorldOffset ?? { x: 0, y: 0 };
+  const mapId = options.mapId ?? 0;
   const terrainOnly = options.terrainOnly ?? false;
+  const publishDebug = options.publishDebug ?? false;
   const { viewportState, projectionRef } = useViewportContext();
   const { mapState } = useMapContext();
   const tileCullingPx = TILE_CULLING_TILES * TILE_SIZE;
   const objectCullingPx = OBJECT_CULLING_TILES * TILE_SIZE;
   const tileChunkCache = useRef(new TileChunkCache());
-  const lastCullRef = useRef({ x: Number.NaN, y: Number.NaN });
-  const projectionTileX = Math.floor(viewportState.projection.x / TILE_SIZE);
-  const projectionTileY = Math.floor(viewportState.projection.y / TILE_SIZE);
+  const lastCullRef = useRef<{ x: number; y: number } | null>(null);
   const shoreSpriteObjects = useMemo(
     () =>
       mapData.sprites.filter(
@@ -401,8 +397,7 @@ export const useViewportRendering = (
           tilesLayer: renderTargets.tilesLayer,
           shoreLayer: renderTargets.shoreLayer
         },
-        SHORE_TILE_LAYER_INDEX,
-        mapState?.groups[SHORE_LAYER]
+        SHORE_TILE_LAYER_INDEX
       );
 
       if (!terrainOnly && getShoreSpriteFilter && shoreOrientations) {
@@ -411,6 +406,7 @@ export const useViewportRendering = (
           renderTargets.spritesLayer,
           spritesCache,
           {
+            mapId,
             getShoreSpriteFilter,
             shoreGroup: mapState?.groups[SHORE_LAYER],
             shoreOrientations,
@@ -432,33 +428,43 @@ export const useViewportRendering = (
         TILE_CHUNK_CACHE_MARGIN
       );
 
-      spatialDebugRef.current = {
-        tmx: mapData.tmx,
-        tileCullingPx,
-        objectCullingPx,
-        cullProjection: localProjection,
-        tileBounds: {
-          x: tileBounds.x,
-          y: tileBounds.y,
-          width: tileBounds.width,
-          height: tileBounds.height
-        },
-        spriteBounds: {
-          x: spriteBounds.x,
-          y: spriteBounds.y,
-          width: spriteBounds.width,
-          height: spriteBounds.height
-        },
-        objectBounds: {
-          x: objectBounds.x,
-          y: objectBounds.y,
-          width: objectBounds.width,
-          height: objectBounds.height
-        },
-        cellSize: SPATIAL_CELL_SIZE_TILES * TILE_SIZE,
-        spriteQueryCount: Object.values(spritesInViewport).flat().length,
-        objectQueryCount: Object.values(objectsInViewport).flat().length
-      };
+      if (publishDebug) {
+        const character = viewportState.currentCharacter;
+        spatialDebugRef.current = {
+          tmx: mapData.tmx,
+          tileCullingPx,
+          objectCullingPx,
+          cullProjection: projection,
+          mapWorldOffset,
+          characterPosition: character
+            ? {
+                mapId: character.mapId,
+                x: character.tile.x,
+                y: character.tile.y,
+                worldX: character.worldX,
+                worldY: character.worldY
+              }
+            : undefined,
+          tileBounds: offsetBounds(
+            tileBounds,
+            mapWorldOffset.x,
+            mapWorldOffset.y
+          ),
+          spriteBounds: offsetBounds(
+            spriteBounds,
+            mapWorldOffset.x,
+            mapWorldOffset.y
+          ),
+          objectBounds: offsetBounds(
+            objectBounds,
+            mapWorldOffset.x,
+            mapWorldOffset.y
+          ),
+          cellSize: SPATIAL_CELL_SIZE_TILES * TILE_SIZE,
+          spriteQueryCount: Object.values(spritesInViewport).flat().length,
+          objectQueryCount: Object.values(objectsInViewport).flat().length
+        };
+      }
     },
     [
       mapData,
@@ -474,37 +480,26 @@ export const useViewportRendering = (
       objectCullingPx,
       shoreSpriteObjects,
       toLocalProjection,
-      terrainOnly
+      terrainOnly,
+      publishDebug,
+      viewportState.currentCharacter,
+      mapWorldOffset.x,
+      mapWorldOffset.y,
+      mapId
     ]
   );
 
   useEffect(() => {
     return () => {
       tileChunkCache.current.clear();
+      disposeShoreBucketsForMap(mapId);
     };
-  }, [mapData.tmx, textures]);
-
-  useLayoutEffect(() => {
-    const projection = new Rectangle(
-      viewportState.projection.x,
-      viewportState.projection.y,
-      viewportState.projection.width,
-      viewportState.projection.height
-    );
-    syncViewportLayers(projection);
-    lastCullRef.current = { x: projection.x, y: projection.y };
-  }, [
-    projectionTileX,
-    projectionTileY,
-    syncViewportLayers,
-    viewportState.projection.width,
-    viewportState.projection.height
-  ]);
+  }, [mapData.tmx, textures, mapId]);
 
   useTick(() => {
     const { x, y, width, height } = projectionRef.current;
     const last = lastCullRef.current;
-    if (Math.abs(x - last.x) < 8 && Math.abs(y - last.y) < 8) {
+    if (last && Math.abs(x - last.x) < 8 && Math.abs(y - last.y) < 8) {
       return;
     }
 

@@ -8,11 +8,9 @@ import React, {
 } from 'react';
 import lerp from 'lerp';
 
-import {
-  DebugGridSystem,
-  DebugTextSystem
-} from '@bao/client/components/Systems/DebugSystem';
+import { DebugGridSystem } from '@bao/client/components/Systems/DebugSystem';
 import { useGameDebugPortal } from '@bao/client/components/Entities/TiledMap/useGameDebugPortal';
+import { useWaterDebugPortal } from '@bao/client/components/Entities/TiledMap/Water/useWaterDebugPortal';
 import { DEBUG_SHOW_PIXI_TILE_GRID } from '@bao/client/components/Entities/TiledMap/debugFlags';
 import { useGameContext } from '@bao/client/components/Game';
 import {
@@ -134,6 +132,7 @@ export const ViewportSystem: React.FC<ViewportProps> = (
   const { children, overlay } = props;
 
   useGameDebugPortal(Boolean(state.debug), projectionRef);
+  useWaterDebugPortal(Boolean(state.debug), projectionRef);
 
   const currentCharacter = resolveLocalCharacter(
     serverState,
@@ -263,7 +262,6 @@ export const ViewportSystem: React.FC<ViewportProps> = (
           <Container ref={viewport}>
             {state.debug && DEBUG_SHOW_PIXI_TILE_GRID && <DebugGridSystem />}
             {children}
-            {state.debug && <DebugTextSystem />}
           </Container>
           {overlay}
         </>

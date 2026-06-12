@@ -15,7 +15,7 @@ export const calculateProjectionMatrix = (
   bounds.y = Math.max(camera.y - cullingPx, 0);
   const maxX = Math.min(camera.x + camera.width + cullingPx, mapWidthPx);
   const maxY = Math.min(camera.y + camera.height + cullingPx, mapHeightPx);
-  bounds.width = maxX - bounds.x;
-  bounds.height = maxY - bounds.y;
+  bounds.width = Math.max(0, maxX - bounds.x);
+  bounds.height = Math.max(0, maxY - bounds.y);
   return bounds;
 };

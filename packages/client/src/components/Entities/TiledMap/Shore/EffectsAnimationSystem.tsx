@@ -7,8 +7,6 @@ import {
   getFilterTimeScale,
   getGlobalAnimationTime
 } from './effectAnimationRegistry';
-import { invalidateShoreBucketsForAnimation } from './shoreBuckets';
-
 export const EffectsAnimationSystem: React.FC<{
   children?: React.ReactNode;
 }> = ({ children }) => {
@@ -23,8 +21,6 @@ export const EffectsAnimationSystem: React.FC<{
     animatedFilters.forEach((filter) => {
       filter.uniforms.time = globalTime * getFilterTimeScale(filter);
     });
-
-    invalidateShoreBucketsForAnimation();
   });
 
   // Pixi node keeps useTick wired to the stage ticker.
