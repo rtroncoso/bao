@@ -12,8 +12,13 @@ const {
   translateInfSpawns,
 } = require('../dist/loaders/maps/binary');
 const { extractMapMeta } = require('../dist/loaders/maps/meta');
+const { extractBlockedTilesFromLayers } = require('../dist/loaders/maps/blocking');
 const { toWorldCoords } = require('../dist/loaders/maps/coords');
+const { Tile } = require('../dist/models');
+const { MAP_BORDER_X, MAP_BORDER_Y } = require('../dist/constants/game/Map');
 const { BufferAdapter } = require('../dist/util/BufferAdapter');
+
+const range = (start, end) => Array.from({ length: end - start }, (_, index) => start + index);
 
 describe('normalizeBinaryTileRows', () => {
   it('maps binary tile rows to dense 0-indexed rows for mapLayers', () => {
@@ -87,5 +92,34 @@ describe('parseBinaryTile', () => {
     expect(tile.graphics[0]).to.equal(7);
     expect(tile.x).to.equal(1);
     expect(tile.y).to.equal(1);
+  });
+});
+
+describe('extractBlockedTilesFromLayers', () => {
+  it('converts collision tiles to world playable coords', () => {
+    const legacyX = 50;
+    const legacyY = 50;
+    const world = toWorldCoords(legacyX, legacyY);
+    const terrainLayer = range(0, MAP_SIZE).map((y) =>
+      range(0, MAP_SIZE).map((x) => {
+        if (x !== legacyX - 1 || y !== legacyY - 1) {
+          return null;
+        }
+
+        return new Tile({
+          blocked: true,
+          layer: 1,
+          x: legacyX,
+          y: legacyY,
+        });
+      })
+    );
+    const emptyLayer = () =>
+      range(0, MAP_SIZE).map(() => range(0, MAP_SIZE).map(() => null));
+    const layers = [terrainLayer, emptyLayer(), emptyLayer()];
+
+    const blocked = extractBlockedTilesFromLayers(layers);
+
+    expect(blocked).to.deep.include({ x: world.x, y: world.y });
   });
 });

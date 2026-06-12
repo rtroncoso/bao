@@ -1,4 +1,4 @@
-import { Heading, TILE_SIZE } from '@bao/core';
+import { getQuadrant, Heading, TILE_SIZE } from '@bao/core';
 import { CharacterState } from '@bao/server/schema/CharacterState';
 import { TilePosition } from '@/schema/MapState';
 import { WorldRoom } from '@/rooms/WorldRoom';
@@ -11,6 +11,7 @@ export interface BlockedTile {
 export class MovementSystem {
   protected room?: WorldRoom;
   protected blockedTiles = new Map<string, BlockedTile>();
+  private interestKeyBySession = new Map<string, string>();
 
   constructor(room?: WorldRoom) {
     this.room = room;
@@ -61,6 +62,54 @@ export class MovementSystem {
 
     const authToken = this.room.authTokenBySession.get(character.sessionId);
     void this.room.mapTransitionSystem.tryTransition(character, authToken);
+  }
+
+  noteMapInterest(character: CharacterState) {
+    if (!character.sessionId) {
+      return;
+    }
+
+    this.interestKeyBySession.set(
+      character.sessionId,
+      `${character.mapId}:${getQuadrant(character.tile.x, character.tile.y)}`
+    );
+  }
+
+  refreshMapInterest(character: CharacterState) {
+    if (character.sessionId) {
+      this.interestKeyBySession.delete(character.sessionId);
+    }
+    this.updateMapInterest(character);
+  }
+
+  private updateMapInterest(character: CharacterState) {
+    if (!this.room?.mapRegistry || !character.sessionId) {
+      return;
+    }
+
+    const interestKey = `${character.mapId}:${getQuadrant(
+      character.tile.x,
+      character.tile.y
+    )}`;
+
+    if (this.interestKeyBySession.get(character.sessionId) === interestKey) {
+      return;
+    }
+
+    this.interestKeyBySession.set(character.sessionId, interestKey);
+    const authToken = this.room.authTokenBySession.get(character.sessionId);
+
+    void this.room.mapRegistry
+      .ensureMapsInInterest(
+        character.mapId,
+        character.tile.x,
+        character.tile.y,
+        authToken
+      )
+      .then(() => this.room?.mapRegistry.pruneMapsOutsideInterest())
+      .catch((error) => {
+        console.error('[MovementSystem] failed to update map interest', error);
+      });
   }
 
   public static getCharacterHeading(key: string) {
@@ -146,12 +195,14 @@ export class MovementSystem {
           this.unblockTile(character.tile, character.mapId);
           character.tile.x = Math.floor(character.x / TILE_SIZE);
           this.blockTile(character.tile, character);
+          this.updateMapInterest(character);
         }
 
         if (character.tile.y !== Math.floor(character.y / TILE_SIZE)) {
           this.unblockTile(character.tile, character.mapId);
           character.tile.y = Math.floor(character.y / TILE_SIZE);
           this.blockTile(character.tile, character);
+          this.updateMapInterest(character);
         }
 
         if (wasMoving && !character.isMoving) {

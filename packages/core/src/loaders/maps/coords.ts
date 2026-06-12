@@ -21,6 +21,29 @@ export const aoToPlayable = toWorldCoords;
 export const isPlayableTile = (x: number, y: number) =>
   x >= 0 && y >= 0 && x < TILED_MAP_SIZE[0] && y < TILED_MAP_SIZE[1];
 
+/** Clamp map-local tile coords to the playable grid (matches API position validator). */
+export const clampPlayableTile = (x: number, y: number) => ({
+  x: Math.min(TILED_MAP_SIZE[0] - 1, Math.max(0, Math.floor(x))),
+  y: Math.min(TILED_MAP_SIZE[1] - 1, Math.max(0, Math.floor(y))),
+});
+
+/** Crop origin in legacy 100×100 map grid indices (inclusive). */
+export const CROP_ORIGIN_X = MAP_BORDER_X - 1;
+export const CROP_ORIGIN_Y = MAP_BORDER_Y - 1;
+
+/**
+ * Legacy 1-indexed AO grid coords → playable tile coords after map crop.
+ * Playable raster indices from `cropLayer` match this space (character.tile).
+ */
+export const legacyToPlayable = (legacyX: number, legacyY: number) =>
+  toWorldCoords(legacyX, legacyY);
+
+/** Playable tile coords → legacy grid coords (inverse of legacyToPlayable). */
+export const playableToLegacy = (playableX: number, playableY: number) => ({
+  x: playableX + MAP_BORDER_X,
+  y: playableY + MAP_BORDER_Y,
+});
+
 /** Tile inside the cropped world map (including edge margins used by exits). */
 export const isWithinWorldMap = isPlayableTile;
 

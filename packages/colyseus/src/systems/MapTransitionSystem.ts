@@ -1,15 +1,17 @@
-import { TILE_SIZE } from '@bao/core';
+import { clampPlayableTile } from '@bao/core/loaders/maps/coords';
+import { toWorldTile } from '@bao/core/loaders/maps/world';
 
 import { CharacterState } from '@/schema/CharacterState';
 import { CharacterService } from '@/services/CharacterService';
 import { MapRegistry } from '@/services/MapRegistry';
+import { WorldsLoader } from '@/services/WorldsLoader';
 import { WorldRoom } from '@/rooms/WorldRoom';
 
 const PLAYABLE_WIDTH = 84;
-const PLAYABLE_HEIGHT = 88;
 
 export class MapTransitionSystem {
   private readonly characterService = new CharacterService();
+  private readonly worldsLoader = new WorldsLoader();
 
   constructor(
     private readonly room: WorldRoom,
@@ -17,6 +19,11 @@ export class MapTransitionSystem {
   ) {}
 
   computeWorldCoords(mapId: number, localX: number, localY: number) {
+    const worlds = this.worldsLoader.load();
+    if (worlds) {
+      return toWorldTile(mapId, localX, localY, worlds);
+    }
+
     return {
       worldX: mapId * PLAYABLE_WIDTH + localX,
       worldY: localY
@@ -37,7 +44,8 @@ export class MapTransitionSystem {
     const previousMapId = character.mapId;
     this.room.movementSystem.unblockCharacter(character);
     character.mapId = exit.targetMapId;
-    character.moveTo(exit.targetX, exit.targetY);
+    const landing = clampPlayableTile(exit.targetX, exit.targetY);
+    character.moveTo(landing.x, landing.y);
 
     const worldCoords = this.computeWorldCoords(
       character.mapId,
@@ -56,6 +64,7 @@ export class MapTransitionSystem {
       authToken
     );
     this.mapRegistry.pruneMapsOutsideInterest();
+    this.room.movementSystem.noteMapInterest(character);
     this.room.movementSystem.blockTile(character.tile, character);
 
     const accountId = this.room.accountIdBySession.get(character.sessionId);
@@ -81,12 +90,16 @@ export class MapTransitionSystem {
       return;
     }
 
+    const tile = clampPlayableTile(character.tile.x, character.tile.y);
+    if (tile.x !== character.tile.x || tile.y !== character.tile.y) {
+      character.moveTo(tile.x, tile.y);
+    }
+
     const worldCoords = this.computeWorldCoords(
       character.mapId,
       character.tile.x,
       character.tile.y
     );
-
     character.worldX = worldCoords.worldX;
     character.worldY = worldCoords.worldY;
 

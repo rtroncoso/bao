@@ -27,10 +27,12 @@ export const importMaps = ({ mapsMetaDir }) => {
   }
 
   const statements = [
-    'DELETE FROM `map_tile_exits`;',
-    'DELETE FROM `map_object_spawns`;',
-    'DELETE FROM `map_npc_spawns`;',
-    'DELETE FROM `map_blocked_tiles`;',
+    'SET FOREIGN_KEY_CHECKS = 0;',
+    'TRUNCATE TABLE `map_tile_exits`;',
+    'TRUNCATE TABLE `map_object_spawns`;',
+    'TRUNCATE TABLE `map_npc_spawns`;',
+    'TRUNCATE TABLE `map_blocked_tiles`;',
+    'SET FOREIGN_KEY_CHECKS = 1;',
   ];
 
   for (const { mapId, meta } of metaFiles) {
@@ -74,7 +76,7 @@ export const importMaps = ({ mapsMetaDir }) => {
     }
 
     const blockedTiles = meta.blockedTiles ?? [];
-    const blockedBatchSize = 500;
+    const blockedBatchSize = 1000;
     for (let index = 0; index < blockedTiles.length; index += blockedBatchSize) {
       const batch = blockedTiles.slice(index, index + blockedBatchSize);
       const values = batch

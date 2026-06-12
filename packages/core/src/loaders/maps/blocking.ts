@@ -13,7 +13,7 @@ import {
   makeNpcsLayer,
   makeObjectsLayer,
 } from '@bao/core/loaders/maps/tmx/converter';
-import { isPlayableTile, toWorldCoords } from '@bao/core/loaders/maps/coords';
+import { isPlayableTile } from '@bao/core/loaders/maps/coords';
 import { GroupLayer, Tile, TmxObject } from '@bao/core/models';
 
 export interface BlockedTile {
@@ -53,6 +53,21 @@ export const rasterizeRectToTiles = (
 const collectShapes = (groupLayer: GroupLayer): TmxObject[] =>
   groupLayer?.layers?.[0]?.objects ?? [];
 
+const collectWaterBlockedTiles = (terrainLayer: Tile[][]): Set<string> => {
+  const tiles = new Set<string>();
+
+  for (let y = 0; y < terrainLayer.length; y++) {
+    for (let x = 0; x < terrainLayer[y].length; x++) {
+      const tile = terrainLayer[y][x];
+      if (tile?.isWater?.()) {
+        tiles.add(`${x},${y}`);
+      }
+    }
+  }
+
+  return tiles;
+};
+
 /**
  * Rasterizes terrain collision (packed polygons), object footprints, and NPC
  * tiles from map layers into world tile coordinates.
@@ -70,7 +85,10 @@ export const extractBlockedTilesFromLayers = (
     })
   );
 
-  const collisionLayer = makeCollisionLayer({ layers: croppedLayers });
+  const collisionLayer = makeCollisionLayer({
+    layers: croppedLayers,
+    includeWater: false,
+  });
   const npcsLayer = makeNpcsLayer({ layers: croppedLayers });
   const objectsLayer = makeObjectsLayer({ layers: croppedLayers });
 
@@ -93,12 +111,16 @@ export const extractBlockedTilesFromLayers = (
     rasterizeRectToTiles(shape.x, shape.y, shape.width, shape.height, tileSet);
   }
 
+  const terrainLayer = croppedLayers[0];
+  if (terrainLayer) {
+    for (const key of collectWaterBlockedTiles(terrainLayer)) {
+      tileSet.add(key);
+    }
+  }
+
+  // Cropped raster indices match playable/world tile coords (same space as character.tile).
   return Array.from(tileSet, (key) => {
-    const [croppedX, croppedY] = key.split(',').map(Number);
-    const world = toWorldCoords(
-      croppedX + (MAP_BORDER_X - 1),
-      croppedY + (MAP_BORDER_Y - 1)
-    );
-    return world;
+    const [x, y] = key.split(',').map(Number);
+    return { x, y };
   }).filter(({ x, y }) => isPlayableTile(x, y));
 };

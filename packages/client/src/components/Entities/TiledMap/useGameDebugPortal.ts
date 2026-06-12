@@ -2,6 +2,9 @@ import { useEffect, useRef } from 'react';
 
 import { TILE_SIZE } from '@bao/core';
 
+import { useGameContext } from '@bao/client/components/Game';
+import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
+
 import { DEBUG_SHOW_SHG_CELL_GRID } from './debugFlags';
 import { spatialDebugRef } from './spatialDebug';
 
@@ -12,6 +15,8 @@ const SHG_LAYER_ID = 'game-debug-shg';
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 type Bounds = { x: number; y: number; width: number; height: number };
+
+const EMPTY_BOUNDS: Bounds = { x: 0, y: 0, width: 0, height: 0 };
 
 const setViewBox = (svg: SVGSVGElement, projection: Rectangle) => {
   svg.setAttribute(
@@ -51,6 +56,11 @@ const updateShgCellGridPath = (
   cellSize: number
 ) => {
   const { x, y, width, height } = objectBounds;
+  if (width <= 0 || height <= 0) {
+    path.setAttribute('d', '');
+    return;
+  }
+
   const minCellX = Math.floor(x / cellSize) * cellSize;
   const maxCellX = Math.ceil((x + width) / cellSize) * cellSize;
   const minCellY = Math.floor(y / cellSize) * cellSize;
@@ -69,11 +79,20 @@ const updateShgCellGridPath = (
 
 const shgCullSyncKey = (
   projection: Rectangle,
-  snapshot: NonNullable<typeof spatialDebugRef.current>
+  snapshot: NonNullable<typeof spatialDebugRef.current>,
+  liveMapId?: number
 ) =>
   [
     Math.floor(projection.x / TILE_SIZE),
     Math.floor(projection.y / TILE_SIZE),
+    liveMapId,
+    snapshot.mapId,
+    snapshot.mapWorldOffset.x,
+    snapshot.mapWorldOffset.y,
+    Math.floor(snapshot.tileBounds.x / TILE_SIZE),
+    Math.floor(snapshot.tileBounds.y / TILE_SIZE),
+    Math.floor(snapshot.spriteBounds.x / TILE_SIZE),
+    Math.floor(snapshot.spriteBounds.y / TILE_SIZE),
     snapshot.spriteQueryCount,
     snapshot.objectQueryCount,
     snapshot.characterPosition?.mapId,
@@ -99,8 +118,21 @@ export const useGameDebugPortal = (
   enabled: boolean,
   projectionRef: React.MutableRefObject<Rectangle>
 ): void => {
+  const { state: gameState } = useGameContext();
   const projectionRefStable = useRef(projectionRef);
   projectionRefStable.current = projectionRef;
+  const liveCharacterRef = useRef(
+    resolveLocalCharacter(
+      gameState?.serverState,
+      gameState?.characterId,
+      gameState?.room?.sessionId
+    )
+  );
+  liveCharacterRef.current = resolveLocalCharacter(
+    gameState?.serverState,
+    gameState?.characterId,
+    gameState?.room?.sessionId
+  );
 
   useEffect(() => {
     const host = document.getElementById(DEBUG_HOST_ID);
@@ -164,6 +196,7 @@ export const useGameDebugPortal = (
 
     let frameId = 0;
     let lastCullKey = '';
+    let lastLiveMapId: number | undefined;
 
     const syncFrame = (projection: Rectangle) => {
       setViewBox(shgSvg, projection);
@@ -172,10 +205,26 @@ export const useGameDebugPortal = (
       label.setAttribute('y', String(projection.y + 20));
     };
 
-    const syncCull = (projection: Rectangle) => {
+    const syncCull = (_projection: Rectangle) => {
+      const liveCharacter = liveCharacterRef.current;
       const snapshot = spatialDebugRef.current;
-      if (!snapshot) {
-        label.textContent = 'SHG waiting for active map…';
+      const liveMapId = liveCharacter?.mapId;
+
+      if (!liveCharacter) {
+        label.textContent = 'SHG waiting for character…';
+        updateRect(tileRect, EMPTY_BOUNDS);
+        updateRect(spriteRect, EMPTY_BOUNDS);
+        updateRect(objectRect, EMPTY_BOUNDS);
+        gridPath.setAttribute('d', '');
+        return;
+      }
+
+      if (!snapshot || snapshot.mapId !== liveMapId) {
+        label.textContent = `SHG waiting for map ${liveMapId}…`;
+        updateRect(tileRect, EMPTY_BOUNDS);
+        updateRect(spriteRect, EMPTY_BOUNDS);
+        updateRect(objectRect, EMPTY_BOUNDS);
+        gridPath.setAttribute('d', '');
         return;
       }
 
@@ -191,10 +240,7 @@ export const useGameDebugPortal = (
         );
       }
 
-      const position = snapshot.characterPosition;
-      const positionLine = position
-        ? `world [${position.worldX}, ${position.worldY}] map ${position.mapId} tile [${position.x}, ${position.y}]`
-        : 'position n/a';
+      const positionLine = `world [${liveCharacter.worldX}, ${liveCharacter.worldY}] map ${liveCharacter.mapId} tile [${liveCharacter.tile.x}, ${liveCharacter.tile.y}]`;
 
       label.textContent = [
         positionLine,
@@ -207,10 +253,18 @@ export const useGameDebugPortal = (
     const sync = () => {
       const projection = projectionRefStable.current.current;
       const snapshot = spatialDebugRef.current;
+      const liveMapId = liveCharacterRef.current?.mapId;
 
       syncFrame(projection);
 
-      const cullKey = snapshot ? shgCullSyncKey(projection, snapshot) : '';
+      if (liveMapId !== lastLiveMapId) {
+        lastLiveMapId = liveMapId;
+        lastCullKey = '';
+      }
+
+      const cullKey = snapshot
+        ? shgCullSyncKey(projection, snapshot, liveMapId)
+        : `waiting:${liveMapId ?? 'none'}`;
       if (cullKey !== lastCullKey) {
         lastCullKey = cullKey;
         syncCull(projection);

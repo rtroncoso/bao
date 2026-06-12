@@ -35,15 +35,25 @@ import range from 'lodash/fp/range';
 type LayerType = TileLayer & ObjectLayer & GroupLayer & ImageLayer;
 
 /**
- * Groups all TMX layers in one array
+ * Recursively flattens group layers into leaf layers (tile/object/image).
  */
-export const getFlattenedLayers = (layers: Array<LayerType>) => {
-  const getLayers = flow(
-    map((layer: LayerType) => layer && layer.layers),
-    flatMap(identity)
-  );
+export const getFlattenedLayers = (layers: Array<LayerType>): LayerType[] => {
+  const result: LayerType[] = [];
 
-  return getLayers(layers);
+  for (const layer of layers) {
+    if (!layer) {
+      continue;
+    }
+
+    if (layer.type === GROUP_LAYER_TYPE && layer.layers?.length) {
+      result.push(...getFlattenedLayers(layer.layers));
+      continue;
+    }
+
+    result.push(layer);
+  }
+
+  return result;
 };
 
 /**
@@ -68,7 +78,9 @@ export const getFilteredLayersFromTmx = ({ tmx, type, visible }: {
   const layers = getFlattenedLayersFromTmx(tmx);
   const getLayers = flow(
     filter((layer: LayerType) => layer.type === type),
-    filter((layer: LayerType) => layer.visible === visible),
+    filter((layer: LayerType) =>
+      visible ? layer.visible !== false : layer.visible === false
+    ),
   );
 
   return getLayers(layers);

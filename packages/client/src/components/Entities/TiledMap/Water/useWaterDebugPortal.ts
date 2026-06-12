@@ -91,11 +91,34 @@ export const useWaterDebugPortal = (
         return;
       }
 
-      const element = document.createElementNS(SVG_NS, 'polygon');
-      element.setAttribute(
-        'points',
-        polygon.map(({ x, y }) => `${x},${y}`).join(' ')
+      const xs = polygon.map(({ x }) => x);
+      const ys = polygon.map(({ y }) => y);
+      const minX = Math.min(...xs);
+      const minY = Math.min(...ys);
+      const maxX = Math.max(...xs);
+      const maxY = Math.max(...ys);
+      const isAxisAlignedRect =
+        polygon.length === 4 &&
+        xs.every((x) => x === minX || x === maxX) &&
+        ys.every((y) => y === minY || y === maxY);
+
+      const element = document.createElementNS(
+        SVG_NS,
+        isAxisAlignedRect ? 'rect' : 'polygon'
       );
+
+      if (isAxisAlignedRect) {
+        element.setAttribute('x', String(minX));
+        element.setAttribute('y', String(minY));
+        element.setAttribute('width', String(maxX - minX));
+        element.setAttribute('height', String(maxY - minY));
+      } else {
+        element.setAttribute(
+          'points',
+          polygon.map(({ x, y }) => `${x},${y}`).join(' ')
+        );
+      }
+
       element.setAttribute('fill', 'rgba(51, 136, 255, 0.22)');
       element.setAttribute('stroke', 'rgba(255, 68, 68, 0.75)');
       element.setAttribute('stroke-width', '2');

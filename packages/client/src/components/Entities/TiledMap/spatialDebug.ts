@@ -5,6 +5,7 @@ import type { Tiled } from '@bao/core';
 import type { SpatialBounds } from './spatial';
 
 export interface SpatialDebugSnapshot {
+  mapId: number;
   tmx: Tiled;
   tileCullingPx: number;
   objectCullingPx: number;

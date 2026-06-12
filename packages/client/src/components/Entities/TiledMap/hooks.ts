@@ -21,6 +21,7 @@ import {
   getWaterFromObjectLayers,
   calculateProjectionMatrix,
   SHORE_LAYER,
+  TILES_LAYER,
   TmxObject,
   TRIGGER_ROOF
 } from '@bao/core';
@@ -29,11 +30,13 @@ import {
   selectGraphics,
   selectManifest
 } from '@bao/client/queries';
+import { useGameContext } from '@bao/client/components/Game';
 import {
   useAssetsContext,
   useMapContext,
   useViewportContext
 } from '@bao/client/components/Systems';
+import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
 import { polygon } from '@bao/client/utils';
 import { SpatialIndexes, SpritesCache, TiledMapData } from './types';
 import {
@@ -71,6 +74,20 @@ import {
 } from './Shore';
 
 export { useShoreSpriteFilters } from './Shore';
+
+const hasTileTextures = (textures: Texture[]): boolean => {
+  if (!textures.length) {
+    return false;
+  }
+
+  for (let index = 1; index < textures.length; index++) {
+    if (textures[index]) {
+      return true;
+    }
+  }
+
+  return false;
+};
 
 export const useMapData = (tmxMap: any): TiledMapData => {
   return useMemo(() => {
@@ -325,7 +342,18 @@ export const useViewportRendering = (
   const mapId = options.mapId ?? 0;
   const terrainOnly = options.terrainOnly ?? false;
   const publishDebug = options.publishDebug ?? false;
-  const { viewportState, projectionRef } = useViewportContext();
+  const { projectionRef } = useViewportContext();
+  const { state: gameState } = useGameContext();
+  const liveCharacter = resolveLocalCharacter(
+    gameState?.serverState,
+    gameState?.characterId,
+    gameState?.room?.sessionId
+  );
+  const liveCharacterRef = useRef(liveCharacter);
+  liveCharacterRef.current = liveCharacter;
+  const liveMapId = liveCharacter?.mapId;
+  const liveTileX = liveCharacter?.tile.x;
+  const liveTileY = liveCharacter?.tile.y;
   const { mapState } = useMapContext();
   const tileCullingPx = TILE_CULLING_TILES * TILE_SIZE;
   const objectCullingPx = OBJECT_CULLING_TILES * TILE_SIZE;
@@ -353,10 +381,11 @@ export const useViewportRendering = (
 
   const syncViewportLayers = useCallback(
     (projection: Rectangle) => {
-      if (!textures.length || !spatialIndexes) {
+      if (!hasTileTextures(textures) || !spatialIndexes) {
         return;
       }
 
+      const tilesGroup = mapState?.groups[TILES_LAYER];
       const localProjection = toLocalProjection(projection);
       const tileBounds = calculateProjectionMatrix(
         mapData.tmx,
@@ -388,7 +417,8 @@ export const useViewportRendering = (
         tileBounds,
         textures,
         mapData.tmx,
-        TILE_CHUNK_SIZE_TILES
+        TILE_CHUNK_SIZE_TILES,
+        tilesGroup
       );
 
       renderTileLayers(
@@ -397,7 +427,8 @@ export const useViewportRendering = (
           tilesLayer: renderTargets.tilesLayer,
           shoreLayer: renderTargets.shoreLayer
         },
-        SHORE_TILE_LAYER_INDEX
+        SHORE_TILE_LAYER_INDEX,
+        tilesGroup
       );
 
       if (!terrainOnly && getShoreSpriteFilter && shoreOrientations) {
@@ -429,8 +460,9 @@ export const useViewportRendering = (
       );
 
       if (publishDebug) {
-        const character = viewportState.currentCharacter;
+        const character = liveCharacterRef.current;
         spatialDebugRef.current = {
+          mapId,
           tmx: mapData.tmx,
           tileCullingPx,
           objectCullingPx,
@@ -482,7 +514,6 @@ export const useViewportRendering = (
       toLocalProjection,
       terrainOnly,
       publishDebug,
-      viewportState.currentCharacter,
       mapWorldOffset.x,
       mapWorldOffset.y,
       mapId
@@ -493,10 +524,126 @@ export const useViewportRendering = (
     return () => {
       tileChunkCache.current.clear();
       disposeShoreBucketsForMap(mapId);
+      if (spatialDebugRef.current?.mapId === mapId) {
+        spatialDebugRef.current = null;
+      }
     };
   }, [mapData.tmx, textures, mapId]);
 
+  const publishMinimalDebugSnapshot = useCallback(() => {
+    const character = liveCharacterRef.current;
+    if (!publishDebug || !character) {
+      return;
+    }
+
+    const projection = projectionRef.current;
+    const localProjection = toLocalProjection(projection);
+    const tileBounds = calculateProjectionMatrix(
+      mapData.tmx,
+      localProjection,
+      tileCullingPx
+    );
+    const objectBounds = calculateProjectionMatrix(
+      mapData.tmx,
+      localProjection,
+      objectCullingPx
+    );
+    const spriteBounds = calculateProjectionMatrix(
+      mapData.tmx,
+      localProjection,
+      objectCullingPx + SHORE_SPRITE_EXTRA_CULL_PX
+    );
+
+    spatialDebugRef.current = {
+      mapId,
+      tmx: mapData.tmx,
+      tileCullingPx,
+      objectCullingPx,
+      cullProjection: projection,
+      mapWorldOffset,
+      characterPosition: {
+        mapId: character.mapId,
+        x: character.tile.x,
+        y: character.tile.y,
+        worldX: character.worldX,
+        worldY: character.worldY
+      },
+      tileBounds: offsetBounds(tileBounds, mapWorldOffset.x, mapWorldOffset.y),
+      spriteBounds: offsetBounds(
+        spriteBounds,
+        mapWorldOffset.x,
+        mapWorldOffset.y
+      ),
+      objectBounds: offsetBounds(
+        objectBounds,
+        mapWorldOffset.x,
+        mapWorldOffset.y
+      ),
+      cellSize: SPATIAL_CELL_SIZE_TILES * TILE_SIZE,
+      spriteQueryCount:
+        spatialDebugRef.current?.mapId === mapId
+          ? spatialDebugRef.current.spriteQueryCount
+          : 0,
+      objectQueryCount:
+        spatialDebugRef.current?.mapId === mapId
+          ? spatialDebugRef.current.objectQueryCount
+          : 0
+    };
+  }, [
+    mapData.tmx,
+    mapId,
+    mapWorldOffset.x,
+    mapWorldOffset.y,
+    objectCullingPx,
+    projectionRef,
+    publishDebug,
+    tileCullingPx,
+    toLocalProjection
+  ]);
+
+  useEffect(() => {
+    lastCullRef.current = null;
+    if (!hasTileTextures(textures) || !spatialIndexes) {
+      return;
+    }
+
+    const { x, y, width, height } = projectionRef.current;
+    syncViewportLayers(new Rectangle(x, y, width, height));
+    lastCullRef.current = { x, y };
+  }, [
+    textures,
+    spatialIndexes,
+    mapWorldOffset.x,
+    mapWorldOffset.y,
+    mapData.tmx,
+    liveMapId,
+    syncViewportLayers,
+    projectionRef
+  ]);
+
+  useEffect(() => {
+    if (!publishDebug) {
+      if (spatialDebugRef.current?.mapId === mapId) {
+        spatialDebugRef.current = null;
+      }
+      return;
+    }
+
+    publishMinimalDebugSnapshot();
+  }, [
+    liveMapId,
+    liveTileX,
+    liveTileY,
+    mapId,
+    publishDebug,
+    publishMinimalDebugSnapshot
+  ]);
+
   useTick(() => {
+    if (!hasTileTextures(textures) || !spatialIndexes) {
+      return;
+    }
+
     const { x, y, width, height } = projectionRef.current;
     const last = lastCullRef.current;
     if (last && Math.abs(x - last.x) < 8 && Math.abs(y - last.y) < 8) {

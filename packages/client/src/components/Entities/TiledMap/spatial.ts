@@ -1,7 +1,30 @@
 import { Container, DisplayObject, Rectangle } from 'pixi.js';
 import { CompositeTilemap } from '@pixi/tilemap';
+import type { Group } from '@pixi/layers';
 
 import { TILE_SIZE, getProperty, TileLayer } from '@bao/core';
+
+const getTileSetAssetBase = () =>
+  process.env.NEXT_PUBLIC_BAO_ASSETS?.replace(/\/$/, '') ?? '';
+
+const resolveTileSetUrls = (paths: string[]): string[] => {
+  const base = getTileSetAssetBase();
+  return paths.map((path) => {
+    if (!path) {
+      return path;
+    }
+
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+
+    if (path.startsWith('/')) {
+      return `${base}${path}`;
+    }
+
+    return `${base}/textures/tilesets/${path}`;
+  });
+};
 
 export type SpatialBounds = {
   x: number;
@@ -158,10 +181,14 @@ export class TileChunkCache {
     chunkY: number,
     textures: any[],
     tmx: any,
-    chunkSizeTiles: number
+    chunkSizeTiles: number,
+    tilesGroup?: Group
   ): CompositeTilemap {
-    const tileSets = getProperty(layer, 'usedTileSets');
+    const tileSets = resolveTileSetUrls(getProperty(layer, 'usedTileSets'));
     const tilemap = new CompositeTilemap(tileSets);
+    if (tilesGroup) {
+      tilemap.parentGroup = tilesGroup;
+    }
     const startX = chunkX * chunkSizeTiles;
     const startY = chunkY * chunkSizeTiles;
     const endX = Math.min(startX + chunkSizeTiles, tmx.width);
@@ -189,12 +216,16 @@ export class TileChunkCache {
     layer: TileLayer,
     textures: any[],
     tmx: any,
-    chunkSizeTiles: number
+    chunkSizeTiles: number,
+    tilesGroup?: Group
   ): DisplayObject {
     const key = buildChunkKey(layerIndex, chunkX, chunkY);
     const cached = this.cache.get(key);
 
     if (cached) {
+      if (tilesGroup && cached.parentGroup !== tilesGroup) {
+        cached.parentGroup = tilesGroup;
+      }
       return cached;
     }
 
@@ -204,7 +235,8 @@ export class TileChunkCache {
       chunkY,
       textures,
       tmx,
-      chunkSizeTiles
+      chunkSizeTiles,
+      tilesGroup
     );
 
     displayObject.name = key;
@@ -217,7 +249,8 @@ export class TileChunkCache {
     bounds: Rectangle,
     textures: any[],
     tmx: any,
-    chunkSizeTiles: number
+    chunkSizeTiles: number,
+    tilesGroup?: Group
   ): TileLayerChunk[] {
     if (bounds.width <= 0 || bounds.height <= 0) {
       return [];
@@ -229,6 +262,11 @@ export class TileChunkCache {
     const tilemaps: TileLayerChunk[] = [];
 
     layers.forEach((layer, layerIndex) => {
+      const hasTiles = layer.data?.some((gid: number) => gid > 0);
+      if (!hasTiles) {
+        return;
+      }
+
       const startChunkX = Math.max(0, minX);
       const endChunkX = Math.min(maxX, maxChunkX);
       const startChunkY = Math.max(0, minY);
@@ -249,7 +287,8 @@ export class TileChunkCache {
               layer,
               textures,
               tmx,
-              chunkSizeTiles
+              chunkSizeTiles,
+              tilesGroup
             )
           });
         }

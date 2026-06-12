@@ -371,7 +371,7 @@ const optimizePolygons = (type: string = COLLISION_TYPE) => (objects: TmxObject[
 
     // const offsetX = x - Math.floor((x - TILE_SIZE) / TILE_SIZE);
     // x -= offsetX; grid alignment - not needed
-    const object = makeShape({ type, polygon });
+    const object = makeShape({ type, x: 0, y: 0, polygon });
     optimized.push(object);
   });
 
@@ -379,6 +379,7 @@ const optimizePolygons = (type: string = COLLISION_TYPE) => (objects: TmxObject[
 };
 
 export interface MakePolygonLayerParameters {
+  allowLayerFallthrough?: boolean;
   layers?: TileLayer[];
   layerName?: string;
   objectLayerName?: string;
@@ -393,6 +394,7 @@ export interface MakePolygonLayerParameters {
  * using optimizer and process functions
  */
 export const makePolygonLayer = ({
+  allowLayerFallthrough = true,
   layerName,
   layerNumber = TILES_LAYER,
   layers,
@@ -410,10 +412,13 @@ export const makePolygonLayer = ({
   const shapes = [];
   for (let y = 0; y < TILED_MAP_SIZE[1]; y++) {
     for (let x = 0; x < TILED_MAP_SIZE[0]; x++) {
-      let tile = l[y][x];
+      let tile = l[y]?.[x] ?? null;
 
-      while (!tile && layerNumber < layers.length) {
-        tile = layers[layerNumber++][y][x];
+      if (allowLayerFallthrough) {
+        let scanLayer = layerNumber;
+        while (!tile && scanLayer < layers.length) {
+          tile = layers[scanLayer++][y]?.[x] ?? null;
+        }
       }
 
       const shape = process(tile);
@@ -477,9 +482,18 @@ export const makeTileExitsLayer = ({ layers }) => {
 /**
  * Makes a collision layer rectangle shapes
  */
-export const makeCollisionLayer = ({ layers }) => {
+export interface MakeCollisionLayerParameters {
+  layers: any;
+  /** When false, only `tile.blocked` terrain flags are included (not water tiles). */
+  includeWater?: boolean;
+}
+
+export const makeCollisionLayer = ({
+  layers,
+  includeWater = true,
+}: MakeCollisionLayerParameters) => {
   const process = (tile: Tile) => {
-    if (tile && (tile.blocked || tile.isWater())) {
+    if (tile && (tile.blocked || (includeWater && tile.isWater()))) {
       const { graphic } = tile;
       return makeCollision({ graphic, tile });
     }
@@ -552,11 +566,13 @@ export const makeWaterLayer = ({ layers }) => {
   const layerName = 'Water Layer';
   const objectLayerName = 'Water Polygons';
   return makePolygonLayer({
+    allowLayerFallthrough: false,
     layers,
     layerName,
+    layerNumber: TILES_LAYER,
     objectLayerName,
     process,
-    optimizer: optimizePolygons(WATER_TYPE)
+    optimizer: optimize(WATER_TYPE)
   });
 };
 
@@ -746,6 +762,8 @@ export const processLayer = ({
   groupLayer.id = ++lastId;
   objectLayer.id = ++lastId;
 
+  const gameLayer = index + 1;
+
   for (let y = 0; y < TILED_MAP_SIZE[1]; y++) {
     for (let x = 0; x < TILED_MAP_SIZE[0]; x++) {
       const tile = layer[y][x];
@@ -754,14 +772,14 @@ export const processLayer = ({
       if (clientOnly && isServerSpawnTile(tile)) {
         continue;
       }
-      if (clientOnly && tile?.isWater?.()) {
+      if (clientOnly && gameLayer === TILES_LAYER && tile?.isWater?.()) {
         continue;
       }
       if (
         clientOnly &&
         tile?.graphic &&
         serverRenderedSpawnGraphics &&
-        tile.layer < OBJECT_LAYER
+        isServerSpawnTile(tile)
       ) {
         const serverGraphicId = serverRenderedSpawnGraphics.get(`${x},${y}`);
         const placementGraphic = resolvePlacementGraphic(tile.graphic);
@@ -787,9 +805,6 @@ export const processLayer = ({
         if (data) {
           const { frame, tileSet } = data;
           if (tile.layer > TILES_LAYER) {
-            if (clientOnly && tile.isWater?.()) {
-              continue;
-            }
             const object = makeSprite({ graphic, tile, data });
             const visible = frame.w > TILE_SIZE || frame.h > TILE_SIZE;
             const image = makeImageLayer({ frame, tile, tileSet, visible });

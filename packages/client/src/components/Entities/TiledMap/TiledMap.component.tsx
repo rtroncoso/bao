@@ -9,6 +9,8 @@ import {
   Tiled
 } from '@bao/core';
 import { useMapContext, useWorldContext } from '@bao/client/components/Systems';
+import { useGameContext } from '@bao/client/components/Game';
+import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
 import { Water } from './Water';
 import { EffectsAnimationSystem, useShoreSpriteFilters } from './Shore';
 import { MapEntityLayer } from './MapEntityLayer.component';
@@ -29,7 +31,7 @@ interface TiledMapContentProps {
   currentMap: Tiled;
   worldOffsetX: number;
   worldOffsetY: number;
-  isCurrentMap?: boolean;
+  publishDebug?: boolean;
 }
 
 const TiledMapMapContent: React.FC<TiledMapContentProps> = ({
@@ -37,7 +39,7 @@ const TiledMapMapContent: React.FC<TiledMapContentProps> = ({
   currentMap,
   worldOffsetX,
   worldOffsetY,
-  isCurrentMap = false
+  publishDebug = false
 }) => {
   const mapData = useMapData(currentMap);
   const spatialIndexes = useSpatialIndexes(mapData);
@@ -59,7 +61,7 @@ const TiledMapMapContent: React.FC<TiledMapContentProps> = ({
   );
 
   useTriggerHandling(
-    isCurrentMap ? mapData.triggers : [],
+    publishDebug ? mapData.triggers : [],
     renderTargets.spritesLayer
   );
 
@@ -72,7 +74,7 @@ const TiledMapMapContent: React.FC<TiledMapContentProps> = ({
     renderTargets,
     getShoreSpriteFilter,
     shoreOrientations,
-    { mapId, mapWorldOffset, publishDebug: isCurrentMap }
+    { mapId, mapWorldOffset, publishDebug }
   );
 
   return (
@@ -103,6 +105,13 @@ const TiledMapMapContent: React.FC<TiledMapContentProps> = ({
 
 export const TiledMap: React.FC = () => {
   const { activeMaps, currentMapId, isLoading } = useWorldContext();
+  const { state: gameState } = useGameContext();
+  const localCharacter = resolveLocalCharacter(
+    gameState?.serverState,
+    gameState?.characterId,
+    gameState?.room?.sessionId
+  );
+  const debugMapId = localCharacter?.mapId ?? currentMapId;
 
   useBorderPrefetch();
 
@@ -123,7 +132,7 @@ export const TiledMap: React.FC = () => {
             currentMap={map}
             worldOffsetX={offsetX}
             worldOffsetY={offsetY}
-            isCurrentMap={mapId === currentMapId}
+            publishDebug={mapId === debugMapId}
           />
         </Container>
       ))}

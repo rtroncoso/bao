@@ -175,13 +175,16 @@ export class MapRegistry {
   }
 
   isMapNeededByAnyCharacter(mapId: number): boolean {
+    const worlds = this.worldsLoader.load();
+
     for (const character of this.room.state.characters) {
       if (
         isMapVisibleToCharacter(
           mapId,
           character.mapId,
           character.tile.x,
-          character.tile.y
+          character.tile.y,
+          worlds
         )
       ) {
         return true;

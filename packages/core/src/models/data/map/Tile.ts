@@ -53,23 +53,16 @@ export class Tile {
     };
   }
 
+  /**
+   * Animated water tiles only (AO graphics 1505–1520).
+   * Static terrain/grass graphics 6000–6063 share the 12052 tileset frame but are not water.
+   */
   isWater() {
-    if (this.animation) {
-      const animationId = Number(this.animation.id);
-      if (animationId >= 1505 && animationId <= 1520) {
-        return true;
-      }
-    }
-
-    if (!this.graphic) {
+    if (!this.animation) {
       return false;
     }
 
-    const graphicId = Number(this.graphic.id);
-    if (graphicId >= 6000 && graphicId <= 6063) {
-      return true;
-    }
-
-    return Number((this.graphic as Graphic).fileName) === 12052;
+    const animationId = Number(this.animation.id);
+    return animationId >= 1505 && animationId <= 1520;
   }
 }

@@ -22,6 +22,8 @@ import {
   TmxObject,
   Graphic,
   UPPER_LAYER,
+  ENTITIES_LAYER,
+  TMX_DETAILS_LAYER,
   tmxLayerToRenderGroup
 } from '@bao/core';
 import { polygon } from '@bao/client/utils';
@@ -180,7 +182,12 @@ export const createSpriteFromObject = (
   }
 
   if (Number(layerNumber) !== TMX_SHORE_SPRITE_LAYER) {
-    const group = mapState.groups[tmxLayerToRenderGroup(layerNumber)];
+    const spriteHeight = sprite.height || TILE_SIZE;
+    const groupIndex =
+      Number(layerNumber) === TMX_DETAILS_LAYER && spriteHeight > TILE_SIZE
+        ? ENTITIES_LAYER
+        : tmxLayerToRenderGroup(layerNumber);
+    const group = mapState.groups[groupIndex];
     if (group) {
       sprite.parentGroup = group;
     }
@@ -324,7 +331,8 @@ export const renderTileLayers = (
     tilesLayer: React.RefObject<any>;
     shoreLayer: React.RefObject<any>;
   },
-  shoreLayerIndex = SHORE_TILE_LAYER_INDEX
+  shoreLayerIndex = SHORE_TILE_LAYER_INDEX,
+  tilesGroup?: import('@pixi/layers').Group
 ) => {
   if (!targets.tilesLayer.current || !targets.shoreLayer.current) {
     return chunks;
@@ -344,10 +352,15 @@ export const renderTileLayers = (
 
   chunks.forEach(({ displayObject, layerIndex }) => {
     displayObject.visible = true;
+    displayObject.renderable = true;
     displayObject.filters = null;
 
     const parent =
       layerIndex === shoreLayerIndex ? shoreContainer : tilesContainer;
+
+    if (tilesGroup && layerIndex !== shoreLayerIndex) {
+      displayObject.parentGroup = tilesGroup;
+    }
 
     if (displayObject.parent !== parent) {
       if (displayObject.parent) {

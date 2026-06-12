@@ -52,7 +52,7 @@ export const MapNpcEntity: React.FC<MapNpcEntityProps> = ({
   const headDirection = head?.[headingKey] as Graphic | undefined;
   const chatMessageRef = useRef<PixiText>();
   const easing = useMemo(() => new Ease({}), []);
-  const chatStyle = useMemo(() => CHARACTER_CHAT_STYLES[roles.admin], []);
+  const chatStyle = useMemo(() => CHARACTER_CHAT_STYLES[roles.user], []);
   const [chatTimeoutId, setChatTimeoutId] = useState<NodeJS.Timeout>();
 
   const headDisplay = headDisplayByNpcId[id];

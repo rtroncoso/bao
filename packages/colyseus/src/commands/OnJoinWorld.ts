@@ -3,9 +3,13 @@ import { Command } from '@colyseus/command';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
 
+import { clampPlayableTile } from '@bao/core/loaders/maps/coords';
+import { toWorldTile } from '@bao/core/loaders/maps/world';
+
 import { CharacterState } from '@bao/server/schema/CharacterState';
 import { AccountService } from '@bao/server/services/AccountService';
 import { config } from '@/config';
+import { WorldsLoader } from '@/services/WorldsLoader';
 import { WorldRoom } from '@/rooms/WorldRoom';
 
 export interface OnJoinOptions {
@@ -23,6 +27,8 @@ const DEFAULT_MAP_ID = 34;
 const DEFAULT_SPAWN_X = 50;
 const DEFAULT_SPAWN_Y = 50;
 const PLAYABLE_WIDTH = 84;
+
+const worldsLoader = new WorldsLoader();
 
 const resolveWorldTile = (
   apiCharacter: {
@@ -42,6 +48,11 @@ const resolveWorldTile = (
       worldX: apiCharacter.worldX,
       worldY: apiCharacter.worldY
     };
+  }
+
+  const worlds = worldsLoader.load();
+  if (worlds) {
+    return toWorldTile(mapId, x, y, worlds);
   }
 
   return {
@@ -151,8 +162,11 @@ export class OnJoinCommand extends Command<WorldRoom, OnJoinParameters> {
       }
 
       const mapId = apiCharacter.mapId ?? apiCharacter.world ?? DEFAULT_MAP_ID;
-      const x = apiCharacter.x ?? DEFAULT_SPAWN_X;
-      const y = apiCharacter.y ?? DEFAULT_SPAWN_Y;
+      const spawn = clampPlayableTile(
+        apiCharacter.x ?? DEFAULT_SPAWN_X,
+        apiCharacter.y ?? DEFAULT_SPAWN_Y
+      );
+      const { x, y } = spawn;
       const { worldX, worldY } = resolveWorldTile(apiCharacter, mapId, x, y);
 
       const character = new CharacterState();
@@ -179,6 +193,7 @@ export class OnJoinCommand extends Command<WorldRoom, OnJoinParameters> {
       );
       this.room.mapRegistry.registerCharacter(mapId);
       this.state.characters.push(character);
+      this.room.movementSystem.noteMapInterest(character);
       this.room.presence.sadd(`session:${client.sessionId}`, character);
     } catch (error) {
       throw toJoinServerError(error);

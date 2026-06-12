@@ -177,18 +177,10 @@ export const WorldSystem: React.FC = ({ children }) => {
 
       const activeQuadrant = quadrant ?? getQuadrant(localX, localY);
       const activeIds = getPrefetchMapIds(mapId, activeQuadrant, worlds);
-      trimCache(cacheRef.current, activeIds);
       await Promise.all(activeIds.map((id) => prefetchMap(id)));
+      trimCache(cacheRef.current, activeIds);
 
-      setActiveMapIds((previous) => {
-        if (
-          previous.length === activeIds.length &&
-          previous.every((id, index) => id === activeIds[index])
-        ) {
-          return previous;
-        }
-        return activeIds;
-      });
+      setActiveMapIds(activeIds);
       setCacheRevision((revision) => revision + 1);
       return activeIds;
     },
@@ -196,8 +188,13 @@ export const WorldSystem: React.FC = ({ children }) => {
   );
 
   const activeMaps = useMemo(() => {
-    const ids =
-      activeMapIds.length > 0 ? activeMapIds : [currentMapId || DEFAULT_MAP_ID];
+    const characterMapId = localCharacter?.mapId ?? currentMapId;
+    const ids = [
+      ...new Set([
+        ...(activeMapIds.length > 0 ? activeMapIds : []),
+        characterMapId || DEFAULT_MAP_ID
+      ])
+    ];
 
     return ids.flatMap((mapId) => {
       const map = cacheRef.current.get(mapId);
@@ -215,7 +212,51 @@ export const WorldSystem: React.FC = ({ children }) => {
         }
       ];
     });
-  }, [activeMapIds, cacheRevision, currentMapId, worlds]);
+  }, [
+    activeMapIds,
+    cacheRevision,
+    currentMapId,
+    localCharacter?.mapId,
+    worlds
+  ]);
+
+  useEffect(() => {
+    const mapId = localCharacter?.mapId;
+    if (!mapId) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const run = async () => {
+      await prefetchMap(mapId);
+
+      let ids = [mapId];
+      if (worlds && localCharacter) {
+        const quadrant = getQuadrant(
+          localCharacter.tile.x,
+          localCharacter.tile.y
+        );
+        ids = getPrefetchMapIds(mapId, quadrant, worlds);
+        await Promise.all(ids.map((id) => prefetchMap(id)));
+        trimCache(cacheRef.current, ids);
+      }
+
+      if (cancelled) {
+        return;
+      }
+
+      setActiveMapIds(ids);
+      setCacheRevision((revision) => revision + 1);
+      setCurrentMapId((previous) => (previous === mapId ? previous : mapId));
+    };
+
+    void run();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [localCharacter?.mapId, worlds, prefetchMap]);
 
   useEffect(() => {
     if (!manifest?.worlds) {
@@ -247,13 +288,6 @@ export const WorldSystem: React.FC = ({ children }) => {
       cancelled = true;
     };
   }, [manifest?.worlds]);
-
-  useEffect(() => {
-    const mapId = localCharacter?.mapId;
-    if (mapId && mapId !== currentMapId) {
-      setCurrentMapId(mapId);
-    }
-  }, [localCharacter?.mapId, currentMapId]);
 
   useEffect(() => {
     if (!mapManifestPath) {

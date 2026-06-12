@@ -16,7 +16,10 @@ import React, {
   useRef,
   useState
 } from 'react';
-import { useMapContext, useViewportContext } from 'src/components/Systems';
+import {
+  useMapContext,
+  useViewportContext
+} from '@bao/client/components/Systems';
 
 import { registerAnimatedFilter } from '../Shore/effectAnimationRegistry';
 import { getWaterPolygons } from '../Shore/waterPolygons';
@@ -123,8 +126,7 @@ export const Water: React.FC<WaterProps> = ({
       !sprite ||
       !texture ||
       !normal ||
-      !displacement ||
-      !container.parent
+      !displacement
     ) {
       return;
     }
