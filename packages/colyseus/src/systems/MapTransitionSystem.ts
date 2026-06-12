@@ -31,11 +31,18 @@ export class MapTransitionSystem {
   }
 
   async tryTransition(character: CharacterState, authToken?: string) {
-    const exit = this.mapRegistry.getTileExit(
-      character.mapId,
-      character.tile.x,
-      character.tile.y
-    );
+    const exit =
+      this.mapRegistry.getTileExit(
+        character.mapId,
+        character.tile.x,
+        character.tile.y
+      ) ??
+      this.mapRegistry.resolveBorderTransition(
+        character.mapId,
+        character.tile.x,
+        character.tile.y,
+        character.heading
+      );
 
     if (!exit) {
       return false;

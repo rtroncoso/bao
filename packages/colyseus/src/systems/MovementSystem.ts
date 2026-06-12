@@ -1,4 +1,4 @@
-import { getQuadrant, Heading, TILE_SIZE } from '@bao/core';
+import { getQuadrant, Heading, TILE_SIZE, TILED_MAP_SIZE } from '@bao/core';
 import { CharacterState } from '@bao/server/schema/CharacterState';
 import { TilePosition } from '@/schema/MapState';
 import { WorldRoom } from '@/rooms/WorldRoom';
@@ -151,11 +151,28 @@ export class MovementSystem {
         });
 
         character.heading = heading;
+        const [playableWidth, playableHeight] = TILED_MAP_SIZE;
+        const outOfBounds =
+          targetTile.x < 0 ||
+          targetTile.y < 0 ||
+          targetTile.x >= playableWidth ||
+          targetTile.y >= playableHeight;
+
         if (
           !this.isTileBlocked(targetTile, character.mapId, character.sessionId)
         ) {
           character.isMoving = true;
           character.targetTile = targetTile;
+        } else if (
+          outOfBounds &&
+          this.room.mapRegistry.resolveBorderTransition(
+            character.mapId,
+            character.tile.x,
+            character.tile.y,
+            heading
+          )
+        ) {
+          this.checkMapTransition(character);
         }
       }
 

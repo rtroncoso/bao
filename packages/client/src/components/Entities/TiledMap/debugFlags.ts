@@ -2,7 +2,7 @@
 export const DEBUG_SHOW_PIXI_TILE_GRID = false;
 
 /** SHG spatial-hash cell lines inside the object-bounds overlay. */
-export const DEBUG_SHOW_SHG_CELL_GRID = false;
+export const DEBUG_SHOW_SHG_CELL_GRID = true;
 
 /** Blocked tile boxes from map meta sidecars. */
 export const DEBUG_SHOW_BLOCKED_TILES = false;

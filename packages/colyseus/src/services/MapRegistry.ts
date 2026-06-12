@@ -1,3 +1,13 @@
+import {
+  BorderNeighbor,
+  computeBorderNeighbors,
+  computeGridNeighbors,
+  headingToBorderDirection,
+  isMapEdgeForExitDirection,
+  resolveGridTransitionLanding
+} from '@bao/core/loaders/maps/world';
+import { Heading } from '@bao/core/constants/game/Game';
+
 import { MapSpawnService } from '@/services/MapSpawnService';
 import { WorldsLoader } from '@/services/WorldsLoader';
 import { WorldRoom } from '@/rooms/WorldRoom';
@@ -23,6 +33,7 @@ export class MapRegistry {
     number,
     Map<string, TileExitRecord>
   >();
+  private readonly borderNeighborsByMap = new Map<number, BorderNeighbor[]>();
   private readonly blockedTilesByMap = new Map<number, Set<string>>();
   private readonly unblockedTilesByMap = new Map<number, Set<string>>();
   private readonly runtimeBlockedTilesByMap = new Map<number, Set<string>>();
@@ -50,6 +61,10 @@ export class MapRegistry {
     }
 
     this.tileExitsByMap.set(mapId, exitIndex);
+    this.borderNeighborsByMap.set(
+      mapId,
+      computeBorderNeighbors(spawns.tileExits)
+    );
     this.blockedTilesByMap.set(
       mapId,
       new Set(
@@ -86,6 +101,43 @@ export class MapRegistry {
 
   getTileExit(mapId: number, x: number, y: number): TileExitRecord | null {
     return this.tileExitsByMap.get(mapId)?.get(this.tileKey(x, y)) ?? null;
+  }
+
+  /**
+   * Grid fallback when no tile-exit record exists: only on the outermost map edge,
+   * heading off-map, with a worlds.json neighbor in that direction.
+   */
+  resolveBorderTransition(
+    mapId: number,
+    x: number,
+    y: number,
+    heading: Heading
+  ): TileExitRecord | null {
+    const exitDirection = headingToBorderDirection(heading);
+    if (!exitDirection) {
+      return null;
+    }
+
+    if (!isMapEdgeForExitDirection(x, y, exitDirection)) {
+      return null;
+    }
+
+    const worlds = this.worldsLoader.load();
+    if (!worlds) {
+      return null;
+    }
+
+    const targetMapId = computeGridNeighbors(mapId, worlds)[exitDirection];
+    if (!targetMapId) {
+      return null;
+    }
+
+    const landing = resolveGridTransitionLanding(exitDirection, x, y);
+    return {
+      targetMapId,
+      targetX: landing.targetX,
+      targetY: landing.targetY
+    };
   }
 
   isTileStaticallyBlocked(mapId: number, x: number, y: number): boolean {
@@ -202,6 +254,7 @@ export class MapRegistry {
 
       this.loadedMaps.delete(mapId);
       this.tileExitsByMap.delete(mapId);
+      this.borderNeighborsByMap.delete(mapId);
       this.blockedTilesByMap.delete(mapId);
       this.unblockedTilesByMap.delete(mapId);
       this.runtimeBlockedTilesByMap.delete(mapId);

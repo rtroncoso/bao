@@ -1,3 +1,4 @@
+import { Heading } from '@bao/core/constants/game/Game';
 import {
   BORDER_TRIGGER_TYPE,
   MAP_BORDER_X,
@@ -38,7 +39,7 @@ const [MAP_WIDTH, MAP_HEIGHT] = TILED_MAP_SIZE;
 const MAP_PIXEL_WIDTH = MAP_WIDTH * TILE_SIZE;
 const MAP_PIXEL_HEIGHT = MAP_HEIGHT * TILE_SIZE;
 
-const getBorderDirection = (x: number, y: number): BorderDirection | null => {
+export const getBorderDirection = (x: number, y: number): BorderDirection | null => {
   if (y <= EDGE_MARGIN_Y) {
     return 'north';
   }
@@ -101,6 +102,70 @@ export const inferExitDirection = (
   }
 
   return getBorderDirection(x, y);
+};
+
+export const headingToBorderDirection = (
+  heading: Heading
+): BorderDirection | null => {
+  switch (heading) {
+    case Heading.NORTH:
+      return 'north';
+    case Heading.SOUTH:
+      return 'south';
+    case Heading.EAST:
+      return 'east';
+    case Heading.WEST:
+      return 'west';
+    default:
+      return null;
+  }
+};
+
+/**
+ * True when the tile is on the outermost playable row/column for that exit direction.
+ * Unlike getBorderDirection (8-tile margin), this is only the actual map edge.
+ */
+export const isMapEdgeForExitDirection = (
+  x: number,
+  y: number,
+  direction: BorderDirection
+): boolean => {
+  const [MAP_WIDTH, MAP_HEIGHT] = TILED_MAP_SIZE;
+
+  switch (direction) {
+    case 'east':
+      return x >= MAP_WIDTH - 1;
+    case 'west':
+      return x <= 0;
+    case 'north':
+      return y <= 0;
+    case 'south':
+      return y >= MAP_HEIGHT - 1;
+    default:
+      return false;
+  }
+};
+
+/** Landing on the opposite edge of the destination map (mirror of exit direction). */
+export const resolveGridTransitionLanding = (
+  exitDirection: BorderDirection,
+  x: number,
+  y: number
+): { targetX: number; targetY: number } => {
+  const [MAP_WIDTH, MAP_HEIGHT] = TILED_MAP_SIZE;
+
+  switch (exitDirection) {
+    case 'east':
+      return { targetX: 1, targetY: y };
+    case 'west':
+      return { targetX: MAP_WIDTH - 1, targetY: y };
+    case 'north':
+      return { targetX: x, targetY: MAP_HEIGHT - 1 };
+    case 'south':
+      return { targetX: x, targetY: 1 };
+    default:
+      return { targetX: x, targetY: y };
+  }
 };
 
 /**
