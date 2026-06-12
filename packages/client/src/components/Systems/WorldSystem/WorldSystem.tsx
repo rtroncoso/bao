@@ -89,6 +89,28 @@ const trimCache = (cache: Map<number, Tiled>, keepIds: number[]) => {
   }
 };
 
+const prefetchMapsSafe = async (
+  mapIds: number[],
+  loadMap: (mapId: number) => Promise<Tiled | null>
+) => {
+  const loaded: number[] = [];
+
+  await Promise.all(
+    mapIds.map(async (mapId) => {
+      try {
+        const map = await loadMap(mapId);
+        if (map) {
+          loaded.push(mapId);
+        }
+      } catch (error) {
+        console.error(`[WorldSystem] failed to prefetch map ${mapId}`, error);
+      }
+    })
+  );
+
+  return loaded;
+};
+
 export const WorldSystem: React.FC = ({ children }) => {
   const manifest = useSelector((state: State) => selectManifest(state));
   const { state: gameState } = useGameContext();
@@ -176,15 +198,21 @@ export const WorldSystem: React.FC = ({ children }) => {
       }
 
       const activeQuadrant = quadrant ?? getQuadrant(localX, localY);
-      const activeIds = getPrefetchMapIds(mapId, activeQuadrant, worlds);
-      await Promise.all(activeIds.map((id) => prefetchMap(id)));
-      trimCache(cacheRef.current, activeIds);
+      const requestedIds = getPrefetchMapIds(mapId, activeQuadrant, worlds);
+      const loadedIds = await prefetchMapsSafe(requestedIds, loadMap);
+      const ids =
+        loadedIds.length > 0
+          ? [...new Set([mapId, ...loadedIds])]
+          : cacheRef.current.has(mapId)
+          ? [mapId]
+          : loadedIds;
+      trimCache(cacheRef.current, ids);
 
-      setActiveMapIds(activeIds);
+      setActiveMapIds(ids);
       setCacheRevision((revision) => revision + 1);
-      return activeIds;
+      return ids;
     },
-    [prefetchMap, worlds]
+    [prefetchMap, worlds, loadMap]
   );
 
   const activeMaps = useMemo(() => {
@@ -237,8 +265,14 @@ export const WorldSystem: React.FC = ({ children }) => {
           localCharacter.tile.x,
           localCharacter.tile.y
         );
-        ids = getPrefetchMapIds(mapId, quadrant, worlds);
-        await Promise.all(ids.map((id) => prefetchMap(id)));
+        const requestedIds = getPrefetchMapIds(mapId, quadrant, worlds);
+        const loadedIds = await prefetchMapsSafe(requestedIds, loadMap);
+        ids =
+          loadedIds.length > 0
+            ? [...new Set([mapId, ...loadedIds])]
+            : cacheRef.current.has(mapId)
+            ? [mapId]
+            : loadedIds;
         trimCache(cacheRef.current, ids);
       }
 
@@ -256,7 +290,14 @@ export const WorldSystem: React.FC = ({ children }) => {
     return () => {
       cancelled = true;
     };
-  }, [localCharacter?.mapId, worlds, prefetchMap]);
+  }, [
+    localCharacter?.mapId,
+    localCharacter?.tile.x,
+    localCharacter?.tile.y,
+    worlds,
+    prefetchMap,
+    loadMap
+  ]);
 
   useEffect(() => {
     if (!manifest?.worlds) {

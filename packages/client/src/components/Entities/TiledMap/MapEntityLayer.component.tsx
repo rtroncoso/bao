@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Container, Sprite } from '@inlet/react-pixi';
+import { Rectangle as PixiRectangle } from 'pixi.js';
 import { useSelector } from 'react-redux';
 
 import { getTexture, Graphic, tileCoordsToScreen, TILE_SIZE } from '@bao/core';
@@ -9,11 +10,11 @@ import {
   useMapContext,
   useViewportContext
 } from '@bao/client/components/Systems';
-import type { Rectangle } from '@bao/client/components/Systems/ViewportSystem';
+import type { Rectangle as ViewportRectangle } from '@bao/client/components/Systems/ViewportSystem';
 import { selectGraphics } from '@bao/client/queries';
 import { State } from '@bao/client/store';
 
-import { ENTITIES_LAYER } from '@bao/core/constants/game/Map';
+import { ENTITIES_LAYER, OBJECT_TYPE } from '@bao/core/constants/game/Map';
 import { DOOR, isServerRenderedObject } from '@bao/core/constants/game/Object';
 import { MapNpcEntity } from './MapNpcEntity.component';
 import { useMapInteractionContext } from '@bao/client/components/Systems/MapInteractionSystem';
@@ -28,7 +29,7 @@ const intersectsViewport = (
   y: number,
   width: number,
   height: number,
-  viewport: Rectangle,
+  viewport: ViewportRectangle,
   mapOffsetX: number,
   mapOffsetY: number
 ) => {
@@ -41,6 +42,12 @@ const intersectsViewport = (
     worldY + height >= viewport.y - ENTITY_VIEWPORT_PADDING &&
     worldY <= viewport.y + viewport.height + ENTITY_VIEWPORT_PADDING
   );
+};
+
+const buildHitArea = (graphic: Graphic) => {
+  const width = graphic.width || TILE_SIZE;
+  const height = graphic.height || TILE_SIZE;
+  return new PixiRectangle(0, 0, width, height);
 };
 
 export interface MapEntityLayerProps {
@@ -158,9 +165,11 @@ export const MapEntityLayer: React.FC<MapEntityLayerProps> = ({
 
         const { x, y } = tileCoordsToScreen(entity.x, entity.y, graphic);
         const isDoor = entity.objectType === DOOR;
-        const canInteract = isDoor && isPlayerAdjacentTo(entity.x, entity.y);
+        const canInteract =
+          isDoor && isPlayerAdjacentTo(mapId, entity.x, entity.y);
+        const hitArea = buildHitArea(graphic);
 
-        const handlePointerDown = () => {
+        const handlePointerTap = () => {
           if (isDoor && canInteract) {
             onObjectClick(entity.id, entity.x, entity.y, DOOR);
           }
@@ -172,9 +181,11 @@ export const MapEntityLayer: React.FC<MapEntityLayerProps> = ({
               key={entity.id}
               x={x}
               y={y}
+              accessibleType={OBJECT_TYPE}
               parentGroup={entitiesGroup}
               interactive={isDoor}
-              pointerdown={handlePointerDown}
+              pointertap={handlePointerTap}
+              hitArea={hitArea}
             >
               <Animation animation={graphic} x={0} y={0} />
             </Container>
@@ -192,9 +203,11 @@ export const MapEntityLayer: React.FC<MapEntityLayerProps> = ({
             texture={texture}
             x={x}
             y={y}
+            accessibleType={OBJECT_TYPE}
             parentGroup={entitiesGroup}
             interactive={isDoor}
-            pointerdown={handlePointerDown}
+            pointertap={handlePointerTap}
+            hitArea={hitArea}
           />
         );
       })}

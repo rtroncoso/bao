@@ -25,13 +25,15 @@ export interface MapInteractionContextValue {
     y: number,
     objectType: number
   ) => void;
-  isPlayerAdjacentTo: (x: number, y: number) => boolean;
+  clearNpcHeadDisplay: (entityId: string) => void;
+  isPlayerAdjacentTo: (mapId: number, x: number, y: number) => boolean;
 }
 
 const MapInteractionContext = createContext<MapInteractionContextValue>({
   headDisplayByNpcId: {},
   onNpcClick: () => {},
   onObjectClick: () => {},
+  clearNpcHeadDisplay: () => {},
   isPlayerAdjacentTo: () => false
 });
 
@@ -51,8 +53,8 @@ export const MapInteractionProvider: React.FC = ({ children }) => {
   );
 
   const isPlayerAdjacentTo = useCallback(
-    (x: number, y: number) => {
-      if (!localCharacter) {
+    (mapId: number, x: number, y: number) => {
+      if (!localCharacter || localCharacter.mapId !== mapId) {
         return false;
       }
 
@@ -62,8 +64,20 @@ export const MapInteractionProvider: React.FC = ({ children }) => {
       const dy = Math.abs(charTileY - y);
       return dx <= 1 && dy <= 1 && dx + dy > 0;
     },
-    [localCharacter?.x, localCharacter?.y]
+    [localCharacter?.mapId, localCharacter?.x, localCharacter?.y]
   );
+
+  const clearNpcHeadDisplay = useCallback((entityId: string) => {
+    setHeadDisplayByNpcId((current) => {
+      if (!current[entityId]) {
+        return current;
+      }
+
+      const next = { ...current };
+      delete next[entityId];
+      return next;
+    });
+  }, []);
 
   const onNpcClick = useCallback((entityId: string, description: string) => {
     if (!description?.trim()) {
@@ -81,14 +95,19 @@ export const MapInteractionProvider: React.FC = ({ children }) => {
 
   const onObjectClick = useCallback(
     (entityId: string, x: number, y: number, objectType: number) => {
-      if (chatState.focused || !gameState?.room || !isPlayerAdjacentTo(x, y)) {
+      if (
+        chatState.focused ||
+        !gameState?.room ||
+        !localCharacter?.mapId ||
+        !isPlayerAdjacentTo(localCharacter.mapId, x, y)
+      ) {
         return;
       }
 
       gameState.room.send('interact', {
         type: 'object',
         entityId,
-        mapId: localCharacter?.mapId,
+        mapId: localCharacter.mapId,
         objectType
       });
     },
@@ -105,9 +124,16 @@ export const MapInteractionProvider: React.FC = ({ children }) => {
       headDisplayByNpcId,
       onNpcClick,
       onObjectClick,
+      clearNpcHeadDisplay,
       isPlayerAdjacentTo
     }),
-    [headDisplayByNpcId, onNpcClick, onObjectClick, isPlayerAdjacentTo]
+    [
+      headDisplayByNpcId,
+      onNpcClick,
+      onObjectClick,
+      clearNpcHeadDisplay,
+      isPlayerAdjacentTo
+    ]
   );
 
   return (

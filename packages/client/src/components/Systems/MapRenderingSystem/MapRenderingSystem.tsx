@@ -14,7 +14,6 @@ import {
   MAP_LAYERS,
   TILE_SIZE
 } from '@bao/core';
-import { Sprite } from 'pixi.js';
 
 import { SetStateCallback, useLocalStateReducer } from '@bao/client/hooks';
 
@@ -40,14 +39,31 @@ export const useMapContext = () => {
   return useContext(MapContext);
 };
 
+import { DisplayObject, Sprite } from 'pixi.js';
+
+export const NPC_CHAT_TYPE = 'npcChat';
+
+/** Foot Y in world space for @pixi/layers depth sort within ENTITIES_LAYER. */
+export const getEntitySortFootY = (displayObject: DisplayObject): number => {
+  const sprite = displayObject as Sprite;
+  const scaleY = Math.abs(sprite.scale?.y ?? 1);
+  const height = sprite.height || TILE_SIZE;
+
+  if (displayObject.accessibleType === CHARACTER_TYPE) {
+    return displayObject.worldTransform.ty + TILE_SIZE * scaleY;
+  }
+
+  return displayObject.worldTransform.ty + height * scaleY;
+};
+
 export const MapRenderingSystem: React.FC = ({ children }) => {
   const [mapState, setMapState] = useLocalStateReducer(createInitialMapState());
   const handleLayerSort = useCallback((sprite: Sprite) => {
-    if (sprite.accessibleType === CHARACTER_TYPE) {
-      return (sprite.zOrder = sprite.y + TILE_SIZE / 2);
+    if (sprite.accessibleType === NPC_CHAT_TYPE) {
+      return (sprite.zOrder = getEntitySortFootY(sprite) + TILE_SIZE * 2);
     }
 
-    return (sprite.zOrder = sprite.y + sprite.height);
+    return (sprite.zOrder = getEntitySortFootY(sprite));
   }, []);
 
   useEffect(() => {

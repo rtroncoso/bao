@@ -99,20 +99,47 @@ export class MapEntitySystem {
       objectType: number;
       x: number;
       y: number;
+      openObjectId?: number;
+      closedObjectId?: number;
+      openGraphicId?: number;
+      closedGraphicId?: number;
     }>
   ) {
-    const doorObjectIds = [
-      ...new Set(
-        spawns
-          .filter((spawn) => spawn.objectType === DOOR)
-          .map((spawn) => spawn.objectId)
-      )
-    ];
-
-    if (!doorObjectIds.length) {
+    const doorSpawns = spawns.filter((spawn) => spawn.objectType === DOOR);
+    if (!doorSpawns.length) {
       return;
     }
 
+    const unresolvedDoorObjectIds = new Set<number>();
+
+    for (const spawn of doorSpawns) {
+      if (spawn.openGraphicId && spawn.closedGraphicId) {
+        const openObjectId = spawn.openObjectId ?? spawn.objectId;
+        const closedObjectId = spawn.closedObjectId ?? spawn.objectId;
+        this.objectGraphicById.set(openObjectId, spawn.openGraphicId);
+        this.objectGraphicById.set(closedObjectId, spawn.closedGraphicId);
+        this.doorConfigs.set(spawn.id, {
+          openObjectId,
+          closedObjectId,
+          openGraphicId: spawn.openGraphicId,
+          closedGraphicId: spawn.closedGraphicId,
+          blockedTiles: this.room.mapRegistry.findDoorBlockedTiles(
+            mapId,
+            spawn.x,
+            spawn.y
+          )
+        });
+        continue;
+      }
+
+      unresolvedDoorObjectIds.add(spawn.objectId);
+    }
+
+    if (!unresolvedDoorObjectIds.size) {
+      return;
+    }
+
+    const doorObjectIds = [...unresolvedDoorObjectIds];
     const doorObjects = await this.fetchObjects(doorObjectIds);
     this.cacheObjectGraphics(doorObjects);
 
@@ -136,8 +163,8 @@ export class MapEntitySystem {
       this.cacheObjectGraphics(relatedObjects);
     }
 
-    for (const spawn of spawns) {
-      if (spawn.objectType !== DOOR) {
+    for (const spawn of doorSpawns) {
+      if (this.doorConfigs.has(spawn.id)) {
         continue;
       }
 
@@ -249,21 +276,25 @@ export class MapEntitySystem {
         entity.objectType = spawn.objectType;
         entity.x = spawn.x;
         entity.y = spawn.y;
-        return entity;
+        return { entity, spawn };
       });
 
     await this.buildDoorConfigs(
       mapId,
-      objectEntities.map((entity) => ({
+      objectEntities.map(({ entity, spawn }) => ({
         id: entity.id,
         objectId: entity.objectId,
         objectType: entity.objectType,
         x: entity.x,
-        y: entity.y
+        y: entity.y,
+        openObjectId: spawn.openObjectId,
+        closedObjectId: spawn.closedObjectId,
+        openGraphicId: spawn.openGraphicId,
+        closedGraphicId: spawn.closedGraphicId
       }))
     );
 
-    for (const entity of objectEntities) {
+    for (const { entity } of objectEntities) {
       const doorConfig = this.doorConfigs.get(entity.id);
       if (doorConfig) {
         entity.isOpen = entity.objectId === doorConfig.openObjectId;
@@ -271,7 +302,9 @@ export class MapEntitySystem {
       }
     }
 
-    mapState.objects = new ArraySchema<MapObjectEntityState>(...objectEntities);
+    mapState.objects = new ArraySchema<MapObjectEntityState>(
+      ...objectEntities.map(({ entity }) => entity)
+    );
 
     this.room.state.maps.set(String(mapId), mapState);
     this.loadedMaps.add(mapId);

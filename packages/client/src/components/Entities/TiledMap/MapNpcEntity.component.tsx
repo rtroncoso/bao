@@ -13,6 +13,7 @@ import {
   TILE_SIZE
 } from '@bao/core';
 import { useMapContext } from '@bao/client/components/Systems';
+import { NPC_CHAT_TYPE } from '@bao/client/components/Systems/MapRenderingSystem/MapRenderingSystem';
 import { useMapInteractionContext } from '@bao/client/components/Systems/MapInteractionSystem';
 import { selectBodies, selectHeads } from '@bao/client/queries';
 import { State } from '@bao/client/store';
@@ -41,7 +42,8 @@ export const MapNpcEntity: React.FC<MapNpcEntityProps> = ({
   onClick
 }) => {
   const { mapState } = useMapContext();
-  const { headDisplayByNpcId } = useMapInteractionContext();
+  const { headDisplayByNpcId, clearNpcHeadDisplay } =
+    useMapInteractionContext();
   const bodies = useSelector((state: State) => selectBodies(state));
   const heads = useSelector((state: State) => selectHeads(state));
   const headingKey = HEADINGS[heading];
@@ -55,6 +57,7 @@ export const MapNpcEntity: React.FC<MapNpcEntityProps> = ({
   const [chatTimeoutId, setChatTimeoutId] = useState<NodeJS.Timeout>();
 
   const headDisplay = headDisplayByNpcId[id];
+  const entitiesGroup = mapState?.groups[ENTITIES_LAYER];
 
   const bodyOffset = useMemo(() => {
     if (!bodyDirection) {
@@ -77,6 +80,13 @@ export const MapNpcEntity: React.FC<MapNpcEntityProps> = ({
     return new Point(body.headOffsetX + 4, body.headOffsetY - 5);
   }, [body]);
 
+  useEffect(
+    () => () => {
+      clearNpcHeadDisplay(id);
+    },
+    [clearNpcHeadDisplay, id]
+  );
+
   useEffect(() => {
     if (!chatMessageRef.current || headDisplay === undefined) {
       return;
@@ -93,16 +103,16 @@ export const MapNpcEntity: React.FC<MapNpcEntityProps> = ({
     }
 
     if (!headDisplay.text) {
-      easing.add(chatMessage, { y: headOffset.y, alpha: 0 }, { duration: 300 });
+      easing.add(chatMessage, { y: 0, alpha: 0 }, { duration: 300 });
       return;
     }
 
-    chatMessage.y = headOffset.y;
+    chatMessage.y = 0;
     chatMessage.alpha = 0;
 
     easing.add(
       chatMessage,
-      { y: headOffset.y - 4 - TILE_SIZE / 2, alpha: 1 },
+      { y: -4 - TILE_SIZE / 2, alpha: 1 },
       { duration: 300 }
     );
 
@@ -112,12 +122,12 @@ export const MapNpcEntity: React.FC<MapNpcEntityProps> = ({
         return;
       }
 
-      easing.add(message, { y: headOffset.y, alpha: 0 }, { duration: 300 });
+      easing.add(message, { y: 0, alpha: 0 }, { duration: 300 });
     }, 3000);
     setChatTimeoutId(timeoutId);
   }, [headDisplay?.token, headOffset.y]);
 
-  if (!bodyDirection) {
+  if (!bodyDirection || !entitiesGroup) {
     return null;
   }
 
@@ -131,39 +141,47 @@ export const MapNpcEntity: React.FC<MapNpcEntityProps> = ({
       : getTexture(bodyDirection);
 
   return (
-    <Container
-      key={id}
-      accessibleType={CHARACTER_TYPE}
-      parentGroup={mapState?.groups[ENTITIES_LAYER]}
-      x={x * TILE_SIZE}
-      y={y * TILE_SIZE}
-      interactive={Boolean(onClick && description)}
-      pointerdown={onClick}
-      hitArea={new Rectangle(0, 0, TILE_SIZE, TILE_SIZE)}
-    >
-      <Container x={bodyOffset.x} y={bodyOffset.y}>
-        {headTexture && (
-          <Container x={headOffset.x} y={headOffset.y}>
-            <Sprite texture={headTexture} />
-          </Container>
-        )}
-        {bodyTexture && <Sprite texture={bodyTexture} />}
+    <>
+      <Container
+        key={id}
+        accessibleType={CHARACTER_TYPE}
+        parentGroup={entitiesGroup}
+        x={x * TILE_SIZE}
+        y={y * TILE_SIZE}
+        interactive={Boolean(onClick && description)}
+        pointerdown={onClick}
+        hitArea={new Rectangle(0, 0, TILE_SIZE, TILE_SIZE)}
+      >
+        <Container x={bodyOffset.x} y={bodyOffset.y}>
+          {headTexture && (
+            <Container x={headOffset.x} y={headOffset.y}>
+              <Sprite texture={headTexture} />
+            </Container>
+          )}
+          {bodyTexture && <Sprite texture={bodyTexture} />}
+        </Container>
       </Container>
       {headDisplay !== undefined && (
-        <Text
-          ref={chatMessageRef}
-          anchor={[0.5, 1.0]}
-          x={TILE_SIZE / 2}
-          text={headDisplay.text}
-          style={{
-            ...chatStyle,
-            breakWords: true,
-            wordWrapWidth: 200,
-            wordWrap: true,
-            trim: true
-          }}
-        />
+        <Container
+          accessibleType={NPC_CHAT_TYPE}
+          parentGroup={entitiesGroup}
+          x={x * TILE_SIZE + TILE_SIZE / 2}
+          y={y * TILE_SIZE + headOffset.y + bodyOffset.y}
+        >
+          <Text
+            ref={chatMessageRef}
+            anchor={[0.5, 1.0]}
+            text={headDisplay.text}
+            style={{
+              ...chatStyle,
+              breakWords: true,
+              wordWrapWidth: 200,
+              wordWrap: true,
+              trim: true
+            }}
+          />
+        </Container>
       )}
-    </Container>
+    </>
   );
 };

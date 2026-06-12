@@ -16,6 +16,12 @@ export const getMapWorldOffset = (
 
   const entry = worlds.maps.find((map) => parseMapIdFromEntry(map) === mapId);
 
+  if (!entry) {
+    console.warn(
+      `[WorldSystem] map ${mapId} missing from worlds.json — neighbor rendering may break`
+    );
+  }
+
   return {
     x: entry?.x ?? 0,
     y: entry?.y ?? 0

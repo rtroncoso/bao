@@ -33,6 +33,11 @@ export interface MapObjectSpawnRow {
   y: number
   graphicId: number
   objectType: number
+  /** Resolved from objects_attributes when objectType is door (6). */
+  openObjectId?: number
+  closedObjectId?: number
+  openGraphicId?: number
+  closedGraphicId?: number
 }
 
 export interface MapTileExitRow {

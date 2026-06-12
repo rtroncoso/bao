@@ -24,6 +24,10 @@ export interface MapSpawnObject {
   y: number;
   graphicId: number;
   objectType: number;
+  openObjectId?: number;
+  closedObjectId?: number;
+  openGraphicId?: number;
+  closedGraphicId?: number;
 }
 
 export interface MapBlockedTile {

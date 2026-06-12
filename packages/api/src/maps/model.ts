@@ -10,6 +10,93 @@ import type {
 import db from '../db'
 import { QueryBuilder } from '../queryBuilder'
 
+const DOOR_OBJECT_TYPE = 6
+
+interface ObjectAttributeValueRow {
+  objectId: number
+  name: string
+  value: string
+}
+
+interface ObjectGraphicRow {
+  id: number
+  graphicId: number
+}
+
+const enrichDoorSpawnVariants = async (
+  objects: MapObjectSpawnRow[]
+): Promise<MapObjectSpawnRow[]> => {
+  const doorSpawns = objects.filter(
+    (spawn) => spawn.objectType === DOOR_OBJECT_TYPE
+  )
+
+  if (!doorSpawns.length) {
+    return objects
+  }
+
+  const doorObjectIds = [...new Set(doorSpawns.map((spawn) => spawn.objectId))]
+  const qb = new QueryBuilder()
+  qb.select('oa.objectId, attributes.name, oa.value')
+  qb.from('objects_attributes AS oa')
+  qb.join('attributes', 'attributes.id = oa.attributeId', 'inner')
+  qb.whereIn('oa.objectId', doorObjectIds)
+  qb.whereIn('attributes.name', ['indexabierta', 'indexcerrada'])
+
+  const attributeRows = await db.executeQuery<ObjectAttributeValueRow>(qb.get())
+  const attributesByObjectId = new Map<number, Record<string, number>>()
+
+  for (const row of attributeRows) {
+    const parsed = Number.parseInt(row.value, 10)
+    if (Number.isNaN(parsed)) {
+      continue
+    }
+
+    const current = attributesByObjectId.get(row.objectId) ?? {}
+    current[row.name] = parsed
+    attributesByObjectId.set(row.objectId, current)
+  }
+
+  const variantObjectIds = new Set<number>()
+  for (const spawn of doorSpawns) {
+    const attributes = attributesByObjectId.get(spawn.objectId) ?? {}
+    variantObjectIds.add(attributes.indexabierta ?? spawn.objectId)
+    variantObjectIds.add(attributes.indexcerrada ?? spawn.objectId)
+  }
+
+  qb.reset()
+  qb.select('id, graphicId')
+  qb.from('objects')
+  qb.whereIn('id', [...variantObjectIds])
+  const variantRows = await db.executeQuery<ObjectGraphicRow>(qb.get())
+  const graphicByObjectId = new Map(
+    variantRows.map((row) => [row.id, row.graphicId])
+  )
+
+  return objects.map((spawn) => {
+    if (spawn.objectType !== DOOR_OBJECT_TYPE) {
+      return spawn
+    }
+
+    const attributes = attributesByObjectId.get(spawn.objectId) ?? {}
+    const openObjectId = attributes.indexabierta ?? spawn.objectId
+    const closedObjectId = attributes.indexcerrada ?? spawn.objectId
+    const openGraphicId = graphicByObjectId.get(openObjectId)
+    const closedGraphicId = graphicByObjectId.get(closedObjectId)
+
+    if (!openGraphicId || !closedGraphicId) {
+      return spawn
+    }
+
+    return {
+      ...spawn,
+      openObjectId,
+      closedObjectId,
+      openGraphicId,
+      closedGraphicId,
+    }
+  })
+}
+
 interface MapFindOptions {
   ids?: Array<number | string>
 }
@@ -61,7 +148,8 @@ export const findSpawns = async (
   qb.from('map_object_spawns AS mos')
   qb.join('objects AS o', 'o.id = mos.objectId', 'inner')
   qb.where('mos.mapId', mapId)
-  const objects = await db.executeQuery<MapObjectSpawnRow>(qb.get())
+  let objects = await db.executeQuery<MapObjectSpawnRow>(qb.get())
+  objects = await enrichDoorSpawnVariants(objects)
 
   qb.reset()
   qb.select('*')
