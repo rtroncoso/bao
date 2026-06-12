@@ -63,10 +63,8 @@ export const getTexture = (graphic: Graphic | number) => {
  * width, height, offsetX and offsetY
  */
 export const getDimensions = (graphic: Graphic) => {
-  const fileName = _.get(graphic, 'fileName');
-  const texture = Texture.from(getGraphicsFileName(fileName));
-  const width = texture.width <= graphic.width ? texture.width : graphic.width;
-  const height = texture.height <= graphic.height ? texture.height : graphic.height;
+  const width = graphic?.width > 0 ? graphic.width : TILE_SIZE;
+  const height = graphic?.height > 0 ? graphic.height : TILE_SIZE;
   const offsetX = (width - TILE_SIZE) / 2;
   const offsetY = height - TILE_SIZE;
   return { width, height, offsetX, offsetY };

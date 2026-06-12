@@ -98,6 +98,49 @@ export const findOne = async ({ id }: CharacterFindOneOptions = {}): Promise<
   return result
 }
 
+export const updatePosition = async ({
+  id,
+  accountId,
+  mapId,
+  x,
+  y,
+  worldX,
+  worldY,
+}: {
+  id: number | string
+  accountId: number | string
+  mapId: number
+  x: number
+  y: number
+  worldX: number
+  worldY: number
+}): Promise<CharacterWithRelations> => {
+  const qb = new QueryBuilder()
+  qb.select('id')
+  qb.from('characters')
+  qb.where('id', id)
+  qb.where('accountId', accountId)
+
+  const [character] = await db.executeQuery<Pick<CharacterRow, 'id'>>(qb.get())
+  if (!character) {
+    throw new Error('NOT_FOUND')
+  }
+
+  await db.executeQuery(
+    `UPDATE \`characters\`
+     SET \`mapId\` = ${mapId}, \`x\` = ${x}, \`y\` = ${y},
+         \`worldX\` = ${worldX}, \`worldY\` = ${worldY}, \`world\` = ${mapId}
+     WHERE \`id\` = ${id} AND \`accountId\` = ${accountId}`
+  )
+
+  const updated = await findOne({ id })
+  if (!updated) {
+    throw new Error('NOT_FOUND')
+  }
+
+  return updated
+}
+
 export const inventory = async ({
   characterId,
 }: {

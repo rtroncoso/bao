@@ -78,9 +78,16 @@ export const mapBinaryLayers = (process: (x: number, y: number) => LayeredTile):
 );
 
 /**
+ * Legacy AO map editors store `.inf` markers (exits, objects, NPCs) roughly
+ * four tiles east of the visual position in `.map` layers. Shifting left
+ * aligns spawn data with baked graphics.
+ */
+export const AO_INF_MARKER_X_OFFSET = -4;
+
+/**
  * Translates tile exits in x direction by `amount`
  */
-export const translateTileExits = (tiles: LayeredTile[][], amount: number = -4) => (
+export const translateTileExits = (tiles: LayeredTile[][], amount: number = AO_INF_MARKER_X_OFFSET) => (
   (x: number, y: number) => {
     y -= 1;
     x -= 1;
@@ -91,6 +98,32 @@ export const translateTileExits = (tiles: LayeredTile[][], amount: number = -4) 
     }
 
     return tiles[y][x];
+  }
+);
+
+/**
+ * Translates object and NPC spawn markers in x direction by `amount`
+ */
+export const translateInfSpawns = (tiles: LayeredTile[][], amount: number = AO_INF_MARKER_X_OFFSET) => (
+  (x: number, y: number) => {
+    y -= 1;
+    x -= 1;
+
+    const tile = tiles[y][x];
+    const target = tiles[y]?.[x + amount];
+
+    if (target) {
+      if (tile.object) {
+        target.object = tile.object;
+        tile.object = null;
+      }
+      if (tile.npc) {
+        target.npc = tile.npc;
+        tile.npc = null;
+      }
+    }
+
+    return tile;
   }
 );
 
@@ -119,7 +152,10 @@ export const getBinaryTiles = ({
   buffer.skipBytes(HEADER_SIZE);
   infBuffer.skipBytes(INF_HEADER_SIZE);
   const tiles = mapBinaryLayers(parseBinaryTile(buffer, infBuffer));
-  if (translateExits) { iterate(translateTileExits(tiles)) }; // mutates tiles
+  if (translateExits) {
+    iterate(translateTileExits(tiles));
+    iterate(translateInfSpawns(tiles));
+  }
   return tiles;
 };
 
@@ -137,6 +173,17 @@ export interface GetBinaryLayersParameters {
  * Parses binary formatted `Map` structure from array buffer
  * into a layered format (analog to JSON)
  */
+/**
+ * Binary tiles from {@link getBinaryTiles} are 1-indexed (1..MAP_SIZE).
+ * {@link mapLayers} expects 0-indexed dense rows — normalize here.
+ */
+export const normalizeBinaryTileRows = (
+  tiles: LayeredTile[][]
+): LayeredTile[][] =>
+  range(0, MAP_SIZE).map((y) =>
+    range(0, MAP_SIZE).map((x) => tiles[y]?.[x] ?? null)
+  );
+
 export const getBinaryLayers = ({
   animations,
   datFile,
@@ -154,24 +201,30 @@ export const getBinaryLayers = ({
     translateExits: true
   });
 
+  const rows = normalizeBinaryTileRows(tiles);
+
   const parse = parseJsonTile({ graphics, animations, objects });
   const parseJson = ({ layer, x, y }) => {
+    const layeredTile = rows[y]?.[x];
+    if (!layeredTile) {
+      return null;
+    }
+
     const g = {};
-    let tile = tiles[y][x];
-    tile.graphics.forEach((v, i) => g[i + 1] = v);
+    layeredTile.graphics.forEach((v, i) => g[i + 1] = v);
     const jsonTile: JsonTile = {
       g,
-      b: tile.blocked,
-      t: tile.trigger,
-      o: tile.object,
-      n: tile.npc,
-      te: tile.tileExit
+      b: layeredTile.blocked,
+      t: layeredTile.trigger,
+      o: layeredTile.object,
+      n: layeredTile.npc,
+      te: layeredTile.tileExit
     };
 
     return parse({ data: jsonTile, layer, x, y });
   };
 
-  return mapLayers({ rows: tiles, process: parseJson });
+  return mapLayers({ rows, process: parseJson });
 };
 
 

@@ -7,7 +7,7 @@ import React, {
 import range from 'lodash/fp/range';
 
 import { Group } from '@pixi/layers';
-import { Layer, Stage } from '@bao/client/components/Pixi';
+import { Layer, Stage, LayersStageUpdate } from '@bao/client/components/Pixi';
 import {
   CHARACTER_TYPE,
   ENTITIES_LAYER,
@@ -77,6 +77,7 @@ export const MapRenderingSystem: React.FC = ({ children }) => {
           <Layer key={index} group={layer} />
         ))}
         {Boolean(mapState.groups.length) && children}
+        {Boolean(mapState.groups.length) && <LayersStageUpdate />}
       </Stage>
     </MapContext.Provider>
   );

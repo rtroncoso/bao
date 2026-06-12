@@ -1,7 +1,30 @@
 import { Container, DisplayObject, Rectangle } from 'pixi.js';
 import { CompositeTilemap } from '@pixi/tilemap';
+import type { Group } from '@pixi/layers';
 
 import { TILE_SIZE, getProperty, TileLayer } from '@bao/core';
+
+const getTileSetAssetBase = () =>
+  process.env.NEXT_PUBLIC_BAO_ASSETS?.replace(/\/$/, '') ?? '';
+
+const resolveTileSetUrls = (paths: string[]): string[] => {
+  const base = getTileSetAssetBase();
+  return paths.map((path) => {
+    if (!path) {
+      return path;
+    }
+
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+
+    if (path.startsWith('/')) {
+      return `${base}${path}`;
+    }
+
+    return `${base}/textures/tilesets/${path}`;
+  });
+};
 
 export type SpatialBounds = {
   x: number;
@@ -158,24 +181,29 @@ export class TileChunkCache {
     chunkY: number,
     textures: any[],
     tmx: any,
-    chunkSizeTiles: number
+    chunkSizeTiles: number,
+    tilesGroup?: Group
   ): CompositeTilemap {
-    const tileSets = getProperty(layer, 'usedTileSets');
-    const tilemap = new CompositeTilemap(tileSets);
+    const tileSets = resolveTileSetUrls(getProperty(layer, 'usedTileSets'));
+    const tilemap = new CompositeTilemap(
+      tileSets as unknown as ConstructorParameters<typeof CompositeTilemap>[0]
+    );
+    if (tilesGroup) {
+      tilemap.parentGroup = tilesGroup;
+    }
     const startX = chunkX * chunkSizeTiles;
     const startY = chunkY * chunkSizeTiles;
     const endX = Math.min(startX + chunkSizeTiles, tmx.width);
     const endY = Math.min(startY + chunkSizeTiles, tmx.height);
 
     for (let y = startY; y < endY; y++) {
-      for (let x = startX; x < endX; x++) {
+      for (let x = Math.max(0, startX); x < endX; x++) {
         const index = y * tmx.width + x;
         if (layer.data[index] > 0) {
-          tilemap.tile(
-            textures[layer.data[index]],
-            x * TILE_SIZE,
-            y * TILE_SIZE
-          );
+          const texture = textures[layer.data[index]];
+          if (texture) {
+            tilemap.tile(texture, x * TILE_SIZE, y * TILE_SIZE);
+          }
         }
       }
     }
@@ -190,12 +218,16 @@ export class TileChunkCache {
     layer: TileLayer,
     textures: any[],
     tmx: any,
-    chunkSizeTiles: number
+    chunkSizeTiles: number,
+    tilesGroup?: Group
   ): DisplayObject {
     const key = buildChunkKey(layerIndex, chunkX, chunkY);
     const cached = this.cache.get(key);
 
     if (cached) {
+      if (tilesGroup && cached.parentGroup !== tilesGroup) {
+        cached.parentGroup = tilesGroup;
+      }
       return cached;
     }
 
@@ -205,7 +237,8 @@ export class TileChunkCache {
       chunkY,
       textures,
       tmx,
-      chunkSizeTiles
+      chunkSizeTiles,
+      tilesGroup
     );
 
     displayObject.name = key;
@@ -218,14 +251,35 @@ export class TileChunkCache {
     bounds: Rectangle,
     textures: any[],
     tmx: any,
-    chunkSizeTiles: number
+    chunkSizeTiles: number,
+    tilesGroup?: Group
   ): TileLayerChunk[] {
+    if (bounds.width <= 0 || bounds.height <= 0) {
+      return [];
+    }
+
     const { minX, minY, maxX, maxY } = getChunkRange(bounds, chunkSizeTiles);
+    const maxChunkX = Math.ceil(tmx.width / chunkSizeTiles) - 1;
+    const maxChunkY = Math.ceil(tmx.height / chunkSizeTiles) - 1;
     const tilemaps: TileLayerChunk[] = [];
 
     layers.forEach((layer, layerIndex) => {
-      for (let chunkY = minY; chunkY <= maxY; chunkY++) {
-        for (let chunkX = minX; chunkX <= maxX; chunkX++) {
+      const hasTiles = layer.data?.some((gid: number) => gid > 0);
+      if (!hasTiles) {
+        return;
+      }
+
+      const startChunkX = Math.max(0, minX);
+      const endChunkX = Math.min(maxX, maxChunkX);
+      const startChunkY = Math.max(0, minY);
+      const endChunkY = Math.min(maxY, maxChunkY);
+
+      if (startChunkX > endChunkX || startChunkY > endChunkY) {
+        return;
+      }
+
+      for (let chunkY = startChunkY; chunkY <= endChunkY; chunkY++) {
+        for (let chunkX = startChunkX; chunkX <= endChunkX; chunkX++) {
           tilemaps.push({
             layerIndex,
             displayObject: this.getOrBuildChunk(
@@ -235,7 +289,8 @@ export class TileChunkCache {
               layer,
               textures,
               tmx,
-              chunkSizeTiles
+              chunkSizeTiles,
+              tilesGroup
             )
           });
         }
@@ -246,43 +301,13 @@ export class TileChunkCache {
   }
 
   evictOutside(
-    bounds: Rectangle,
-    layerCount: number,
-    chunkSizeTiles: number,
-    marginChunks = 1
+    _bounds: Rectangle,
+    _layerCount: number,
+    _chunkSizeTiles: number,
+    _marginChunks = 1
   ): void {
-    const { minX, minY, maxX, maxY } = getChunkRange(bounds, chunkSizeTiles);
-    const keepKeys = new Set<string>();
-
-    for (
-      let chunkY = minY - marginChunks;
-      chunkY <= maxY + marginChunks;
-      chunkY++
-    ) {
-      for (
-        let chunkX = minX - marginChunks;
-        chunkX <= maxX + marginChunks;
-        chunkX++
-      ) {
-        if (chunkX < 0 || chunkY < 0) continue;
-
-        for (let layerIndex = 0; layerIndex < layerCount; layerIndex++) {
-          keepKeys.add(buildChunkKey(layerIndex, chunkX, chunkY));
-        }
-      }
-    }
-
-    for (const [key, displayObject] of this.cache.entries()) {
-      if (!keepKeys.has(key)) {
-        displayObject.filters = null;
-        displayObject.parentGroup = null;
-        if (displayObject.parent) {
-          displayObject.parent.removeChild(displayObject);
-        }
-        displayObject.destroy({ children: true });
-        this.cache.delete(key);
-      }
-    }
+    // Chunk cache is cleared on map unmount only. Detaching/destroying during
+    // viewport sync races @pixi/layers updateStage and causes null._worldID crashes.
   }
 
   clear(): void {

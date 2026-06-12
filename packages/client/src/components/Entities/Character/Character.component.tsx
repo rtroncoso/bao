@@ -25,6 +25,10 @@ import { CharacterState } from '@bao/server/schema/CharacterState';
 import { Animation } from '@bao/client/components/Pixi';
 import { selectBodies, selectHeads } from '@bao/client/queries';
 import { useMapContext } from '@bao/client/components/Systems/MapRenderingSystem';
+import {
+  getMapWorldOffset,
+  useWorldContext
+} from '@bao/client/components/Systems/WorldSystem';
 import { useInterpolatedPosition } from '@bao/client/hooks';
 import { useChatContext } from 'src/components/Chat';
 
@@ -42,7 +46,12 @@ export const Character = ({
   y: fixedY
 }: CharacterProps) => {
   const { mapState } = useMapContext();
+  const { worlds } = useWorldContext();
   const { state: chatState } = useChatContext();
+  const mapOffset = useMemo(
+    () => getMapWorldOffset(character.mapId ?? 34, worlds),
+    [character.mapId, worlds]
+  );
   const bodyRef = useRef<AnimatedSprite>();
   const container = useRef<PixiContainer>();
   const chatMessageRef = useRef<PixiText>();
@@ -103,8 +112,8 @@ export const Character = ({
       return;
     }
 
-    node.x = positionRef.current.x;
-    node.y = positionRef.current.y;
+    node.x = positionRef.current.x + mapOffset.x;
+    node.y = positionRef.current.y + mapOffset.y;
   });
 
   const headDisplay = character.sessionId

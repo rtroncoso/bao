@@ -12,9 +12,9 @@
     "dev": "pnpm run start",
     "build": "pnpm run clean && tsc",
     "start": "nodemon --watch src --exec pnpm run build",
-    "test": "mocha --require babel-register --colors ./test/*.spec.js",
-    "test:watch": "mocha --require babel-register --colors -w ./test/*.spec.js",
-    "test:cover": "cross-env NODE_ENV=test nyc mocha --require babel-register --colors test/*.js"
+    "test": "pnpm run build && mocha --require ./test/setup.js --colors ./test/*.spec.js",
+    "test:watch": "pnpm run build && mocha --require ./test/setup.js --colors -w ./test/*.spec.js",
+    "test:cover": "cross-env NODE_ENV=test nyc mocha --colors test/*.js"
   },
   "files": [
     "dist",

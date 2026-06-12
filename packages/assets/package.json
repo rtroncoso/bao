@@ -2,6 +2,7 @@
   "name": "@bao/assets",
   "version": "0.1.0",
   "description": "Bao Assets Repository",
+  "type": "module",
   "main": "index.js",
   "private": true,
   "repository": {
@@ -14,16 +15,32 @@
     "url": "https://github.com/rtroncoso/bao/issues"
   },
   "homepage": "https://github.com/rtroncoso/bao#readme",
+  "bin": {
+    "bao": "./bin/bao.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "serve public -l 8787 --cors",
+    "seed": "node bin/bao.js seed",
+    "seed:apply": "node bin/bao.js seed apply",
+    "convert": "node bin/bao.js convert maps",
     "staging": "./scripts/deploy.sh --environment staging",
     "production": "./scripts/deploy.sh --environment production"
   },
   "dependencies": {
+    "@bao/core": "workspace:*",
+    "@bao/env": "workspace:*",
+    "@aws-sdk/client-cloudfront": "^3.750.0",
+    "@aws-sdk/client-s3": "^3.750.0",
     "cli-progress": "^3.8.2",
     "commander": "^6.0.0",
     "dotenv": "^16.0.3",
     "esm": "^3.2.25",
-    "s3": "^4.4.0"
+    "mysql2": "^3.11.0",
+    "pixi.js": "^6.0.0"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4",
+    "tsx": "^4.19.0"
   }
 }

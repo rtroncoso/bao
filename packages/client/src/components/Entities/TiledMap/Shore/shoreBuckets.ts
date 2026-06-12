@@ -5,7 +5,16 @@ import { ShoreSpriteFilter } from './ShoreSpriteFilter';
 
 export const SHORE_BUCKET_PREFIX = 'shore-bucket-';
 
-const shoreBuckets = new Map<number, Container>();
+const shoreBucketsByMap = new Map<number, Map<number, Container>>();
+
+const getMapBuckets = (mapId: number): Map<number, Container> => {
+  let buckets = shoreBucketsByMap.get(mapId);
+  if (!buckets) {
+    buckets = new Map();
+    shoreBucketsByMap.set(mapId, buckets);
+  }
+  return buckets;
+};
 
 const getSpriteBounds = (sprite: Sprite) => {
   const left = sprite.x - sprite.width * sprite.anchor.x;
@@ -18,8 +27,8 @@ const getSpriteBounds = (sprite: Sprite) => {
   };
 };
 
-export const resetShoreBuckets = (): void => {
-  shoreBuckets.forEach((bucket) => {
+export const resetShoreBuckets = (mapId: number): void => {
+  getMapBuckets(mapId).forEach((bucket) => {
     bucket.children.slice().forEach((child) => {
       const sprite = child as Sprite;
       sprite.filters = null;
@@ -34,22 +43,24 @@ export const resetShoreBuckets = (): void => {
   });
 };
 
-export const getShoreBucket = (edgeMask: number): Container => {
-  let bucket = shoreBuckets.get(edgeMask);
+export const getShoreBucket = (mapId: number, edgeMask: number): Container => {
+  const buckets = getMapBuckets(mapId);
+  let bucket = buckets.get(edgeMask);
   if (!bucket) {
     bucket = new Container();
-    bucket.name = `${SHORE_BUCKET_PREFIX}${edgeMask}`;
-    shoreBuckets.set(edgeMask, bucket);
+    bucket.name = `${SHORE_BUCKET_PREFIX}${mapId}-${edgeMask}`;
+    buckets.set(edgeMask, bucket);
   }
 
   return bucket;
 };
 
 export const mountShoreBuckets = (
+  mapId: number,
   shoreLayer: Container,
   getFilter: (edgeMask: number) => ShoreSpriteFilter | undefined
 ): void => {
-  shoreBuckets.forEach((bucket, edgeMask) => {
+  getMapBuckets(mapId).forEach((bucket, edgeMask) => {
     if (bucket.children.length === 0) {
       if (bucket.parent) {
         bucket.parent.removeChild(bucket);
@@ -102,9 +113,6 @@ export const mountShoreBuckets = (
     bucket.renderable = true;
     bucket.parentGroup = null;
 
-    (bucket as Container & { _boundsID?: number })._boundsID =
-      ((bucket as Container & { _boundsID?: number })._boundsID ?? 0) + 1;
-
     if (bucket.parent !== shoreLayer) {
       shoreLayer.addChild(bucket);
     }
@@ -116,14 +124,29 @@ export const isShoreBucket = (child: unknown): child is Container =>
   typeof child.name === 'string' &&
   child.name.startsWith(SHORE_BUCKET_PREFIX);
 
-/** Pixi caches filtered containers until bounds change — call every tick for live waves. */
-export const invalidateShoreBucketsForAnimation = (): void => {
-  shoreBuckets.forEach((bucket) => {
-    if (!bucket.filters?.length || bucket.children.length === 0) {
-      return;
-    }
+/** Tear down filtered buckets when a map instance unmounts (map transition). */
+export const disposeShoreBucketsForMap = (mapId: number): void => {
+  const buckets = shoreBucketsByMap.get(mapId);
+  if (!buckets) {
+    return;
+  }
 
-    (bucket as Container & { _boundsID?: number })._boundsID =
-      ((bucket as Container & { _boundsID?: number })._boundsID ?? 0) + 1;
+  buckets.forEach((bucket) => {
+    bucket.children.slice().forEach((child) => {
+      const sprite = child as Sprite;
+      sprite.filters = null;
+      sprite.filterArea = null;
+      sprite.parentGroup = null;
+    });
+    bucket.removeChildren();
+    bucket.filters = null;
+    bucket.filterArea = null;
+    bucket.parentGroup = null;
+    if (bucket.parent) {
+      bucket.parent.removeChild(bucket);
+    }
+    bucket.destroy({ children: true });
   });
+
+  shoreBucketsByMap.delete(mapId);
 };

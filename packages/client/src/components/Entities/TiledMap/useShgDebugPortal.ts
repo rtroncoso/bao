@@ -77,6 +77,13 @@ const cullSyncKey = (
   [
     Math.floor(projection.x / TILE_SIZE),
     Math.floor(projection.y / TILE_SIZE),
+    snapshot.mapId,
+    snapshot.mapWorldOffset.x,
+    snapshot.mapWorldOffset.y,
+    Math.floor(snapshot.tileBounds.x / TILE_SIZE),
+    Math.floor(snapshot.tileBounds.y / TILE_SIZE),
+    Math.floor(snapshot.spriteBounds.x / TILE_SIZE),
+    Math.floor(snapshot.spriteBounds.y / TILE_SIZE),
     snapshot.spriteQueryCount,
     snapshot.objectQueryCount
   ].join(':');

@@ -12,6 +12,17 @@ export interface CharacterRow {
   weapon: number | null
   genre: number
   world: number
+  mapId: number
   x: number
   y: number
+  worldX: number
+  worldY: number
+}
+
+export interface CharacterPositionUpdate {
+  mapId: number
+  x: number
+  y: number
+  worldX: number
+  worldY: number
 }

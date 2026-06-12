@@ -27,6 +27,7 @@ export interface ManifestModel {
   maps: {
     [key: string]: string;
   };
+  worlds?: string;
   textures: {
     animations: Array<string>;
     tilesets: Array<string>;

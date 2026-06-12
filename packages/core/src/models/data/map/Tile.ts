@@ -47,11 +47,22 @@ export class Tile {
   }
 
   toScreen() {
-    return { x: (this.x - this.offsetX) * TILE_SIZE, y: (this.y - this.offsetY) * TILE_SIZE };
+    return {
+      x: this.x * TILE_SIZE - this.offsetX,
+      y: this.y * TILE_SIZE - this.offsetY,
+    };
   }
 
+  /**
+   * Animated water tiles only (AO graphics 1505–1520).
+   * Static terrain/grass graphics 6000–6063 share the 12052 tileset frame but are not water.
+   */
   isWater() {
-    const id = Number((this.animation as Graphic).id);
-    return this.animation && id >= 1505 && id <= 1520;
+    if (!this.animation) {
+      return false;
+    }
+
+    const animationId = Number(this.animation.id);
+    return animationId >= 1505 && animationId <= 1520;
   }
 }

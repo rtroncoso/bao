@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Container } from '@inlet/react-pixi';
 
-import TMX_MAP from '../../../../../assets/public/maps/34.json';
 import {
   TILES_LAYER,
   SHORE_LAYER,
@@ -9,37 +8,62 @@ import {
   ENTITIES_LAYER,
   Tiled
 } from '@bao/core';
-import { useMapContext } from '@bao/client/components/Systems';
+import { useMapContext, useWorldContext } from '@bao/client/components/Systems';
+import { useGameContext } from '@bao/client/components/Game';
+import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
 import { Water } from './Water';
-import { EffectsAnimationSystem } from './Shore';
+import { EffectsAnimationSystem, useShoreSpriteFilters } from './Shore';
+import { MapEntityLayer } from './MapEntityLayer.component';
 import {
   useMapData,
   useSpatialIndexes,
   useShoreOrientations,
-  useShoreSpriteFilters,
   useSpriteCache,
   useTextures,
   useRenderTargets,
   useTriggerHandling,
   useViewportRendering
 } from './hooks';
+import { useBorderPrefetch } from './useBorderPrefetch';
 
-export const TiledMap: React.FC = () => {
-  const mapData = useMapData(TMX_MAP as unknown as Tiled);
+interface TiledMapContentProps {
+  mapId: number;
+  currentMap: Tiled;
+  worldOffsetX: number;
+  worldOffsetY: number;
+  publishDebug?: boolean;
+}
+
+const TiledMapMapContent: React.FC<TiledMapContentProps> = ({
+  mapId,
+  currentMap,
+  worldOffsetX,
+  worldOffsetY,
+  publishDebug = false
+}) => {
+  const mapData = useMapData(currentMap);
   const spatialIndexes = useSpatialIndexes(mapData);
   const { mapState } = useMapContext();
   const textures = useTextures();
   const renderTargets = useRenderTargets();
-  const getShoreSpriteFilter = useShoreSpriteFilters();
+  const getShoreSpriteFilter = useShoreSpriteFilters(mapId);
   const shoreOrientations = useShoreOrientations(mapData);
+  const mapWorldOffset = useMemo(
+    () => ({ x: worldOffsetX, y: worldOffsetY }),
+    [worldOffsetX, worldOffsetY]
+  );
 
   const { objectsCache, spritesCache } = useSpriteCache(
     mapData.objects,
     mapData.sprites,
-    mapData.tmx
+    mapData.tmx,
+    textures
   );
 
-  useTriggerHandling(mapData.triggers, renderTargets.spritesLayer);
+  useTriggerHandling(
+    publishDebug ? mapData.triggers : [],
+    renderTargets.spritesLayer
+  );
 
   useViewportRendering(
     mapData,
@@ -49,12 +73,13 @@ export const TiledMap: React.FC = () => {
     textures,
     renderTargets,
     getShoreSpriteFilter,
-    shoreOrientations
+    shoreOrientations,
+    { mapId, mapWorldOffset, publishDebug }
   );
 
   return (
-    <EffectsAnimationSystem>
-      <Water water={mapData.water} />
+    <>
+      <Water water={mapData.water} mapWorldOffset={mapWorldOffset} />
       <Container ref={renderTargets.container}>
         <Container
           ref={renderTargets.tilesLayer}
@@ -72,7 +97,45 @@ export const TiledMap: React.FC = () => {
           ref={renderTargets.objectsLayer}
           parentGroup={mapState?.groups[ENTITIES_LAYER]}
         />
+        <MapEntityLayer mapId={mapId} mapWorldOffset={mapWorldOffset} />
       </Container>
+    </>
+  );
+};
+
+export const TiledMap: React.FC = () => {
+  const { activeMaps, currentMapId, isLoading } = useWorldContext();
+  const { state: gameState } = useGameContext();
+  const localCharacter = resolveLocalCharacter(
+    gameState?.serverState,
+    gameState?.characterId,
+    gameState?.room?.sessionId
+  );
+  const debugMapId = localCharacter?.mapId ?? currentMapId;
+
+  useBorderPrefetch();
+
+  if (isLoading && activeMaps.length === 0) {
+    return null;
+  }
+
+  if (activeMaps.length === 0) {
+    return null;
+  }
+
+  return (
+    <EffectsAnimationSystem>
+      {activeMaps.map(({ mapId, map, offsetX, offsetY }) => (
+        <Container key={mapId} x={offsetX} y={offsetY}>
+          <TiledMapMapContent
+            mapId={mapId}
+            currentMap={map}
+            worldOffsetX={offsetX}
+            worldOffsetY={offsetY}
+            publishDebug={mapId === debugMapId}
+          />
+        </Container>
+      ))}
     </EffectsAnimationSystem>
   );
 };

@@ -1,0 +1,56 @@
+import { Schema, type } from '@colyseus/schema';
+
+export class MapNpcEntityState extends Schema {
+  @type('string')
+  public id = '';
+
+  @type('uint16')
+  public npcId = 0;
+
+  @type('uint16')
+  public bodyId = 0;
+
+  @type('uint16')
+  public headId = 0;
+
+  @type('uint8')
+  public heading = 0;
+
+  @type('string')
+  public description = '';
+
+  @type('boolean')
+  public hostile = false;
+
+  @type('int32')
+  public x = 0;
+
+  @type('int32')
+  public y = 0;
+}
+
+export class MapObjectEntityState extends Schema {
+  @type('string')
+  public id = '';
+
+  @type('uint16')
+  public objectId = 0;
+
+  @type('uint16')
+  public graphicId = 0;
+
+  @type('uint16')
+  public amount = 1;
+
+  @type('uint8')
+  public objectType = 0;
+
+  @type('boolean')
+  public isOpen = false;
+
+  @type('int32')
+  public x = 0;
+
+  @type('int32')
+  public y = 0;
+}

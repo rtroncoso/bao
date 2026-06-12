@@ -8,11 +8,10 @@ import React, {
 } from 'react';
 import lerp from 'lerp';
 
-import {
-  DebugGridSystem,
-  DebugTextSystem
-} from '@bao/client/components/Systems/DebugSystem';
+import { DebugGridSystem } from '@bao/client/components/Systems/DebugSystem';
 import { useGameDebugPortal } from '@bao/client/components/Entities/TiledMap/useGameDebugPortal';
+import { useBlockedTilesDebugPortal } from '@bao/client/components/Entities/TiledMap/useBlockedTilesDebugPortal';
+import { useWaterDebugPortal } from '@bao/client/components/Entities/TiledMap/Water/useWaterDebugPortal';
 import { DEBUG_SHOW_PIXI_TILE_GRID } from '@bao/client/components/Entities/TiledMap/debugFlags';
 import { useGameContext } from '@bao/client/components/Game';
 import {
@@ -24,6 +23,10 @@ import { App } from '@bao/core/constants/game';
 import { TILE_SIZE } from '@bao/core';
 import { CharacterState } from '@bao/server/schema/CharacterState';
 import { WorldRoomState } from '@bao/server/schema/WorldRoomState';
+import {
+  getCharacterWorldPixels,
+  useWorldContext
+} from '@bao/client/components/Systems/WorldSystem';
 
 export interface ViewportProps {
   children?: React.ReactNode;
@@ -90,14 +93,14 @@ export const resolveLocalCharacter = (
     return null;
   }
 
-  // Prefer Colyseus session id so duplicate API character ids (beta testing)
-  // each resolve to this client's avatar, not the first match in the room.
   if (sessionId) {
     for (const character of serverState.characters) {
       if (character.sessionId === sessionId) {
         return character;
       }
     }
+
+    return null;
   }
 
   if (characterId) {
@@ -124,11 +127,15 @@ export const ViewportSystem: React.FC<ViewportProps> = (
   const displayPositionRef = useRef({ x: 0, y: 0 });
   const publishedProjectionTileRef = useRef({ x: Number.NaN, y: Number.NaN });
   const lastSnapKeyRef = useRef<string | null>(null);
+  const lastSnappedMapIdRef = useRef<number | null>(null);
   const { state } = useGameContext();
+  const { worlds } = useWorldContext();
   const { room, serverState, characterId } = state;
   const { children, overlay } = props;
 
   useGameDebugPortal(Boolean(state.debug), projectionRef);
+  useBlockedTilesDebugPortal(Boolean(state.debug), projectionRef);
+  useWaterDebugPortal(Boolean(state.debug), projectionRef);
 
   const currentCharacter = resolveLocalCharacter(
     serverState,
@@ -173,31 +180,56 @@ export const ViewportSystem: React.FC<ViewportProps> = (
     applyProjection(projection, character, true);
   };
 
+  const snapCameraToCharacter = (character: CharacterState) => {
+    const worldPixels = getCharacterWorldPixels(character, worlds);
+    displayPositionRef.current.x = worldPixels.x;
+    displayPositionRef.current.y = worldPixels.y;
+    snapCameraToDisplay(character);
+  };
+
+  const hadWorldsRef = useRef(false);
+
   useLayoutEffect(() => {
     if (!currentCharacter) {
       lastSnapKeyRef.current = null;
+      lastSnappedMapIdRef.current = null;
+      hadWorldsRef.current = false;
       publishedProjectionTileRef.current = { x: Number.NaN, y: Number.NaN };
       return;
     }
 
     const snapKey = room?.sessionId ?? characterId ?? '';
-    if (lastSnapKeyRef.current === snapKey) {
+    const mapChanged = currentCharacter.mapId !== lastSnappedMapIdRef.current;
+    const sessionChanged = lastSnapKeyRef.current !== snapKey;
+    const worldsJustLoaded = Boolean(worlds) && !hadWorldsRef.current;
+
+    if (worlds) {
+      hadWorldsRef.current = true;
+    }
+
+    if (!sessionChanged && !mapChanged && !worldsJustLoaded) {
       return;
     }
 
-    lastSnapKeyRef.current = snapKey;
-    displayPositionRef.current.x = currentCharacter.x;
-    displayPositionRef.current.y = currentCharacter.y;
-    snapCameraToDisplay(currentCharacter);
-  }, [currentCharacter, room?.sessionId, characterId]);
+    if (sessionChanged) {
+      lastSnapKeyRef.current = snapKey;
+    }
+
+    if (mapChanged) {
+      lastSnappedMapIdRef.current = currentCharacter.mapId ?? null;
+    }
+
+    snapCameraToCharacter(currentCharacter);
+  }, [currentCharacter?.mapId, room?.sessionId, characterId, worlds]);
 
   useTick((delta = 1) => {
     if (!currentCharacter) {
       return;
     }
 
-    const targetX = currentCharacter.x;
-    const targetY = currentCharacter.y;
+    const worldPixels = getCharacterWorldPixels(currentCharacter, worlds);
+    const targetX = worldPixels.x;
+    const targetY = worldPixels.y;
     const dx = Math.abs(displayPositionRef.current.x - targetX);
     const dy = Math.abs(displayPositionRef.current.y - targetY);
 
@@ -256,7 +288,6 @@ export const ViewportSystem: React.FC<ViewportProps> = (
           <Container ref={viewport}>
             {state.debug && DEBUG_SHOW_PIXI_TILE_GRID && <DebugGridSystem />}
             {children}
-            {state.debug && <DebugTextSystem />}
           </Container>
           {overlay}
         </>

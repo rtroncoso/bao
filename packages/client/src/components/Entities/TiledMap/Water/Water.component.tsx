@@ -1,6 +1,7 @@
 import { WATER_LAYER, TmxObject } from '@bao/core';
-import { Graphics, Sprite, useTick } from '@inlet/react-pixi';
+import { Container, Graphics, Sprite, useTick } from '@inlet/react-pixi';
 import {
+  Container as PixiContainer,
   Graphics as PixiGraphics,
   Texture,
   Sprite as PixiSprite,
@@ -15,7 +16,10 @@ import React, {
   useRef,
   useState
 } from 'react';
-import { useMapContext, useViewportContext } from 'src/components/Systems';
+import {
+  useMapContext,
+  useViewportContext
+} from '@bao/client/components/Systems';
 
 import { registerAnimatedFilter } from '../Shore/effectAnimationRegistry';
 import { getWaterPolygons } from '../Shore/waterPolygons';
@@ -30,12 +34,17 @@ const assetUrl = (asset: string | { src: string }) =>
 
 export interface WaterProps {
   water?: TmxObject[];
+  mapWorldOffset?: { x: number; y: number };
 }
 
-export const Water: React.FC<WaterProps> = ({ water = [] }) => {
+export const Water: React.FC<WaterProps> = ({
+  water = [],
+  mapWorldOffset = { x: 0, y: 0 }
+}) => {
   const { mapState } = useMapContext();
   const { projectionRef } = useViewportContext();
 
+  const containerRef = useRef<PixiContainer>();
   const waterRef = useRef<PixiSprite>();
   const filterRef = useRef<WaterFilter>();
   const [mask, setMask] = useState<PixiGraphics>();
@@ -43,6 +52,8 @@ export const Water: React.FC<WaterProps> = ({ water = [] }) => {
   const [texture, setTexture] = useState<Texture>();
   const [normal, setNormal] = useState<Texture>();
   const [displacement, setDisplacement] = useState<Texture>();
+
+  const waterGroup = mapState.groups[WATER_LAYER];
 
   const shapes = useMemo(
     () =>
@@ -60,11 +71,13 @@ export const Water: React.FC<WaterProps> = ({ water = [] }) => {
           return;
         }
 
+        graphics.beginFill(0xffffff, 1);
         graphics.moveTo(shape[0].x, shape[0].y);
         for (let index = 1; index < shape.length; index++) {
           graphics.lineTo(shape[index].x, shape[index].y);
         }
         graphics.closePath();
+        graphics.endFill();
       });
     },
     [shapes]
@@ -103,27 +116,23 @@ export const Water: React.FC<WaterProps> = ({ water = [] }) => {
 
   useTick(() => {
     const waterFilter = filterRef.current;
+    const container = containerRef.current;
     const sprite = waterRef.current;
     const projection = projectionRef.current;
 
     if (
       !waterFilter ||
+      !container ||
       !sprite ||
       !texture ||
       !normal ||
-      !displacement ||
-      !sprite.parent
+      !displacement
     ) {
       return;
     }
 
-    const group = mapState.groups[WATER_LAYER];
-    if (group) {
-      sprite.parentGroup = group;
-    }
-
-    sprite.x = projection.x;
-    sprite.y = projection.y;
+    container.x = projection.x - mapWorldOffset.x;
+    container.y = projection.y - mapWorldOffset.y;
     sprite.width = projection.width;
     sprite.height = projection.height;
 
@@ -132,29 +141,16 @@ export const Water: React.FC<WaterProps> = ({ water = [] }) => {
     waterFilter.uniforms.displacementTexture = displacement;
     waterFilter.uniforms.camera[0] = projection.x / projection.width;
     waterFilter.uniforms.camera[1] = projection.y / projection.height;
-
-    (sprite as unknown as { _boundsID: number })._boundsID++;
   });
 
-  if (!filter || !texture || !shapes.length) {
+  if (!waterGroup || !filter || !texture || !shapes.length) {
     return null;
   }
 
   return (
-    <>
-      <Graphics
-        ref={setMask}
-        draw={drawMask}
-        visible={false}
-        parentGroup={mapState.groups[WATER_LAYER]}
-      />
-      <Sprite
-        ref={waterRef}
-        mask={mask}
-        parentGroup={mapState.groups[WATER_LAYER]}
-        texture={texture}
-        filters={[filter]}
-      />
-    </>
+    <Container ref={containerRef} parentGroup={waterGroup}>
+      <Graphics ref={setMask} draw={drawMask} visible={false} />
+      <Sprite ref={waterRef} mask={mask} texture={texture} filters={[filter]} />
+    </Container>
   );
 };

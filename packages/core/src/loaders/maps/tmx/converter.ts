@@ -28,8 +28,11 @@ import {
   TRIGGER_LAYER,
   TRIGGER_ROOF,
   TRIGGER_TYPE,
-  WATER_TYPE
+  WATER_TYPE,
 } from '@bao/core/constants/game/Map';
+import { BorderNeighbor, makeBorderTriggersLayer } from '@bao/core/loaders/maps/world';
+import { isServerSpawnTile } from '@bao/core/loaders/maps/coords';
+import { isServerRenderedObject } from '@bao/core/constants/game/Object';
 import {
   createProperty,
   findInTileSets,
@@ -42,7 +45,11 @@ import {
   getSpriteSheetImagePath,
   getTileSetFilePath
 } from '@bao/core/loaders/spritesheets';
-import { getGraphicsFileName } from '@bao/core/loaders/util';
+import { getDimensions } from '@bao/core/loaders/graphics/util';
+import {
+  resolvePlacementGraphic,
+  tileCoordsToScreenFromSize,
+} from '@bao/core/loaders/maps/screen';
 import {
   GroupLayer,
   ObjectLayer,
@@ -129,22 +136,25 @@ export const makeImageLayer = ({
   visible = true
 }) => {
   const { graphic } = tile;
+  const placementGraphic = resolvePlacementGraphic(graphic) ?? graphic;
+  const { width, height } = getDimensions(placementGraphic);
+  const screen = tileCoordsToScreenFromSize(tile.x, tile.y, width, height);
   const index = getTileIndex(frame.x, frame.y, ATLAS_COLUMNS);
   const layer = new ImageLayer();
 
   layer.visible = visible;
   layer.image = graphic.path;
-  layer.offsetx = tile.x * TILE_SIZE - tile.offsetX;
-  layer.offsety = tile.y * TILE_SIZE - tile.offsetY;
+  layer.offsetx = screen.x;
+  layer.offsety = screen.y;
 
-  createProperty(layer, 'x', layer.offsetx);
-  createProperty(layer, 'y', layer.offsety);
+  createProperty(layer, 'x', screen.x);
+  createProperty(layer, 'y', screen.y);
   createProperty(layer, 'layer', tile.layer);
-  createProperty(layer, 'width', graphic.width);
-  createProperty(layer, 'height', graphic.height);
+  createProperty(layer, 'width', width);
+  createProperty(layer, 'height', height);
   createProperty(layer, 'graphicId', graphic.id);
-  createProperty(layer, 'offsetx', layer.offsetx + tile.offsetX);
-  createProperty(layer, 'offsety', layer.offsety + tile.offsetY);
+  createProperty(layer, 'offsetx', tile.x * TILE_SIZE);
+  createProperty(layer, 'offsety', tile.y * TILE_SIZE);
 
   if (tileSet) {
     createProperty(layer, 'gid', tileSet.firstgid + index);
@@ -169,14 +179,14 @@ export const makeRect = ({
   data,
   graphic,
   meta = {},
-  name = graphic.id,
+  name,
   tile,
   type,
 }: MakeRectParameters) => {
   const object = new TmxObject();
 
   object.type = type;
-  object.name = name;
+  object.name = name ?? graphic?.id ?? '';
   object.id = ++objectId;
   object.x = tile.x * TILE_SIZE;
   object.y = tile.y * TILE_SIZE;
@@ -185,18 +195,19 @@ export const makeRect = ({
 
   if (meta) {
     if (graphic) {
-      const fileName = graphic.frames.length > 0
-        ? (graphic.frames[0] as Graphic).fileName
-        : graphic.fileName;
-      const fullFileName = getGraphicsFileName(fileName);
-      const texture = Texture.from(fullFileName);
+      const placementGraphic = resolvePlacementGraphic(graphic) ?? graphic;
+      const { width, height } = getDimensions(placementGraphic);
+      const screen = tileCoordsToScreenFromSize(tile.x, tile.y, width, height);
       createProperty(object, 'graphicId', graphic.id);
-      createProperty(object, 'width', texture.width);
-      createProperty(object, 'height', texture.height);
+      createProperty(object, 'width', width);
+      createProperty(object, 'height', height);
+      createProperty(object, 'x', screen.x);
+      createProperty(object, 'y', screen.y);
+    } else {
+      createProperty(object, 'x', object.x - tile.offsetX);
+      createProperty(object, 'y', object.y - tile.offsetY);
     }
 
-    createProperty(object, 'x', object.x - tile.offsetX);
-    createProperty(object, 'y', object.y - tile.offsetY);
     createProperty(object, 'layer', tile.layer);
     createProperty(object, 'offsetx', object.x);
     createProperty(object, 'offsety', object.y);
@@ -305,21 +316,6 @@ export const cropLayer = ({
     if (tile) {
       tile.x = x - x1;
       tile.y = y - y1;
-
-      if (tile.tileExit) {
-        tile.tileExit.x -= x1;
-        tile.tileExit.y -= y1;
-      }
-
-      if (tile.npc) {
-        tile.npc.x = tile.x - 4;
-        tile.npc.y = tile.y;
-      }
-
-      if (tile.object) {
-        tile.object.x = tile.x - 4;
-        tile.object.y = tile.y;
-      }
     }
 
     return tile;
@@ -375,7 +371,7 @@ const optimizePolygons = (type: string = COLLISION_TYPE) => (objects: TmxObject[
 
     // const offsetX = x - Math.floor((x - TILE_SIZE) / TILE_SIZE);
     // x -= offsetX; grid alignment - not needed
-    const object = makeShape({ type, polygon });
+    const object = makeShape({ type, x: 0, y: 0, polygon });
     optimized.push(object);
   });
 
@@ -383,6 +379,7 @@ const optimizePolygons = (type: string = COLLISION_TYPE) => (objects: TmxObject[
 };
 
 export interface MakePolygonLayerParameters {
+  allowLayerFallthrough?: boolean;
   layers?: TileLayer[];
   layerName?: string;
   objectLayerName?: string;
@@ -397,6 +394,7 @@ export interface MakePolygonLayerParameters {
  * using optimizer and process functions
  */
 export const makePolygonLayer = ({
+  allowLayerFallthrough = true,
   layerName,
   layerNumber = TILES_LAYER,
   layers,
@@ -414,10 +412,13 @@ export const makePolygonLayer = ({
   const shapes = [];
   for (let y = 0; y < TILED_MAP_SIZE[1]; y++) {
     for (let x = 0; x < TILED_MAP_SIZE[0]; x++) {
-      let tile = l[y][x];
+      let tile = l[y]?.[x] ?? null;
 
-      while (!tile && layerNumber < layers.length) {
-        tile = layers[layerNumber++][y][x];
+      if (allowLayerFallthrough) {
+        let scanLayer = layerNumber;
+        while (!tile && scanLayer < layers.length) {
+          tile = layers[scanLayer++][y]?.[x] ?? null;
+        }
       }
 
       const shape = process(tile);
@@ -481,9 +482,18 @@ export const makeTileExitsLayer = ({ layers }) => {
 /**
  * Makes a collision layer rectangle shapes
  */
-export const makeCollisionLayer = ({ layers }) => {
+export interface MakeCollisionLayerParameters {
+  layers: any;
+  /** When false, only `tile.blocked` terrain flags are included (not water tiles). */
+  includeWater?: boolean;
+}
+
+export const makeCollisionLayer = ({
+  layers,
+  includeWater = true,
+}: MakeCollisionLayerParameters) => {
   const process = (tile: Tile) => {
-    if (tile && (tile.blocked || tile.isWater())) {
+    if (tile && (tile.blocked || (includeWater && tile.isWater()))) {
       const { graphic } = tile;
       return makeCollision({ graphic, tile });
     }
@@ -556,11 +566,13 @@ export const makeWaterLayer = ({ layers }) => {
   const layerName = 'Water Layer';
   const objectLayerName = 'Water Polygons';
   return makePolygonLayer({
+    allowLayerFallthrough: false,
     layers,
     layerName,
+    layerNumber: TILES_LAYER,
     objectLayerName,
     process,
-    optimizer: optimizePolygons(WATER_TYPE)
+    optimizer: optimize(WATER_TYPE)
   });
 };
 
@@ -613,11 +625,7 @@ export const makeNpcsLayer = ({ layers }) => {
       const { graphic } = tile;
       const npc = makeNpc({
         graphic,
-        tile: {
-          ...tile,
-          x: tile.npc.x,
-          y: tile.npc.y
-        } as Tile
+        tile
       });
 
       createProperty(npc, 'npcId', tile.npc.id);
@@ -648,11 +656,7 @@ export const makeObjectsLayer = ({ layers }) => {
       const { graphic } = tile.object;
       const object = makeObject({
         graphic,
-        tile: {
-          ...tile,
-          x: tile.object.x,
-          y: tile.object.y,
-        } as Tile
+        tile
       });
 
       createProperty(object, 'type', tile.object.type);
@@ -685,9 +689,38 @@ export type SpriteSheetResources = Record<
   }
 >;
 
+export type ServerRenderedSpawnGraphics = Map<string, number>;
+
+export const buildServerRenderedSpawnGraphics = (
+  layers: Tile[][][]
+): ServerRenderedSpawnGraphics => {
+  const entityLayer = layers[OBJECT_LAYER - 1];
+  const spawnGraphics: ServerRenderedSpawnGraphics = new Map();
+
+  if (!entityLayer) {
+    return spawnGraphics;
+  }
+
+  for (let y = 0; y < entityLayer.length; y++) {
+    for (let x = 0; x < entityLayer[y].length; x++) {
+      const tile = entityLayer[y][x];
+      if (tile?.object && isServerRenderedObject(Number(tile.object.type))) {
+        const graphicId = Number(tile.object.graphic?.id ?? tile.graphic?.id);
+        if (Number.isFinite(graphicId)) {
+          spawnGraphics.set(`${x},${y}`, graphicId);
+        }
+      }
+    }
+  }
+
+  return spawnGraphics;
+};
+
 export interface ProcessLayerParameters {
+  clientOnly?: boolean;
   offset?: { x: number, y: number };
   resources: SpriteSheetResources;
+  serverRenderedSpawnGraphics?: ServerRenderedSpawnGraphics;
   tileSets: TileSet[];
   tmx: Tiled;
 }
@@ -696,8 +729,10 @@ export interface ProcessLayerParameters {
  * Handles layer parsing
  */
 export const processLayer = ({
+  clientOnly = false,
   offset = { x: 0, y: 0 },
   resources = {},
+  serverRenderedSpawnGraphics,
   tileSets = [],
   tmx,
 }: ProcessLayerParameters) => (layer: Tile[][], index: number) => {
@@ -727,19 +762,89 @@ export const processLayer = ({
   groupLayer.id = ++lastId;
   objectLayer.id = ++lastId;
 
+  const gameLayer = index + 1;
+
   for (let y = 0; y < TILED_MAP_SIZE[1]; y++) {
     for (let x = 0; x < TILED_MAP_SIZE[0]; x++) {
       const tile = layer[y][x];
       const tileIndex = y * TILED_MAP_SIZE[0] + x;
       tilesData[tileIndex] = 0;
+      if (clientOnly && isServerSpawnTile(tile)) {
+        continue;
+      }
+      if (clientOnly && gameLayer === TILES_LAYER && tile?.isWater?.()) {
+        continue;
+      }
+      if (
+        clientOnly &&
+        tile?.graphic &&
+        serverRenderedSpawnGraphics &&
+        isServerSpawnTile(tile)
+      ) {
+        const serverGraphicId = serverRenderedSpawnGraphics.get(`${x},${y}`);
+        const placementGraphic = resolvePlacementGraphic(tile.graphic);
+        if (
+          serverGraphicId != null &&
+          placementGraphic?.id === serverGraphicId
+        ) {
+          continue;
+        }
+      }
+
+      if (
+        tile?.object &&
+        !isServerRenderedObject(Number(tile.object.type))
+      ) {
+        const objectGraphic = tile.object.graphic as Graphic | undefined;
+
+        if (
+          objectGraphic?.frames?.length > 0 &&
+          !(
+            tile.animation &&
+            Number(tile.animation.id) === Number(objectGraphic.id)
+          )
+        ) {
+          const firstFrame = objectGraphic.frames[0];
+          const frameGraphic =
+            firstFrame instanceof Graphic ? firstFrame : tile.graphic;
+          const objectData = frameGraphic
+            ? findInTileSets({ graphic: frameGraphic, tileSets, resources })
+            : null;
+
+          if (!clientOnly || !tile.isWater?.()) {
+            objects.push(
+              makeAnimation({
+                graphic: objectGraphic,
+                tile,
+                data: objectData,
+              })
+            );
+          }
+        } else if (objectGraphic && !tile.graphic) {
+          const objectData = findInTileSets({
+            graphic: objectGraphic,
+            tileSets,
+            resources,
+          });
+
+          if (objectData) {
+            objects.push(
+              makeSprite({ graphic: objectGraphic, tile, data: objectData })
+            );
+          }
+        }
+      }
+
       if (tile && tile.graphic) {
         const { graphic, animation } = tile;
         const data = findInTileSets({ graphic, tileSets, resources });
         tilesData[tileIndex] = 0;
 
         if (animation && (animation as Graphic).frames.length > 0) {
-          const object = makeAnimation({ graphic: animation, tile, data });
-          objects.push(object);
+          if (!clientOnly || !tile.isWater?.()) {
+            const object = makeAnimation({ graphic: animation, tile, data });
+            objects.push(object);
+          }
         }
 
         if (data) {
@@ -789,22 +894,28 @@ export const processLayer = ({
 };
 
 export interface ConvertLayersToTmxParameters {
+  borderNeighbors?: BorderNeighbor[];
+  clientOnly?: boolean;
   crop?: boolean;
   layers: Tile[][][];
   name?: string;
   number?: number;
   resources: SpriteSheetResources;
+  tilesetsType?: string;
 }
 
 /**
  * Convert Map Layers from JSON format to TMX
  */
 export const convertLayersToTmx = ({
+  borderNeighbors = [],
+  clientOnly = false,
   crop = true,
   layers = [],
   name = 'Map',
   number = 1,
   resources = {},
+  tilesetsType = config.tilesetsType,
 }: ConvertLayersToTmxParameters) => {
   const tmx = new Tiled();
   const tileSets = [];
@@ -814,9 +925,9 @@ export const convertLayersToTmx = ({
   range(1, TILESET_SPRITESHEETS + 1).forEach((s) => {
     const tileset = new TileSet();
     tileset.firstgid = (s - 1) * (ATLAS_COLUMNS * ATLAS_COLUMNS) + 1;
-    tileset.spriteSheetSource = getSpriteSheetFilePath(s, config.tilesetsType);
-    tileset.imagePath = getSpriteSheetImagePath(s, config.tilesetsType);
-    tileset.source = getTileSetFilePath(s, config.tilesetsType);
+    tileset.spriteSheetSource = getSpriteSheetFilePath(s, tilesetsType);
+    tileset.imagePath = getSpriteSheetImagePath(s, tilesetsType);
+    tileset.source = getTileSetFilePath(s, tilesetsType);
     tileset.name = `Tile Set ${s}`;
     tileSets.push(tileset);
   });
@@ -833,24 +944,46 @@ export const convertLayersToTmx = ({
     layers = layers.map(layer => (
       cropLayer({
         layer,
-        x1: MAP_BORDER_X,
-        y1: MAP_BORDER_Y,
+        x1: MAP_BORDER_X - 1,
+        y1: MAP_BORDER_Y - 1,
         x2: TILED_MAP_SIZE[0],
         y2: TILED_MAP_SIZE[1]
       })
     ));
   }
 
+  const serverRenderedSpawnGraphics = clientOnly
+    ? buildServerRenderedSpawnGraphics(layers)
+    : undefined;
+
   layers.forEach((l, i) => {
-    const process = processLayer({ tmx, resources, tileSets });
+    const process = processLayer({
+      clientOnly,
+      tmx,
+      resources,
+      serverRenderedSpawnGraphics,
+      tileSets,
+    });
     tmx.layers.push(process(l, i));
   });
 
   tmx.layers.push(makeWaterLayer({ layers }));
-  tmx.layers.push(makeObjectsLayer({ layers }));
-  tmx.layers.push(makeNpcsLayer({ layers }));
-  tmx.layers.push(makeTileExitsLayer({ layers }));
+
+  if (!clientOnly) {
+    tmx.layers.push(makeObjectsLayer({ layers }));
+    tmx.layers.push(makeNpcsLayer({ layers }));
+    tmx.layers.push(makeTileExitsLayer({ layers }));
+  }
+
   tmx.layers.push(...makeTriggersLayer({ layers }));
-  tmx.layers.push(makeCollisionLayer({ layers }));
+
+  if (borderNeighbors.length > 0) {
+    tmx.layers.push(makeBorderTriggersLayer({ neighbors: borderNeighbors }));
+  }
+
+  if (!clientOnly) {
+    tmx.layers.push(makeCollisionLayer({ layers }));
+  }
+
   return tmx;
 };

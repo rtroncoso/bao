@@ -13,6 +13,7 @@ import {
   TRIGGER_LAYER,
 } from '@bao/core/constants/game/Map';
 import { getDimensions, JsonGraphicState } from '@bao/core/loaders/graphics';
+import { resolvePlacementGraphic } from '@bao/core/loaders/maps/screen';
 import { findAnimation, findGraphic } from '@bao/core/loaders/util';
 import { Graphic, MapObject, Tile } from '@bao/core/models';
 
@@ -63,22 +64,29 @@ export const parseJsonTile: ParseJsonTileWrapper<JsonTile, Tile> = ({
 
   if (graphic) {
     if (graphic.frames.length > 0) {
-      animation = findAnimation({ animations, id: g[layer] });
-      graphic = _.get(animation, 'frames.0');
+      animation =
+        findAnimation({ animations, id: g[layer] }) ?? graphic;
+      const frameGraphic = _.get(animation, 'frames.0');
+      if (frameGraphic) {
+        graphic = frameGraphic;
+      }
     }
 
-    dimensions = getDimensions(graphic);
+    if (graphic) {
+      dimensions = getDimensions(resolvePlacementGraphic(graphic) ?? graphic);
+    }
   }
 
   if (data.o && layer === OBJECT_LAYER) {
     object = _.get(data, 'o');
-    const { graphic, type } = objects.find(o => o.id === object.id);
-    if (graphic) {
-      object.graphic = graphic;
+    const objectDef = objects.find(o => o.id === object.id);
+    if (objectDef?.graphic) {
+      const { graphic: objectGraphic, type } = objectDef;
+      object.graphic = objectGraphic;
       object.type = type;
 
-      if (graphic.frames.length === 0) {
-        dimensions = getDimensions(graphic);
+      if (objectGraphic.frames.length === 0) {
+        dimensions = getDimensions(objectGraphic);
       }
     }
   }

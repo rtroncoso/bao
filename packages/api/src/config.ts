@@ -1,5 +1,11 @@
 import type { PoolOptions } from 'mysql2'
-import { envNumber, envString, loadRootEnv, requireEnv } from '@bao/env'
+import {
+  envNumber,
+  envString,
+  loadRootEnv,
+  parseCorsOrigins,
+  requireEnv,
+} from '@bao/env'
 
 loadRootEnv(__dirname)
 
@@ -20,7 +26,10 @@ const db: PoolOptions = {
   connectionLimit: 10,
 }
 
+const corsOrigins = parseCorsOrigins(envString('CORS_ORIGINS'))
+
 export default {
   app,
+  corsOrigins,
   db,
 }

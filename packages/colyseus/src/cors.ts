@@ -1,74 +1,16 @@
-import type { CorsOptions } from 'cors';
 import type { IncomingMessage, ServerResponse } from 'http';
 import type { Server } from 'colyseus';
+import { buildMatchmakeCorsHeaders, isOriginAllowed } from '@bao/env';
 
-export function parseCorsOrigins(value?: string): string[] | undefined {
-  if (!value) {
-    return undefined;
-  }
-
-  const origins = value
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean);
-
-  return origins.length > 0 ? origins : undefined;
-}
+export {
+  buildExpressCorsOptions,
+  isOriginAllowed,
+  parseCorsOrigins
+} from '@bao/env';
 
 export function getRequestOrigin(req: IncomingMessage): string | undefined {
   const origin = req.headers.origin;
   return Array.isArray(origin) ? origin[0] : origin;
-}
-
-export function isOriginAllowed(
-  requestOrigin: string | undefined,
-  allowedOrigins?: string[]
-): boolean {
-  if (!allowedOrigins) {
-    return true;
-  }
-
-  // Non-browser clients (load tests, server-to-server) omit Origin.
-  if (!requestOrigin) {
-    return true;
-  }
-
-  return allowedOrigins.includes(requestOrigin);
-}
-
-export function buildExpressCorsOptions(
-  allowedOrigins?: string[]
-): CorsOptions {
-  if (!allowedOrigins) {
-    return {};
-  }
-
-  return {
-    origin: allowedOrigins,
-    credentials: true
-  };
-}
-
-export function buildMatchmakeCorsHeaders(
-  req: IncomingMessage,
-  allowedOrigins?: string[]
-): Record<string, string | number> {
-  const requestOrigin = getRequestOrigin(req);
-  const allowOrigin =
-    !allowedOrigins || !requestOrigin
-      ? '*'
-      : allowedOrigins.includes(requestOrigin)
-      ? requestOrigin
-      : 'null';
-
-  return {
-    'Access-Control-Allow-Headers':
-      'Origin, X-Requested-With, Content-Type, Accept',
-    'Access-Control-Allow-Methods': 'OPTIONS, POST, GET',
-    'Access-Control-Allow-Origin': allowOrigin,
-    'Access-Control-Max-Age': 2592000,
-    Vary: 'Origin'
-  };
 }
 
 type MatchmakeServer = Server & {
@@ -86,10 +28,25 @@ export function patchMatchmakeCors(
   const original = server.handleMatchMakeRequest.bind(server);
 
   server.handleMatchMakeRequest = async (req, res) => {
-    const corsHeaders = buildMatchmakeCorsHeaders(req, allowedOrigins);
+    const requestOrigin = getRequestOrigin(req);
+    const corsHeaders = buildMatchmakeCorsHeaders(
+      requestOrigin,
+      allowedOrigins
+    );
 
-    if (!isOriginAllowed(getRequestOrigin(req), allowedOrigins)) {
+    if (!isOriginAllowed(requestOrigin, allowedOrigins)) {
+      console.warn(
+        `[cors] blocked ${req.method} ${req.url} from origin "${
+          requestOrigin ?? '(none)'
+        }"`
+      );
       res.writeHead(403, corsHeaders);
+      res.end();
+      return;
+    }
+
+    if (req.method === 'OPTIONS') {
+      res.writeHead(204, corsHeaders);
       res.end();
       return;
     }

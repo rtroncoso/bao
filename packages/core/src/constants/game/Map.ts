@@ -48,6 +48,7 @@ export const SPRITE_TYPE = 'sprite';
 export const CHARACTER_TYPE = 'character';
 export const COLLISION_TYPE = 'collision';
 export const TILE_EXIT_TYPE = 'tileExit';
+export const BORDER_TRIGGER_TYPE = 'borderTrigger';
 export const TRIGGER_TYPE = 'trigger';
 export const WATER_TYPE = 'water';
 export const OBJECT_TYPE = 'object';

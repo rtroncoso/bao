@@ -1,31 +1,22 @@
-import { useEffect, useMemo, useRef } from 'react';
-import { Rectangle as PixiRectangle } from 'pixi.js';
+import { useEffect, useRef } from 'react';
 
-import {
-  calculateProjectionMatrix,
-  getObjectLayersFromTmx,
-  getWaterFromObjectLayers,
-  Tiled,
-  TILE_SIZE
-} from '@bao/core';
+import { TILE_SIZE } from '@bao/core';
 
-import TMX_MAP from '../../../../../assets/public/maps/34.json';
-import { SHORE_SPRITE_EXTRA_CULL_PX } from './constants';
+import { useGameContext } from '@bao/client/components/Game';
+import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
+
 import { DEBUG_SHOW_SHG_CELL_GRID } from './debugFlags';
-import { getWaterPolygons } from './Shore/waterPolygons';
 import { spatialDebugRef } from './spatialDebug';
 
 import type { Rectangle } from '@bao/client/components/Systems/ViewportSystem';
 
 const DEBUG_HOST_ID = 'game-debug-overlay';
-const WATER_LAYER_ID = 'game-debug-water';
 const SHG_LAYER_ID = 'game-debug-shg';
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 type Bounds = { x: number; y: number; width: number; height: number };
 
-const getMapWater = () =>
-  getWaterFromObjectLayers(getObjectLayersFromTmx(TMX_MAP as unknown as Tiled));
+const EMPTY_BOUNDS: Bounds = { x: 0, y: 0, width: 0, height: 0 };
 
 const setViewBox = (svg: SVGSVGElement, projection: Rectangle) => {
   svg.setAttribute(
@@ -44,6 +35,7 @@ const createRect = (
   rect.setAttribute('fill', fill);
   rect.setAttribute('stroke', stroke);
   rect.setAttribute('stroke-width', '2');
+  rect.setAttribute('vector-effect', 'non-scaling-stroke');
   if (dash) {
     rect.setAttribute('stroke-dasharray', dash);
   }
@@ -64,6 +56,11 @@ const updateShgCellGridPath = (
   cellSize: number
 ) => {
   const { x, y, width, height } = objectBounds;
+  if (width <= 0 || height <= 0) {
+    path.setAttribute('d', '');
+    return;
+  }
+
   const minCellX = Math.floor(x / cellSize) * cellSize;
   const maxCellX = Math.ceil((x + width) / cellSize) * cellSize;
   const minCellY = Math.floor(y / cellSize) * cellSize;
@@ -82,13 +79,25 @@ const updateShgCellGridPath = (
 
 const shgCullSyncKey = (
   projection: Rectangle,
-  snapshot: NonNullable<typeof spatialDebugRef.current>
+  snapshot: NonNullable<typeof spatialDebugRef.current>,
+  liveMapId?: number
 ) =>
   [
     Math.floor(projection.x / TILE_SIZE),
     Math.floor(projection.y / TILE_SIZE),
+    liveMapId,
+    snapshot.mapId,
+    snapshot.mapWorldOffset.x,
+    snapshot.mapWorldOffset.y,
+    Math.floor(snapshot.tileBounds.x / TILE_SIZE),
+    Math.floor(snapshot.tileBounds.y / TILE_SIZE),
+    Math.floor(snapshot.spriteBounds.x / TILE_SIZE),
+    Math.floor(snapshot.spriteBounds.y / TILE_SIZE),
     snapshot.spriteQueryCount,
-    snapshot.objectQueryCount
+    snapshot.objectQueryCount,
+    snapshot.characterPosition?.mapId,
+    snapshot.characterPosition?.x,
+    snapshot.characterPosition?.y
   ].join(':');
 
 const createDebugSvg = (id: string) => {
@@ -97,23 +106,33 @@ const createDebugSvg = (id: string) => {
   svg.setAttribute('width', '100%');
   svg.setAttribute('height', '100%');
   svg.setAttribute('preserveAspectRatio', 'none');
-  svg.setAttribute('shape-rendering', 'optimizeSpeed');
   svg.style.position = 'absolute';
   svg.style.inset = '0';
   svg.style.pointerEvents = 'none';
-  svg.style.overflow = 'hidden';
-  svg.style.contain = 'strict';
+  svg.style.overflow = 'visible';
   return svg;
 };
 
-/** Single RAF loop for water + SHG DOM debug overlays; DOM writes only on tile-step changes. */
+/** DOM overlay for spatial-hash culling bounds and player position (debug mode). */
 export const useGameDebugPortal = (
   enabled: boolean,
   projectionRef: React.MutableRefObject<Rectangle>
 ): void => {
-  const waterShapes = useMemo(() => getWaterPolygons(getMapWater()), []);
+  const { state: gameState } = useGameContext();
   const projectionRefStable = useRef(projectionRef);
   projectionRefStable.current = projectionRef;
+  const liveCharacterRef = useRef(
+    resolveLocalCharacter(
+      gameState?.serverState,
+      gameState?.characterId,
+      gameState?.room?.sessionId
+    )
+  );
+  liveCharacterRef.current = resolveLocalCharacter(
+    gameState?.serverState,
+    gameState?.characterId,
+    gameState?.room?.sessionId
+  );
 
   useEffect(() => {
     const host = document.getElementById(DEBUG_HOST_ID);
@@ -121,32 +140,10 @@ export const useGameDebugPortal = (
       return;
     }
 
-    document.getElementById(WATER_LAYER_ID)?.remove();
     document.getElementById(SHG_LAYER_ID)?.remove();
 
     if (!enabled) {
       return;
-    }
-
-    const waterSvg =
-      waterShapes.length > 0 ? createDebugSvg(WATER_LAYER_ID) : null;
-    if (waterSvg) {
-      waterShapes.forEach((polygon) => {
-        if (polygon.length < 3) {
-          return;
-        }
-
-        const element = document.createElementNS(SVG_NS, 'polygon');
-        element.setAttribute(
-          'points',
-          polygon.map(({ x, y }) => `${x},${y}`).join(' ')
-        );
-        element.setAttribute('fill', 'rgba(51, 136, 255, 0.22)');
-        element.setAttribute('stroke', 'rgba(255, 68, 68, 0.75)');
-        element.setAttribute('stroke-width', '2');
-        waterSvg.appendChild(element);
-      });
-      host.appendChild(waterSvg);
     }
 
     const shgSvg = createDebugSvg(SHG_LAYER_ID);
@@ -183,6 +180,7 @@ export const useGameDebugPortal = (
     gridPath.setAttribute('fill', 'none');
     gridPath.setAttribute('stroke', 'rgba(80, 255, 120, 0.35)');
     gridPath.setAttribute('stroke-width', '1');
+    gridPath.setAttribute('vector-effect', 'non-scaling-stroke');
     gridPath.style.display = DEBUG_SHOW_SHG_CELL_GRID ? '' : 'none';
     shgGroup.appendChild(gridPath);
 
@@ -198,72 +196,75 @@ export const useGameDebugPortal = (
 
     let frameId = 0;
     let lastCullKey = '';
+    let lastLiveMapId: number | undefined;
 
-    /** Cheap: pans debug overlays with the live camera each frame. */
     const syncFrame = (projection: Rectangle) => {
-      if (waterSvg) {
-        setViewBox(waterSvg, projection);
-      }
       setViewBox(shgSvg, projection);
       updateRect(cameraRect, projection);
       label.setAttribute('x', String(projection.x + 8));
       label.setAttribute('y', String(projection.y + 20));
     };
 
-    /** Expensive: culling rects + cell grid geometry — only on tile/cull changes. */
-    const syncCull = (projection: Rectangle) => {
+    const syncCull = (_projection: Rectangle) => {
+      const liveCharacter = liveCharacterRef.current;
       const snapshot = spatialDebugRef.current;
-      if (!snapshot?.tmx) {
+      const liveMapId = liveCharacter?.mapId;
+
+      if (!liveCharacter) {
+        label.textContent = 'SHG waiting for character…';
+        updateRect(tileRect, EMPTY_BOUNDS);
+        updateRect(spriteRect, EMPTY_BOUNDS);
+        updateRect(objectRect, EMPTY_BOUNDS);
+        gridPath.setAttribute('d', '');
         return;
       }
 
-      const camera = new PixiRectangle(
-        projection.x,
-        projection.y,
-        projection.width,
-        projection.height
-      );
-      const tileBounds = calculateProjectionMatrix(
-        snapshot.tmx,
-        camera,
-        snapshot.tileCullingPx
-      );
-      const spriteBounds = calculateProjectionMatrix(
-        snapshot.tmx,
-        camera,
-        snapshot.objectCullingPx + SHORE_SPRITE_EXTRA_CULL_PX
-      );
-      const objectBounds = calculateProjectionMatrix(
-        snapshot.tmx,
-        camera,
-        snapshot.objectCullingPx
-      );
-
-      updateRect(tileRect, tileBounds);
-      updateRect(spriteRect, spriteBounds);
-      updateRect(objectRect, objectBounds);
-
-      if (DEBUG_SHOW_SHG_CELL_GRID) {
-        updateShgCellGridPath(gridPath, spriteBounds, snapshot.cellSize);
+      if (!snapshot || snapshot.mapId !== liveMapId) {
+        label.textContent = `SHG waiting for map ${liveMapId}…`;
+        updateRect(tileRect, EMPTY_BOUNDS);
+        updateRect(spriteRect, EMPTY_BOUNDS);
+        updateRect(objectRect, EMPTY_BOUNDS);
+        gridPath.setAttribute('d', '');
+        return;
       }
 
+      updateRect(tileRect, snapshot.tileBounds);
+      updateRect(spriteRect, snapshot.spriteBounds);
+      updateRect(objectRect, snapshot.objectBounds);
+
+      if (DEBUG_SHOW_SHG_CELL_GRID) {
+        updateShgCellGridPath(
+          gridPath,
+          snapshot.spriteBounds,
+          snapshot.cellSize
+        );
+      }
+
+      const positionLine = `world [${liveCharacter.worldX}, ${liveCharacter.worldY}] map ${liveCharacter.mapId} tile [${liveCharacter.tile.x}, ${liveCharacter.tile.y}]`;
+
       label.textContent = [
-        `SHG cell ${snapshot.cellSize / TILE_SIZE}t (${snapshot.cellSize}px)`,
+        positionLine,
+        `SHG ${snapshot.cellSize / TILE_SIZE}t (${snapshot.cellSize}px)`,
         `sprites ${snapshot.spriteQueryCount}`,
-        `objects ${snapshot.objectQueryCount}`,
-        `tile [${tileBounds.x | 0},${tileBounds.y | 0}]`,
-        `spr [${spriteBounds.x | 0},${spriteBounds.y | 0}]`,
-        `obj [${objectBounds.x | 0},${objectBounds.y | 0}]`
+        `objects ${snapshot.objectQueryCount}`
       ].join(' | ');
     };
 
     const sync = () => {
       const projection = projectionRefStable.current.current;
       const snapshot = spatialDebugRef.current;
+      const liveMapId = liveCharacterRef.current?.mapId;
 
       syncFrame(projection);
 
-      const cullKey = snapshot?.tmx ? shgCullSyncKey(projection, snapshot) : '';
+      if (liveMapId !== lastLiveMapId) {
+        lastLiveMapId = liveMapId;
+        lastCullKey = '';
+      }
+
+      const cullKey = snapshot
+        ? shgCullSyncKey(projection, snapshot, liveMapId)
+        : `waiting:${liveMapId ?? 'none'}`;
       if (cullKey !== lastCullKey) {
         lastCullKey = cullKey;
         syncCull(projection);
@@ -278,8 +279,7 @@ export const useGameDebugPortal = (
 
     return () => {
       cancelAnimationFrame(frameId);
-      waterSvg?.remove();
       shgSvg.remove();
     };
-  }, [enabled, waterShapes]);
+  }, [enabled]);
 };

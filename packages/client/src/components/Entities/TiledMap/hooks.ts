@@ -1,18 +1,12 @@
-import {
-  useMemo,
-  useState,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useCallback
-} from 'react';
+import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { useTick } from '@inlet/react-pixi';
 import { useSelector } from 'react-redux';
 import {
-  Rectangle,
+  Rectangle as PixiRectangle,
   Container as PixiContainer,
   AnimatedSprite,
-  Sprite
+  Sprite,
+  Texture
 } from 'pixi.js';
 import { pointPolygon } from 'intersects';
 import {
@@ -21,13 +15,13 @@ import {
   getTileSetTextures,
   getTileLayersFromTmx,
   getObjectLayersFromTmx,
-  getCollisionsFromObjectLayers,
   getObjectsFromObjectLayers,
   getSpritesFromObjectLayers,
   getTriggersFromObjectLayers,
   getWaterFromObjectLayers,
   calculateProjectionMatrix,
   SHORE_LAYER,
+  TILES_LAYER,
   TmxObject,
   TRIGGER_ROOF
 } from '@bao/core';
@@ -36,13 +30,15 @@ import {
   selectGraphics,
   selectManifest
 } from '@bao/client/queries';
+import { useGameContext } from '@bao/client/components/Game';
 import {
   useAssetsContext,
   useMapContext,
   useViewportContext
 } from '@bao/client/components/Systems';
+import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
+import type { Rectangle as ViewportRectangle } from '@bao/client/components/Systems/ViewportSystem';
 import { polygon } from '@bao/client/utils';
-
 import { SpatialIndexes, SpritesCache, TiledMapData } from './types';
 import {
   POOL_SIZES,
@@ -70,14 +66,29 @@ import {
   handleRoofTrigger
 } from './utils';
 import { SpatialHashGrid, TileChunkCache } from './spatial';
-import { spatialDebugRef } from './spatialDebug';
+import { spatialDebugRef, offsetBounds } from './spatialDebug';
 import {
+  disposeShoreBucketsForMap,
   getShoreOrientations,
   ShoreEdges,
   useShoreSpriteFilters as useShoreSpriteFilterPool
 } from './Shore';
 
 export { useShoreSpriteFilters } from './Shore';
+
+const hasTileTextures = (textures: Texture[]): boolean => {
+  if (!textures.length) {
+    return false;
+  }
+
+  for (let index = 1; index < textures.length; index++) {
+    if (textures[index]) {
+      return true;
+    }
+  }
+
+  return false;
+};
 
 export const useMapData = (tmxMap: any): TiledMapData => {
   return useMemo(() => {
@@ -87,11 +98,9 @@ export const useMapData = (tmxMap: any): TiledMapData => {
     const sprites = getSpritesFromObjectLayers(objectLayers);
     const objects = getObjectsFromObjectLayers(objectLayers);
     const water = getWaterFromObjectLayers(objectLayers);
-    const collisions = getCollisionsFromObjectLayers(objectLayers);
     const triggers = getTriggersFromObjectLayers(objectLayers);
 
     return {
-      collisions,
       objectLayers,
       objects,
       sprites,
@@ -149,7 +158,8 @@ export const useSpritePools = () => {
 export const useSpriteCache = (
   objects: TmxObject[],
   sprites: TmxObject[],
-  tmx: any
+  tmx: any,
+  textures: Texture[] = []
 ) => {
   const graphics = useSelector(selectGraphics);
   const { mapState } = useMapContext();
@@ -166,7 +176,8 @@ export const useSpriteCache = (
           graphics,
           mapState,
           animationsPool,
-          spritesPool
+          spritesPool,
+          textures
         )
       );
       setObjectsCache(
@@ -175,11 +186,21 @@ export const useSpriteCache = (
           graphics,
           mapState,
           animationsPool,
-          spritesPool
+          spritesPool,
+          textures
         )
       );
     }
-  }, [tmx, graphics, mapState, objects, sprites, animationsPool, spritesPool]);
+  }, [
+    tmx,
+    graphics,
+    mapState,
+    objects,
+    sprites,
+    animationsPool,
+    spritesPool,
+    textures
+  ]);
 
   return { objectsCache, spritesCache };
 };
@@ -206,13 +227,16 @@ export const useRenderTargets = () => {
   const spritesLayer = useRef<PixiContainer>();
   const objectsLayer = useRef<PixiContainer>();
 
-  return {
-    container,
-    tilesLayer,
-    shoreLayer,
-    spritesLayer,
-    objectsLayer
-  };
+  return useMemo(
+    () => ({
+      container,
+      tilesLayer,
+      shoreLayer,
+      spritesLayer,
+      objectsLayer
+    }),
+    []
+  );
 };
 
 export const useTriggerHandling = (
@@ -297,6 +321,13 @@ export const useShoreOrientations = (mapData: TiledMapData) => {
   );
 };
 
+export interface ViewportRenderingOptions {
+  mapId?: number;
+  mapWorldOffset?: { x: number; y: number };
+  terrainOnly?: boolean;
+  publishDebug?: boolean;
+}
+
 export const useViewportRendering = (
   mapData: TiledMapData,
   spatialIndexes: SpatialIndexes | null,
@@ -304,17 +335,31 @@ export const useViewportRendering = (
   spritesCache: SpritesCache,
   textures: any[],
   renderTargets: any,
-  getShoreSpriteFilter: ReturnType<typeof useShoreSpriteFilterPool>,
-  shoreOrientations: Map<string | number, ShoreEdges>
+  getShoreSpriteFilter: ReturnType<typeof useShoreSpriteFilterPool> | null,
+  shoreOrientations: Map<string | number, ShoreEdges> | null,
+  options: ViewportRenderingOptions = {}
 ) => {
-  const { viewportState, projectionRef } = useViewportContext();
+  const mapWorldOffset = options.mapWorldOffset ?? { x: 0, y: 0 };
+  const mapId = options.mapId ?? 0;
+  const terrainOnly = options.terrainOnly ?? false;
+  const publishDebug = options.publishDebug ?? false;
+  const { projectionRef } = useViewportContext();
+  const { state: gameState } = useGameContext();
+  const liveCharacter = resolveLocalCharacter(
+    gameState?.serverState,
+    gameState?.characterId,
+    gameState?.room?.sessionId
+  );
+  const liveCharacterRef = useRef(liveCharacter);
+  liveCharacterRef.current = liveCharacter;
+  const liveMapId = liveCharacter?.mapId;
+  const liveTileX = liveCharacter?.tile.x;
+  const liveTileY = liveCharacter?.tile.y;
   const { mapState } = useMapContext();
   const tileCullingPx = TILE_CULLING_TILES * TILE_SIZE;
   const objectCullingPx = OBJECT_CULLING_TILES * TILE_SIZE;
   const tileChunkCache = useRef(new TileChunkCache());
-  const lastCullRef = useRef({ x: Number.NaN, y: Number.NaN });
-  const projectionTileX = Math.floor(viewportState.projection.x / TILE_SIZE);
-  const projectionTileY = Math.floor(viewportState.projection.y / TILE_SIZE);
+  const lastCullRef = useRef<{ x: number; y: number } | null>(null);
   const shoreSpriteObjects = useMemo(
     () =>
       mapData.sprites.filter(
@@ -324,25 +369,38 @@ export const useViewportRendering = (
     [mapData.sprites]
   );
 
+  const toLocalProjection = useCallback(
+    (projection: ViewportRectangle) =>
+      new PixiRectangle(
+        projection.x - mapWorldOffset.x,
+        projection.y - mapWorldOffset.y,
+        projection.width,
+        projection.height
+      ),
+    [mapWorldOffset.x, mapWorldOffset.y]
+  );
+
   const syncViewportLayers = useCallback(
-    (projection: Rectangle) => {
-      if (!textures.length || !spatialIndexes) {
+    (projection: ViewportRectangle) => {
+      if (!hasTileTextures(textures) || !spatialIndexes) {
         return;
       }
 
+      const tilesGroup = mapState?.groups[TILES_LAYER];
+      const localProjection = toLocalProjection(projection);
       const tileBounds = calculateProjectionMatrix(
         mapData.tmx,
-        projection,
+        localProjection,
         tileCullingPx
       );
       const objectBounds = calculateProjectionMatrix(
         mapData.tmx,
-        projection,
+        localProjection,
         objectCullingPx
       );
       const spriteBounds = calculateProjectionMatrix(
         mapData.tmx,
-        projection,
+        localProjection,
         objectCullingPx + SHORE_SPRITE_EXTRA_CULL_PX
       );
 
@@ -360,7 +418,8 @@ export const useViewportRendering = (
         tileBounds,
         textures,
         mapData.tmx,
-        TILE_CHUNK_SIZE_TILES
+        TILE_CHUNK_SIZE_TILES,
+        tilesGroup
       );
 
       renderTileLayers(
@@ -370,26 +429,29 @@ export const useViewportRendering = (
           shoreLayer: renderTargets.shoreLayer
         },
         SHORE_TILE_LAYER_INDEX,
-        mapState?.groups[SHORE_LAYER]
+        tilesGroup
       );
 
-      renderSpriteLayers(
-        spritesInViewport,
-        renderTargets.spritesLayer,
-        spritesCache,
-        {
-          getShoreSpriteFilter,
-          shoreGroup: mapState?.groups[SHORE_LAYER],
-          shoreOrientations,
-          shoreTarget: renderTargets.shoreLayer
-        }
-      );
+      if (!terrainOnly && getShoreSpriteFilter && shoreOrientations) {
+        renderSpriteLayers(
+          spritesInViewport,
+          renderTargets.spritesLayer,
+          spritesCache,
+          {
+            mapId,
+            getShoreSpriteFilter,
+            shoreGroup: mapState?.groups[SHORE_LAYER],
+            shoreOrientations,
+            shoreTarget: renderTargets.shoreLayer
+          }
+        );
 
-      renderSpriteLayers(
-        objectsInViewport,
-        renderTargets.objectsLayer,
-        objectsCache
-      );
+        renderSpriteLayers(
+          objectsInViewport,
+          renderTargets.objectsLayer,
+          objectsCache
+        );
+      }
 
       tileChunkCache.current.evictOutside(
         tileBounds,
@@ -398,33 +460,44 @@ export const useViewportRendering = (
         TILE_CHUNK_CACHE_MARGIN
       );
 
-      spatialDebugRef.current = {
-        tmx: mapData.tmx,
-        tileCullingPx,
-        objectCullingPx,
-        cullProjection: projection,
-        tileBounds: {
-          x: tileBounds.x,
-          y: tileBounds.y,
-          width: tileBounds.width,
-          height: tileBounds.height
-        },
-        spriteBounds: {
-          x: spriteBounds.x,
-          y: spriteBounds.y,
-          width: spriteBounds.width,
-          height: spriteBounds.height
-        },
-        objectBounds: {
-          x: objectBounds.x,
-          y: objectBounds.y,
-          width: objectBounds.width,
-          height: objectBounds.height
-        },
-        cellSize: SPATIAL_CELL_SIZE_TILES * TILE_SIZE,
-        spriteQueryCount: Object.values(spritesInViewport).flat().length,
-        objectQueryCount: Object.values(objectsInViewport).flat().length
-      };
+      if (publishDebug) {
+        const character = liveCharacterRef.current;
+        spatialDebugRef.current = {
+          mapId,
+          tmx: mapData.tmx,
+          tileCullingPx,
+          objectCullingPx,
+          cullProjection: projection,
+          mapWorldOffset,
+          characterPosition: character
+            ? {
+                mapId: character.mapId,
+                x: character.tile.x,
+                y: character.tile.y,
+                worldX: character.worldX,
+                worldY: character.worldY
+              }
+            : undefined,
+          tileBounds: offsetBounds(
+            tileBounds,
+            mapWorldOffset.x,
+            mapWorldOffset.y
+          ),
+          spriteBounds: offsetBounds(
+            spriteBounds,
+            mapWorldOffset.x,
+            mapWorldOffset.y
+          ),
+          objectBounds: offsetBounds(
+            objectBounds,
+            mapWorldOffset.x,
+            mapWorldOffset.y
+          ),
+          cellSize: SPATIAL_CELL_SIZE_TILES * TILE_SIZE,
+          spriteQueryCount: Object.values(spritesInViewport).flat().length,
+          objectQueryCount: Object.values(objectsInViewport).flat().length
+        };
+      }
     },
     [
       mapData,
@@ -438,41 +511,147 @@ export const useViewportRendering = (
       shoreOrientations,
       tileCullingPx,
       objectCullingPx,
-      shoreSpriteObjects
+      shoreSpriteObjects,
+      toLocalProjection,
+      terrainOnly,
+      publishDebug,
+      mapWorldOffset.x,
+      mapWorldOffset.y,
+      mapId
     ]
   );
 
   useEffect(() => {
     return () => {
       tileChunkCache.current.clear();
+      disposeShoreBucketsForMap(mapId);
+      if (spatialDebugRef.current?.mapId === mapId) {
+        spatialDebugRef.current = null;
+      }
     };
-  }, [mapData.tmx, textures]);
+  }, [mapData.tmx, textures, mapId]);
 
-  useLayoutEffect(() => {
-    const projection = new Rectangle(
-      viewportState.projection.x,
-      viewportState.projection.y,
-      viewportState.projection.width,
-      viewportState.projection.height
+  const publishMinimalDebugSnapshot = useCallback(() => {
+    const character = liveCharacterRef.current;
+    if (!publishDebug || !character) {
+      return;
+    }
+
+    const projection = projectionRef.current;
+    const localProjection = toLocalProjection(projection);
+    const tileBounds = calculateProjectionMatrix(
+      mapData.tmx,
+      localProjection,
+      tileCullingPx
     );
-    syncViewportLayers(projection);
-    lastCullRef.current = { x: projection.x, y: projection.y };
+    const objectBounds = calculateProjectionMatrix(
+      mapData.tmx,
+      localProjection,
+      objectCullingPx
+    );
+    const spriteBounds = calculateProjectionMatrix(
+      mapData.tmx,
+      localProjection,
+      objectCullingPx + SHORE_SPRITE_EXTRA_CULL_PX
+    );
+
+    spatialDebugRef.current = {
+      mapId,
+      tmx: mapData.tmx,
+      tileCullingPx,
+      objectCullingPx,
+      cullProjection: projection,
+      mapWorldOffset,
+      characterPosition: {
+        mapId: character.mapId,
+        x: character.tile.x,
+        y: character.tile.y,
+        worldX: character.worldX,
+        worldY: character.worldY
+      },
+      tileBounds: offsetBounds(tileBounds, mapWorldOffset.x, mapWorldOffset.y),
+      spriteBounds: offsetBounds(
+        spriteBounds,
+        mapWorldOffset.x,
+        mapWorldOffset.y
+      ),
+      objectBounds: offsetBounds(
+        objectBounds,
+        mapWorldOffset.x,
+        mapWorldOffset.y
+      ),
+      cellSize: SPATIAL_CELL_SIZE_TILES * TILE_SIZE,
+      spriteQueryCount:
+        spatialDebugRef.current?.mapId === mapId
+          ? spatialDebugRef.current.spriteQueryCount
+          : 0,
+      objectQueryCount:
+        spatialDebugRef.current?.mapId === mapId
+          ? spatialDebugRef.current.objectQueryCount
+          : 0
+    };
   }, [
-    projectionTileX,
-    projectionTileY,
+    mapData.tmx,
+    mapId,
+    mapWorldOffset.x,
+    mapWorldOffset.y,
+    objectCullingPx,
+    projectionRef,
+    publishDebug,
+    tileCullingPx,
+    toLocalProjection
+  ]);
+
+  useEffect(() => {
+    lastCullRef.current = null;
+    if (!hasTileTextures(textures) || !spatialIndexes) {
+      return;
+    }
+
+    const { x, y } = projectionRef.current;
+    syncViewportLayers(projectionRef.current);
+    lastCullRef.current = { x, y };
+  }, [
+    textures,
+    spatialIndexes,
+    mapWorldOffset.x,
+    mapWorldOffset.y,
+    mapData.tmx,
+    liveMapId,
     syncViewportLayers,
-    viewportState.projection.width,
-    viewportState.projection.height
+    projectionRef
+  ]);
+
+  useEffect(() => {
+    if (!publishDebug) {
+      if (spatialDebugRef.current?.mapId === mapId) {
+        spatialDebugRef.current = null;
+      }
+      return;
+    }
+
+    publishMinimalDebugSnapshot();
+  }, [
+    liveMapId,
+    liveTileX,
+    liveTileY,
+    mapId,
+    publishDebug,
+    publishMinimalDebugSnapshot
   ]);
 
   useTick(() => {
+    if (!hasTileTextures(textures) || !spatialIndexes) {
+      return;
+    }
+
     const { x, y, width, height } = projectionRef.current;
     const last = lastCullRef.current;
-    if (Math.abs(x - last.x) < 8 && Math.abs(y - last.y) < 8) {
+    if (last && Math.abs(x - last.x) < 8 && Math.abs(y - last.y) < 8) {
       return;
     }
 
     lastCullRef.current = { x, y };
-    syncViewportLayers(new Rectangle(x, y, width, height));
+    syncViewportLayers(projectionRef.current);
   });
 };

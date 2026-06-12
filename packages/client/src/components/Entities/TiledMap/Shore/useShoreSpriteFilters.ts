@@ -10,8 +10,8 @@ import {
 } from './effectAnimationRegistry';
 import { shoreBitmaskToUniform } from './shoreUtils';
 
-/** One filter per shore edge mask (bucket-level — shared by sprites in that bucket). */
-export const useShoreSpriteFilters = () => {
+/** Per map + edge mask — one filter instance must not be shared across buckets. */
+export const useShoreSpriteFilters = (mapId: number) => {
   const bucketFiltersRef = useRef(new Map<number, ShoreSpriteFilter>());
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export const useShoreSpriteFilters = () => {
       });
       filters.clear();
     };
-  }, []);
+  }, [mapId]);
 
   return useCallback((edgeMask: number): ShoreSpriteFilter | undefined => {
     if (edgeMask === 0) {

@@ -22,6 +22,8 @@ import {
   TmxObject,
   Graphic,
   UPPER_LAYER,
+  ENTITIES_LAYER,
+  TMX_DETAILS_LAYER,
   tmxLayerToRenderGroup
 } from '@bao/core';
 import { polygon } from '@bao/client/utils';
@@ -74,21 +76,18 @@ const easing = new Ease({});
 const detachShoreSprite = (sprite: Sprite): void => {
   sprite.filters = null;
   sprite.filterArea = null;
-  sprite.parentGroup = null;
   sprite.visible = false;
   sprite.renderable = false;
 };
 
-const detachShoreBucket = (bucket: import('pixi.js').Container): void => {
-  bucket.children.slice().forEach((child) => {
-    if (child instanceof Sprite) {
-      detachShoreSprite(child);
-    }
-  });
-  bucket.removeChildren();
-  bucket.filters = null;
-  bucket.filterArea = null;
-  bucket.parentGroup = null;
+const resumeAnimatedSprite = (sprite: Sprite | AnimatedSprite): void => {
+  if (!(sprite instanceof AnimatedSprite)) {
+    return;
+  }
+
+  if (!sprite.playing) {
+    sprite.gotoAndPlay(0);
+  }
 };
 
 export const createSpritePool = (size: number): Sprite[] => {
@@ -102,17 +101,29 @@ export const createAnimationPool = (size: number): AnimatedSprite[] => {
   );
 };
 
+const bindPooledDestroy = <T extends Sprite | AnimatedSprite>(
+  sprite: T,
+  pool: T[],
+  baseDestroy: typeof Sprite.prototype.destroy
+) => {
+  sprite.destroy = function destroy(
+    options?: boolean | import('pixi.js').IDestroyOptions
+  ) {
+    if (!pool.includes(sprite)) {
+      pool.push(sprite);
+    }
+    return baseDestroy.call(this, options);
+  };
+};
+
 export const getSpriteFromPoolOrNew = (
   graphic: Graphic,
   animationsPool: AnimatedSprite[],
   spritesPool: Sprite[]
 ): Sprite | AnimatedSprite => {
-  if (graphic.frames.length > 0) {
+  if (graphic?.frames?.length > 0) {
     const sprite = animationsPool.pop() || new AnimatedSprite([Texture.EMPTY]);
-    sprite.destroy = (options) => {
-      animationsPool.push(sprite);
-      return sprite.destroy(options);
-    };
+    bindPooledDestroy(sprite, animationsPool, AnimatedSprite.prototype.destroy);
     sprite.textures = graphic.frames.map(getTexture);
     sprite.animationSpeed = graphic.speed;
     sprite.gotoAndPlay(0);
@@ -120,10 +131,7 @@ export const getSpriteFromPoolOrNew = (
   }
 
   const sprite = spritesPool.pop() || new Sprite(Texture.EMPTY);
-  sprite.destroy = (options) => {
-    spritesPool.push(sprite);
-    return sprite.destroy(options);
-  };
+  bindPooledDestroy(sprite, spritesPool, Sprite.prototype.destroy);
   sprite.texture = getTexture(graphic);
   return sprite;
 };
@@ -133,19 +141,30 @@ export const createSpriteFromObject = (
   graphics: any,
   mapState: any,
   animationsPool: AnimatedSprite[],
-  spritesPool: Sprite[]
+  spritesPool: Sprite[],
+  textures?: Texture[]
 ): Sprite | AnimatedSprite => {
   const x = getProperty(object, 'x');
   const y = getProperty(object, 'y');
   const layerNumber = getProperty(object, 'layer');
   const graphicId = getProperty(object, 'graphicId');
+  const gid = Number(getProperty(object, 'gid'));
 
   const graphic = graphics[graphicId];
+  const objectWidth = Number(getProperty(object, 'width'));
+  const objectHeight = Number(getProperty(object, 'height'));
+  const isAnimated = Boolean(graphic?.frames?.length);
+  const isAtlasSprite =
+    !isAnimated &&
+    (!objectWidth || objectWidth <= TILE_SIZE) &&
+    (!objectHeight || objectHeight <= TILE_SIZE);
+
   const sprite = getSpriteFromPoolOrNew(graphic, animationsPool, spritesPool);
+  if (isAtlasSprite && textures?.[gid]) {
+    sprite.texture = textures[gid];
+  }
   sprite.position.set(x, y);
   sprite.scale.set(1, 1);
-
-  const texture = sprite.texture;
 
   if (Number(layerNumber) === TMX_SHORE_SPRITE_LAYER) {
     sprite.width = TILE_SIZE;
@@ -153,13 +172,21 @@ export const createSpriteFromObject = (
     const shoreSprite = sprite as ShoreCachedSprite;
     shoreSprite.shoreTileX = x;
     shoreSprite.shoreTileY = y;
-  } else if (texture?.width && texture?.height) {
-    sprite.width = texture.width;
-    sprite.height = texture.height;
+  } else if (objectWidth && objectHeight) {
+    sprite.width = objectWidth;
+    sprite.height = objectHeight;
+  } else if (sprite.texture?.width && sprite.texture?.height) {
+    sprite.width = sprite.texture.width;
+    sprite.height = sprite.texture.height;
   }
 
   if (Number(layerNumber) !== TMX_SHORE_SPRITE_LAYER) {
-    const group = mapState.groups[tmxLayerToRenderGroup(layerNumber)];
+    const spriteHeight = sprite.height || TILE_SIZE;
+    const groupIndex =
+      Number(layerNumber) === TMX_DETAILS_LAYER && spriteHeight > TILE_SIZE
+        ? ENTITIES_LAYER
+        : tmxLayerToRenderGroup(layerNumber);
+    const group = mapState.groups[groupIndex];
     if (group) {
       sprite.parentGroup = group;
     }
@@ -167,6 +194,7 @@ export const createSpriteFromObject = (
     sprite.parentGroup = null;
   }
   sprite.accessibleType = `${layerNumber}`;
+  sprite.name = String(object.id);
 
   return sprite;
 };
@@ -176,7 +204,8 @@ export const generateObjectsCache = (
   graphics: any,
   mapState: any,
   animationsPool: AnimatedSprite[],
-  spritesPool: Sprite[]
+  spritesPool: Sprite[],
+  textures?: Texture[]
 ): SpritesCache => {
   const cache: SpritesCache = {};
 
@@ -186,7 +215,8 @@ export const generateObjectsCache = (
       graphics,
       mapState,
       animationsPool,
-      spritesPool
+      spritesPool,
+      textures
     );
   });
 
@@ -301,7 +331,7 @@ export const renderTileLayers = (
     shoreLayer: React.RefObject<any>;
   },
   shoreLayerIndex = SHORE_TILE_LAYER_INDEX,
-  shoreGroup?: import('@pixi/layers').Group
+  tilesGroup?: import('@pixi/layers').Group
 ) => {
   if (!targets.tilesLayer.current || !targets.shoreLayer.current) {
     return chunks;
@@ -310,40 +340,43 @@ export const renderTileLayers = (
   const visibleChunks = new Set(
     chunks.map(({ displayObject }) => displayObject)
   );
+  const tilesContainer = targets.tilesLayer.current;
   const shoreContainer = targets.shoreLayer.current;
 
-  targets.tilesLayer.current.removeChildren();
-
-  shoreContainer.children.slice().forEach((child) => {
-    if (visibleChunks.has(child)) {
-      return;
-    }
-
-    if (child instanceof CompositeTilemap) {
-      child.filters = null;
-      child.parentGroup = null;
-      shoreContainer.removeChild(child);
-    }
-  });
+  const syncChunkVisibility = (container: typeof tilesContainer) => {
+    container.children.slice().forEach((child) => {
+      child.visible = visibleChunks.has(child);
+    });
+  };
 
   chunks.forEach(({ displayObject, layerIndex }) => {
+    displayObject.visible = true;
+    displayObject.renderable = true;
     displayObject.filters = null;
 
-    if (layerIndex === shoreLayerIndex) {
-      displayObject.parentGroup = null;
-      if (displayObject.parent !== shoreContainer) {
-        shoreContainer.addChild(displayObject);
-      }
-      return;
+    const parent =
+      layerIndex === shoreLayerIndex ? shoreContainer : tilesContainer;
+
+    if (tilesGroup && layerIndex !== shoreLayerIndex) {
+      displayObject.parentGroup = tilesGroup;
     }
 
-    targets.tilesLayer.current.addChild(displayObject);
+    if (displayObject.parent !== parent) {
+      if (displayObject.parent) {
+        displayObject.parent.removeChild(displayObject);
+      }
+      parent.addChild(displayObject);
+    }
   });
+
+  syncChunkVisibility(tilesContainer);
+  syncChunkVisibility(shoreContainer);
 
   return chunks;
 };
 
 export interface SpriteRenderOptions {
+  mapId?: number;
   shoreTarget?: React.RefObject<any>;
   getShoreSpriteFilter?: (edgeMask: number) => ShoreSpriteFilter | undefined;
   shoreOrientations?: Map<string | number, ShoreEdges>;
@@ -358,26 +391,22 @@ export const renderSpriteLayers = (
 ) => {
   const shoreLayer = options?.shoreTarget?.current;
   const isShorePass = Boolean(shoreLayer && options?.getShoreSpriteFilter);
+  const mapId = options?.mapId ?? 0;
 
-  if (target.current) {
+  if (!isShorePass && target.current) {
     target.current.removeChildren();
   }
 
-  // Shore buckets are populated only on the sprites pass — never reset on the objects pass.
+  // Shore buckets stay mounted on shoreLayer — only their children are rebuilt.
   if (isShorePass) {
-    resetShoreBuckets();
+    resetShoreBuckets(mapId);
 
     shoreLayer.children.slice().forEach((child) => {
       if (
         child instanceof CompositeTilemap ||
-        child.name === SHORE_TILE_CHUNK_NAME
+        child.name === SHORE_TILE_CHUNK_NAME ||
+        isShoreBucket(child)
       ) {
-        return;
-      }
-
-      if (isShoreBucket(child)) {
-        detachShoreBucket(child);
-        shoreLayer.removeChild(child);
         return;
       }
 
@@ -422,26 +451,33 @@ export const renderSpriteLayers = (
 
         sprite.filters = null;
         sprite.filterArea = null;
-        sprite.parentGroup = null;
         sprite.visible = true;
         sprite.alpha = 1;
         sprite.renderable = true;
 
-        if (edgeMask === 0) {
-          shoreLayer.addChild(sprite);
-        } else {
-          getShoreBucket(edgeMask).addChild(sprite);
+        const shoreParent =
+          edgeMask === 0 ? shoreLayer : getShoreBucket(mapId, edgeMask);
+
+        if (sprite.parent !== shoreParent) {
+          if (sprite.parent) {
+            sprite.parent.removeChild(sprite);
+          }
+          shoreParent.addChild(sprite);
         }
         return;
       }
 
       sprite.filterArea = null;
       sprite.filters = null;
+      sprite.visible = true;
+      sprite.renderable = true;
+      resumeAnimatedSprite(sprite);
+
       target.current?.addChild(sprite);
     });
 
   if (isShorePass) {
-    mountShoreBuckets(shoreLayer, options!.getShoreSpriteFilter!);
+    mountShoreBuckets(mapId, shoreLayer, options!.getShoreSpriteFilter!);
   }
 
   return nodes;

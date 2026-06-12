@@ -1,4 +1,4 @@
-import { Heading, TILE_SIZE } from '@bao/core';
+import { getQuadrant, Heading, TILE_SIZE, TILED_MAP_SIZE } from '@bao/core';
 import { CharacterState } from '@bao/server/schema/CharacterState';
 import { TilePosition } from '@/schema/MapState';
 import { WorldRoom } from '@/rooms/WorldRoom';
@@ -11,26 +11,152 @@ export interface BlockedTile {
 export class MovementSystem {
   protected room?: WorldRoom;
   protected blockedTiles = new Map<string, BlockedTile>();
+  private interestKeyBySession = new Map<string, string>();
 
   constructor(room?: WorldRoom) {
     this.room = room;
   }
 
+  private tileKey(mapId: number, tile: TilePosition) {
+    return `${mapId}:${tile.x}:${tile.y}`;
+  }
+
   public blockTile(tile: TilePosition, character: CharacterState) {
-    this.blockedTiles.set(`${tile.x}:${tile.y}`, { tile, character });
+    this.blockedTiles.set(this.tileKey(character.mapId, tile), {
+      tile,
+      character
+    });
     return this.blockedTiles;
   }
 
-  public unblockTile(tile: TilePosition) {
-    this.blockedTiles.delete(`${tile.x}:${tile.y}`);
+  public unblockTile(tile: TilePosition, mapId: number) {
+    this.blockedTiles.delete(this.tileKey(mapId, tile));
     return this.blockedTiles;
   }
 
-  public isTileBlocked(tile: TilePosition, excludeSessionId?: string) {
-    const blockedTile = this.blockedTiles.get(`${tile.x}:${tile.y}`);
+  public unblockCharacter(character: CharacterState) {
+    this.unblockTile(character.tile, character.mapId);
+  }
+
+  public isTileBlocked(
+    tile: TilePosition,
+    mapId: number,
+    excludeSessionId?: string
+  ) {
+    if (
+      this.room?.mapRegistry?.isTileStaticallyBlocked(mapId, tile.x, tile.y)
+    ) {
+      return true;
+    }
+
+    const blockedTile = this.blockedTiles.get(this.tileKey(mapId, tile));
     return (
       !!blockedTile && excludeSessionId !== blockedTile?.character?.sessionId
     );
+  }
+
+  private isOutOfBounds(tile: TilePosition): boolean {
+    const [playableWidth, playableHeight] = TILED_MAP_SIZE;
+    return (
+      tile.x < 0 ||
+      tile.y < 0 ||
+      tile.x >= playableWidth ||
+      tile.y >= playableHeight
+    );
+  }
+
+  private canTransitionFrom(
+    character: CharacterState,
+    heading: Heading
+  ): boolean {
+    if (!this.room?.mapRegistry) {
+      return false;
+    }
+
+    return Boolean(
+      this.room.mapRegistry.resolveTransitionExit(
+        character.mapId,
+        character.tile.x,
+        character.tile.y,
+        heading
+      )
+    );
+  }
+
+  /** Returns true when a transition was started (movement should stop). */
+  private attemptMapTransition(
+    character: CharacterState,
+    heading: Heading,
+    targetTile: TilePosition
+  ): boolean {
+    if (
+      !this.isOutOfBounds(targetTile) ||
+      !this.canTransitionFrom(character, heading)
+    ) {
+      return false;
+    }
+
+    character.isMoving = false;
+    character.targetTile = null;
+    this.checkMapTransition(character);
+    return true;
+  }
+
+  private checkMapTransition(character: CharacterState) {
+    if (!this.room?.mapTransitionSystem || !character.sessionId) {
+      return;
+    }
+
+    const authToken = this.room.authTokenBySession.get(character.sessionId);
+    void this.room.mapTransitionSystem.tryTransition(character, authToken);
+  }
+
+  noteMapInterest(character: CharacterState) {
+    if (!character.sessionId) {
+      return;
+    }
+
+    this.interestKeyBySession.set(
+      character.sessionId,
+      `${character.mapId}:${getQuadrant(character.tile.x, character.tile.y)}`
+    );
+  }
+
+  refreshMapInterest(character: CharacterState) {
+    if (character.sessionId) {
+      this.interestKeyBySession.delete(character.sessionId);
+    }
+    this.updateMapInterest(character);
+  }
+
+  private updateMapInterest(character: CharacterState) {
+    if (!this.room?.mapRegistry || !character.sessionId) {
+      return;
+    }
+
+    const interestKey = `${character.mapId}:${getQuadrant(
+      character.tile.x,
+      character.tile.y
+    )}`;
+
+    if (this.interestKeyBySession.get(character.sessionId) === interestKey) {
+      return;
+    }
+
+    this.interestKeyBySession.set(character.sessionId, interestKey);
+    const authToken = this.room.authTokenBySession.get(character.sessionId);
+
+    void this.room.mapRegistry
+      .ensureMapsInInterest(
+        character.mapId,
+        character.tile.x,
+        character.tile.y,
+        authToken
+      )
+      .then(() => this.room?.mapRegistry.pruneMapsOutsideInterest())
+      .catch((error) => {
+        console.error('[MovementSystem] failed to update map interest', error);
+      });
   }
 
   public static getCharacterHeading(key: string) {
@@ -72,7 +198,14 @@ export class MovementSystem {
         });
 
         character.heading = heading;
-        if (!this.isTileBlocked(targetTile)) {
+
+        if (this.attemptMapTransition(character, heading, targetTile)) {
+          continue;
+        }
+
+        if (
+          !this.isTileBlocked(targetTile, character.mapId, character.sessionId)
+        ) {
           character.isMoving = true;
           character.targetTile = targetTile;
         }
@@ -90,7 +223,13 @@ export class MovementSystem {
         const x = character.x + velocity.x;
         const y = character.y + velocity.y;
 
-        if (!this.isTileBlocked(character.targetTile, character.sessionId)) {
+        if (
+          !this.isTileBlocked(
+            character.targetTile,
+            character.mapId,
+            character.sessionId
+          )
+        ) {
           character.x = x;
           character.y = y;
         } else {
@@ -98,25 +237,51 @@ export class MovementSystem {
           character.y = character.tile.y * TILE_SIZE;
           character.isMoving = false;
           character.targetTile = null;
-          return;
+          continue;
         }
 
+        const wasMoving = character.isMoving;
         this.handleStopMovement(character, inputs);
 
         if (character.tile.x !== Math.floor(character.x / TILE_SIZE)) {
-          this.unblockTile(character.tile);
+          this.unblockTile(character.tile, character.mapId);
           character.tile.x = Math.floor(character.x / TILE_SIZE);
           this.blockTile(character.tile, character);
+          this.updateMapInterest(character);
         }
 
         if (character.tile.y !== Math.floor(character.y / TILE_SIZE)) {
-          this.unblockTile(character.tile);
+          this.unblockTile(character.tile, character.mapId);
           character.tile.y = Math.floor(character.y / TILE_SIZE);
           this.blockTile(character.tile, character);
+          this.updateMapInterest(character);
+        }
+
+        if (character.isMoving && character.targetTile) {
+          if (
+            this.attemptMapTransition(
+              character,
+              character.heading,
+              character.targetTile
+            )
+          ) {
+            continue;
+          }
+        }
+
+        if (wasMoving && !character.isMoving) {
+          this.checkMapTransition(character);
         }
       }
 
-      if (!character.isMoving && !this.isTileBlocked(character.tile)) {
+      if (
+        !character.isMoving &&
+        !this.isTileBlocked(
+          character.tile,
+          character.mapId,
+          character.sessionId
+        )
+      ) {
         this.blockTile(character.tile, character);
       }
     }
@@ -124,7 +289,13 @@ export class MovementSystem {
 
   private handleStopMovement(character: CharacterState, inputs: string[]) {
     const stopMovement = () => {
-      if (this.isTileBlocked(character.targetTile, character.sessionId)) {
+      if (
+        this.isTileBlocked(
+          character.targetTile,
+          character.mapId,
+          character.sessionId
+        )
+      ) {
         this.blockTile(character.tile, character);
         character.x = character.tile.x * TILE_SIZE;
         character.y = character.tile.y * TILE_SIZE;
@@ -144,15 +315,21 @@ export class MovementSystem {
         y: character.targetTile.y + direction.y
       });
 
-      if (
-        heading === character.heading &&
-        !this.isTileBlocked(targetTile, character.sessionId)
-      ) {
-        character.targetTile = targetTile;
-      } else {
-        character.isMoving = false;
-        character.targetTile = null;
+      if (heading === character.heading) {
+        if (this.attemptMapTransition(character, heading, targetTile)) {
+          return;
+        }
+
+        if (
+          !this.isTileBlocked(targetTile, character.mapId, character.sessionId)
+        ) {
+          character.targetTile = targetTile;
+          return;
+        }
       }
+
+      character.isMoving = false;
+      character.targetTile = null;
     };
 
     if (

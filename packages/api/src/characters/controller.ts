@@ -2,6 +2,7 @@ import type {
   CharacterFindOneParams,
   CharacterFindParams,
   CharacterInventoryParams,
+  CharacterUpdatePositionParams,
 } from '@bao/types'
 
 import * as ObjectModel from './model'
@@ -18,4 +19,24 @@ export const inventory = async ({
   characterId,
 }: CharacterInventoryParams = {}) => {
   return ObjectModel.inventory({ characterId })
+}
+
+export const updatePosition = async ({
+  id,
+  accountId,
+  mapId,
+  x,
+  y,
+  worldX,
+  worldY,
+}: CharacterUpdatePositionParams) => {
+  return ObjectModel.updatePosition({
+    id,
+    accountId,
+    mapId,
+    x,
+    y,
+    worldX,
+    worldY,
+  })
 }

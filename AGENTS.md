@@ -7,7 +7,7 @@ This repository is a turborepo monorepo for the `bao` game project. It contains 
 - `packages/api` — Express REST API server, JWT authentication, MySQL support, `nodemon` development flow.
 - `packages/colyseus` — Colyseus game server in TypeScript, realtime room logic, `ts-node-dev` for local development.
 - `packages/core` — Shared TypeScript core module used by client and server packages.
-- `packages/assets` — asset conversion, deployment, and image packing scripts.
+- `packages/assets` — `bao` CLI (map convert, DB seed, S3 deploy). Run `npx bao` from repo root.
 
 ## Recommended commands
 Use `pnpm` at the repo root.

@@ -24,6 +24,9 @@ export class CharacterState extends Schema {
   @type('uint16')
   public headId?: number;
 
+  @type('uint16')
+  public mapId = 34;
+
   @type(TilePosition)
   public tile = new TilePosition();
 
@@ -38,6 +41,12 @@ export class CharacterState extends Schema {
 
   @type('float32')
   public y = 0;
+
+  @type('int32')
+  public worldX = 0;
+
+  @type('int32')
+  public worldY = 0;
 
   @type(['string'])
   public inputs = new ArraySchema<string>();

@@ -1,5 +1,9 @@
 import { config, validateConfig } from './config';
-import { buildExpressCorsOptions, patchMatchmakeCors } from './cors';
+import {
+  buildExpressCorsOptions,
+  isOriginAllowed,
+  patchMatchmakeCors
+} from './cors';
 
 import { monitor } from '@colyseus/monitor';
 import { Server } from 'colyseus';
@@ -24,7 +28,7 @@ const gameServer = new Server({
   verifyClient: config.corsOrigins
     ? (info, callback) => {
         const origin = info.origin;
-        if (!origin || config.corsOrigins!.includes(origin)) {
+        if (!origin || isOriginAllowed(origin, config.corsOrigins)) {
           callback(true);
         } else {
           callback(false, 403, 'Forbidden');

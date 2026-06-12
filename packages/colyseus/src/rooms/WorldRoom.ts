@@ -2,25 +2,40 @@ import http from 'http';
 
 import { Client, Room } from 'colyseus';
 import { Dispatcher } from '@colyseus/command';
+import { ArraySchema } from '@colyseus/schema';
 
 import { OnJoinCommand } from '@bao/server/commands/OnJoinWorld';
 import { InputParameters, OnInputCommand } from '@bao/server/commands/OnInput';
+import {
+  InteractParameters,
+  OnInteractCommand
+} from '@bao/server/commands/OnInteract';
 import { OnLeaveCommand } from '@bao/server/commands/OnLeaveWorld';
 import { AuthService } from '@bao/server/services/AuthService';
+import { MapRegistry } from '@bao/server/services/MapRegistry';
 import { WorldRoomState } from '@bao/server/schema/WorldRoomState';
+import { MapEntitySystem } from '@bao/server/systems/MapEntitySystem';
+import { MapTransitionSystem } from '@bao/server/systems/MapTransitionSystem';
 import { MovementSystem } from '@bao/server/systems';
 import { CharacterState } from '@/schema/CharacterState';
-import { ArraySchema } from '@colyseus/schema';
-import { TILE_SIZE } from '@bao/core';
 
 export class WorldRoom extends Room<WorldRoomState> {
   movementSystem: MovementSystem;
+  mapEntitySystem: MapEntitySystem;
+  mapRegistry: MapRegistry;
+  mapTransitionSystem: MapTransitionSystem;
   authService: AuthService = new AuthService(this);
   dispatcher = new Dispatcher(this);
+  accountIdBySession = new Map<string, number>();
+  authTokenBySession = new Map<string, string>();
 
   public onCreate(options: any) {
     this.setState(new WorldRoomState());
     this.movementSystem = new MovementSystem(this);
+    this.mapEntitySystem = new MapEntitySystem(this);
+    this.mapRegistry = new MapRegistry(this);
+    this.mapTransitionSystem = new MapTransitionSystem(this, this.mapRegistry);
+    this.state.characters = new ArraySchema<CharacterState>();
     this.setSimulationInterval(this.update);
 
     this.onMessage('input', (client, message: InputParameters) => {
@@ -30,56 +45,12 @@ export class WorldRoom extends Room<WorldRoomState> {
       });
     });
 
-    const characters = new ArraySchema<CharacterState>(
-      ...new Array(100).fill(0).map(() => {
-        function randomIntFromInterval(min, max) {
-          return Math.floor(Math.random() * (max - min + 1) + min);
-        }
-        const character = new CharacterState();
-        character.sessionId = (Math.random() + 1).toString(36).substring(7);
-        character.x = character.tile.x * TILE_SIZE;
-        character.y = character.tile.y * TILE_SIZE;
-        character.bodyId = 2;
-        character.headId = 5;
-        character.moveTo(
-          randomIntFromInterval(25, 75),
-          randomIntFromInterval(25, 75)
-        );
-        return character;
-      }),
-      ...new Array(2).fill(0).map((_, i) => {
-        const character = new CharacterState();
-        character.sessionId = (Math.random() + 1).toString(36).substring(7);
-        character.moveTo(i + 25, 60);
-        character.bodyId = 3;
-        character.headId = 4;
-
-        this.clock.setInterval(() => {
-          character.inputs = character.inputs.includes('w')
-            ? new ArraySchema('s')
-            : new ArraySchema('w');
-        }, 500);
-
-        return character;
-      }),
-      ...new Array(2).fill(0).map((_, i) => {
-        const character = new CharacterState();
-        character.sessionId = (Math.random() + 1).toString(36).substring(7);
-        character.moveTo(i + 25, 65);
-        character.bodyId = 23;
-        character.headId = 2;
-
-        this.clock.setInterval(() => {
-          character.inputs = character.inputs.includes('s')
-            ? new ArraySchema('w')
-            : new ArraySchema('s');
-        }, 500);
-
-        return character;
-      })
-    );
-
-    this.state.characters = characters;
+    this.onMessage('interact', (client, message: InteractParameters) => {
+      this.dispatcher.dispatch(new OnInteractCommand(), {
+        ...message,
+        client
+      });
+    });
   }
 
   public update = (deltaTime: number) => {
