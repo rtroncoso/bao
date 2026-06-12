@@ -7,6 +7,8 @@ export interface AnimationProps {
   animationSpeed?: number;
   alpha?: number;
   loop?: boolean;
+  /** When false, textures are applied but the sprite does not auto-play. */
+  playing?: boolean;
   textures?: Texture<Resource>[];
   x?: number;
   y?: number;
@@ -15,7 +17,7 @@ export interface AnimationProps {
 export const Animation = PixiComponent<AnimationProps, AnimatedSprite>(
   'Animation',
   {
-    create: ({ animation, loop = true, textures }) => {
+    create: ({ animation, loop = true, playing = true, textures }) => {
       if (
         animation &&
         animation instanceof Graphic &&
@@ -25,10 +27,16 @@ export const Animation = PixiComponent<AnimationProps, AnimatedSprite>(
         const instance = new AnimatedSprite(textures, true);
         instance.animationSpeed = animation.speed;
         instance.loop = loop;
+        if (playing) {
+          instance.gotoAndPlay(0);
+        }
         return instance;
       }
 
       const instance = new AnimatedSprite(textures, true);
+      if (playing) {
+        instance.gotoAndPlay(0);
+      }
       return instance;
     },
 
@@ -38,6 +46,7 @@ export const Animation = PixiComponent<AnimationProps, AnimatedSprite>(
         alpha = 1,
         animation,
         loop = true,
+        playing = true,
         textures,
         x,
         y
@@ -58,6 +67,12 @@ export const Animation = PixiComponent<AnimationProps, AnimatedSprite>(
       instance.alpha = alpha;
       instance.position.set(x, y);
       instance.loop = loop;
+
+      if (playing && !instance.playing) {
+        instance.gotoAndPlay(0);
+      } else if (!playing && instance.playing) {
+        instance.stop();
+      }
 
       return instance;
     }

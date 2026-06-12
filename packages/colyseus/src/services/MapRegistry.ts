@@ -3,6 +3,7 @@ import {
   computeBorderNeighbors,
   computeGridNeighbors,
   headingToBorderDirection,
+  inferExitDirection,
   isMapEdgeForExitDirection,
   resolveGridTransitionLanding
 } from '@bao/core/loaders/maps/world';
@@ -104,6 +105,42 @@ export class MapRegistry {
   }
 
   /**
+   * Resolves the exit to use when leaving the map. Grid border landing is preferred
+   * over tile-exit records so east/west pairs land on x=1 / x=83 instead of reciprocal
+   * exit tiles (e.g. x=0) that immediately bounce back.
+   */
+  resolveTransitionExit(
+    mapId: number,
+    x: number,
+    y: number,
+    heading: Heading
+  ): TileExitRecord | null {
+    const borderExit = this.resolveBorderTransition(mapId, x, y, heading);
+    if (borderExit) {
+      return borderExit;
+    }
+
+    const tileExit = this.getTileExit(mapId, x, y);
+    if (!tileExit) {
+      return null;
+    }
+
+    const travelDirection = headingToBorderDirection(heading);
+    const exitDirection = inferExitDirection(
+      x,
+      y,
+      tileExit.targetX,
+      tileExit.targetY
+    );
+
+    if (travelDirection && exitDirection && travelDirection !== exitDirection) {
+      return null;
+    }
+
+    return tileExit;
+  }
+
+  /**
    * Grid fallback when no tile-exit record exists: only on the outermost map edge,
    * heading off-map, with a worlds.json neighbor in that direction.
    */
@@ -202,28 +239,35 @@ export class MapRegistry {
   }
 
   findDoorBlockedTiles(mapId: number, x: number, y: number): TileCoord[] {
-    const staticBlocks = this.blockedTilesByMap.get(mapId);
-    const candidates: TileCoord[] = [
-      { x, y },
-      { x, y: y + 1 },
-      { x, y: y - 1 },
-      { x: x + 1, y },
-      { x: x - 1, y }
+    const defaultTiles = (): TileCoord[] => [
+      { x: x - 1, y },
+      { x: x - 1, y: y + 1 }
     ];
 
-    if (staticBlocks) {
-      const matched = candidates.filter((tile) =>
-        staticBlocks.has(this.tileKey(tile.x, tile.y))
-      );
+    const staticBlocks = this.blockedTilesByMap.get(mapId);
+    if (!staticBlocks) {
+      return defaultTiles();
+    }
+
+    const hasBlock = (tile: TileCoord) =>
+      staticBlocks.has(this.tileKey(tile.x, tile.y));
+
+    const neighbors = (centerX: number, centerY: number): TileCoord[] => [
+      { x: centerX, y: centerY },
+      { x: centerX, y: centerY + 1 },
+      { x: centerX, y: centerY - 1 },
+      { x: centerX + 1, y: centerY },
+      { x: centerX - 1, y: centerY }
+    ];
+
+    for (const centerX of [x - 1, x, x + 1]) {
+      const matched = neighbors(centerX, y).filter(hasBlock);
       if (matched.length >= 2) {
         return matched.slice(0, 2);
       }
     }
 
-    return [
-      { x, y },
-      { x, y: y + 1 }
-    ];
+    return defaultTiles();
   }
 
   isMapNeededByAnyCharacter(mapId: number): boolean {

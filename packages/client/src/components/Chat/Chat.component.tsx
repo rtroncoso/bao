@@ -15,7 +15,12 @@ export const ChatComponent: React.FC<ChatComponentProps> = () => {
   const input = useRef<HTMLInputElement>(null);
   const chatList = useRef<HTMLUListElement>(null);
   const focusedRef = useRef(state.focused);
+  const sendRoomMessageRef = useRef(callbacks.sendRoomMessage);
+  const setStateRef = useRef(callbacks.setState);
+
   focusedRef.current = state.focused;
+  sendRoomMessageRef.current = callbacks.sendRoomMessage;
+  setStateRef.current = callbacks.setState;
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(event.target.value);
@@ -30,14 +35,14 @@ export const ChatComponent: React.FC<ChatComponentProps> = () => {
 
     const trimmed = message.trim();
     if (trimmed) {
-      callbacks.sendRoomMessage('message', trimmed);
+      sendRoomMessageRef.current('message', trimmed);
     } else {
-      callbacks.sendRoomMessage('clearHead', null);
+      sendRoomMessageRef.current('clearHead', null);
     }
 
     setMessage('');
     input.current?.blur();
-    callbacks.setState({ focused: false });
+    setStateRef.current({ focused: false });
   };
 
   const handleChatClick = () => {
@@ -57,8 +62,8 @@ export const ChatComponent: React.FC<ChatComponentProps> = () => {
       return;
     }
 
-    const focusCallback = () => callbacks.setState({ focused: true });
-    const blurCallback = () => callbacks.setState({ focused: false });
+    const focusCallback = () => setStateRef.current({ focused: true });
+    const blurCallback = () => setStateRef.current({ focused: false });
     const keyPressCallback = (event: KeyboardEvent) => {
       if (!focusedRef.current && event.key.toLowerCase() === 'enter') {
         event.preventDefault();
@@ -66,9 +71,13 @@ export const ChatComponent: React.FC<ChatComponentProps> = () => {
       }
     };
     const keyDownCallback = (event: KeyboardEvent) => {
+      if (!focusedRef.current) {
+        return;
+      }
+
       if (event.key.toLowerCase() === 'escape') {
         inputEl.blur();
-        callbacks.setState({ focused: false });
+        setStateRef.current({ focused: false });
       }
     };
 
@@ -83,22 +92,23 @@ export const ChatComponent: React.FC<ChatComponentProps> = () => {
       window.removeEventListener('keypress', keyPressCallback);
       window.removeEventListener('keydown', keyDownCallback);
     };
-  }, [callbacks]);
+  }, []);
 
   return (
     <ChatStyled focused={state.focused} onClick={handleChatClick}>
       <ChatMessageListStyled ref={chatList}>
-        {state.messages.map(
-          (message) =>
-            message.message.trim() && (
-              <ChatMessageStyled
-                key={message.timestamp}
-                options={message.options}
-              >
-                {message.character ? `${message.character.name}> ` : ''}
-                {message.message.trim()}
-              </ChatMessageStyled>
-            )
+        {state.messages.map((entry, index) =>
+          entry.message.trim() ? (
+            <ChatMessageStyled
+              key={`${entry.character?.sessionId ?? 'system'}-${
+                entry.timestamp
+              }-${index}`}
+              options={entry.options}
+            >
+              {entry.character ? `${entry.character.name}> ` : ''}
+              {entry.message.trim()}
+            </ChatMessageStyled>
+          ) : null
         )}
       </ChatMessageListStyled>
       <ChatInputStyled

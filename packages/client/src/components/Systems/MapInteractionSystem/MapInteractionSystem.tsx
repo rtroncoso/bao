@@ -8,6 +8,7 @@ import React, {
 
 import { TILE_SIZE } from '@bao/core';
 import { useGameContext } from '@bao/client/components/Game/Game.context';
+import { useChatContext } from '@bao/client/components/Chat';
 import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
 
 export interface NpcHeadDisplay {
@@ -38,6 +39,7 @@ export const useMapInteractionContext = () => useContext(MapInteractionContext);
 
 export const MapInteractionProvider: React.FC = ({ children }) => {
   const { state: gameState } = useGameContext();
+  const { state: chatState } = useChatContext();
   const [headDisplayByNpcId, setHeadDisplayByNpcId] = useState<
     Record<string, NpcHeadDisplay | undefined>
   >({});
@@ -79,7 +81,7 @@ export const MapInteractionProvider: React.FC = ({ children }) => {
 
   const onObjectClick = useCallback(
     (entityId: string, x: number, y: number, objectType: number) => {
-      if (!gameState?.room || !isPlayerAdjacentTo(x, y)) {
+      if (chatState.focused || !gameState?.room || !isPlayerAdjacentTo(x, y)) {
         return;
       }
 
@@ -90,7 +92,12 @@ export const MapInteractionProvider: React.FC = ({ children }) => {
         objectType
       });
     },
-    [gameState?.room, isPlayerAdjacentTo, localCharacter?.mapId]
+    [
+      chatState.focused,
+      gameState?.room,
+      isPlayerAdjacentTo,
+      localCharacter?.mapId
+    ]
   );
 
   const value = useMemo(

@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const {
   isMapEdgeForExitDirection,
   resolveGridTransitionLanding,
-} = require('../dist/loaders/maps/world');
+} = require('@bao/core/loaders/maps/world');
 
 describe('map border transitions', () => {
   describe('isMapEdgeForExitDirection', () => {

@@ -99,6 +99,8 @@ export const resolveLocalCharacter = (
         return character;
       }
     }
+
+    return null;
   }
 
   if (characterId) {

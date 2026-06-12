@@ -80,14 +80,13 @@ const detachShoreSprite = (sprite: Sprite): void => {
   sprite.renderable = false;
 };
 
-const hideSpriteFromContainer = (
-  sprite: Sprite,
-  container: import('pixi.js').Container
-): void => {
-  sprite.visible = false;
-  sprite.renderable = false;
-  if (sprite.parent === container) {
-    container.removeChild(sprite);
+const resumeAnimatedSprite = (sprite: Sprite | AnimatedSprite): void => {
+  if (!(sprite instanceof AnimatedSprite)) {
+    return;
+  }
+
+  if (!sprite.playing) {
+    sprite.gotoAndPlay(0);
   }
 };
 
@@ -122,7 +121,7 @@ export const getSpriteFromPoolOrNew = (
   animationsPool: AnimatedSprite[],
   spritesPool: Sprite[]
 ): Sprite | AnimatedSprite => {
-  if (graphic.frames.length > 0) {
+  if (graphic?.frames?.length > 0) {
     const sprite = animationsPool.pop() || new AnimatedSprite([Texture.EMPTY]);
     bindPooledDestroy(sprite, animationsPool, AnimatedSprite.prototype.destroy);
     sprite.textures = graphic.frames.map(getTexture);
@@ -394,22 +393,8 @@ export const renderSpriteLayers = (
   const isShorePass = Boolean(shoreLayer && options?.getShoreSpriteFilter);
   const mapId = options?.mapId ?? 0;
 
-  const visibleIds = new Set(
-    Object.values(nodes)
-      .flat()
-      .map((id) => String(id))
-  );
-
-  if (target.current) {
-    target.current.children.slice().forEach((child) => {
-      if (!(child instanceof Sprite)) {
-        return;
-      }
-
-      if (!child.name || !visibleIds.has(child.name)) {
-        hideSpriteFromContainer(child, target.current!);
-      }
-    });
+  if (!isShorePass && target.current) {
+    target.current.removeChildren();
   }
 
   // Shore buckets stay mounted on shoreLayer — only their children are rebuilt.
@@ -486,13 +471,9 @@ export const renderSpriteLayers = (
       sprite.filters = null;
       sprite.visible = true;
       sprite.renderable = true;
+      resumeAnimatedSprite(sprite);
 
-      if (target.current && sprite.parent !== target.current) {
-        if (sprite.parent) {
-          sprite.parent.removeChild(sprite);
-        }
-        target.current.addChild(sprite);
-      }
+      target.current?.addChild(sprite);
     });
 
   if (isShorePass) {

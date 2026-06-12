@@ -7,6 +7,7 @@ import {
   TILED_MAP_SIZE,
   TILE_SIZE,
 } from '@bao/core/constants/game/Map';
+import { isBlockingMapObject } from '@bao/core/constants/game/Object';
 import {
   cropLayer,
   makeCollisionLayer,
@@ -14,6 +15,7 @@ import {
   makeObjectsLayer,
 } from '@bao/core/loaders/maps/tmx/converter';
 import { isPlayableTile } from '@bao/core/loaders/maps/coords';
+import { getProperty } from '@bao/core/loaders/maps/tmx/util';
 import { GroupLayer, Tile, TmxObject } from '@bao/core/models';
 
 export interface BlockedTile {
@@ -53,14 +55,19 @@ export const rasterizeRectToTiles = (
 const collectShapes = (groupLayer: GroupLayer): TmxObject[] =>
   groupLayer?.layers?.[0]?.objects ?? [];
 
-const collectWaterBlockedTiles = (terrainLayer: Tile[][]): Set<string> => {
+const collectWaterBlockedTiles = (layers: Tile[][][]): Set<string> => {
   const tiles = new Set<string>();
+  const height = layers[0]?.length ?? 0;
+  const width = layers[0]?.[0]?.length ?? 0;
 
-  for (let y = 0; y < terrainLayer.length; y++) {
-    for (let x = 0; x < terrainLayer[y].length; x++) {
-      const tile = terrainLayer[y][x];
-      if (tile?.isWater?.()) {
-        tiles.add(`${x},${y}`);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      for (let layerIndex = 0; layerIndex < layers.length; layerIndex++) {
+        const tile = layers[layerIndex]?.[y]?.[x];
+        if (tile?.isWater?.()) {
+          tiles.add(`${x},${y}`);
+          break;
+        }
       }
     }
   }
@@ -108,14 +115,20 @@ export const extractBlockedTilesFromLayers = (
       continue;
     }
 
-    rasterizeRectToTiles(shape.x, shape.y, shape.width, shape.height, tileSet);
+    if (shape.type === OBJECT_TYPE) {
+      const objectType = Number(getProperty(shape, 'type'));
+      if (!isBlockingMapObject(objectType)) {
+        continue;
+      }
+    }
+
+    const blockX =
+      shape.type === OBJECT_TYPE ? shape.x - TILE_SIZE : shape.x;
+    rasterizeRectToTiles(blockX, shape.y, shape.width, shape.height, tileSet);
   }
 
-  const terrainLayer = croppedLayers[0];
-  if (terrainLayer) {
-    for (const key of collectWaterBlockedTiles(terrainLayer)) {
-      tileSet.add(key);
-    }
+  for (const key of collectWaterBlockedTiles(croppedLayers)) {
+    tileSet.add(key);
   }
 
   // Cropped raster indices match playable/world tile coords (same space as character.tile).

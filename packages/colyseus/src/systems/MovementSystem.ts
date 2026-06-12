@@ -55,6 +55,53 @@ export class MovementSystem {
     );
   }
 
+  private isOutOfBounds(tile: TilePosition): boolean {
+    const [playableWidth, playableHeight] = TILED_MAP_SIZE;
+    return (
+      tile.x < 0 ||
+      tile.y < 0 ||
+      tile.x >= playableWidth ||
+      tile.y >= playableHeight
+    );
+  }
+
+  private canTransitionFrom(
+    character: CharacterState,
+    heading: Heading
+  ): boolean {
+    if (!this.room?.mapRegistry) {
+      return false;
+    }
+
+    return Boolean(
+      this.room.mapRegistry.resolveTransitionExit(
+        character.mapId,
+        character.tile.x,
+        character.tile.y,
+        heading
+      )
+    );
+  }
+
+  /** Returns true when a transition was started (movement should stop). */
+  private attemptMapTransition(
+    character: CharacterState,
+    heading: Heading,
+    targetTile: TilePosition
+  ): boolean {
+    if (
+      !this.isOutOfBounds(targetTile) ||
+      !this.canTransitionFrom(character, heading)
+    ) {
+      return false;
+    }
+
+    character.isMoving = false;
+    character.targetTile = null;
+    this.checkMapTransition(character);
+    return true;
+  }
+
   private checkMapTransition(character: CharacterState) {
     if (!this.room?.mapTransitionSystem || !character.sessionId) {
       return;
@@ -151,28 +198,16 @@ export class MovementSystem {
         });
 
         character.heading = heading;
-        const [playableWidth, playableHeight] = TILED_MAP_SIZE;
-        const outOfBounds =
-          targetTile.x < 0 ||
-          targetTile.y < 0 ||
-          targetTile.x >= playableWidth ||
-          targetTile.y >= playableHeight;
+
+        if (this.attemptMapTransition(character, heading, targetTile)) {
+          continue;
+        }
 
         if (
           !this.isTileBlocked(targetTile, character.mapId, character.sessionId)
         ) {
           character.isMoving = true;
           character.targetTile = targetTile;
-        } else if (
-          outOfBounds &&
-          this.room.mapRegistry.resolveBorderTransition(
-            character.mapId,
-            character.tile.x,
-            character.tile.y,
-            heading
-          )
-        ) {
-          this.checkMapTransition(character);
         }
       }
 
@@ -222,6 +257,18 @@ export class MovementSystem {
           this.updateMapInterest(character);
         }
 
+        if (character.isMoving && character.targetTile) {
+          if (
+            this.attemptMapTransition(
+              character,
+              character.heading,
+              character.targetTile
+            )
+          ) {
+            continue;
+          }
+        }
+
         if (wasMoving && !character.isMoving) {
           this.checkMapTransition(character);
         }
@@ -268,15 +315,21 @@ export class MovementSystem {
         y: character.targetTile.y + direction.y
       });
 
-      if (
-        heading === character.heading &&
-        !this.isTileBlocked(targetTile, character.mapId, character.sessionId)
-      ) {
-        character.targetTile = targetTile;
-      } else {
-        character.isMoving = false;
-        character.targetTile = null;
+      if (heading === character.heading) {
+        if (this.attemptMapTransition(character, heading, targetTile)) {
+          return;
+        }
+
+        if (
+          !this.isTileBlocked(targetTile, character.mapId, character.sessionId)
+        ) {
+          character.targetTile = targetTile;
+          return;
+        }
       }
+
+      character.isMoving = false;
+      character.targetTile = null;
     };
 
     if (

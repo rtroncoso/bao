@@ -44,3 +44,14 @@ export const SERVER_RENDERED_OBJECTS = HIDDEN_OBJECTS;
 
 export const isServerRenderedObject = (objectType: number): boolean =>
   SERVER_RENDERED_OBJECTS.includes(objectType);
+
+/** Ground objects the player can walk over (not used for movement blocking). */
+export const NON_BLOCKING_OBJECT_TYPES = [
+  AURA,
+  BONFIRE,
+  GOLD,
+  TELEPORT,
+];
+
+export const isBlockingMapObject = (objectType: number): boolean =>
+  !NON_BLOCKING_OBJECT_TYPES.includes(objectType);

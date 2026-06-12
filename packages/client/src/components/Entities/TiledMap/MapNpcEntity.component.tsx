@@ -12,13 +12,12 @@ import {
   roles,
   TILE_SIZE
 } from '@bao/core';
-import { Animation } from '@bao/client/components/Pixi';
 import { useMapContext } from '@bao/client/components/Systems';
 import { useMapInteractionContext } from '@bao/client/components/Systems/MapInteractionSystem';
 import { selectBodies, selectHeads } from '@bao/client/queries';
 import { State } from '@bao/client/store';
 
-import { ENTITIES_LAYER } from '@bao/core/constants/game/Map';
+import { CHARACTER_TYPE, ENTITIES_LAYER } from '@bao/core/constants/game/Map';
 
 export interface MapNpcEntityProps {
   id: string;
@@ -88,30 +87,32 @@ export const MapNpcEntity: React.FC<MapNpcEntityProps> = ({
     }
     easing.removeAll();
 
-    if (!headDisplay.text) {
-      easing.add(
-        chatMessageRef.current,
-        { y: headOffset.y, alpha: 0 },
-        { duration: 300 }
-      );
+    const chatMessage = chatMessageRef.current;
+    if (!chatMessage) {
       return;
     }
 
-    chatMessageRef.current.y = headOffset.y;
-    chatMessageRef.current.alpha = 0;
+    if (!headDisplay.text) {
+      easing.add(chatMessage, { y: headOffset.y, alpha: 0 }, { duration: 300 });
+      return;
+    }
+
+    chatMessage.y = headOffset.y;
+    chatMessage.alpha = 0;
 
     easing.add(
-      chatMessageRef.current,
+      chatMessage,
       { y: headOffset.y - 4 - TILE_SIZE / 2, alpha: 1 },
       { duration: 300 }
     );
 
     const timeoutId = setTimeout(() => {
-      easing.add(
-        chatMessageRef.current,
-        { y: headOffset.y, alpha: 0 },
-        { duration: 300 }
-      );
+      const message = chatMessageRef.current;
+      if (!message) {
+        return;
+      }
+
+      easing.add(message, { y: headOffset.y, alpha: 0 }, { duration: 300 });
     }, 3000);
     setChatTimeoutId(timeoutId);
   }, [headDisplay?.token, headOffset.y]);
@@ -123,9 +124,16 @@ export const MapNpcEntity: React.FC<MapNpcEntityProps> = ({
   const headTexture =
     headDirection instanceof Graphic ? getTexture(headDirection) : null;
 
+  const bodyFrame = bodyDirection.frames?.[0];
+  const bodyTexture =
+    bodyFrame instanceof Graphic
+      ? getTexture(bodyFrame)
+      : getTexture(bodyDirection);
+
   return (
     <Container
       key={id}
+      accessibleType={CHARACTER_TYPE}
       parentGroup={mapState?.groups[ENTITIES_LAYER]}
       x={x * TILE_SIZE}
       y={y * TILE_SIZE}
@@ -139,7 +147,7 @@ export const MapNpcEntity: React.FC<MapNpcEntityProps> = ({
             <Sprite texture={headTexture} />
           </Container>
         )}
-        <Animation animation={bodyDirection} />
+        {bodyTexture && <Sprite texture={bodyTexture} />}
       </Container>
       {headDisplay !== undefined && (
         <Text

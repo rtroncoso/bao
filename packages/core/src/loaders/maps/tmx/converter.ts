@@ -790,6 +790,51 @@ export const processLayer = ({
           continue;
         }
       }
+
+      if (
+        tile?.object &&
+        !isServerRenderedObject(Number(tile.object.type))
+      ) {
+        const objectGraphic = tile.object.graphic as Graphic | undefined;
+
+        if (
+          objectGraphic?.frames?.length > 0 &&
+          !(
+            tile.animation &&
+            Number(tile.animation.id) === Number(objectGraphic.id)
+          )
+        ) {
+          const firstFrame = objectGraphic.frames[0];
+          const frameGraphic =
+            firstFrame instanceof Graphic ? firstFrame : tile.graphic;
+          const objectData = frameGraphic
+            ? findInTileSets({ graphic: frameGraphic, tileSets, resources })
+            : null;
+
+          if (!clientOnly || !tile.isWater?.()) {
+            objects.push(
+              makeAnimation({
+                graphic: objectGraphic,
+                tile,
+                data: objectData,
+              })
+            );
+          }
+        } else if (objectGraphic && !tile.graphic) {
+          const objectData = findInTileSets({
+            graphic: objectGraphic,
+            tileSets,
+            resources,
+          });
+
+          if (objectData) {
+            objects.push(
+              makeSprite({ graphic: objectGraphic, tile, data: objectData })
+            );
+          }
+        }
+      }
+
       if (tile && tile.graphic) {
         const { graphic, animation } = tile;
         const data = findInTileSets({ graphic, tileSets, resources });

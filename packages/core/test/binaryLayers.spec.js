@@ -1,8 +1,13 @@
 const { expect } = require('chai');
 
-const { MAP_SIZE } = require('../dist/constants/game/Map');
-const { LayeredTile } = require('../dist/models');
-const { MapObject, Npc } = require('../dist/models');
+const { MAP_SIZE } = require('@bao/core/constants/game/Map');
+const {
+  Graphic,
+  LayeredTile,
+  MapObject,
+  Npc,
+  Tile,
+} = require('@bao/core/models');
 const {
   AO_INF_MARKER_X_OFFSET,
   iterate,
@@ -10,13 +15,11 @@ const {
   mapBinaryLayers,
   parseBinaryTile,
   translateInfSpawns,
-} = require('../dist/loaders/maps/binary');
-const { extractMapMeta } = require('../dist/loaders/maps/meta');
-const { extractBlockedTilesFromLayers } = require('../dist/loaders/maps/blocking');
-const { toWorldCoords } = require('../dist/loaders/maps/coords');
-const { Tile } = require('../dist/models');
-const { MAP_BORDER_X, MAP_BORDER_Y } = require('../dist/constants/game/Map');
-const { BufferAdapter } = require('../dist/util/BufferAdapter');
+} = require('@bao/core/loaders/maps/binary');
+const { extractMapMeta } = require('@bao/core/loaders/maps/meta');
+const { extractBlockedTilesFromLayers } = require('@bao/core/loaders/maps/blocking');
+const { toWorldCoords } = require('@bao/core/loaders/maps/coords');
+const { BufferAdapter } = require('@bao/core/util/BufferAdapter');
 
 const range = (start, end) => Array.from({ length: end - start }, (_, index) => start + index);
 
@@ -121,5 +124,98 @@ describe('extractBlockedTilesFromLayers', () => {
     const blocked = extractBlockedTilesFromLayers(layers);
 
     expect(blocked).to.deep.include({ x: world.x, y: world.y });
+  });
+
+  it('keeps terrain collision when shore layer graphics are present', () => {
+    const legacyX = 50;
+    const legacyY = 50;
+    const world = toWorldCoords(legacyX, legacyY);
+    const terrainLayer = range(0, MAP_SIZE).map((y) =>
+      range(0, MAP_SIZE).map((x) => {
+        if (x !== legacyX - 1 || y !== legacyY - 1) {
+          return null;
+        }
+
+        return new Tile({
+          blocked: true,
+          layer: 1,
+          x: legacyX,
+          y: legacyY,
+        });
+      })
+    );
+    const shoreLayer = range(0, MAP_SIZE).map((y) =>
+      range(0, MAP_SIZE).map((x) => {
+        if (x !== legacyX - 1 || y !== legacyY - 1) {
+          return null;
+        }
+
+        return new Tile({
+          graphic: { id: 1 },
+          layer: 2,
+          x: legacyX,
+          y: legacyY,
+        });
+      })
+    );
+    const emptyLayer = () =>
+      range(0, MAP_SIZE).map(() => range(0, MAP_SIZE).map(() => null));
+    const layers = [terrainLayer, shoreLayer, emptyLayer(), emptyLayer()];
+
+    const blocked = extractBlockedTilesFromLayers(layers);
+
+    expect(blocked).to.deep.include({ x: world.x, y: world.y });
+  });
+
+  it('blocks animated water on upper map layers but not adjacent shore foam', () => {
+    const legacyX = 50;
+    const legacyY = 50;
+    const world = toWorldCoords(legacyX, legacyY);
+    const emptyLayer = () =>
+      range(0, MAP_SIZE).map(() => range(0, MAP_SIZE).map(() => null));
+
+    const waterLayer = range(0, MAP_SIZE).map((y) =>
+      range(0, MAP_SIZE).map((x) => {
+        if (x !== legacyX - 1 || y !== legacyY - 1) {
+          return null;
+        }
+
+        return new Tile({
+          animation: new Graphic({ id: 1510, frames: [1, 2, 3, 4] }),
+          layer: 2,
+          x: legacyX,
+          y: legacyY,
+        });
+      })
+    );
+
+    const shoreLayer = range(0, MAP_SIZE).map((y) =>
+      range(0, MAP_SIZE).map((x) => {
+        if (x !== legacyX - 1 || y !== legacyY - 1) {
+          return null;
+        }
+
+        return new Tile({
+          graphic: new Graphic({ id: 6020, fileName: 12052 }),
+          layer: 2,
+          x: legacyX,
+          y: legacyY,
+        });
+      })
+    );
+
+    const blockedWithWater = extractBlockedTilesFromLayers([
+      emptyLayer(),
+      waterLayer,
+      emptyLayer(),
+    ]);
+    expect(blockedWithWater).to.deep.include({ x: world.x, y: world.y });
+
+    const blockedWithShore = extractBlockedTilesFromLayers([
+      emptyLayer(),
+      shoreLayer,
+      emptyLayer(),
+    ]);
+    expect(blockedWithShore).to.not.deep.include({ x: world.x, y: world.y });
   });
 });

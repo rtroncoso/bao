@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 
-const { TILE_SIZE } = require('../dist/constants/game/Map');
-const { tileCoordsToScreenFromSize } = require('../dist/loaders/maps/screen');
+const { TILE_SIZE } = require('@bao/core/constants/game/Map');
+const { tileCoordsToScreenFromSize } = require('@bao/core/loaders/maps/screen');
 
 describe('tileCoordsToScreenFromSize', () => {
   it('places sprite top-left so center-bottom aligns with tile anchor', () => {

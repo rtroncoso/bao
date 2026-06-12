@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const {
   Heading,
   legacyHeadingToHeading,
-} = require('../dist/constants/game/Game');
+} = require('@bao/core/constants/game/Game');
 
 describe('legacyHeadingToHeading', () => {
   it('maps Argentum Online Heading 1–4 to engine Heading', () => {

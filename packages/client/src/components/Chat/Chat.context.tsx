@@ -1,23 +1,25 @@
 import { ArraySchema } from '@colyseus/schema';
-import { Room } from 'colyseus.js';
+import { Client, Room } from 'colyseus.js';
 import { useRouter } from 'next/router';
 import React, {
   createContext,
   useCallback,
   useContext,
-  useEffect
+  useEffect,
+  useMemo,
+  useRef
 } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Message } from '@bao/server/schema/MessageState';
 import { ChatRoom } from '@bao/server/rooms/ChatRoom';
 import { useGameContext } from '@bao/client/components/Game/Game.context';
+import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
 import { createBaoClient } from '@bao/client/lib/colyseusClient';
 import {
   formatColyseusConnectError,
   getBaoServerUrl
 } from '@bao/client/lib/baoUrls';
-import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
 import {
   SetStateCallback,
   UpdateStateCallback,
@@ -52,6 +54,8 @@ export interface ChatContextState {
   connected?: boolean;
   focused?: boolean;
   room?: Room<ChatRoom>;
+  /** Colyseus session id for this client's chat room connection. */
+  chatSessionId?: string;
   messages: ArraySchema<Message>;
   /** Speech bubbles above characters — separate from the chat log. */
   headDisplayBySession: Record<string, HeadDisplay>;
@@ -97,22 +101,50 @@ export const ChatContextContainer = <P extends ChatConnectedProps>(
       useLocalStateReducer<ChatContextState>(createChatInitialState());
     const { state: gameState } = useGameContext();
 
-    const handleSendRoomMessage = useCallback(
-      (messageType, parameters) => {
-        if (state.room) {
-          return state.room.send(messageType, parameters);
-        }
+    const chatRoomRef = useRef<Room<ChatRoom>>();
+    const joiningRef = useRef(false);
+    const gameStateRef = useRef(gameState);
+    gameStateRef.current = gameState;
 
-        console.warn(
-          `[chat:handleSendRoomMessage]: Sending message to closed room ${messageType}:${JSON.stringify(
-            parameters,
-            Object.getOwnPropertyNames(parameters),
-            2
-          )}`
-        );
-      },
-      [state]
+    const hasLocalCharacter = Boolean(
+      resolveLocalCharacter(
+        gameState.serverState,
+        gameState.characterId,
+        gameState.room?.sessionId
+      )
     );
+
+    const disconnectChatRoom = useCallback(() => {
+      const room = chatRoomRef.current;
+      if (!room) {
+        return;
+      }
+
+      room.removeAllListeners();
+      room.leave(true);
+      chatRoomRef.current = undefined;
+      setState({
+        connected: false,
+        room: undefined,
+        client: undefined,
+        chatSessionId: undefined
+      });
+    }, [setState]);
+
+    const handleSendRoomMessage = useCallback((messageType, parameters) => {
+      const room = chatRoomRef.current;
+      if (room) {
+        return room.send(messageType, parameters);
+      }
+
+      console.warn(
+        `[chat:handleSendRoomMessage]: Sending message to closed room ${messageType}:${JSON.stringify(
+          parameters,
+          Object.getOwnPropertyNames(parameters),
+          2
+        )}`
+      );
+    }, []);
 
     const handleLeaveRoom = useCallback(
       (error?: Error) => {
@@ -122,21 +154,21 @@ export const ChatContextContainer = <P extends ChatConnectedProps>(
           );
         }
 
-        if (state.room) {
-          state.room.leave(true);
-          router.push('/');
-          return;
-        }
+        disconnectChatRoom();
+        resetState();
 
-        console.warn(`[chat:handleLeaveRoom]: trying to leave a closed room`);
+        if (error) {
+          router.push('/');
+        }
       },
-      [router, resetState, state]
+      [disconnectChatRoom, resetState, router]
     );
 
     const handleRoomError = useCallback(
       (error: any) => {
         if (error?.message === 'LEAVE_ROOM') {
-          router.push('/');
+          disconnectChatRoom();
+          resetState();
           return;
         }
 
@@ -148,7 +180,7 @@ export const ChatContextContainer = <P extends ChatConnectedProps>(
           )}`
         );
       },
-      [router, resetState]
+      [disconnectChatRoom, resetState]
     );
 
     const handleRoomMessage = useCallback(
@@ -189,20 +221,37 @@ export const ChatContextContainer = <P extends ChatConnectedProps>(
     );
 
     const handleJoinRoom = useCallback(async () => {
+      if (joiningRef.current || chatRoomRef.current) {
+        return false;
+      }
+
+      const currentGameState = gameStateRef.current;
+      const worldSessionId = currentGameState.room?.sessionId;
+      if (!worldSessionId || !token) {
+        return false;
+      }
+
+      const localCharacter = resolveLocalCharacter(
+        currentGameState.serverState,
+        currentGameState.characterId,
+        worldSessionId
+      );
+      if (!localCharacter) {
+        return false;
+      }
+
+      joiningRef.current = true;
       const serverUrl = getBaoServerUrl();
 
       try {
         const client = createBaoClient();
-        const sessionId = gameState.room?.sessionId;
-        if (!sessionId) {
-          return router.push('/');
-        }
-
         const room = await client.joinOrCreate<ChatRoom>(options.room, {
-          characterId: gameState.characterId,
-          sessionId,
+          characterId: currentGameState.characterId,
+          sessionId: worldSessionId,
           token
         });
+
+        chatRoomRef.current = room;
 
         room.onError(handleRoomError);
         room.onMessage('*', handleRoomMessage);
@@ -211,8 +260,11 @@ export const ChatContextContainer = <P extends ChatConnectedProps>(
         setState({
           connected: true,
           client,
-          room
+          room,
+          chatSessionId: room.sessionId
         });
+
+        return true;
       } catch (error: unknown) {
         console.error(
           `[chat:handleJoinRoom]: ${formatColyseusConnectError(
@@ -222,45 +274,59 @@ export const ChatContextContainer = <P extends ChatConnectedProps>(
           error
         );
 
-        return router.push('/');
+        return false;
+      } finally {
+        joiningRef.current = false;
       }
-    }, [gameState, handleRoomError, handleRoomMessage, setState, token]);
+    }, [handleRoomError, handleRoomMessage, setState, token]);
+
+    const handleJoinRoomRef = useRef(handleJoinRoom);
+    handleJoinRoomRef.current = handleJoinRoom;
 
     useEffect(() => {
-      if (!gameState.connected || !gameState.room?.sessionId || !token) {
+      if (
+        !gameState.connected ||
+        !gameState.room?.sessionId ||
+        !token ||
+        !hasLocalCharacter
+      ) {
         return;
       }
 
-      const localCharacter = resolveLocalCharacter(
-        gameState.serverState,
-        gameState.characterId,
-        gameState.room.sessionId
-      );
-
-      if (!localCharacter) {
+      if (chatRoomRef.current || joiningRef.current) {
         return;
       }
 
-      handleJoinRoom();
+      void handleJoinRoomRef.current();
 
       return () => {
-        handleLeaveRoom();
+        disconnectChatRoom();
       };
     }, [
+      disconnectChatRoom,
       gameState.characterId,
       gameState.connected,
       gameState.room?.sessionId,
-      gameState.serverState,
+      hasLocalCharacter,
       token
     ]);
 
-    const callbacks = {
-      setState,
-      updateState,
-      joinRoom: handleJoinRoom,
-      leaveRoom: handleLeaveRoom,
-      sendRoomMessage: handleSendRoomMessage
-    };
+    const callbacks = useMemo(
+      () => ({
+        setState,
+        updateState,
+        joinRoom: handleJoinRoom,
+        leaveRoom: handleLeaveRoom,
+        sendRoomMessage: handleSendRoomMessage
+      }),
+      [
+        handleJoinRoom,
+        handleLeaveRoom,
+        handleSendRoomMessage,
+        setState,
+        updateState
+      ]
+    );
 
     return (
       <ChatContext.Provider

@@ -231,7 +231,6 @@ export const GameContainer = <P extends GameConnectedProps>(
           roomRef.current = undefined;
         }
       };
-      // eslint-disable-next-line react-hooks/exhaustive-deps -- join once per character/token
     }, [state.characterId, token]);
 
     useEffect(() => {

@@ -1,6 +1,5 @@
 const { expect } = require('chai');
-const { Tile } = require('../dist/models/data/map/Tile');
-const { Graphic } = require('../dist/models/data/shared/Graphic');
+const { Graphic, Tile } = require('@bao/core/models');
 
 describe('Tile.isWater', () => {
   it('returns true only for animated water graphics 1505–1520', () => {
