@@ -1,6 +1,7 @@
 import { PixiAssetLoader } from '@bao/client/lib/pixi-asset-loader';
 import { AuthorizedRequestPayload } from 'src/queries/shared/shared.model';
 import {
+  AudioManifest,
   Body,
   Effect,
   Graphic,
@@ -11,9 +12,7 @@ import {
 } from '@bao/core/models';
 
 export interface ManifestModel {
-  audio: {
-    [key: string]: string;
-  };
+  audio: AudioManifest;
   init: {
     bodies: string;
     effects: string;

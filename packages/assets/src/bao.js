@@ -31,6 +31,11 @@ const parseArgs = (argv) => {
     tilesetsType: 'tilesets',
     noCrop: false,
     validate: false,
+    audioSourceDir: null,
+    audioMusic: [],
+    audioSfx: [],
+    audioUi: [],
+    audioAll: false,
   };
 
   const args = argv.filter((arg) => arg !== '--');
@@ -50,6 +55,9 @@ const parseArgs = (argv) => {
     args.shift();
   } else if (options.command === 'convert' && args[0] === 'maps') {
     options.subcommand = 'convert-maps';
+    args.shift();
+  } else if (options.command === 'convert' && args[0] === 'audio') {
+    options.subcommand = 'convert-audio';
     args.shift();
   } else if (options.command === 'seed') {
     if (args[0] === 'apply') {
@@ -102,7 +110,11 @@ const parseArgs = (argv) => {
           .filter((id) => Number.isFinite(id));
         break;
       case '--all':
-        options.convertAll = true;
+        if (options.subcommand === 'convert-audio') {
+          options.audioAll = true;
+        } else {
+          options.convertAll = true;
+        }
         break;
       case '--worlds':
         options.worlds = true;
@@ -136,6 +148,27 @@ const parseArgs = (argv) => {
         break;
       case '--validate':
         options.validate = true;
+        break;
+      case '--source':
+        options.audioSourceDir = path.resolve(args.shift() ?? options.audioSourceDir);
+        break;
+      case '--music':
+        options.audioMusic = (args.shift() ?? '')
+          .split(',')
+          .map((value) => value.trim())
+          .filter(Boolean);
+        break;
+      case '--sfx':
+        options.audioSfx = (args.shift() ?? '')
+          .split(',')
+          .map((value) => value.trim())
+          .filter(Boolean);
+        break;
+      case '--ui':
+        options.audioUi = (args.shift() ?? '')
+          .split(',')
+          .map((value) => value.trim())
+          .filter(Boolean);
         break;
       case '--help':
       case '-h':
@@ -171,6 +204,28 @@ const runDeploy = async () => {
       }
     });
   });
+};
+
+const runConvertAudio = async (options) => {
+  if (!options.audioSourceDir) {
+    throw new Error('convert audio requires --source <ao-client-dir>');
+  }
+
+  const { convertAudio } = await import('./convert/audio.js');
+  const result = await convertAudio({
+    sourceDir: options.audioSourceDir,
+    publicDir: options.publicDir,
+    music: options.audioMusic,
+    sfx: options.audioSfx,
+    ui: options.audioUi,
+    all: options.audioAll,
+    dryRun: options.dryRun,
+    debug: options.debug
+  });
+
+  console.log(
+    `[bao] audio: ${result.music.length} music, ${result.sfx.length} sfx entries in manifest`
+  );
 };
 
 const runConvertMaps = async (options) => {
@@ -247,6 +302,11 @@ const main = async () => {
 
   if (options.subcommand === 'convert-maps') {
     await runConvertMaps(options);
+    return;
+  }
+
+  if (options.subcommand === 'convert-audio') {
+    await runConvertAudio(options);
     return;
   }
 

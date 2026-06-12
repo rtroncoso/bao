@@ -1,4 +1,11 @@
-import { createMapInfo, MapInfo } from '@bao/core/models';
+import { AO_AMBIENT_INTERVAL_MS } from '../../constants/audio';
+import {
+  createMapAmbientConfig,
+  createMapInfo,
+  MapAmbientConfig,
+  MapAmbientEntry,
+  MapInfo
+} from '../../models';
 
 const parseIniValue = (value: string): string => value.trim();
 
@@ -58,5 +65,81 @@ export const parseMapDat = (datFile: string, mapId?: number): MapInfo => {
     restringir: values.restringir ?? 'No',
     backup: parseBoolean(values.backup ?? '0'),
     pk: parseBoolean(values.pk ?? '0'),
+  });
+};
+
+/**
+ * Parses AO map ambient sound config from MapaN.dat [SONIDOS] sections.
+ */
+export const parseMapAmbientSounds = (
+  datFile: string
+): MapAmbientConfig | null => {
+  const lines = datFile.split(/\r?\n/);
+  let section = '';
+  let cantidad = 0;
+  const entries: MapAmbientEntry[] = [];
+  let currentEntry: Partial<MapAmbientEntry> = {};
+
+  const flushEntry = () => {
+    if (currentEntry.sfxId !== undefined) {
+      entries.push({
+        sfxId: currentEntry.sfxId,
+        probability: currentEntry.probability ?? 0,
+        flags: currentEntry.flags ?? 1
+      });
+    }
+    currentEntry = {};
+  };
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith("'") || line.startsWith('#') || line.startsWith(';')) {
+      continue;
+    }
+
+    const sectionMatch = line.match(/^\[([^\]]+)\]$/i);
+    if (sectionMatch) {
+      flushEntry();
+      section = sectionMatch[1].toUpperCase();
+      if (section === 'SONIDOS') {
+        cantidad = 0;
+        entries.length = 0;
+      }
+      continue;
+    }
+
+    const separatorIndex = line.indexOf('=');
+    if (separatorIndex === -1) {
+      continue;
+    }
+
+    const key = line.slice(0, separatorIndex).trim().toLowerCase();
+    const value = parseIniValue(line.slice(separatorIndex + 1));
+
+    if (section === 'SONIDOS' && key === 'cantidad') {
+      cantidad = parseNumber(value);
+      continue;
+    }
+
+    if (/^SONIDO\d+$/.test(section)) {
+      if (key === 'sonido') {
+        currentEntry.sfxId = parseNumber(value);
+      } else if (key === 'probabilidad') {
+        currentEntry.probability = parseNumber(value);
+      } else if (key === 'flags') {
+        currentEntry.flags = parseNumber(value);
+      }
+    }
+  }
+
+  flushEntry();
+
+  if (cantidad === 0 && entries.length === 0) {
+    return null;
+  }
+
+  return createMapAmbientConfig({
+    intervalMs: AO_AMBIENT_INTERVAL_MS,
+    entries: entries.slice(0, cantidad || entries.length)
   });
 };

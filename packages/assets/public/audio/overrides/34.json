@@ -1,0 +1,13 @@
+{
+  "mapId": 34,
+  "ambientSounds": {
+    "intervalMs": 4000,
+    "entries": [
+      { "sfxId": 21, "probability": 15, "flags": 1 },
+      { "sfxId": 22, "probability": 15, "flags": 1 },
+      { "sfxId": 28, "probability": 10, "flags": 1 },
+      { "sfxId": 29, "probability": 10, "flags": 1 },
+      { "sfxId": 34, "probability": 10, "flags": 1 }
+    ]
+  }
+}

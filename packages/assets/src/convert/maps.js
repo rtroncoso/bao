@@ -20,7 +20,7 @@ const { convertLayersToTmx } = require('@bao/core/loaders/maps/tmx/converter');
 const { extractMapMeta } = require('@bao/core/loaders/maps/meta');
 const { getBinaryLayers, getBinaryTiles } = require('@bao/core/loaders/maps/binary');
 const { extractBlockedTilesFromLayers } = require('@bao/core/loaders/maps/blocking');
-const { parseMapDat } = require('@bao/core/loaders/maps/dat');
+const { parseMapAmbientSounds, parseMapDat } = require('@bao/core/loaders/maps/dat');
 const { validateConvertedMaps } = require('./validateMapSpawns.js');
 
 const updateManifest = (manifestPath, mapIds) => {
@@ -102,6 +102,7 @@ export const convertMaps = async (options) => {
 
     const { datFile, infFile, mapFile } = readMapFiles(inputDir, mapId);
     const mapInfo = parseMapDat(datFile, mapId);
+    const ambientSounds = parseMapAmbientSounds(datFile);
     const tiles = getBinaryTiles({
       infFile,
       mapFile,
@@ -147,6 +148,7 @@ export const convertMaps = async (options) => {
             {
               ...mapMeta,
               info: mapInfo,
+              ambientSounds,
             },
             null,
             2

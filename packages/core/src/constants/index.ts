@@ -1,3 +1,4 @@
+export * from './audio';
 export * from './character';
 export * from './game';
 export * from './input';

@@ -68,6 +68,7 @@ Convert maps options:
 | Script | Command |
 |--------|---------|
 | `pnpm convert:maps` | `npx bao convert maps` |
+| `pnpm convert:audio` | `npx bao convert audio` |
 | `pnpm db:seed` | `npx bao seed` |
 | `pnpm db:seed:apply` | `npx bao seed apply` |
 
@@ -81,8 +82,29 @@ Pass extra flags after `--` when using pnpm scripts, e.g. `pnpm convert:maps -- 
 4. **Copy AO Dat files** — into `public/dats/` ([file list](public/dats/README.md))
 5. **Convert maps** — `npx bao convert maps --maps 34` (writes `public/maps/*.json`, `*.meta.json`, `public/worlds/worlds.json`). Run `convert maps` before `seed`. Use `--validate` to catch spawn/bake X-offset regressions.
 6. **Seed database** — `npx bao seed apply` (writes `seeds/*.sql`, then applies to MySQL)
+7. **Import audio** (optional) — `npx bao convert audio --source /path/to/AO/client --music 5,101 --sfx 21,22,23,24,28,29,34 --ui click` (requires `fluidsynth` + `ffmpeg` for MIDI → OGG; set `BAO_SOUND_FONT` if needed)
 
 Map meta sidecars (`*.meta.json`) are required for the maps importer. Without them, `04_maps.sql` is skipped.
+
+### Convert audio
+
+```bash
+npx bao convert audio \
+  --source /path/to/AO/client \
+  --all
+```
+
+Or import a subset:
+
+```bash
+npx bao convert audio \
+  --source /path/to/AO/client \
+  --music 5,101 \
+  --sfx 21,22,23,24,28,29,34 \
+  --ui click
+```
+
+Writes `public/audio/` and updates `manifest.json`. MP3 files are copied as-is; MIDI tracks are rendered to OGG via FluidSynth + ffmpeg.
 
 ## Input / output
 

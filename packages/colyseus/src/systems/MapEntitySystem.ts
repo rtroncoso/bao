@@ -247,6 +247,7 @@ export class MapEntitySystem {
     const mapState = new MapState();
     mapState.mapId = mapId;
     mapState.name = spawns.map?.name ?? `Map ${mapId}`;
+    mapState.musicId = spawns.map?.musicId ?? 0;
 
     mapState.npcs = new ArraySchema<MapNpcEntityState>(
       ...spawns.npcs.map((spawn, index) => {

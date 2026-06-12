@@ -29,6 +29,9 @@ export class MapState extends Schema {
   @type('string')
   public name?: string;
 
+  @type('uint8')
+  public musicId = 0;
+
   @type([MapNpcEntityState])
   public npcs = new ArraySchema<MapNpcEntityState>();
 

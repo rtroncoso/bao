@@ -10,6 +10,7 @@ Commands:
   seed                 Generate idempotent world seed SQL
   seed apply           Generate seed SQL and apply to MySQL
   convert maps         Convert legacy maps → Tiled JSON + worlds.json
+  convert audio        Import AO WAV/MIDI/MP3 → public/audio + manifest
   deploy               Deploy public/ assets to S3
 
 Quick start (from repo root):
@@ -43,6 +44,16 @@ Convert maps options:
   --no-crop            Skip border crop when converting
   --validate           Fail if server spawns are misaligned with baked sprites
   --dry-run            Log conversion without writing files
+  --debug              Verbose logging
+
+Convert audio options:
+  --source <dir>       AO client root (contains WAV/, MIDI/, MP3/)
+  --all                Import all MIDI/MP3 music, numeric WAV sfx, named UI wavs
+  --music <ids>        Comma-separated music ids (e.g. 5,101)
+  --sfx <ids>          Comma-separated sfx ids (e.g. 21,22,23,24)
+  --ui <names>         Comma-separated UI wav names (e.g. click)
+  --public <dir>       Public assets root (default: public)
+  --dry-run            Log without writing files
   --debug              Verbose logging
 
 Environment (seed apply):
