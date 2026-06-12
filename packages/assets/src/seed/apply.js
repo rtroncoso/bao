@@ -8,25 +8,44 @@ import {
   loadRootEnv,
   requireEnv,
 } from '@bao/env';
+import { parseSeedStatements } from './lib/sqlStatements.js';
 
 const LOCK_WAIT_TIMEOUT_SEC = envNumber('MYSQL_LOCK_WAIT_TIMEOUT', 300);
 const BATCH_COMMIT_SIZE = envNumber('SEED_BATCH_COMMIT_SIZE', 200);
 
-const splitSqlStatements = (sql) =>
-  sql
-    .split(/;\s*\n/)
-    .map((statement) => statement.trim())
-    .filter(
-      (statement) =>
-        statement.length > 0 && !statement.startsWith('--'),
-    );
+const shouldCommitBatch = ({
+  pending,
+  isLast,
+  npcBlockEnd,
+  respectNpcBlocks,
+}) => {
+  if (isLast) {
+    return true;
+  }
 
-const executeInBatches = async (connection, statements, debug, fileName) => {
+  if (pending < BATCH_COMMIT_SIZE) {
+    return false;
+  }
+
+  if (respectNpcBlocks && !npcBlockEnd) {
+    return false;
+  }
+
+  return true;
+};
+
+const executeInBatches = async (
+  connection,
+  statements,
+  debug,
+  fileName,
+  { respectNpcBlocks = false } = {},
+) => {
   let pending = 0;
 
-  for (let index = 0; index < statements.length; index++) {
+  for (let index = 0; index < statements.length; index += 1) {
     const statement = statements[index];
-    if (!statement) {
+    if (!statement?.sql) {
       continue;
     }
 
@@ -34,11 +53,28 @@ const executeInBatches = async (connection, statements, debug, fileName) => {
       await connection.beginTransaction();
     }
 
-    await connection.query(`${statement};`);
+    try {
+      await connection.query(`${statement.sql};`);
+    } catch (error) {
+      const npcHint =
+        statement.npcId !== null && statement.npcId !== undefined
+          ? ` (npcId ${statement.npcId}, statement ${index + 1}/${statements.length})`
+          : ` (statement ${index + 1}/${statements.length})`;
+      error.message = `${error.message}${npcHint}`;
+      throw error;
+    }
+
     pending += 1;
 
     const isLast = index === statements.length - 1;
-    if (pending >= BATCH_COMMIT_SIZE || isLast) {
+    if (
+      shouldCommitBatch({
+        pending,
+        isLast,
+        npcBlockEnd: statement.npcBlockEnd,
+        respectNpcBlocks,
+      })
+    ) {
       await connection.commit();
       if (debug) {
         console.log(
@@ -84,13 +120,15 @@ export const applySeedFiles = async ({ outputDir, debug }) => {
         console.log(`[seed:apply] Executing ${fileName}`);
       }
 
-      const statements = splitSqlStatements(sql);
+      const statements = parseSeedStatements(sql);
       const useBatches =
         fileName === '04_maps.sql' || statements.length > BATCH_COMMIT_SIZE;
 
       try {
         if (useBatches) {
-          await executeInBatches(connection, statements, debug, fileName);
+          await executeInBatches(connection, statements, debug, fileName, {
+            respectNpcBlocks: fileName === '03_npcs.sql',
+          });
         } else {
           await connection.beginTransaction();
           await connection.query(sql);

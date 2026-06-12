@@ -92,8 +92,15 @@ export const runSeed = async (options = {}) => {
       );
     }
 
-    if (!dryRun && !result.skipped && result.statements.length > 0) {
-      writeSqlFile(outputDir, importer.file, result.statements);
+    if (!dryRun) {
+      const filePath = path.join(outputDir, importer.file);
+      if (result.skipped || result.statements.length === 0) {
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      } else {
+        writeSqlFile(outputDir, importer.file, result.statements);
+      }
     }
   }
 

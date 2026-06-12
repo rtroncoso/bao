@@ -35,6 +35,7 @@ export const importNpcs = ({ datsDir }) => {
     delete data.Name;
     delete data.Desc;
 
+    statements.push(`-- @bao-npc:${npcId}`);
     statements.push(
       upsertSql(
         'npcs',
