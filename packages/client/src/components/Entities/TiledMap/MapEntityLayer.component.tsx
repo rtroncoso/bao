@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { Container, Sprite } from '@inlet/react-pixi';
-import { Rectangle } from 'pixi.js';
 import { useSelector } from 'react-redux';
 
 import { getTexture, Graphic, tileCoordsToScreen, TILE_SIZE } from '@bao/core';
@@ -10,6 +9,7 @@ import {
   useMapContext,
   useViewportContext
 } from '@bao/client/components/Systems';
+import type { Rectangle } from '@bao/client/components/Systems/ViewportSystem';
 import { selectGraphics } from '@bao/client/queries';
 import { State } from '@bao/client/store';
 

@@ -1,6 +1,6 @@
-import type { Rectangle } from 'pixi.js';
-
 import type { Tiled } from '@bao/core';
+
+import type { Rectangle as ViewportProjection } from '@bao/client/components/Systems/ViewportSystem';
 
 import type { SpatialBounds } from './spatial';
 
@@ -21,7 +21,7 @@ export interface SpatialDebugSnapshot {
     worldY: number;
   };
   /** Viewport used for sprite culling in world space. */
-  cullProjection: Rectangle;
+  cullProjection: ViewportProjection;
   tileBounds: SpatialBounds;
   spriteBounds: SpatialBounds;
   objectBounds: SpatialBounds;

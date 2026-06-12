@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { useTick } from '@inlet/react-pixi';
 import { useSelector } from 'react-redux';
 import {
-  Rectangle,
+  Rectangle as PixiRectangle,
   Container as PixiContainer,
   AnimatedSprite,
   Sprite,
@@ -37,6 +37,7 @@ import {
   useViewportContext
 } from '@bao/client/components/Systems';
 import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
+import type { Rectangle as ViewportRectangle } from '@bao/client/components/Systems/ViewportSystem';
 import { polygon } from '@bao/client/utils';
 import { SpatialIndexes, SpritesCache, TiledMapData } from './types';
 import {
@@ -369,8 +370,8 @@ export const useViewportRendering = (
   );
 
   const toLocalProjection = useCallback(
-    (projection: Rectangle) =>
-      new Rectangle(
+    (projection: ViewportRectangle) =>
+      new PixiRectangle(
         projection.x - mapWorldOffset.x,
         projection.y - mapWorldOffset.y,
         projection.width,
@@ -380,7 +381,7 @@ export const useViewportRendering = (
   );
 
   const syncViewportLayers = useCallback(
-    (projection: Rectangle) => {
+    (projection: ViewportRectangle) => {
       if (!hasTileTextures(textures) || !spatialIndexes) {
         return;
       }
@@ -607,8 +608,8 @@ export const useViewportRendering = (
       return;
     }
 
-    const { x, y, width, height } = projectionRef.current;
-    syncViewportLayers(new Rectangle(x, y, width, height));
+    const { x, y } = projectionRef.current;
+    syncViewportLayers(projectionRef.current);
     lastCullRef.current = { x, y };
   }, [
     textures,
@@ -651,6 +652,6 @@ export const useViewportRendering = (
     }
 
     lastCullRef.current = { x, y };
-    syncViewportLayers(new Rectangle(x, y, width, height));
+    syncViewportLayers(projectionRef.current);
   });
 };

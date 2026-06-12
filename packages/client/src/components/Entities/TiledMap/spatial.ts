@@ -185,7 +185,9 @@ export class TileChunkCache {
     tilesGroup?: Group
   ): CompositeTilemap {
     const tileSets = resolveTileSetUrls(getProperty(layer, 'usedTileSets'));
-    const tilemap = new CompositeTilemap(tileSets);
+    const tilemap = new CompositeTilemap(
+      tileSets as unknown as ConstructorParameters<typeof CompositeTilemap>[0]
+    );
     if (tilesGroup) {
       tilemap.parentGroup = tilesGroup;
     }
