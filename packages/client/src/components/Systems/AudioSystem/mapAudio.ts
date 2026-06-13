@@ -6,6 +6,8 @@ import {
 
 import { getAssetsBaseUrl } from '@bao/client/lib/audio-engine';
 
+const ambientConfigCache = new Map<string, Promise<MapAmbientConfig | null>>();
+
 export const pickAmbientEntry = (
   entries: MapAmbientEntry[]
 ): MapAmbientEntry | null => {
@@ -27,6 +29,22 @@ export const pickAmbientEntry = (
 };
 
 export const loadMapAmbientConfig = async (
+  mapId: number,
+  overridesBase: string | undefined,
+  metaPath: string | undefined
+): Promise<MapAmbientConfig | null> => {
+  const cacheKey = `${mapId}:${overridesBase ?? ''}:${metaPath ?? ''}`;
+  const cached = ambientConfigCache.get(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
+  const pending = fetchMapAmbientConfig(mapId, overridesBase, metaPath);
+  ambientConfigCache.set(cacheKey, pending);
+  return pending;
+};
+
+const fetchMapAmbientConfig = async (
   mapId: number,
   overridesBase: string | undefined,
   metaPath: string | undefined

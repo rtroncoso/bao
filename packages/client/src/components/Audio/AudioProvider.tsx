@@ -15,11 +15,7 @@ import {
   VolumePrefs
 } from '@bao/audio';
 
-import {
-  getAssetsBaseUrl,
-  getAudioEngine,
-  unlockAudio
-} from '@bao/client/lib/audio-engine';
+import { getAudioEngine, unlockAudio } from '@bao/client/lib/audio-engine';
 
 const STORAGE_KEY = 'bao.audio.prefs';
 
@@ -63,26 +59,6 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const prefs = loadPrefs();
     engine.setPrefs(prefs);
-  }, [engine]);
-
-  useEffect(() => {
-    const base = getAssetsBaseUrl();
-    if (!base) {
-      return;
-    }
-
-    void fetch(`${base}/manifest.json`)
-      .then((response) => (response.ok ? response.json() : null))
-      .then((manifest) => {
-        if (!manifest?.audio) {
-          return;
-        }
-        engine.registerManifest({
-          music: manifest.audio.music,
-          sfx: manifest.audio.sfx
-        });
-      })
-      .catch(() => undefined);
   }, [engine]);
 
   const unlock = useCallback(async () => {

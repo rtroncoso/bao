@@ -1,3 +1,8 @@
 module.exports = {
-  'extends': ['../../.eslintrc.js']
+  'extends': ['../../.eslintrc.js'],
+  'settings': {
+    'react': {
+      'version': 'detect'
+    }
+  }
 };

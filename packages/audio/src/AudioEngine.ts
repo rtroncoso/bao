@@ -36,6 +36,7 @@ export class AudioEngine {
   private prefs: VolumePrefs = { ...DEFAULT_VOLUME_PREFS };
   private listener: ListenerPosition = { x: 0, y: 0 };
   private musicLoop: ActiveLoop | null = null;
+  private currentMusicId: string | null = null;
   private ambientLoop: ActiveLoop | null = null;
   private readonly sfxInstances = new Map<number, SfxInstance>();
   private resolveUrl: (path: string) => string = (path) => path;
@@ -157,9 +158,14 @@ export class AudioEngine {
     if (entries.length === 0) {
       return;
     }
-    await Promise.all(
-      entries.map(({ id, kind }) => this.ensureBuffer(id, kind))
-    );
+
+    const batchSize = 2;
+    for (let index = 0; index < entries.length; index += batchSize) {
+      const batch = entries.slice(index, index + batchSize);
+      await Promise.all(
+        batch.map(({ id, kind }) => this.ensureBuffer(id, kind))
+      );
+    }
   }
 
   hasBuffer(id: string, kind: AudioCatalogKind): boolean {
@@ -167,14 +173,22 @@ export class AudioEngine {
   }
 
   async playMusic(id: string, options: PlayMusicOptions = {}): Promise<void> {
+    if (this.currentMusicId === id && this.musicLoop) {
+      return;
+    }
+
     const buffer = await this.ensureBuffer(id, 'music');
     if (!buffer) {
       return;
     }
-    this.startMusic(buffer, options);
+    this.startMusic(id, buffer, options);
   }
 
-  private startMusic(buffer: AudioBuffer, options: PlayMusicOptions = {}): void {
+  private startMusic(
+    id: string,
+    buffer: AudioBuffer,
+    options: PlayMusicOptions = {}
+  ): void {
     const { loop = true, fadeMs = 1500 } = options;
 
     if (!this.context || !this.trackGains.music) {
@@ -217,6 +231,7 @@ export class AudioEngine {
     gain.gain.setValueAtTime(0, now);
     gain.gain.linearRampToValueAtTime(targetGain, now + fadeMs / 1000);
 
+    this.currentMusicId = id;
     this.musicLoop = { source, gain };
   }
 
@@ -224,6 +239,8 @@ export class AudioEngine {
     if (!this.musicLoop || !this.context) {
       return;
     }
+
+    this.currentMusicId = null;
 
     const { source, gain } = this.musicLoop;
     const now = this.context.currentTime;

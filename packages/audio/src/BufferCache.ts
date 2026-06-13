@@ -1,6 +1,7 @@
 export class BufferCache {
   private readonly buffers = new Map<string, AudioBuffer>();
   private readonly inFlight = new Map<string, Promise<AudioBuffer | undefined>>();
+  private readonly failed = new Set<string>();
 
   get(id: string): AudioBuffer | undefined {
     return this.buffers.get(id);
@@ -21,6 +22,10 @@ export class BufferCache {
     context: AudioContext,
     resolveUrl: (path: string) => string
   ): Promise<AudioBuffer | undefined> {
+    if (this.failed.has(id)) {
+      return undefined;
+    }
+
     const cached = this.buffers.get(id);
     if (cached) {
       return cached;
@@ -37,6 +42,7 @@ export class BufferCache {
         const response = await fetch(url);
         if (!response.ok) {
           console.warn(`[audio] failed to load ${id} from ${url}`);
+          this.failed.add(id);
           return undefined;
         }
 
@@ -46,6 +52,7 @@ export class BufferCache {
         return audioBuffer;
       } catch (error) {
         console.warn(`[audio] decode failed for ${id}`, error);
+        this.failed.add(id);
         return undefined;
       } finally {
         this.inFlight.delete(id);

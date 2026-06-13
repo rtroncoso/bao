@@ -29,7 +29,8 @@ export const AudioSystem: React.FC = ({ children }) => {
   const ambientTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const footstepPhaseRef = useRef<Record<string, boolean>>({});
   const prevTilesRef = useRef<Record<string, TileSnapshot>>({});
-  const activeMapIdRef = useRef<number | null>(null);
+  const lastMusicKeyRef = useRef<string | null>(null);
+  const lastAmbientKeyRef = useRef<string | null>(null);
 
   const localCharacter = resolveLocalCharacter(
     gameState.serverState,
@@ -44,48 +45,92 @@ export const AudioSystem: React.FC = ({ children }) => {
       ? gameState.serverState.maps?.get(String(mapId))?.musicId ?? 0
       : 0;
 
-  useEffect(() => {
-    if (!manifest?.audio) {
-      return;
-    }
-    engine.registerManifest({
-      music: manifest.audio.music,
-      sfx: manifest.audio.sfx
-    });
-  }, [engine, manifest?.audio?.music, manifest?.audio?.sfx]);
-
-  const characterTileKey = gameState.serverState?.characters
-    ? [...gameState.serverState.characters]
-        .map(
-          (character) =>
-            `${character.sessionId}:${character.tile.x}:${character.tile.y}:${character.isMoving}`
-        )
-        .join('|')
-    : '';
+  const audioOverridesBase = manifest?.audio?.overrides;
+  const mapMetaPath = mapId ? manifest?.maps?.[String(mapId)] : undefined;
 
   useEffect(() => {
-    if (!localCharacter) {
+    const room = gameState.room;
+    if (!room) {
+      prevTilesRef.current = {};
       return;
     }
 
-    engine.setListener(localCharacter.tile.x, localCharacter.tile.y);
-  }, [engine, localCharacter?.tile.x, localCharacter?.tile.y, localCharacter]);
+    const characterId = gameState.characterId;
+    const sessionId = room.sessionId;
+
+    const onStateChange = () => {
+      const characters = room.state?.characters;
+      if (!characters) {
+        return;
+      }
+
+      const listener = resolveLocalCharacter(
+        room.state,
+        characterId,
+        sessionId
+      );
+      if (listener) {
+        engine.setListener(listener.tile.x, listener.tile.y);
+      }
+
+      for (const character of characters) {
+        const key = character.sessionId ?? String(character.id);
+        const tile = tileSnapshot(character);
+        const prev = prevTilesRef.current[key];
+
+        if (
+          prev &&
+          (prev.x !== tile.x || prev.y !== tile.y) &&
+          character.isMoving
+        ) {
+          const useFirst = footstepPhaseRef.current[key] ?? true;
+          footstepPhaseRef.current[key] = !useFirst;
+          const sfxId = useFirst ? AO_FOOTSTEP_1 : AO_FOOTSTEP_2;
+          const isLocal =
+            character.sessionId === sessionId || character.id === characterId;
+
+          if (isLocal) {
+            engine.playSfx(sfxId);
+          } else {
+            engine.playSfxAt(sfxId, tile.x, tile.y);
+          }
+        }
+
+        prevTilesRef.current[key] = tile;
+      }
+    };
+
+    room.onStateChange(onStateChange);
+
+    return () => {
+      prevTilesRef.current = {};
+      room.onStateChange.remove?.(onStateChange);
+    };
+  }, [gameState.room, gameState.characterId, engine]);
 
   useEffect(() => {
     if (!mapId || !musicId) {
       return;
     }
 
+    const musicKey = `${mapId}:${musicId}`;
+    const ambientKey = `${mapId}:${audioOverridesBase ?? ''}:${
+      mapMetaPath ?? ''
+    }`;
+    let cancelled = false;
+
     void (async () => {
       await unlockAudio();
 
-      const overridesBase = manifest?.audio?.overrides;
-      const mapPath = manifest?.maps?.[String(mapId)];
       const ambientConfig = await loadMapAmbientConfig(
         mapId,
-        overridesBase,
-        mapPath
+        audioOverridesBase,
+        mapMetaPath
       );
+
+      if (cancelled) {
+        return;
+      }
 
       const prefetchIds: Array<{ id: string; kind: 'music' | 'sfx' }> = [
         { id: String(musicId), kind: 'music' },
@@ -98,96 +143,69 @@ export const AudioSystem: React.FC = ({ children }) => {
       ];
 
       await engine.prefetch(prefetchIds);
-      engine.stopMusic(500);
-      await engine.playMusic(String(musicId), { fadeMs: 1500, loop: true });
+
+      if (cancelled) {
+        return;
+      }
+
+      if (lastMusicKeyRef.current !== musicKey) {
+        lastMusicKeyRef.current = musicKey;
+        engine.stopMusic(500);
+        await engine.playMusic(String(musicId), { fadeMs: 1500, loop: true });
+      }
+
+      if (lastAmbientKeyRef.current !== ambientKey) {
+        lastAmbientKeyRef.current = ambientKey;
+
+        if (ambientTimerRef.current) {
+          clearInterval(ambientTimerRef.current);
+          ambientTimerRef.current = null;
+        }
+
+        if (ambientConfig?.entries?.length) {
+          const tick = () => {
+            const entry = pickAmbientEntry(
+              ambientConfig.entries.filter((item) => item.flags === 1)
+            );
+            if (entry) {
+              engine.playSfx(String(entry.sfxId));
+            }
+          };
+
+          ambientTimerRef.current = setInterval(tick, ambientConfig.intervalMs);
+        }
+      }
     })();
-  }, [mapId, musicId, engine, manifest?.audio?.overrides, manifest?.maps]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [mapId, musicId, engine, audioOverridesBase, mapMetaPath]);
 
   useEffect(() => {
-    if (!mapId || activeMapIdRef.current === mapId) {
-      if (activeMapIdRef.current !== mapId) {
-        activeMapIdRef.current = mapId;
-      }
-    } else {
-      activeMapIdRef.current = mapId;
+    if (mapId && musicId) {
+      return;
     }
+
+    lastMusicKeyRef.current = null;
+    lastAmbientKeyRef.current = null;
+    engine.stopMusic(500);
 
     if (ambientTimerRef.current) {
       clearInterval(ambientTimerRef.current);
       ambientTimerRef.current = null;
     }
+  }, [mapId, musicId, engine]);
 
-    const overridesBase = manifest?.audio?.overrides;
-    const mapPath = manifest?.maps?.[String(mapId)];
-
-    let cancelled = false;
-
-    void (async () => {
-      const config = await loadMapAmbientConfig(mapId, overridesBase, mapPath);
-
-      if (cancelled || !config?.entries?.length) {
-        return;
-      }
-
-      const tick = () => {
-        const entry = pickAmbientEntry(
-          config.entries.filter((item) => item.flags === 1)
-        );
-        if (entry) {
-          engine.playSfx(String(entry.sfxId));
-        }
-      };
-
-      ambientTimerRef.current = setInterval(tick, config.intervalMs);
-    })();
-
-    return () => {
-      cancelled = true;
+  useEffect(
+    () => () => {
       if (ambientTimerRef.current) {
         clearInterval(ambientTimerRef.current);
         ambientTimerRef.current = null;
       }
-    };
-  }, [mapId, engine, manifest?.audio?.overrides, manifest?.maps]);
-
-  useEffect(() => {
-    if (!gameState.serverState?.characters) {
-      return;
-    }
-
-    for (const character of gameState.serverState.characters) {
-      const key = character.sessionId ?? String(character.id);
-      const tile = tileSnapshot(character);
-      const prev = prevTilesRef.current[key];
-
-      if (
-        prev &&
-        (prev.x !== tile.x || prev.y !== tile.y) &&
-        character.isMoving
-      ) {
-        const useFirst = footstepPhaseRef.current[key] ?? true;
-        footstepPhaseRef.current[key] = !useFirst;
-        const sfxId = useFirst ? AO_FOOTSTEP_1 : AO_FOOTSTEP_2;
-        const isLocal =
-          character.sessionId === gameState.room?.sessionId ||
-          character.id === gameState.characterId;
-
-        if (isLocal) {
-          engine.playSfx(sfxId);
-        } else {
-          engine.playSfxAt(sfxId, tile.x, tile.y);
-        }
-      }
-
-      prevTilesRef.current[key] = tile;
-    }
-  }, [
-    characterTileKey,
-    engine,
-    gameState.room?.sessionId,
-    gameState.characterId,
-    gameState.serverState?.characters
-  ]);
+    },
+    []
+  );
 
   return <>{children}</>;
 };
