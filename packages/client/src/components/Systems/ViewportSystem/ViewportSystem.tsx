@@ -27,6 +27,7 @@ import {
   getCharacterWorldPixels,
   useWorldContext
 } from '@bao/client/components/Systems/WorldSystem';
+import { worldViewportRef } from '@bao/client/lib/world-viewport';
 
 export interface ViewportProps {
   children?: React.ReactNode;
@@ -149,6 +150,7 @@ export const ViewportSystem: React.FC<ViewportProps> = (
     publish: boolean
   ) => {
     projectionRef.current = projection;
+    worldViewportRef.current = projection;
 
     if (viewport.current) {
       viewport.current.x = -projection.x;

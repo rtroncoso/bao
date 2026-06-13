@@ -1,8 +1,8 @@
 import React, {
   createContext,
-  useCallback,
   useContext,
   useEffect,
+  useRef,
   useState
 } from 'react';
 import { connect } from 'react-redux';
@@ -10,16 +10,12 @@ import { bindActionCreators, compose } from 'redux';
 import { SetStateCallback, useLocalStateReducer } from '@bao/client/hooks';
 import { PixiAssetLoader } from '@bao/client/lib/pixi-asset-loader';
 import { ProgressBar } from '@bao/client/components/Pixi';
-import { selectToken } from '@bao/client/queries/account';
 import {
   AssetEntities,
   BodiesEntityModel,
-  loadAssets,
-  selectBodies,
-  selectGraphics,
-  selectManifest
+  loadAssets
 } from '@bao/client/queries/assets';
-import { Dispatch, State } from '@bao/client/store';
+import { Dispatch } from '@bao/client/store';
 import { App } from '@bao/core';
 
 export type AssetSystemProps = object;
@@ -30,6 +26,8 @@ export interface AssetContextState {
   setAssetState: SetStateCallback<AssetSystemState>;
   bodies?: BodiesEntityModel | any[];
   loader: PixiAssetLoader | null;
+  loaded: boolean;
+  progress: number;
 }
 
 export const createInitialAssetState = (): AssetSystemState => ({});
@@ -38,27 +36,19 @@ export const AssetSystemContext = createContext<AssetContextState>({
   assetState: createInitialAssetState(),
   setAssetState: null,
   bodies: [],
-  loader: null
+  loader: null,
+  loaded: false,
+  progress: 0
 });
 
 export const useAssetsContext = () => {
   return useContext(AssetSystemContext);
 };
 
-const mapStateToProps = (state: State) => {
-  return {
-    bodies: selectBodies(state),
-    graphics: selectGraphics(state),
-    manifest: selectManifest(state),
-    token: selectToken(state)
-  };
-};
-
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators({ loadAssets }, dispatch);
 
-type ConnectedProps = ReturnType<typeof mapStateToProps> &
-  ReturnType<typeof mapDispatchToProps>;
+type ConnectedProps = ReturnType<typeof mapDispatchToProps>;
 
 export type AssetSystemConnectedProps = AssetSystemProps &
   ConnectedProps & {
@@ -72,26 +62,42 @@ export const AssetSystem = ({
   const [loader] = useState(() => new PixiAssetLoader());
   const [loaded, setLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
+  const loadStartedRef = useRef(false);
 
   const [assetState, setAssetState] = useLocalStateReducer(
     createInitialAssetState()
   );
 
-  const loadAssetsCallback = useCallback(() => {
-    loadAssets({ loader });
-    loader.onComplete.add(() => setLoaded(true));
-    loader.onProgress.add(() => setProgress(loader.progress / 100));
-  }, [loader, loadAssets]);
-
   useEffect(() => {
-    loadAssetsCallback();
-    return () => loader.destroy();
-  }, [loadAssetsCallback, loader]);
+    const handleComplete = () => {
+      setLoaded(true);
+      setProgress(1);
+    };
+
+    const handleProgress = () => {
+      setProgress(loader.progress / 100);
+    };
+
+    loader.onComplete.add(handleComplete);
+    loader.onProgress.add(handleProgress);
+
+    if (!loadStartedRef.current) {
+      loadStartedRef.current = true;
+      loadAssets({ loader });
+    }
+
+    return () => {
+      loader.onComplete.remove(handleComplete);
+      loader.onProgress.remove(handleProgress);
+    };
+  }, [loader, loadAssets]);
 
   const assetContext = {
     setAssetState,
     assetState,
-    loader
+    loader,
+    loaded,
+    progress
   };
 
   return (
@@ -113,6 +119,4 @@ export const AssetSystem = ({
   );
 };
 
-export default compose(connect(mapStateToProps, mapDispatchToProps))(
-  AssetSystem
-);
+export default compose(connect(null, mapDispatchToProps))(AssetSystem);

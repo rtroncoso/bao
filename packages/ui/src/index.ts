@@ -30,3 +30,32 @@ export {
   LoadingOverlay,
   type LoadingOverlayProps,
 } from "./components/loading-overlay";
+export { Slider, type SliderProps } from "./components/ui/slider";
+export {
+  GameOverlayPanel,
+  gameOverlayPanelClassName,
+  type GameOverlayPanelProps,
+} from "./components/game-overlay-panel";
+export {
+  GameOverlayInput,
+  type GameOverlayInputProps,
+} from "./components/game-overlay-input";
+export {
+  SettingsPanel,
+  gameOverlayTriggerClassName,
+  type SettingsPanelProps,
+} from "./components/settings-panel";
+export {
+  SettingsFieldset,
+  type SettingsFieldsetProps,
+} from "./components/settings-fieldset";
+export {
+  SettingsAction,
+  type SettingsActionProps,
+} from "./components/settings-action";
+export {
+  SettingsFooter,
+  type SettingsFooterProps,
+} from "./components/settings-footer";
+
+export { Cog, Github } from "lucide-react";

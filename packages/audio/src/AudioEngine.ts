@@ -207,6 +207,22 @@ export class AudioEngine {
     return this.cache.has(cacheKey(id, kind));
   }
 
+  getCurrentMusicId(): string | null {
+    return this.currentMusicId;
+  }
+
+  isMusicPlaying(id?: string): boolean {
+    if (!this.musicLoop || !this.currentMusicId) {
+      return false;
+    }
+
+    if (id === undefined) {
+      return true;
+    }
+
+    return this.currentMusicId === id;
+  }
+
   async playMusic(id: string, options: PlayMusicOptions = {}): Promise<boolean> {
     if (this.currentMusicId === id && this.musicLoop) {
       return true;
@@ -376,6 +392,31 @@ export class AudioEngine {
     tileY: number,
     atListener = false
   ): number {
+    void this.playCatalogOneShot(id, tileX, tileY, 'sfx', atListener);
+    return 0;
+  }
+
+  playAmbientSfx(id: string): number {
+    return this.playAmbientSfxAt(id, this.listener.x, this.listener.y, true);
+  }
+
+  playAmbientSfxAt(
+    id: string,
+    tileX: number,
+    tileY: number,
+    atListener = false
+  ): number {
+    void this.playCatalogOneShot(id, tileX, tileY, 'ambient', atListener);
+    return 0;
+  }
+
+  private playCatalogOneShot(
+    id: string,
+    tileX: number,
+    tileY: number,
+    track: 'sfx' | 'ambient',
+    atListener: boolean
+  ): void {
     void (async () => {
       if (!(await this.ensureRunning())) {
         return;
@@ -386,19 +427,19 @@ export class AudioEngine {
         return;
       }
 
-      this.playSfxBuffer(buffer, tileX, tileY, atListener);
+      this.playOneShotBuffer(buffer, tileX, tileY, track, atListener);
     })();
-
-    return 0;
   }
 
-  private playSfxBuffer(
+  private playOneShotBuffer(
     buffer: AudioBuffer,
     tileX: number,
     tileY: number,
+    track: 'sfx' | 'ambient',
     atListener: boolean
   ): number {
-    if (!this.context || !this.trackGains.sfx) {
+    const trackGain = this.trackGains[track];
+    if (!this.context || !trackGain) {
       return 0;
     }
 
@@ -412,12 +453,12 @@ export class AudioEngine {
     source.buffer = buffer;
     source.connect(gain);
     gain.connect(panner);
-    panner.connect(this.trackGains.sfx);
+    panner.connect(trackGain);
 
-    const masterSfx = this.getEffectiveTrackVolume('sfx');
+    const masterVolume = this.getEffectiveTrackVolume(track);
     const mix = atListener
-      ? { gain: masterSfx, pan: 0 }
-      : computeSpatialMix(tileX, tileY, this.listener, masterSfx);
+      ? { gain: masterVolume, pan: 0 }
+      : computeSpatialMix(tileX, tileY, this.listener, masterVolume);
 
     gain.gain.value = mix.gain;
     panner.pan.value = mix.pan;

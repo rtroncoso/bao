@@ -5,7 +5,8 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo
+  useMemo,
+  useState
 } from 'react';
 
 import {
@@ -25,6 +26,7 @@ const STORAGE_KEY = 'bao.audio.prefs';
 
 interface AudioContextValue {
   engine: AudioEngine;
+  prefs: VolumePrefs;
   unlock: () => Promise<boolean>;
   setVolume: (track: AudioTrack, volume: number) => void;
   setMuted: (track: AudioTrack, muted: boolean) => void;
@@ -63,11 +65,11 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
   const engine = useMemo(() => getAudioEngine(), []);
+  const [prefs, setPrefs] = useState<VolumePrefs>(() => loadPrefs());
 
   useEffect(() => {
-    const prefs = loadPrefs();
     engine.setPrefs(prefs);
-  }, [engine]);
+  }, [engine, prefs]);
 
   useEffect(() => {
     const base = getAssetsBaseUrl();
@@ -99,7 +101,9 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
   const setVolume = useCallback(
     (track: AudioTrack, volume: number) => {
       engine.setVolume(track, volume);
-      savePrefs(engine.getPrefs());
+      const next = engine.getPrefs();
+      setPrefs(next);
+      savePrefs(next);
     },
     [engine]
   );
@@ -107,7 +111,9 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
   const setMuted = useCallback(
     (track: AudioTrack, muted: boolean) => {
       engine.setMuted(track, muted);
-      savePrefs(engine.getPrefs());
+      const next = engine.getPrefs();
+      setPrefs(next);
+      savePrefs(next);
     },
     [engine]
   );
@@ -127,8 +133,8 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [unlock]);
 
   const value = useMemo(
-    () => ({ engine, unlock, setVolume, setMuted }),
-    [engine, unlock, setVolume, setMuted]
+    () => ({ engine, prefs, unlock, setVolume, setMuted }),
+    [engine, prefs, unlock, setVolume, setMuted]
   );
 
   return (

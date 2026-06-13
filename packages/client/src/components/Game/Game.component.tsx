@@ -24,6 +24,7 @@ import { GameStage } from '@bao/client/components/Pixi';
 import { App } from '@bao/core/constants';
 
 import { computeSixteenByNineViewport } from '@bao/client/lib/game-viewport';
+import { GameSettingsPanel } from '@bao/client/components/Settings';
 
 import { GameConnectedProps, GameContext } from './Game.context';
 import { GamePageShell, GameStyled } from './Game.styles';
@@ -104,8 +105,9 @@ export const GameComponent: React.FC<GameComponentProps> = () => {
             </GameContext.Provider>
           </Provider>
         </GameStage>
+        <GameSettingsPanel />
         <ChatComponent />
-        {gameContext.state.debug && (
+        {gameContext.state.debug ? (
           <FpsView
             width={70}
             height={30}
@@ -114,7 +116,7 @@ export const GameComponent: React.FC<GameComponentProps> = () => {
             top={20}
             bottom={null}
           />
-        )}
+        ) : null}
       </GameStyled>
     </GamePageShell>
   );

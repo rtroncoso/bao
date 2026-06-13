@@ -1,35 +1,29 @@
 import React, { useEffect, useRef } from 'react';
 
-import { AO_FOOTSTEP_1, AO_FOOTSTEP_2 } from '@bao/core/constants/audio';
+import {
+  AO_DOOR_SFX,
+  AO_FOOTSTEP_1,
+  AO_FOOTSTEP_2,
+  WORLD_SFX_MESSAGE
+} from '@bao/core/constants/audio';
+import type { WorldSfxPayload } from '@bao/core/constants/audio/Messages';
 import { getAudioEngine, unlockAudio } from '@bao/client/lib/audio-engine';
 import { useGameContext } from '@bao/client/components/Game';
 import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
 import { useWorldContext } from '@bao/client/components/Systems/WorldSystem';
-import { CharacterState } from '@bao/server/schema/CharacterState';
+import { mapTileToWorldTile } from '@bao/client/lib/world-viewport';
 import { useSelector } from 'react-redux';
 import { selectManifest } from '@bao/client/queries';
 
 import { loadMapAmbientConfig, pickAmbientEntry } from './mapAudio';
-
-interface TileSnapshot {
-  x: number;
-  y: number;
-}
-
-const tileSnapshot = (character: CharacterState): TileSnapshot => ({
-  x: character.tile.x,
-  y: character.tile.y
-});
+import { playWorldSfxIfInViewport } from './worldSfx';
 
 export const AudioSystem: React.FC = ({ children }) => {
   const engine = getAudioEngine();
   const { state: gameState } = useGameContext();
-  const { currentMapId } = useWorldContext();
+  const { currentMapId, worlds } = useWorldContext();
   const manifest = useSelector(selectManifest);
   const ambientTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const footstepPhaseRef = useRef<Record<string, boolean>>({});
-  const prevTilesRef = useRef<Record<string, TileSnapshot>>({});
-  const lastMusicKeyRef = useRef<string | null>(null);
   const lastAmbientKeyRef = useRef<string | null>(null);
 
   const localCharacter = resolveLocalCharacter(
@@ -60,74 +54,46 @@ export const AudioSystem: React.FC = ({ children }) => {
     });
   }, [engine, manifest?.audio?.music, manifest?.audio?.sfx]);
 
-  const characterTileKey = gameState.serverState?.characters
-    ? [...gameState.serverState.characters]
-        .map(
-          (character) =>
-            `${character.sessionId}:${character.tile.x}:${character.tile.y}:${character.isMoving}`
-        )
-        .join('|')
-    : '';
-
   useEffect(() => {
-    if (!localCharacter) {
+    if (!localCharacter?.mapId) {
       return;
     }
 
-    engine.setListener(localCharacter.tile.x, localCharacter.tile.y);
-  }, [engine, localCharacter?.tile.x, localCharacter?.tile.y]);
+    const listenerTile = mapTileToWorldTile(
+      localCharacter.mapId,
+      localCharacter.tile.x,
+      localCharacter.tile.y,
+      worlds
+    );
 
-  useEffect(() => {
-    if (!gameState.serverState?.characters) {
-      return;
-    }
-
-    const sessionId = gameState.room?.sessionId;
-    const localCharacterId =
-      gameState.characterId !== undefined
-        ? Number.parseInt(String(gameState.characterId), 10)
-        : Number.NaN;
-
-    for (const character of gameState.serverState.characters) {
-      const key = character.sessionId ?? String(character.id);
-      const tile = tileSnapshot(character);
-      const prev = prevTilesRef.current[key];
-
-      if (
-        prev &&
-        (prev.x !== tile.x || prev.y !== tile.y) &&
-        character.isMoving
-      ) {
-        const useFirst = footstepPhaseRef.current[key] ?? true;
-        footstepPhaseRef.current[key] = !useFirst;
-        const sfxId = useFirst ? AO_FOOTSTEP_1 : AO_FOOTSTEP_2;
-        const isLocal =
-          character.sessionId === sessionId ||
-          (!Number.isNaN(localCharacterId) &&
-            character.id === localCharacterId);
-
-        if (isLocal) {
-          engine.playSfx(sfxId);
-        } else {
-          engine.playSfxAt(sfxId, tile.x, tile.y);
-        }
-      }
-
-      prevTilesRef.current[key] = tile;
-    }
+    engine.setListener(listenerTile.x, listenerTile.y);
   }, [
-    characterTileKey,
     engine,
-    gameState.room?.sessionId,
-    gameState.characterId
+    localCharacter?.mapId,
+    localCharacter?.tile.x,
+    localCharacter?.tile.y,
+    worlds
   ]);
+
+  useEffect(() => {
+    const room = gameState.room;
+    if (!room) {
+      return;
+    }
+
+    const onWorldSfx = (payload: WorldSfxPayload) => {
+      playWorldSfxIfInViewport(engine, payload, worlds);
+    };
+
+    room.onMessage(WORLD_SFX_MESSAGE, onWorldSfx);
+  }, [engine, gameState.room, worlds]);
 
   useEffect(() => {
     if (!mapId || !manifestReady) {
       return;
     }
 
-    const musicKey = `${mapId}:${musicId}`;
+    const musicTrackId = musicId > 0 ? String(musicId) : null;
     const ambientKey = `${mapId}:${audioOverridesBase ?? ''}:${
       mapMetaPath ?? ''
     }`;
@@ -149,6 +115,7 @@ export const AudioSystem: React.FC = ({ children }) => {
       const prefetchIds: Array<{ id: string; kind: 'music' | 'sfx' }> = [
         { id: AO_FOOTSTEP_1, kind: 'sfx' },
         { id: AO_FOOTSTEP_2, kind: 'sfx' },
+        { id: AO_DOOR_SFX, kind: 'sfx' },
         ...(musicId > 0
           ? [{ id: String(musicId), kind: 'music' as const }]
           : []),
@@ -164,15 +131,12 @@ export const AudioSystem: React.FC = ({ children }) => {
         return;
       }
 
-      if (musicId > 0 && lastMusicKeyRef.current !== musicKey) {
+      if (musicTrackId && !engine.isMusicPlaying(musicTrackId)) {
         engine.stopMusic(500);
-        const played = await engine.playMusic(String(musicId), {
+        await engine.playMusic(musicTrackId, {
           fadeMs: 1500,
           loop: true
         });
-        if (played) {
-          lastMusicKeyRef.current = musicKey;
-        }
       }
 
       if (lastAmbientKeyRef.current !== ambientKey) {
@@ -189,7 +153,7 @@ export const AudioSystem: React.FC = ({ children }) => {
               ambientConfig.entries.filter((item) => item.flags === 1)
             );
             if (entry) {
-              engine.playSfx(String(entry.sfxId));
+              engine.playAmbientSfx(String(entry.sfxId));
             }
           };
 
@@ -208,7 +172,6 @@ export const AudioSystem: React.FC = ({ children }) => {
       return;
     }
 
-    lastMusicKeyRef.current = null;
     lastAmbientKeyRef.current = null;
     engine.stopMusic(500);
 

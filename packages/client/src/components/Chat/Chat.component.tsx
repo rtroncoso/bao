@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
+
+import { GameOverlayInput, GameOverlayPanel } from '@bao/ui';
+
 import { ChatConnectedProps, useChatContext } from './Chat.context';
-import {
-  ChatInputStyled,
-  ChatMessageListStyled,
-  ChatMessageStyled,
-  ChatStyled
-} from './Chat.styles';
+import { ChatMessageStyled } from './Chat.styles';
 
 export type ChatComponentProps = ChatConnectedProps;
 
@@ -95,8 +93,15 @@ export const ChatComponent: React.FC<ChatComponentProps> = () => {
   }, []);
 
   return (
-    <ChatStyled focused={state.focused} onClick={handleChatClick}>
-      <ChatMessageListStyled ref={chatList}>
+    <GameOverlayPanel
+      active={state.focused}
+      className="absolute bottom-[2vh] left-[1vw] flex h-[20vh] w-[30vw] flex-col px-2 py-1"
+      onClick={handleChatClick}
+    >
+      <ul
+        ref={chatList}
+        className="mb-8 flex flex-row flex-wrap overflow-y-auto break-words"
+      >
         {state.messages.map((entry, index) =>
           entry.message.trim() ? (
             <ChatMessageStyled
@@ -110,14 +115,16 @@ export const ChatComponent: React.FC<ChatComponentProps> = () => {
             </ChatMessageStyled>
           ) : null
         )}
-      </ChatMessageListStyled>
-      <ChatInputStyled
+      </ul>
+      <GameOverlayInput
         ref={input}
+        className="absolute bottom-[0.2vh] left-0"
         value={message}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
+        placeholder="Enter to chat…"
       />
-    </ChatStyled>
+    </GameOverlayPanel>
   );
 };
 
