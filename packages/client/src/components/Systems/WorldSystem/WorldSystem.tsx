@@ -18,6 +18,7 @@ import {
 } from '@bao/core';
 import { useGameContext } from '@bao/client/components/Game';
 import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
+import { assetUrl, fetchAssetJson } from '@bao/client/lib/baoUrls';
 import { selectManifest } from '@bao/client/queries';
 import { State } from '@bao/client/store';
 
@@ -68,8 +69,7 @@ const WorldContext = createContext<WorldContextState>({
 
 export const useWorldContext = () => useContext(WorldContext);
 
-const getAssetsBaseUrl = () =>
-  process.env.NEXT_PUBLIC_BAO_ASSETS?.replace(/\/$/, '') ?? '';
+const DEFAULT_WORLDS_PATH = 'worlds/worlds.json';
 
 const trimCache = (cache: Map<number, Tiled>, keepIds: number[]) => {
   const keep = new Set(keepIds);
@@ -141,7 +141,7 @@ export const WorldSystem: React.FC = ({ children }) => {
       if (!mapPath) {
         return null;
       }
-      return `${getAssetsBaseUrl()}/${mapPath}`;
+      return assetUrl(mapPath);
     },
     [manifest?.maps]
   );
@@ -160,9 +160,12 @@ export const WorldSystem: React.FC = ({ children }) => {
         return null;
       }
 
-      const response = await fetch(url);
+      const response = await fetch(url, { cache: 'no-store' });
       if (!response.ok) {
-        throw new Error(`Failed to load map ${mapId}`);
+        console.error(
+          `[WorldSystem] failed to load map ${mapId} (${response.status}) from ${url}`
+        );
+        return null;
       }
 
       const map = (await response.json()) as Tiled;
@@ -178,7 +181,12 @@ export const WorldSystem: React.FC = ({ children }) => {
       if (cacheRef.current.has(mapId)) {
         return;
       }
-      await loadMap(mapId);
+
+      try {
+        await loadMap(mapId);
+      } catch (error) {
+        console.error(`[WorldSystem] failed to prefetch map ${mapId}`, error);
+      }
     },
     [loadMap]
   );
@@ -250,39 +258,40 @@ export const WorldSystem: React.FC = ({ children }) => {
 
   useEffect(() => {
     const mapId = localCharacter?.mapId;
-    if (!mapId) {
+    if (!mapId || !localCharacter) {
+      return;
+    }
+
+    setCurrentMapId((previous) => (previous === mapId ? previous : mapId));
+
+    const { x, y } = localCharacter.tile;
+    void prefetchForCharacter(mapId, x, y, getQuadrant(x, y));
+  }, [localCharacter?.mapId, worlds, prefetchForCharacter]);
+
+  useEffect(() => {
+    if (!manifest?.maps) {
       return;
     }
 
     let cancelled = false;
+    const worldsPath = manifest.worlds ?? DEFAULT_WORLDS_PATH;
 
     const run = async () => {
-      await prefetchMap(mapId);
-
-      let ids = [mapId];
-      if (worlds && localCharacter) {
-        const quadrant = getQuadrant(
-          localCharacter.tile.x,
-          localCharacter.tile.y
+      const data = await fetchAssetJson<WorldsJson>(worldsPath);
+      if (!cancelled && data) {
+        console.info(
+          `[WorldSystem] loaded worlds.json (${
+            data.maps.length
+          } maps) from ${assetUrl(worldsPath)}`
         );
-        const requestedIds = getPrefetchMapIds(mapId, quadrant, worlds);
-        const loadedIds = await prefetchMapsSafe(requestedIds, loadMap);
-        ids =
-          loadedIds.length > 0
-            ? [...new Set([mapId, ...loadedIds])]
-            : cacheRef.current.has(mapId)
-            ? [mapId]
-            : loadedIds;
-        trimCache(cacheRef.current, ids);
+        setWorlds(data);
+      } else if (!cancelled && !data) {
+        console.error(
+          `[WorldSystem] failed to load worlds.json from ${assetUrl(
+            worldsPath
+          )}`
+        );
       }
-
-      if (cancelled) {
-        return;
-      }
-
-      setActiveMapIds(ids);
-      setCacheRevision((revision) => revision + 1);
-      setCurrentMapId((previous) => (previous === mapId ? previous : mapId));
     };
 
     void run();
@@ -290,45 +299,7 @@ export const WorldSystem: React.FC = ({ children }) => {
     return () => {
       cancelled = true;
     };
-  }, [
-    localCharacter?.mapId,
-    localCharacter?.tile.x,
-    localCharacter?.tile.y,
-    worlds,
-    prefetchMap,
-    loadMap
-  ]);
-
-  useEffect(() => {
-    if (!manifest?.worlds) {
-      return;
-    }
-
-    let cancelled = false;
-
-    const run = async () => {
-      try {
-        const response = await fetch(
-          `${getAssetsBaseUrl()}/${manifest.worlds}`
-        );
-        if (!response.ok) {
-          throw new Error('Failed to load worlds.json');
-        }
-        const data = (await response.json()) as WorldsJson;
-        if (!cancelled) {
-          setWorlds(data);
-        }
-      } catch (error) {
-        console.error('[WorldSystem] failed to load worlds.json', error);
-      }
-    };
-
-    run();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [manifest?.worlds]);
+  }, [manifest?.maps, manifest?.worlds]);
 
   useEffect(() => {
     if (!mapManifestPath) {

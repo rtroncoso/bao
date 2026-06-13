@@ -1,3 +1,4 @@
+import { getBaoAssetsBaseUrl } from '@bao/client/lib/baoUrls';
 import { QueryConfig } from 'redux-query';
 
 import { merge } from '@bao/client/queries/shared';
@@ -12,10 +13,14 @@ export const loadManifestQuery = {
   force: true,
   options: {
     cache: false,
+    headers: {
+      'Cache-Control': 'no-cache',
+      Pragma: 'no-cache'
+    },
     method: 'GET'
   },
   queryKey: 'loadManifest:GET',
-  url: `${process.env.NEXT_PUBLIC_BAO_ASSETS}/manifest.json`
+  url: `${getBaoAssetsBaseUrl()}/manifest.json`
 };
 
 export const transformManifestResponse = (manifest: ManifestModel) => {

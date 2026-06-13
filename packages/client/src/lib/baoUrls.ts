@@ -1,5 +1,31 @@
 const trimTrailingSlash = (url: string) => url.replace(/\/$/, '');
 
+export const getBaoAssetsBaseUrl = (): string =>
+  trimTrailingSlash(process.env.NEXT_PUBLIC_BAO_ASSETS?.trim() ?? '');
+
+export const assetUrl = (path: string): string => {
+  const base = getBaoAssetsBaseUrl();
+  const normalized = path.replace(/^\//, '');
+  return base ? `${base}/${normalized}` : normalized;
+};
+
+export const fetchAssetJson = async <T>(path: string): Promise<T | null> => {
+  const url = assetUrl(path);
+
+  try {
+    const response = await fetch(url, { cache: 'no-store' });
+    if (!response.ok) {
+      console.error(`[assets] ${response.status} ${url}`);
+      return null;
+    }
+
+    return (await response.json()) as T;
+  } catch (error) {
+    console.error(`[assets] failed to fetch ${url}`, error);
+    return null;
+  }
+};
+
 export const getBaoServerUrl = (): string => {
   const configured = process.env.NEXT_PUBLIC_BAO_SERVER?.trim();
   if (!configured) {

@@ -169,6 +169,32 @@ const fileMd5 = (filePath) =>
     stream.on('error', reject);
   });
 
+const contentTypeForKey = (key) => {
+  if (key.endsWith('.json')) {
+    return 'application/json';
+  }
+  if (key.endsWith('.png')) {
+    return 'image/png';
+  }
+  if (key.endsWith('.mp3')) {
+    return 'audio/mpeg';
+  }
+  if (key.endsWith('.wav')) {
+    return 'audio/wav';
+  }
+  return undefined;
+};
+
+const cacheControlForKey = (key) => {
+  if (key.endsWith('.json')) {
+    return 'public, max-age=300, must-revalidate';
+  }
+  if (key.endsWith('.png') || key.endsWith('.mp3') || key.endsWith('.wav')) {
+    return 'public, max-age=31536000, immutable';
+  }
+  return 'public, max-age=3600';
+};
+
 const etagMatchesMd5 = (remoteEtag, localMd5) => {
   if (!remoteEtag) {
     return false;
@@ -289,6 +315,8 @@ program
               Bucket: bucket,
               Key: key,
               Body: createReadStream(filePath),
+              CacheControl: cacheControlForKey(key),
+              ContentType: contentTypeForKey(key),
             })
           );
           uploaded += 1;
