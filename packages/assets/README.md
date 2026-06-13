@@ -114,9 +114,26 @@ Re-running `npx bao seed` is idempotent — safe to regenerate and re-apply.
 
 ```bash
 npx bao deploy
+npx bao deploy --sync-all          # force re-upload every object (e.g. after metadata/CORS fixes)
+npx bao deploy --environment production --sync-all
 # or
 pnpm staging
 pnpm production
 ```
 
 S3 credentials: repo root `.env` (`AWS_S3_*`). CloudFront cache invalidation runs after sync when `AWS_CLOUDFRONT_DISTRIBUTION_ID` is set — only uploaded or removed objects are invalidated in a single request (falls back to `/*` if over 3,000 paths). Optional overlay: `.env.staging` / `.env.production` in repo root or this package.
+
+Deploy also applies an S3 bucket CORS rule (`GET`, `HEAD`, `AllowedHeaders: *`) so browsers can preflight cross-origin asset requests. S3 answers OPTIONS preflights automatically when the requested method is listed in `AllowedMethods` — do not include `OPTIONS` in the bucket rule (PutBucketCors rejects it).
+
+### CloudFront CORS (production)
+
+Response header policies (`Managed-CORS-S3Origin`, `Managed-CORS-With-Preflight`) add `Access-Control-Allow-Origin` on **GET** responses, but preflight **OPTIONS** requests are answered by S3 and fail with 403 unless the bucket CORS rule above is in place.
+
+On the CloudFront distribution for `bao-assets.*`:
+
+1. **Allowed HTTP methods** — `GET, HEAD, OPTIONS` (not GET/HEAD only).
+2. **Origin request policy** — managed `CORS-S3Origin` (forwards `Origin`, `Access-Control-Request-Method`, `Access-Control-Request-Headers` to S3).
+3. **Response headers policy** — `Managed-CORS-S3Origin` or `Managed-CORS-With-Preflight`.
+4. **Invalidate** `/*` after changing policies or bucket CORS.
+
+Set `NEXT_PUBLIC_BAO_ASSETS=https://bao-assets.rtroncoso.com` in Vercel — **not** `https://bao.rtroncoso.com` (that host serves the PWA `manifest.json`, not game assets).

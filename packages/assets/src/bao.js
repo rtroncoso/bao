@@ -59,6 +59,9 @@ const parseArgs = (argv) => {
     } else {
       options.subcommand = 'seed';
     }
+  } else if (options.command === 'deploy') {
+    // deploy.js parses its own flags via commander
+    return options;
   }
 
   while (args.length > 0) {

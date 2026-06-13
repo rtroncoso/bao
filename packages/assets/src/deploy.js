@@ -5,6 +5,7 @@ import {
 import {
   DeleteObjectsCommand,
   ListObjectsV2Command,
+  PutBucketCorsCommand,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
@@ -195,6 +196,30 @@ const cacheControlForKey = (key) => {
   return 'public, max-age=3600';
 };
 
+/** Public asset CDN: S3 bucket CORS (GET/HEAD). Preflight OPTIONS is answered by S3 when the requested method is allowed. */
+const ensureBucketCors = async (client, bucket, debug = false) => {
+  await client.send(
+    new PutBucketCorsCommand({
+      Bucket: bucket,
+      CORSConfiguration: {
+        CORSRules: [
+          {
+            AllowedHeaders: ['*'],
+            AllowedMethods: ['GET', 'HEAD'],
+            AllowedOrigins: ['*'],
+            ExposeHeaders: ['ETag'],
+            MaxAgeSeconds: 3600,
+          },
+        ],
+      },
+    })
+  );
+
+  if (debug) {
+    console.log(`[deploy] bucket CORS updated on s3://${bucket}/`);
+  }
+};
+
 const etagMatchesMd5 = (remoteEtag, localMd5) => {
   if (!remoteEtag) {
     return false;
@@ -240,9 +265,14 @@ program
     'Optional overlay: .env.staging or .env.production (default: staging)',
     'staging'
   )
+  .option(
+    '--sync-all',
+    'Re-upload every local file (ignore remote ETag match; refreshes metadata and invalidates CDN)'
+  )
   .action(async () => {
     try {
       const debug = program.debug || false;
+      const syncAll = program.syncAll || false;
       const environment = program.environment || 'staging';
       const envPath = loadDeployEnv(environment);
 
@@ -276,12 +306,17 @@ program
         },
       });
 
+      await ensureBucketCors(client, bucket, debug);
+
       const localFiles = walkFiles(PUBLIC_DIR);
       const localKeys = new Set(
         localFiles.map((filePath) => toPosixKey(filePath, PUBLIC_DIR))
       );
 
-      console.log(`[deploy] syncing ${localFiles.length} file(s) to s3://${bucket}/`);
+      console.log(
+        `[deploy] syncing ${localFiles.length} file(s) to s3://${bucket}/` +
+          (syncAll ? ' (sync-all)' : '')
+      );
 
       const remoteObjects = await listRemoteObjects(client, bucket);
       const keysToDelete = [...remoteObjects.keys()].filter(
@@ -301,10 +336,11 @@ program
 
       for (const filePath of localFiles) {
         const key = toPosixKey(filePath, PUBLIC_DIR);
-        const localMd5 = await fileMd5(filePath);
-        const remoteEtag = remoteObjects.get(key);
+        const shouldUpload =
+          syncAll ||
+          !etagMatchesMd5(remoteObjects.get(key), await fileMd5(filePath));
 
-        if (etagMatchesMd5(remoteEtag, localMd5)) {
+        if (!shouldUpload) {
           skipped += 1;
           if (debug) {
             console.log(`[deploy] skip ${key}`);
