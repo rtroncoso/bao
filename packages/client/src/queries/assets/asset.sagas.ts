@@ -131,7 +131,7 @@ export function* handleLoadGraphics(payload: LoadGraphicsPayload) {
   }
 }
 
-export function* handleRegisterAudioManifest(manifest: {
+export function handleRegisterAudioManifest(manifest: {
   audio?: { music?: Record<string, string>; sfx?: Record<string, string> };
 }) {
   if (!manifest?.audio?.music && !manifest?.audio?.sfx) {

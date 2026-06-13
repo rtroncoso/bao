@@ -82,17 +82,23 @@ export class AudioEngine {
     return this.context;
   }
 
-  async unlock(): Promise<void> {
+  async unlock(): Promise<boolean> {
     const context = this.initContext();
     if (!context) {
-      return;
+      return false;
     }
 
     if (context.state === 'suspended') {
-      await context.resume();
+      try {
+        await context.resume();
+      } catch {
+        return false;
+      }
     }
 
-    this.unlocked = true;
+    const running = context.state === 'running';
+    this.unlocked = running;
+    return running;
   }
 
   setPrefs(prefs: Partial<VolumePrefs>): void {
@@ -124,16 +130,45 @@ export class AudioEngine {
 
   /** Register manifest paths only — no network I/O. */
   registerManifest(manifest: PreloadManifest): void {
+    const musicCount = Object.keys(manifest.music ?? {}).length;
+    const sfxCount = Object.keys(manifest.sfx ?? {}).length;
+
+    if (musicCount === 0 && sfxCount === 0) {
+      return;
+    }
+
     this.catalog = {
       music: { ...this.catalog.music, ...manifest.music },
       sfx: { ...this.catalog.sfx, ...manifest.sfx }
     };
+    this.cache.clearFailed();
   }
 
   private resolvePath(id: string, kind: AudioCatalogKind): string | undefined {
     return kind === 'music'
       ? this.catalog.music?.[id]
       : this.catalog.sfx?.[id];
+  }
+
+  private async ensureRunning(): Promise<boolean> {
+    const context = this.ensureContext();
+    if (!context) {
+      return false;
+    }
+
+    if (context.state === 'running') {
+      return true;
+    }
+
+    if (context.state === 'suspended') {
+      try {
+        await context.resume();
+      } catch {
+        return false;
+      }
+    }
+
+    return context.state !== 'closed';
   }
 
   async ensureBuffer(
@@ -172,16 +207,21 @@ export class AudioEngine {
     return this.cache.has(cacheKey(id, kind));
   }
 
-  async playMusic(id: string, options: PlayMusicOptions = {}): Promise<void> {
+  async playMusic(id: string, options: PlayMusicOptions = {}): Promise<boolean> {
     if (this.currentMusicId === id && this.musicLoop) {
-      return;
+      return true;
+    }
+
+    if (!(await this.ensureRunning())) {
+      return false;
     }
 
     const buffer = await this.ensureBuffer(id, 'music');
     if (!buffer) {
-      return;
+      return false;
     }
     this.startMusic(id, buffer, options);
+    return true;
   }
 
   private startMusic(
@@ -208,7 +248,6 @@ export class AudioEngine {
     gain.gain.value = 0;
     source.start(0);
 
-    const targetGain = this.getEffectiveTrackVolume('music');
     const now = ctx.currentTime;
 
     if (previous) {
@@ -229,7 +268,7 @@ export class AudioEngine {
     }
 
     gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(targetGain, now + fadeMs / 1000);
+    gain.gain.linearRampToValueAtTime(1, now + fadeMs / 1000);
 
     this.currentMusicId = id;
     this.musicLoop = { source, gain };
@@ -337,12 +376,19 @@ export class AudioEngine {
     tileY: number,
     atListener = false
   ): number {
-    void this.ensureBuffer(id, 'sfx').then((buffer) => {
+    void (async () => {
+      if (!(await this.ensureRunning())) {
+        return;
+      }
+
+      const buffer = await this.ensureBuffer(id, 'sfx');
       if (!buffer) {
         return;
       }
+
       this.playSfxBuffer(buffer, tileX, tileY, atListener);
-    });
+    })();
+
     return 0;
   }
 
@@ -393,7 +439,12 @@ export class AudioEngine {
   }
 
   playUiSfx(id: string): number {
-    void this.ensureBuffer(id, 'sfx').then((buffer) => {
+    void (async () => {
+      if (!(await this.ensureRunning())) {
+        return;
+      }
+
+      const buffer = await this.ensureBuffer(id, 'sfx');
       if (!buffer || !this.context || !this.trackGains.ui) {
         return;
       }
@@ -412,7 +463,7 @@ export class AudioEngine {
         source.disconnect();
         gain.disconnect();
       };
-    });
+    })();
 
     return 0;
   }

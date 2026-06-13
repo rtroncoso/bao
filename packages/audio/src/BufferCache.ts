@@ -15,6 +15,10 @@ export class BufferCache {
     this.buffers.set(id, buffer);
   }
 
+  clearFailed(): void {
+    this.failed.clear();
+  }
+
   /** Fetch and decode a single asset; dedupes concurrent requests for the same id. */
   async ensure(
     id: string,

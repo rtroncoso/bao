@@ -15,13 +15,17 @@ import {
   VolumePrefs
 } from '@bao/audio';
 
-import { getAudioEngine, unlockAudio } from '@bao/client/lib/audio-engine';
+import {
+  getAssetsBaseUrl,
+  getAudioEngine,
+  unlockAudio
+} from '@bao/client/lib/audio-engine';
 
 const STORAGE_KEY = 'bao.audio.prefs';
 
 interface AudioContextValue {
   engine: AudioEngine;
-  unlock: () => Promise<void>;
+  unlock: () => Promise<boolean>;
   setVolume: (track: AudioTrack, volume: number) => void;
   setMuted: (track: AudioTrack, muted: boolean) => void;
 }
@@ -51,6 +55,10 @@ const savePrefs = (prefs: VolumePrefs) => {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
 };
 
+const hasAudioCatalog = (manifest: {
+  audio?: { music?: Record<string, string>; sfx?: Record<string, string> };
+}) => Boolean(manifest.audio?.music || manifest.audio?.sfx);
+
 export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
@@ -61,9 +69,32 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
     engine.setPrefs(prefs);
   }, [engine]);
 
-  const unlock = useCallback(async () => {
-    await unlockAudio();
-  }, []);
+  useEffect(() => {
+    const base = getAssetsBaseUrl();
+    if (!base) {
+      console.warn('[audio] NEXT_PUBLIC_BAO_ASSETS is not set');
+      return;
+    }
+
+    void fetch(`${base}/manifest.json`)
+      .then((response) => (response.ok ? response.json() : null))
+      .then((manifest) => {
+        if (!manifest || !hasAudioCatalog(manifest)) {
+          console.warn(
+            '[audio] manifest has no audio paths — run `npx bao convert audio` and deploy assets'
+          );
+          return;
+        }
+
+        engine.registerManifest({
+          music: manifest.audio.music,
+          sfx: manifest.audio.sfx
+        });
+      })
+      .catch(() => undefined);
+  }, [engine]);
+
+  const unlock = useCallback(async () => unlockAudio(), []);
 
   const setVolume = useCallback(
     (track: AudioTrack, volume: number) => {
@@ -86,8 +117,8 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
       void unlock();
     };
 
-    window.addEventListener('pointerdown', onGesture, { once: true });
-    window.addEventListener('keydown', onGesture, { once: true });
+    window.addEventListener('pointerdown', onGesture);
+    window.addEventListener('keydown', onGesture);
 
     return () => {
       window.removeEventListener('pointerdown', onGesture);

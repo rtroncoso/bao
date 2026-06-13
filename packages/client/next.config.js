@@ -33,6 +33,7 @@ if (process.env.VERCEL) {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: [
+    '@bao/audio',
     '@bao/core',
     '@bao/server',
     '@bao/react-fps',

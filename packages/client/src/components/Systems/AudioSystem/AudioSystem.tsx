@@ -47,69 +47,83 @@ export const AudioSystem: React.FC = ({ children }) => {
 
   const audioOverridesBase = manifest?.audio?.overrides;
   const mapMetaPath = mapId ? manifest?.maps?.[String(mapId)] : undefined;
+  const manifestReady = Boolean(manifest?.audio?.music || manifest?.audio?.sfx);
 
   useEffect(() => {
-    const room = gameState.room;
-    if (!room) {
-      prevTilesRef.current = {};
+    if (!manifest?.audio?.music && !manifest?.audio?.sfx) {
       return;
     }
 
-    const characterId = gameState.characterId;
-    const sessionId = room.sessionId;
+    engine.registerManifest({
+      music: manifest.audio.music,
+      sfx: manifest.audio.sfx
+    });
+  }, [engine, manifest?.audio?.music, manifest?.audio?.sfx]);
 
-    const onStateChange = () => {
-      const characters = room.state?.characters;
-      if (!characters) {
-        return;
-      }
-
-      const listener = resolveLocalCharacter(
-        room.state,
-        characterId,
-        sessionId
-      );
-      if (listener) {
-        engine.setListener(listener.tile.x, listener.tile.y);
-      }
-
-      for (const character of characters) {
-        const key = character.sessionId ?? String(character.id);
-        const tile = tileSnapshot(character);
-        const prev = prevTilesRef.current[key];
-
-        if (
-          prev &&
-          (prev.x !== tile.x || prev.y !== tile.y) &&
-          character.isMoving
-        ) {
-          const useFirst = footstepPhaseRef.current[key] ?? true;
-          footstepPhaseRef.current[key] = !useFirst;
-          const sfxId = useFirst ? AO_FOOTSTEP_1 : AO_FOOTSTEP_2;
-          const isLocal =
-            character.sessionId === sessionId || character.id === characterId;
-
-          if (isLocal) {
-            engine.playSfx(sfxId);
-          } else {
-            engine.playSfxAt(sfxId, tile.x, tile.y);
-          }
-        }
-
-        prevTilesRef.current[key] = tile;
-      }
-    };
-
-    room.onStateChange(onStateChange);
-
-    return () => {
-      prevTilesRef.current = {};
-      room.onStateChange.remove?.(onStateChange);
-    };
-  }, [gameState.room, gameState.characterId, engine]);
+  const characterTileKey = gameState.serverState?.characters
+    ? [...gameState.serverState.characters]
+        .map(
+          (character) =>
+            `${character.sessionId}:${character.tile.x}:${character.tile.y}:${character.isMoving}`
+        )
+        .join('|')
+    : '';
 
   useEffect(() => {
-    if (!mapId || !musicId) {
+    if (!localCharacter) {
+      return;
+    }
+
+    engine.setListener(localCharacter.tile.x, localCharacter.tile.y);
+  }, [engine, localCharacter?.tile.x, localCharacter?.tile.y]);
+
+  useEffect(() => {
+    if (!gameState.serverState?.characters) {
+      return;
+    }
+
+    const sessionId = gameState.room?.sessionId;
+    const localCharacterId =
+      gameState.characterId !== undefined
+        ? Number.parseInt(String(gameState.characterId), 10)
+        : Number.NaN;
+
+    for (const character of gameState.serverState.characters) {
+      const key = character.sessionId ?? String(character.id);
+      const tile = tileSnapshot(character);
+      const prev = prevTilesRef.current[key];
+
+      if (
+        prev &&
+        (prev.x !== tile.x || prev.y !== tile.y) &&
+        character.isMoving
+      ) {
+        const useFirst = footstepPhaseRef.current[key] ?? true;
+        footstepPhaseRef.current[key] = !useFirst;
+        const sfxId = useFirst ? AO_FOOTSTEP_1 : AO_FOOTSTEP_2;
+        const isLocal =
+          character.sessionId === sessionId ||
+          (!Number.isNaN(localCharacterId) &&
+            character.id === localCharacterId);
+
+        if (isLocal) {
+          engine.playSfx(sfxId);
+        } else {
+          engine.playSfxAt(sfxId, tile.x, tile.y);
+        }
+      }
+
+      prevTilesRef.current[key] = tile;
+    }
+  }, [
+    characterTileKey,
+    engine,
+    gameState.room?.sessionId,
+    gameState.characterId
+  ]);
+
+  useEffect(() => {
+    if (!mapId || !manifestReady) {
       return;
     }
 
@@ -133,9 +147,11 @@ export const AudioSystem: React.FC = ({ children }) => {
       }
 
       const prefetchIds: Array<{ id: string; kind: 'music' | 'sfx' }> = [
-        { id: String(musicId), kind: 'music' },
         { id: AO_FOOTSTEP_1, kind: 'sfx' },
         { id: AO_FOOTSTEP_2, kind: 'sfx' },
+        ...(musicId > 0
+          ? [{ id: String(musicId), kind: 'music' as const }]
+          : []),
         ...(ambientConfig?.entries.map((entry) => ({
           id: String(entry.sfxId),
           kind: 'sfx' as const
@@ -148,10 +164,15 @@ export const AudioSystem: React.FC = ({ children }) => {
         return;
       }
 
-      if (lastMusicKeyRef.current !== musicKey) {
-        lastMusicKeyRef.current = musicKey;
+      if (musicId > 0 && lastMusicKeyRef.current !== musicKey) {
         engine.stopMusic(500);
-        await engine.playMusic(String(musicId), { fadeMs: 1500, loop: true });
+        const played = await engine.playMusic(String(musicId), {
+          fadeMs: 1500,
+          loop: true
+        });
+        if (played) {
+          lastMusicKeyRef.current = musicKey;
+        }
       }
 
       if (lastAmbientKeyRef.current !== ambientKey) {
@@ -180,10 +201,10 @@ export const AudioSystem: React.FC = ({ children }) => {
     return () => {
       cancelled = true;
     };
-  }, [mapId, musicId, engine, audioOverridesBase, mapMetaPath]);
+  }, [mapId, musicId, manifestReady, engine, audioOverridesBase, mapMetaPath]);
 
   useEffect(() => {
-    if (mapId && musicId) {
+    if (mapId) {
       return;
     }
 
@@ -195,7 +216,7 @@ export const AudioSystem: React.FC = ({ children }) => {
       clearInterval(ambientTimerRef.current);
       ambientTimerRef.current = null;
     }
-  }, [mapId, musicId, engine]);
+  }, [mapId, engine]);
 
   useEffect(
     () => () => {
