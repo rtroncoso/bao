@@ -21,8 +21,9 @@ export interface SettingsPanelProps {
 export const gameOverlayTriggerClassName = (iconOnly = false) =>
   cn(
     gameOverlayPanelClassName(false),
-    "inline-flex items-center justify-center text-white/90",
-    "hover:bg-black/60",
+    "inline-flex items-center justify-center rounded-md border border-black/10 text-white/90",
+    "hover:bg-black/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
+    "dark:border-white/20 dark:bg-white/10 dark:hover:bg-white/20",
     iconOnly
       ? "h-9 w-9"
       : "h-8 px-3 text-xs font-medium uppercase tracking-wide"

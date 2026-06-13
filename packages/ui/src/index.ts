@@ -58,4 +58,4 @@ export {
   type SettingsFooterProps,
 } from "./components/settings-footer";
 
-export { Cog, Github } from "lucide-react";
+export { Cog, Github, Volume2, VolumeX } from "lucide-react";

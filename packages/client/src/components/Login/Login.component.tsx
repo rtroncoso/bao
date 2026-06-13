@@ -1,6 +1,7 @@
 import { FormikProps } from 'formik';
 import React, { useCallback } from 'react';
 
+import { AuthScreenToolbar } from '@bao/client/components/Auth';
 import { useLoginMusic } from '@bao/client/components/Audio';
 
 import {
@@ -41,6 +42,7 @@ const Login = ({
 
   return (
     <PageShell width="sm">
+      <AuthScreenToolbar />
       {isLoading && <LoadingOverlay label="Iniciando sesión…" />}
       <SiteHeader
         title="BAO"

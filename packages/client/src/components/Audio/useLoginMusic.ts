@@ -6,6 +6,9 @@ export const useLoginMusic = () => {
   return async () => {
     await unlockAudio();
     const engine = getAudioEngine();
+    if (engine.getPrefs().muted.music) {
+      return;
+    }
     await engine.playMusic(AO_MUSIC_LOGIN, { fadeMs: 800, loop: true });
   };
 };

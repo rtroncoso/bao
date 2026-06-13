@@ -16,6 +16,11 @@ import {
   VolumePrefs
 } from '@bao/audio';
 
+const AUDIO_TRACKS: AudioTrack[] = ['music', 'ambient', 'sfx', 'ui'];
+
+const isPrefsMasterMuted = (prefs: VolumePrefs): boolean =>
+  AUDIO_TRACKS.every((track) => Boolean(prefs.muted[track]));
+
 import {
   getAssetsBaseUrl,
   getAudioEngine,
@@ -27,9 +32,11 @@ const STORAGE_KEY = 'bao.audio.prefs';
 interface AudioContextValue {
   engine: AudioEngine;
   prefs: VolumePrefs;
+  isMasterMuted: boolean;
   unlock: () => Promise<boolean>;
   setVolume: (track: AudioTrack, volume: number) => void;
   setMuted: (track: AudioTrack, muted: boolean) => void;
+  toggleMasterMute: () => void;
 }
 
 const AudioContext = createContext<AudioContextValue | null>(null);
@@ -118,6 +125,23 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
     [engine]
   );
 
+  const toggleMasterMute = useCallback(() => {
+    const current = engine.getPrefs();
+    const next = !isPrefsMasterMuted(current);
+
+    for (const track of AUDIO_TRACKS) {
+      engine.setMuted(track, next);
+    }
+
+    if (next) {
+      engine.stopMusic(300);
+    }
+
+    const updated = engine.getPrefs();
+    setPrefs(updated);
+    savePrefs(updated);
+  }, [engine]);
+
   useEffect(() => {
     const onGesture = () => {
       void unlock();
@@ -133,8 +157,16 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [unlock]);
 
   const value = useMemo(
-    () => ({ engine, prefs, unlock, setVolume, setMuted }),
-    [engine, prefs, unlock, setVolume, setMuted]
+    () => ({
+      engine,
+      prefs,
+      isMasterMuted: isPrefsMasterMuted(prefs),
+      unlock,
+      setVolume,
+      setMuted,
+      toggleMasterMute
+    }),
+    [engine, prefs, unlock, setVolume, setMuted, toggleMasterMute]
   );
 
   return (
