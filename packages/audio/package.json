@@ -10,7 +10,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "echo \"no tests yet\""
+    "test": "echo \"no tests yet\"",
+    "prettier": "prettier -w \"src/**/*.{js,ts,jsx,tsx}\"",
+    "prettier:check": "prettier --check \"src/**/*.{js,ts,jsx,tsx}\""
   },
   "files": [
     "src"

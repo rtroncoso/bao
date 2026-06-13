@@ -1,6 +1,9 @@
 export class BufferCache {
   private readonly buffers = new Map<string, AudioBuffer>();
-  private readonly inFlight = new Map<string, Promise<AudioBuffer | undefined>>();
+  private readonly inFlight = new Map<
+    string,
+    Promise<AudioBuffer | undefined>
+  >();
   private readonly failed = new Set<string>();
 
   get(id: string): AudioBuffer | undefined {

@@ -145,9 +145,7 @@ export class AudioEngine {
   }
 
   private resolvePath(id: string, kind: AudioCatalogKind): string | undefined {
-    return kind === 'music'
-      ? this.catalog.music?.[id]
-      : this.catalog.sfx?.[id];
+    return kind === 'music' ? this.catalog.music?.[id] : this.catalog.sfx?.[id];
   }
 
   private async ensureRunning(): Promise<boolean> {
@@ -223,7 +221,10 @@ export class AudioEngine {
     return this.currentMusicId === id;
   }
 
-  async playMusic(id: string, options: PlayMusicOptions = {}): Promise<boolean> {
+  async playMusic(
+    id: string,
+    options: PlayMusicOptions = {}
+  ): Promise<boolean> {
     if (this.currentMusicId === id && this.musicLoop) {
       return true;
     }
