@@ -38,7 +38,7 @@ export interface MapBlockedTile {
 }
 
 export interface MapSpawnsResponse {
-  map: { id: number; name: string };
+  map: { id: number; name: string; musicId?: number };
   npcs: MapSpawnNpc[];
   objects: MapSpawnObject[];
   tileExits: Array<{

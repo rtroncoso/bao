@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { ArraySchema } from '@colyseus/schema';
+import { AO_DOOR_SFX } from '@bao/core/constants/audio';
 import {
   DOOR,
   isServerRenderedObject,
@@ -16,6 +17,8 @@ import { MapSpawnService } from '@/services/MapSpawnService';
 import { TileCoord } from '@/services/MapRegistry';
 import { WorldRoom } from '@/rooms/WorldRoom';
 import { config } from '@/config';
+
+import { broadcastWorldSfx } from './worldSfx';
 
 interface DoorVariantConfig {
   openObjectId: number;
@@ -247,6 +250,7 @@ export class MapEntitySystem {
     const mapState = new MapState();
     mapState.mapId = mapId;
     mapState.name = spawns.map?.name ?? `Map ${mapId}`;
+    mapState.musicId = spawns.map?.musicId ?? 0;
 
     mapState.npcs = new ArraySchema<MapNpcEntityState>(
       ...spawns.npcs.map((spawn, index) => {
@@ -349,6 +353,13 @@ export class MapEntitySystem {
       entity.isOpen = true;
       this.registerDoorBlocking(mapId, entityId, true);
     }
+
+    broadcastWorldSfx(this.room, {
+      sfxId: AO_DOOR_SFX,
+      mapId,
+      x: entity.x,
+      y: entity.y
+    });
 
     return true;
   }

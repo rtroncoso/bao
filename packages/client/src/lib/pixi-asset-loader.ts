@@ -52,21 +52,17 @@ export class PixiAssetLoader {
 
   load() {
     if (this.loadPromise) {
+      void this.loadPromise.then(() => {
+        if (this.pendingUrls.length > 0) {
+          this.load();
+        }
+      });
       return;
     }
 
     this.loadPromise = this.loadAsync().finally(() => {
       this.loadPromise = null;
     });
-  }
-
-  destroy() {
-    this.pendingUrls = [];
-    this.loading = false;
-    this.progress = 0;
-    this.loadPromise = null;
-    this.onComplete = new LoaderSignal<LoaderHandler>();
-    this.onProgress = new LoaderSignal<ProgressHandler>();
   }
 
   private async loadAsync() {

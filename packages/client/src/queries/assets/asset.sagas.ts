@@ -27,6 +27,7 @@ import {
   loadShields,
   loadWeapons
 } from './requests';
+import { getAudioEngine } from '@bao/client/lib/audio-engine';
 import {
   selectAnimations,
   selectGraphics,
@@ -103,8 +104,9 @@ export function handleLoadSpritesheets(payload: LoadResourcePayload) {
 }
 
 export function* handleLoadGraphics(payload: LoadGraphicsPayload) {
+  const { loader } = payload;
+
   try {
-    const { loader } = payload;
     yield putResolve(requestAsync(loadGraphics(payload)));
     const graphics = yield select(selectGraphics);
     const animations = yield select(selectAnimations);
@@ -126,11 +128,25 @@ export function* handleLoadGraphics(payload: LoadGraphicsPayload) {
 
     loader.load();
   } catch (error) {
-    console.error(error);
+    console.error('[assets] graphics load failed', error);
   }
 }
 
+export function handleRegisterAudioManifest(manifest: {
+  audio?: { music?: Record<string, string>; sfx?: Record<string, string> };
+}) {
+  if (!manifest?.audio?.music && !manifest?.audio?.sfx) {
+    return;
+  }
+
+  getAudioEngine().registerManifest({
+    music: manifest.audio.music,
+    sfx: manifest.audio.sfx
+  });
+}
+
 export function* handleLoadManifest(payload: LoadAssetsPayload) {
+  const { loader } = payload;
   const token: string = yield select(selectToken);
   const params: LoadManifestPayload = { ...payload, token };
 
@@ -138,9 +154,10 @@ export function* handleLoadManifest(payload: LoadAssetsPayload) {
     yield putResolve(requestAsync(loadManifest(params)));
     const manifest = yield select(selectManifest);
 
+    yield call(handleRegisterAudioManifest, manifest);
     yield call(handleLoadGraphics, { ...params, manifest });
   } catch (error) {
-    console.error(error);
+    console.error('[assets] load failed', error);
   }
 }
 

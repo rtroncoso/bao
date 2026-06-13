@@ -10,6 +10,7 @@ import {
 } from '@bao/ui';
 
 import { CharacterModel } from '@bao/client/queries/account';
+import { AuthScreenToolbar } from '@bao/client/components/Auth';
 import { CharacterSelectionConnectedProps } from './CharacterSelection.container';
 
 const CharacterSelection = ({
@@ -41,6 +42,7 @@ const CharacterSelection = ({
 
   return (
     <PageShell width="lg">
+      <AuthScreenToolbar />
       <SiteHeader
         title="BAO"
         subtitle={`Bienvenido de vuelta, ${account?.username ?? 'jugador'}.`}

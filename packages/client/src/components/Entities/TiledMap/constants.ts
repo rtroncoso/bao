@@ -29,12 +29,22 @@ export const TMX_SHORE_SPRITE_LAYER = 2;
 /** Shore shader + filter band width in tiles (2 = two tile deep edge). */
 export const SHORE_EDGE_TILES = 2;
 
-/** Slight stretch toward water to hide filter seams between adjacent shore tiles. */
-export const SHORE_SPRITE_OVERLAP_SCALE = 1.1;
+/** Shore shader wave amplitude in pixels (must match ShoreSpriteFilter). */
+export const SHORE_WAVE_AMP_PX = 1.1;
 
-/** Extra padding for shore sprite SHG/cull bounds (anchor + overlap extend past tile). */
+/** Extra pixels into dry land so animated UV sampling does not expose ground seams. */
+export const SHORE_LAND_BLEED_PX = 2;
+
+/** Extra pixels toward water so adjacent shore tiles overlap during wave motion. */
+export const SHORE_WATER_BLEED_PX = 2;
+
+/** Pixi filter padding — room for wave offset + land/water bleed sampling. */
+export const SHORE_FILTER_PADDING =
+  Math.ceil(SHORE_WAVE_AMP_PX) + SHORE_LAND_BLEED_PX + SHORE_WATER_BLEED_PX + 1;
+
+/** Extra padding for shore sprite SHG/cull bounds (anchor + bleed extend past tile). */
 export const SHORE_SPRITE_CULL_PADDING =
-  Math.ceil(TILE_SIZE * (SHORE_SPRITE_OVERLAP_SCALE - 1)) + TILE_SIZE * 0.5;
+  SHORE_LAND_BLEED_PX + SHORE_WATER_BLEED_PX + TILE_SIZE * 0.5;
 
 /** Additional viewport margin when querying shore sprites. */
 export const SHORE_SPRITE_EXTRA_CULL_PX = TILE_SIZE * 2;

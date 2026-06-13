@@ -87,21 +87,23 @@ export const mountShoreBuckets = (
 
     const width = Math.max(TILE_SIZE, maxX - minX);
     const height = Math.max(TILE_SIZE, maxY - minY);
+    const bucketX = Math.round(minX);
+    const bucketY = Math.round(minY);
 
-    bucket.position.set(minX, minY);
+    bucket.position.set(bucketX, bucketY);
 
     bucket.children.forEach((child) => {
       const sprite = child as Sprite;
       const { left, top } = getSpriteBounds(sprite);
       sprite.position.set(
-        left - minX + sprite.width * sprite.anchor.x,
-        top - minY + sprite.height * sprite.anchor.y
+        Math.round(left - bucketX + sprite.width * sprite.anchor.x),
+        Math.round(top - bucketY + sprite.height * sprite.anchor.y)
       );
     });
 
     const filter = getFilter(edgeMask);
     if (filter) {
-      filter.syncBounds(minX, minY, width, height);
+      filter.syncBounds(bucketX, bucketY, width, height);
       bucket.filterArea = null;
       bucket.filters = [filter];
     } else {

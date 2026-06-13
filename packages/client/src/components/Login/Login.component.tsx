@@ -1,5 +1,8 @@
 import { FormikProps } from 'formik';
-import React from 'react';
+import React, { useCallback } from 'react';
+
+import { AuthScreenToolbar } from '@bao/client/components/Auth';
+import { useLoginMusic } from '@bao/client/components/Audio';
 
 import {
   Alert,
@@ -27,8 +30,19 @@ const Login = ({
   touched,
   values
 }: LoginProps) => {
+  const playLoginMusic = useLoginMusic();
+
+  const onSubmit = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      void playLoginMusic();
+      handleSubmit(event);
+    },
+    [handleSubmit, playLoginMusic]
+  );
+
   return (
     <PageShell width="sm">
+      <AuthScreenToolbar />
       {isLoading && <LoadingOverlay label="Iniciando sesión…" />}
       <SiteHeader
         title="BAO"
@@ -38,7 +52,7 @@ const Login = ({
         title="Iniciar sesión"
         description="Usá tus credenciales de jugador."
       >
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={onSubmit}>
           <FormField
             type="text"
             name="username"

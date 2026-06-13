@@ -1,6 +1,7 @@
 import { Filter } from 'pixi.js';
 import { TILE_SIZE } from '@bao/core';
 
+import { SHORE_FILTER_PADDING, SHORE_WAVE_AMP_PX } from '../constants';
 import { shoreBitmaskToUniform } from './shoreUtils';
 import {
   getFilterTimeScale,
@@ -8,15 +9,15 @@ import {
 } from './effectAnimationRegistry';
 
 /** UV band on E/W shores (keeps the wider foam strip that already reads well). */
-const EDGE_BAND_HORIZONTAL = 0.45;
+const EDGE_BAND_HORIZONTAL = 0.35;
 
 /** North shores: foam is a thin strip at the top — keep the band tight. */
-const EDGE_BAND_VERTICAL_NORTH = 0.08;
+const EDGE_BAND_VERTICAL_NORTH = 0.38;
 
 /** South shores: thicker foam band — current look reads well. */
-const EDGE_BAND_VERTICAL_SOUTH = 0.16;
+const EDGE_BAND_VERTICAL_SOUTH = 0.36;
 
-const WAVE_AMP = 1.1;
+const WAVE_AMP = SHORE_WAVE_AMP_PX;
 const WAVE_SPEED = 2.0;
 /** Spatial phase advance per map tile along the shoreline (not per pixel). */
 const WAVE_SPATIAL_SCALE_TILES = 1.2;
@@ -115,10 +116,11 @@ vec2 waterEdgeWaveOffset(vec2 uv) {
 
 void main(void) {
   vec2 texel = 1.0 / max(inputSize.xy, vec2(1.0));
-  vec2 insetMin = inputClamp.xy + texel * 0.5;
-  vec2 insetMax = inputClamp.zw - texel * 0.5;
+  vec2 insetMin = inputClamp.xy + texel * 0.25;
+  vec2 insetMax = inputClamp.zw - texel * 0.25;
   vec2 uv = clamp(vTextureCoord, insetMin, insetMax);
-  vec2 sampleUv = clamp(uv + waterEdgeWaveOffset(uv), insetMin, insetMax);
+  vec2 offset = waterEdgeWaveOffset(uv);
+  vec2 sampleUv = clamp(uv + offset, insetMin, insetMax);
   gl_FragColor = texture2D(uSampler, sampleUv);
 }
 `;
@@ -141,7 +143,7 @@ export class ShoreSpriteFilter extends Filter {
     this.uniforms.shorePadding = 0;
 
     this.autoFit = true;
-    this.padding = 2;
+    this.padding = SHORE_FILTER_PADDING;
     this.resolution = 1;
   }
 

@@ -47,6 +47,7 @@
     "webpack": "^5.74.0"
   },
   "dependencies": {
+    "@bao/audio": "workspace:*",
     "@bao/core": "workspace:*",
     "@bao/react-fps": "workspace:*",
     "@bao/server": "workspace:*",

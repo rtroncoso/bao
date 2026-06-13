@@ -1,4 +1,4 @@
-import { LayeredTile } from '@bao/core/models';
+import { LayeredTile, MapAmbientConfig } from '@bao/core/models';
 
 import { isInteriorSpawnTile, isWithinWorldMap, toWorldCoords } from './coords';
 
@@ -34,6 +34,7 @@ export interface MapMeta {
   objects: MapObjectSpawn[];
   tileExits: MapTileExit[];
   blockedTiles?: MapBlockedTile[];
+  ambientSounds?: MapAmbientConfig | null;
 }
 
 /**

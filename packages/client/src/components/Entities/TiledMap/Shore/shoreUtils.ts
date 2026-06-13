@@ -5,8 +5,9 @@ import { polygon } from '@bao/client/utils';
 import { Sprite } from 'pixi.js';
 
 import {
-  TMX_SHORE_SPRITE_LAYER,
-  SHORE_SPRITE_OVERLAP_SCALE
+  SHORE_LAND_BLEED_PX,
+  SHORE_WATER_BLEED_PX,
+  TMX_SHORE_SPRITE_LAYER
 } from '../constants';
 
 import { getObjectRenderBounds, ObjectRenderBounds } from '../utils';
@@ -397,47 +398,45 @@ export const getShoreTileOrigin = (
 });
 
 /**
- * Stretch a shore tile slightly toward adjacent water so filter seams overlap.
- * Land-facing edges stay grid-aligned; scale grows only on water-contact axes.
+ * Expand shore sprites by a few pixels into land and water so the wave filter
+ * does not expose gaps with ground tiles or neighbors (replaces uniform scale).
  */
 export const applyShoreSpriteOverlap = (
   sprite: Sprite,
   edges: ShoreEdges,
   tileX: number,
   tileY: number,
-  overlapScale = SHORE_SPRITE_OVERLAP_SCALE
+  waterBleed = SHORE_WATER_BLEED_PX,
+  landBleed = SHORE_LAND_BLEED_PX
 ): void => {
-  sprite.anchor.set(0, 0);
-  sprite.position.set(tileX, tileY);
-  sprite.width = TILE_SIZE;
-  sprite.height = TILE_SIZE;
+  let left = 0;
+  let top = 0;
+  let right = TILE_SIZE;
+  let bottom = TILE_SIZE;
 
-  const overlapX = edges.left || edges.right ? overlapScale : 1;
-  const overlapY = edges.top || edges.bottom ? overlapScale : 1;
-
-  if (overlapX === 1 && overlapY === 1) {
-    return;
+  if (edges.left) {
+    left -= waterBleed;
+    right += landBleed;
+  }
+  if (edges.right) {
+    right += waterBleed;
+    left -= landBleed;
+  }
+  if (edges.top) {
+    top -= waterBleed;
+    bottom += landBleed;
+  }
+  if (edges.bottom) {
+    bottom += waterBleed;
+    top -= landBleed;
   }
 
-  const baseScaleX = sprite.scale.x;
-  const baseScaleY = sprite.scale.y;
+  const width = right - left;
+  const height = bottom - top;
 
-  let anchorX = 0;
-  let anchorY = 0;
-
-  if (edges.left && !edges.right) {
-    anchorX = 1;
-  } else if (edges.left && edges.right) {
-    anchorX = 0.5;
-  }
-
-  if (edges.top && !edges.bottom) {
-    anchorY = 1;
-  } else if (edges.top && edges.bottom) {
-    anchorY = 0.5;
-  }
-
-  sprite.anchor.set(anchorX, anchorY);
-  sprite.position.set(tileX + anchorX * TILE_SIZE, tileY + anchorY * TILE_SIZE);
-  sprite.scale.set(baseScaleX * overlapX, baseScaleY * overlapY);
+  sprite.scale.set(1, 1);
+  sprite.width = width;
+  sprite.height = height;
+  sprite.anchor.set(-left / width, -top / height);
+  sprite.position.set(Math.round(tileX - left), Math.round(tileY - top));
 };

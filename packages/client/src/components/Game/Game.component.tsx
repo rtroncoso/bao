@@ -5,6 +5,7 @@ import { Provider, ReactReduxContext } from 'react-redux';
 import { Character } from '@bao/client/components/Entities/Character';
 import {
   AssetSystem,
+  AudioSystem,
   CharacterRenderingSystem,
   KeyboardSystem,
   MapInteractionSystem,
@@ -23,6 +24,7 @@ import { GameStage } from '@bao/client/components/Pixi';
 import { App } from '@bao/core/constants';
 
 import { computeSixteenByNineViewport } from '@bao/client/lib/game-viewport';
+import { GameSettingsPanel } from '@bao/client/components/Settings';
 
 import { GameConnectedProps, GameContext } from './Game.context';
 import { GamePageShell, GameStyled } from './Game.styles';
@@ -40,27 +42,29 @@ export const Systems: React.FC = () => {
   return (
     <AssetSystem>
       <WorldSystem>
-        <MapRenderingSystem>
-          <MapInteractionSystem>
-            <ViewportSystem
-              overlay={
-                localCharacter ? (
-                  <Character
-                    key={localCharacter.sessionId}
-                    character={localCharacter}
-                    isLocalPlayer
-                    x={App.canvasWidth / 2}
-                    y={App.canvasHeight / 2}
-                  />
-                ) : null
-              }
-            >
-              <KeyboardSystem />
-              <TiledMap />
-              <CharacterRenderingSystem />
-            </ViewportSystem>
-          </MapInteractionSystem>
-        </MapRenderingSystem>
+        <AudioSystem>
+          <MapRenderingSystem>
+            <MapInteractionSystem>
+              <ViewportSystem
+                overlay={
+                  localCharacter ? (
+                    <Character
+                      key={localCharacter.sessionId}
+                      character={localCharacter}
+                      isLocalPlayer
+                      x={App.canvasWidth / 2}
+                      y={App.canvasHeight / 2}
+                    />
+                  ) : null
+                }
+              >
+                <KeyboardSystem />
+                <TiledMap />
+                <CharacterRenderingSystem />
+              </ViewportSystem>
+            </MapInteractionSystem>
+          </MapRenderingSystem>
+        </AudioSystem>
       </WorldSystem>
     </AssetSystem>
   );
@@ -101,8 +105,9 @@ export const GameComponent: React.FC<GameComponentProps> = () => {
             </GameContext.Provider>
           </Provider>
         </GameStage>
+        <GameSettingsPanel />
         <ChatComponent />
-        {gameContext.state.debug && (
+        {gameContext.state.debug ? (
           <FpsView
             width={70}
             height={30}
@@ -111,7 +116,7 @@ export const GameComponent: React.FC<GameComponentProps> = () => {
             top={20}
             bottom={null}
           />
-        )}
+        ) : null}
       </GameStyled>
     </GamePageShell>
   );

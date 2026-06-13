@@ -13,6 +13,7 @@
     "db:seed": "pnpm exec bao seed",
     "db:seed:apply": "pnpm exec bao seed apply",
     "convert:maps": "pnpm exec bao convert maps",
+    "convert:audio": "pnpm exec bao convert audio",
     "format": "turbo run prettier",
     "format:check": "turbo run prettier:check",
     "prepare": "husky"
