@@ -9,8 +9,6 @@ import {
   Tiled
 } from '@bao/core';
 import { useMapContext, useWorldContext } from '@bao/client/components/Systems';
-import { useGameContext } from '@bao/client/components/Game';
-import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
 import { Water } from './Water';
 import { EffectsAnimationSystem, useShoreSpriteFilters } from './Shore';
 import { MapEntityLayer } from './MapEntityLayer.component';
@@ -25,12 +23,14 @@ import {
   useViewportRendering
 } from './hooks';
 import { useBorderPrefetch } from './useBorderPrefetch';
+import { ViewportCullingSystem } from './ViewportCullingSystem';
 
 interface TiledMapContentProps {
   mapId: number;
   currentMap: Tiled;
   worldOffsetX: number;
   worldOffsetY: number;
+  isCurrentMap: boolean;
   publishDebug?: boolean;
 }
 
@@ -39,8 +39,10 @@ const TiledMapMapContent: React.FC<TiledMapContentProps> = ({
   currentMap,
   worldOffsetX,
   worldOffsetY,
+  isCurrentMap,
   publishDebug = false
 }) => {
+  const borderOnly = !isCurrentMap;
   const mapData = useMapData(currentMap);
   const spatialIndexes = useSpatialIndexes(mapData);
   const { mapState } = useMapContext();
@@ -74,12 +76,14 @@ const TiledMapMapContent: React.FC<TiledMapContentProps> = ({
     renderTargets,
     getShoreSpriteFilter,
     shoreOrientations,
-    { mapId, mapWorldOffset, publishDebug }
+    { mapId, mapWorldOffset, borderOnly, publishDebug }
   );
 
   return (
     <>
-      <Water water={mapData.water} mapWorldOffset={mapWorldOffset} />
+      {isCurrentMap ? (
+        <Water water={mapData.water} mapWorldOffset={mapWorldOffset} />
+      ) : null}
       <Container ref={renderTargets.container}>
         <Container
           ref={renderTargets.tilesLayer}
@@ -97,7 +101,15 @@ const TiledMapMapContent: React.FC<TiledMapContentProps> = ({
           ref={renderTargets.objectsLayer}
           parentGroup={mapState?.groups[ENTITIES_LAYER]}
         />
-        <MapEntityLayer mapId={mapId} mapWorldOffset={mapWorldOffset} />
+        {isCurrentMap ? (
+          <MapEntityLayer mapId={mapId} mapWorldOffset={mapWorldOffset} />
+        ) : (
+          <MapEntityLayer
+            mapId={mapId}
+            mapWorldOffset={mapWorldOffset}
+            borderOnly
+          />
+        )}
       </Container>
     </>
   );
@@ -105,13 +117,7 @@ const TiledMapMapContent: React.FC<TiledMapContentProps> = ({
 
 export const TiledMap: React.FC = () => {
   const { activeMaps, currentMapId, isLoading } = useWorldContext();
-  const { state: gameState } = useGameContext();
-  const localCharacter = resolveLocalCharacter(
-    gameState?.serverState,
-    gameState?.characterId,
-    gameState?.room?.sessionId
-  );
-  const debugMapId = localCharacter?.mapId ?? currentMapId;
+  const debugMapId = currentMapId;
 
   useBorderPrefetch();
 
@@ -125,6 +131,7 @@ export const TiledMap: React.FC = () => {
 
   return (
     <EffectsAnimationSystem>
+      <ViewportCullingSystem />
       {activeMaps.map(({ mapId, map, offsetX, offsetY }) => (
         <Container key={mapId} x={offsetX} y={offsetY}>
           <TiledMapMapContent
@@ -132,6 +139,7 @@ export const TiledMap: React.FC = () => {
             currentMap={map}
             worldOffsetX={offsetX}
             worldOffsetY={offsetY}
+            isCurrentMap={mapId === currentMapId}
             publishDebug={mapId === debugMapId}
           />
         </Container>

@@ -2,7 +2,10 @@ import { useEffect, useRef } from 'react';
 
 import { getQuadrant, TILED_MAP_SIZE, WorldQuadrant } from '@bao/core';
 import { useGameContext } from '@bao/client/components/Game';
-import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
+import {
+  localCharacterRef,
+  subscribeGamePatch
+} from '@bao/client/lib/game-server-state';
 import { useWorldContext } from '@bao/client/components/Systems/WorldSystem';
 
 const HYSTERESIS_TILES = 8;
@@ -48,56 +51,74 @@ const getQuadrantWithHysteresis = (
 export const useBorderPrefetch = () => {
   const { state: gameState } = useGameContext();
   const { prefetchForCharacter, currentMapId, worlds } = useWorldContext();
-  const localCharacter = resolveLocalCharacter(
-    gameState?.serverState,
-    gameState?.characterId,
-    gameState?.room?.sessionId
-  );
   const quadrantRef = useRef<WorldQuadrant | null>(null);
   const lastPrefetchKeyRef = useRef<string | null>(null);
   const lastMapIdRef = useRef<number | null>(null);
   const hadWorldsRef = useRef(false);
+  const currentMapIdRef = useRef(currentMapId);
+  const worldsRef = useRef(worlds);
 
-  const mapId = localCharacter?.mapId ?? currentMapId;
-  const tileX = localCharacter?.tile.x;
-  const tileY = localCharacter?.tile.y;
-
-  useEffect(() => {
-    if (mapId !== lastMapIdRef.current) {
-      lastMapIdRef.current = mapId ?? null;
-      quadrantRef.current = null;
-      lastPrefetchKeyRef.current = null;
-    }
-  }, [mapId]);
+  currentMapIdRef.current = currentMapId;
+  worldsRef.current = worlds;
 
   useEffect(() => {
-    if (worlds && !hadWorldsRef.current) {
-      hadWorldsRef.current = true;
+    const room = gameState.room;
+    if (!room) {
       quadrantRef.current = null;
       lastPrefetchKeyRef.current = null;
-    }
-  }, [worlds]);
-
-  useEffect(() => {
-    if (!localCharacter || tileX === undefined || tileY === undefined) {
-      quadrantRef.current = null;
-      lastPrefetchKeyRef.current = null;
+      lastMapIdRef.current = null;
       return;
     }
 
-    const quadrant = getQuadrantWithHysteresis(
-      tileX,
-      tileY,
-      quadrantRef.current
-    );
-    const prefetchKey = `${mapId}:${quadrant}:${worlds ? 'w' : 'n'}`;
+    const runPrefetch = () => {
+      const localCharacter = localCharacterRef.current;
 
-    if (lastPrefetchKeyRef.current === prefetchKey) {
-      return;
-    }
+      const mapId = localCharacter?.mapId ?? currentMapIdRef.current;
+      const tileX = localCharacter?.tile.x;
+      const tileY = localCharacter?.tile.y;
 
-    quadrantRef.current = quadrant;
-    lastPrefetchKeyRef.current = prefetchKey;
-    void prefetchForCharacter(mapId, tileX, tileY, quadrant);
-  }, [mapId, tileX, tileY, prefetchForCharacter, worlds]);
+      if (mapId !== lastMapIdRef.current) {
+        lastMapIdRef.current = mapId ?? null;
+        quadrantRef.current = null;
+        lastPrefetchKeyRef.current = null;
+      }
+
+      if (worldsRef.current && !hadWorldsRef.current) {
+        hadWorldsRef.current = true;
+        quadrantRef.current = null;
+        lastPrefetchKeyRef.current = null;
+      }
+
+      if (
+        !localCharacter ||
+        tileX === undefined ||
+        tileY === undefined ||
+        !mapId
+      ) {
+        quadrantRef.current = null;
+        lastPrefetchKeyRef.current = null;
+        return;
+      }
+
+      const quadrant = getQuadrantWithHysteresis(
+        tileX,
+        tileY,
+        quadrantRef.current
+      );
+      const prefetchKey = `${mapId}:${quadrant}:${
+        worldsRef.current ? 'w' : 'n'
+      }`;
+
+      if (lastPrefetchKeyRef.current === prefetchKey) {
+        return;
+      }
+
+      quadrantRef.current = quadrant;
+      lastPrefetchKeyRef.current = prefetchKey;
+      void prefetchForCharacter(mapId, tileX, tileY, quadrant);
+    };
+
+    runPrefetch();
+    return subscribeGamePatch(runPrefetch, ['tile', 'map']);
+  }, [gameState.room, prefetchForCharacter]);
 };

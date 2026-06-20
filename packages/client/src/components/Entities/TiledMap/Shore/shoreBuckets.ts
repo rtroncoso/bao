@@ -16,6 +16,23 @@ const getMapBuckets = (mapId: number): Map<number, Container> => {
   return buckets;
 };
 
+const isBucketAlive = (
+  bucket: Container | null | undefined
+): bucket is Container => Boolean(bucket && !bucket.destroyed);
+
+const pruneDeadBuckets = (mapId: number): void => {
+  const buckets = shoreBucketsByMap.get(mapId);
+  if (!buckets) {
+    return;
+  }
+
+  buckets.forEach((bucket, edgeMask) => {
+    if (!isBucketAlive(bucket)) {
+      buckets.delete(edgeMask);
+    }
+  });
+};
+
 const getSpriteBounds = (sprite: Sprite) => {
   const left = sprite.x - sprite.width * sprite.anchor.x;
   const top = sprite.y - sprite.height * sprite.anchor.y;
@@ -28,7 +45,13 @@ const getSpriteBounds = (sprite: Sprite) => {
 };
 
 export const resetShoreBuckets = (mapId: number): void => {
-  getMapBuckets(mapId).forEach((bucket) => {
+  pruneDeadBuckets(mapId);
+  getMapBuckets(mapId).forEach((bucket, edgeMask) => {
+    if (!isBucketAlive(bucket)) {
+      getMapBuckets(mapId).delete(edgeMask);
+      return;
+    }
+
     bucket.children.slice().forEach((child) => {
       const sprite = child as Sprite;
       sprite.filters = null;
@@ -46,7 +69,7 @@ export const resetShoreBuckets = (mapId: number): void => {
 export const getShoreBucket = (mapId: number, edgeMask: number): Container => {
   const buckets = getMapBuckets(mapId);
   let bucket = buckets.get(edgeMask);
-  if (!bucket) {
+  if (!isBucketAlive(bucket)) {
     bucket = new Container();
     bucket.name = `${SHORE_BUCKET_PREFIX}${mapId}-${edgeMask}`;
     buckets.set(edgeMask, bucket);
@@ -60,7 +83,13 @@ export const mountShoreBuckets = (
   shoreLayer: Container,
   getFilter: (edgeMask: number) => ShoreSpriteFilter | undefined
 ): void => {
+  pruneDeadBuckets(mapId);
   getMapBuckets(mapId).forEach((bucket, edgeMask) => {
+    if (!isBucketAlive(bucket)) {
+      getMapBuckets(mapId).delete(edgeMask);
+      return;
+    }
+
     if (bucket.children.length === 0) {
       if (bucket.parent) {
         bucket.parent.removeChild(bucket);
@@ -133,7 +162,11 @@ export const disposeShoreBucketsForMap = (mapId: number): void => {
     return;
   }
 
-  buckets.forEach((bucket) => {
+  buckets.forEach((bucket, edgeMask) => {
+    if (!isBucketAlive(bucket)) {
+      return;
+    }
+
     bucket.children.slice().forEach((child) => {
       const sprite = child as Sprite;
       sprite.filters = null;

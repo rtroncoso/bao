@@ -7,9 +7,11 @@ import React, {
 } from 'react';
 
 import { TILE_SIZE } from '@bao/core';
-import { useGameContext } from '@bao/client/components/Game/Game.context';
+import {
+  gameRoomRef,
+  localCharacterRef
+} from '@bao/client/lib/game-server-state';
 import { useChatContext } from '@bao/client/components/Chat';
-import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
 
 export interface NpcHeadDisplay {
   text: string;
@@ -40,20 +42,14 @@ const MapInteractionContext = createContext<MapInteractionContextValue>({
 export const useMapInteractionContext = () => useContext(MapInteractionContext);
 
 export const MapInteractionProvider: React.FC = ({ children }) => {
-  const { state: gameState } = useGameContext();
   const { state: chatState } = useChatContext();
   const [headDisplayByNpcId, setHeadDisplayByNpcId] = useState<
     Record<string, NpcHeadDisplay | undefined>
   >({});
 
-  const localCharacter = resolveLocalCharacter(
-    gameState?.serverState,
-    gameState?.characterId,
-    gameState?.room?.sessionId
-  );
-
   const isPlayerAdjacentTo = useCallback(
     (mapId: number, x: number, y: number) => {
+      const localCharacter = localCharacterRef.current;
       if (!localCharacter || localCharacter.mapId !== mapId) {
         return false;
       }
@@ -64,7 +60,7 @@ export const MapInteractionProvider: React.FC = ({ children }) => {
       const dy = Math.abs(charTileY - y);
       return dx <= 1 && dy <= 1 && dx + dy > 0;
     },
-    [localCharacter?.mapId, localCharacter?.x, localCharacter?.y]
+    []
   );
 
   const clearNpcHeadDisplay = useCallback((entityId: string) => {
@@ -95,28 +91,26 @@ export const MapInteractionProvider: React.FC = ({ children }) => {
 
   const onObjectClick = useCallback(
     (entityId: string, x: number, y: number, objectType: number) => {
+      const room = gameRoomRef.current;
+      const localCharacter = localCharacterRef.current;
+
       if (
         chatState.focused ||
-        !gameState?.room ||
+        !room ||
         !localCharacter?.mapId ||
         !isPlayerAdjacentTo(localCharacter.mapId, x, y)
       ) {
         return;
       }
 
-      gameState.room.send('interact', {
+      room.send('interact', {
         type: 'object',
         entityId,
         mapId: localCharacter.mapId,
         objectType
       });
     },
-    [
-      chatState.focused,
-      gameState?.room,
-      isPlayerAdjacentTo,
-      localCharacter?.mapId
-    ]
+    [chatState.focused, isPlayerAdjacentTo]
   );
 
   const value = useMemo(

@@ -17,7 +17,10 @@ import {
   WorldQuadrant
 } from '@bao/core';
 import { useGameContext } from '@bao/client/components/Game';
-import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
+import {
+  localCharacterRef,
+  subscribeGamePatch
+} from '@bao/client/lib/game-server-state';
 import { assetUrl, fetchAssetJson } from '@bao/client/lib/baoUrls';
 import { selectManifest } from '@bao/client/queries';
 import { State } from '@bao/client/store';
@@ -122,12 +125,6 @@ export const WorldSystem: React.FC = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const cacheRef = useRef<Map<number, Tiled>>(new Map());
 
-  const localCharacter = resolveLocalCharacter(
-    gameState?.serverState,
-    gameState?.characterId,
-    gameState?.room?.sessionId
-  );
-
   const mapManifestPath = manifest?.maps?.[String(currentMapId)] ?? null;
 
   const getMapOffset = useCallback(
@@ -224,7 +221,7 @@ export const WorldSystem: React.FC = ({ children }) => {
   );
 
   const activeMaps = useMemo(() => {
-    const characterMapId = localCharacter?.mapId ?? currentMapId;
+    const characterMapId = currentMapId;
     const ids = [
       ...new Set([
         ...(activeMapIds.length > 0 ? activeMapIds : []),
@@ -248,25 +245,37 @@ export const WorldSystem: React.FC = ({ children }) => {
         }
       ];
     });
-  }, [
-    activeMapIds,
-    cacheRevision,
-    currentMapId,
-    localCharacter?.mapId,
-    worlds
-  ]);
+  }, [activeMapIds, cacheRevision, currentMapId, worlds]);
 
   useEffect(() => {
-    const mapId = localCharacter?.mapId;
-    if (!mapId || !localCharacter) {
+    const room = gameState.room;
+    if (!room || !worlds) {
       return;
     }
 
-    setCurrentMapId((previous) => (previous === mapId ? previous : mapId));
+    let lastMapId: number | null = null;
 
-    const { x, y } = localCharacter.tile;
-    void prefetchForCharacter(mapId, x, y, getQuadrant(x, y));
-  }, [localCharacter?.mapId, worlds, prefetchForCharacter]);
+    const syncMap = () => {
+      const local = localCharacterRef.current;
+      const mapId = local?.mapId;
+      if (!mapId || !local) {
+        return;
+      }
+
+      setCurrentMapId((previous) => (previous === mapId ? previous : mapId));
+
+      if (mapId === lastMapId) {
+        return;
+      }
+
+      lastMapId = mapId;
+      const { x, y } = local.tile;
+      void prefetchForCharacter(mapId, x, y, getQuadrant(x, y));
+    };
+
+    syncMap();
+    return subscribeGamePatch(syncMap, ['map']);
+  }, [gameState.room, gameState.characterId, worlds, prefetchForCharacter]);
 
   useEffect(() => {
     if (!manifest?.maps) {

@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef
 } from 'react';
 import { connect } from 'react-redux';
@@ -20,6 +21,15 @@ import {
   formatColyseusConnectError,
   getBaoServerUrl
 } from '@bao/client/lib/baoUrls';
+import {
+  clearGameRoomRefs,
+  gameCharacterIdRef,
+  gameRoomRef,
+  gameServerStateRef,
+  notifyGamePatch,
+  syncLocalCharacterFromPatch
+} from '@bao/client/lib/game-server-state';
+import { rebuildCharacterIndex } from '@bao/client/lib/character-index';
 
 export interface GameConnectedProps {
   token?: string | null;
@@ -89,6 +99,14 @@ export const GameContainer = <P extends GameConnectedProps>(
       });
     }, []);
 
+    const characterIdRef = useRef(state.characterId);
+    characterIdRef.current = state.characterId;
+    gameCharacterIdRef.current = state.characterId;
+
+    useEffect(() => {
+      gameCharacterIdRef.current = state.characterId;
+    }, [state.characterId]);
+
     const roomRef = useRef(state.room);
     roomRef.current = state.room;
 
@@ -119,6 +137,7 @@ export const GameContainer = <P extends GameConnectedProps>(
         if (room) {
           room.leave(true);
           roomRef.current = undefined;
+          clearGameRoomRefs();
           router.push('/');
           return;
         }
@@ -150,12 +169,11 @@ export const GameContainer = <P extends GameConnectedProps>(
       console.log(type, message);
     }, []);
 
-    const handleSetServerState = useCallback(
-      (serverState: WorldRoomState) => {
-        setState({ serverState });
-      },
-      [setState]
-    );
+    const handleSetServerState = useCallback((serverState: WorldRoomState) => {
+      gameServerStateRef.current = serverState;
+      syncLocalCharacterFromPatch();
+      notifyGamePatch();
+    }, []);
 
     const handleUpdateGameState = useCallback(
       (updater: Parameters<typeof updateState>[0]) => {
@@ -184,6 +202,11 @@ export const GameContainer = <P extends GameConnectedProps>(
         room.onStateChange(handleSetServerState);
         room.onError(handleRoomError);
         room.onLeave(() => handleRoomError({ message: 'LEAVE_ROOM' }));
+
+        gameRoomRef.current = room;
+        gameServerStateRef.current = room.state;
+        rebuildCharacterIndex(room.state.characters);
+        syncLocalCharacterFromPatch();
 
         setState({
           connected: true,
@@ -229,6 +252,7 @@ export const GameContainer = <P extends GameConnectedProps>(
         if (room) {
           room.leave(true);
           roomRef.current = undefined;
+          clearGameRoomRefs();
         }
       };
     }, [state.characterId, token]);
@@ -242,20 +266,31 @@ export const GameContainer = <P extends GameConnectedProps>(
       return () => window.removeEventListener('pagehide', handlePageHide);
     }, []);
 
-    const callbacks = {
-      joinRoom: handleJoinRoom,
-      leaveRoom: handleLeaveRoom,
-      updateGameState: handleUpdateGameState,
-      sendRoomMessage: handleSendRoomMessage
-    };
+    const callbacks = useMemo(
+      () => ({
+        joinRoom: handleJoinRoom,
+        leaveRoom: handleLeaveRoom,
+        updateGameState: handleUpdateGameState,
+        sendRoomMessage: handleSendRoomMessage
+      }),
+      [
+        handleJoinRoom,
+        handleLeaveRoom,
+        handleUpdateGameState,
+        handleSendRoomMessage
+      ]
+    );
+
+    const contextValue = useMemo(
+      () => ({
+        callbacks,
+        state
+      }),
+      [callbacks, state]
+    );
 
     return (
-      <GameContext.Provider
-        value={{
-          callbacks,
-          state
-        }}
-      >
+      <GameContext.Provider value={contextValue}>
         <Component {...(props as P)} />
       </GameContext.Provider>
     );

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { FpsView } from '@bao/react-fps';
 import { Provider, ReactReduxContext } from 'react-redux';
 
-import { Character } from '@bao/client/components/Entities/Character';
 import {
   AssetSystem,
   AudioSystem,
@@ -13,7 +12,7 @@ import {
   ViewportSystem,
   WorldSystem
 } from '@bao/client/components/Systems';
-import { resolveLocalCharacter } from '@bao/client/components/Systems/ViewportSystem';
+import { FootstepAudioSync } from '@bao/client/components/Systems/AudioSystem/FootstepAudioSync';
 import {
   ChatComponent,
   ChatContext,
@@ -28,16 +27,13 @@ import { GameSettingsPanel } from '@bao/client/components/Settings';
 
 import { GameConnectedProps, GameContext } from './Game.context';
 import { GamePageShell, GameStyled } from './Game.styles';
+import LocalPlayerCharacter from './LocalPlayerCharacter';
+import { PerfMetricsOverlay } from './PerfMetricsOverlay';
 
 export type GameComponentProps = GameConnectedProps;
 
 export const Systems: React.FC = () => {
   const { state } = useContext(GameContext);
-  const localCharacter = resolveLocalCharacter(
-    state.serverState,
-    state.characterId,
-    state.room?.sessionId
-  );
 
   return (
     <AssetSystem>
@@ -46,18 +42,9 @@ export const Systems: React.FC = () => {
           <MapRenderingSystem>
             <MapInteractionSystem>
               <ViewportSystem
-                overlay={
-                  localCharacter ? (
-                    <Character
-                      key={localCharacter.sessionId}
-                      character={localCharacter}
-                      isLocalPlayer
-                      x={App.canvasWidth / 2}
-                      y={App.canvasHeight / 2}
-                    />
-                  ) : null
-                }
+                overlay={state.room ? <LocalPlayerCharacter /> : null}
               >
+                <FootstepAudioSync />
                 <KeyboardSystem />
                 <TiledMap />
                 <CharacterRenderingSystem />
@@ -108,14 +95,17 @@ export const GameComponent: React.FC<GameComponentProps> = () => {
         <GameSettingsPanel />
         <ChatComponent />
         {gameContext.state.debug ? (
-          <FpsView
-            width={70}
-            height={30}
-            left={null}
-            right={60}
-            top={20}
-            bottom={null}
-          />
+          <>
+            <FpsView
+              width={70}
+              height={30}
+              left={null}
+              right={60}
+              top={20}
+              bottom={null}
+            />
+            <PerfMetricsOverlay />
+          </>
         ) : null}
       </GameStyled>
     </GamePageShell>

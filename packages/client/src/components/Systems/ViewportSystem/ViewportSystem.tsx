@@ -1,11 +1,12 @@
-import { Container, useTick } from '@inlet/react-pixi';
-import { Container as PixiContainer, Filter } from 'pixi.js';
 import React, {
   createContext,
   useContext,
   useLayoutEffect,
+  useMemo,
   useRef
 } from 'react';
+import { Container, useTick } from '@inlet/react-pixi';
+import { Container as PixiContainer, Filter } from 'pixi.js';
 import lerp from 'lerp';
 
 import { DebugGridSystem } from '@bao/client/components/Systems/DebugSystem';
@@ -22,12 +23,15 @@ import {
 import { App } from '@bao/core/constants/game';
 import { TILE_SIZE } from '@bao/core';
 import { CharacterState } from '@bao/server/schema/CharacterState';
-import { WorldRoomState } from '@bao/server/schema/WorldRoomState';
 import {
   getCharacterWorldPixels,
   useWorldContext
 } from '@bao/client/components/Systems/WorldSystem';
 import { worldViewportRef } from '@bao/client/lib/world-viewport';
+import { localCharacterRef } from '@bao/client/lib/game-server-state';
+import { resolveLocalCharacter } from '@bao/client/lib/resolve-local-character';
+
+export { resolveLocalCharacter };
 
 export interface ViewportProps {
   children?: React.ReactNode;
@@ -59,6 +63,8 @@ export interface ViewportContextState {
 
 const DISPLAY_LERP = 1 / 3;
 const SNAP_DISTANCE_PX = TILE_SIZE * 2;
+/** Publish React viewport state every N tile steps (sub-tile motion stays Pixi-only). */
+const TILE_PUBLISH_HYSTERESIS = 2;
 
 export const createInitialViewportState = (): ViewportSystemState => ({
   currentCharacter: null,
@@ -85,39 +91,6 @@ export const useViewportContext = () => {
   return useContext(ViewportContext);
 };
 
-export const resolveLocalCharacter = (
-  serverState: WorldRoomState | undefined,
-  characterId: string | undefined,
-  sessionId: string | undefined
-): CharacterState | null => {
-  if (!serverState?.characters) {
-    return null;
-  }
-
-  if (sessionId) {
-    for (const character of serverState.characters) {
-      if (character.sessionId === sessionId) {
-        return character;
-      }
-    }
-
-    return null;
-  }
-
-  if (characterId) {
-    const id = parseInt(String(characterId), 10);
-    if (!Number.isNaN(id)) {
-      for (const character of serverState.characters) {
-        if (character.id === id) {
-          return character;
-        }
-      }
-    }
-  }
-
-  return null;
-};
-
 export const ViewportSystem: React.FC<ViewportProps> = (
   props: ViewportProps
 ) => {
@@ -130,19 +103,13 @@ export const ViewportSystem: React.FC<ViewportProps> = (
   const lastSnapKeyRef = useRef<string | null>(null);
   const lastSnappedMapIdRef = useRef<number | null>(null);
   const { state } = useGameContext();
-  const { worlds } = useWorldContext();
-  const { room, serverState, characterId } = state;
+  const { worlds, currentMapId } = useWorldContext();
+  const { room, characterId, debug } = state;
   const { children, overlay } = props;
 
-  useGameDebugPortal(Boolean(state.debug), projectionRef);
-  useBlockedTilesDebugPortal(Boolean(state.debug), projectionRef);
-  useWaterDebugPortal(Boolean(state.debug), projectionRef);
-
-  const currentCharacter = resolveLocalCharacter(
-    serverState,
-    characterId,
-    room?.sessionId
-  );
+  useGameDebugPortal(Boolean(debug), projectionRef);
+  useBlockedTilesDebugPortal(Boolean(debug), projectionRef);
+  useWaterDebugPortal(Boolean(debug), projectionRef);
 
   const applyProjection = (
     projection: Rectangle,
@@ -192,6 +159,7 @@ export const ViewportSystem: React.FC<ViewportProps> = (
   const hadWorldsRef = useRef(false);
 
   useLayoutEffect(() => {
+    const currentCharacter = localCharacterRef.current;
     if (!currentCharacter) {
       lastSnapKeyRef.current = null;
       lastSnappedMapIdRef.current = null;
@@ -222,10 +190,17 @@ export const ViewportSystem: React.FC<ViewportProps> = (
     }
 
     snapCameraToCharacter(currentCharacter);
-  }, [currentCharacter?.mapId, room?.sessionId, characterId, worlds]);
+  }, [room?.sessionId, characterId, worlds, currentMapId]);
 
   useTick((delta = 1) => {
+    const currentCharacter = localCharacterRef.current;
     if (!currentCharacter) {
+      return;
+    }
+
+    if (currentCharacter.mapId !== lastSnappedMapIdRef.current) {
+      lastSnappedMapIdRef.current = currentCharacter.mapId ?? null;
+      snapCameraToCharacter(currentCharacter);
       return;
     }
 
@@ -264,9 +239,14 @@ export const ViewportSystem: React.FC<ViewportProps> = (
 
     const tileX = Math.floor(x / TILE_SIZE);
     const tileY = Math.floor(y / TILE_SIZE);
+    const prevTile = publishedProjectionTileRef.current;
+    const tileDeltaX = Math.abs(tileX - prevTile.x);
+    const tileDeltaY = Math.abs(tileY - prevTile.y);
     const tileChanged =
-      tileX !== publishedProjectionTileRef.current.x ||
-      tileY !== publishedProjectionTileRef.current.y;
+      (Number.isNaN(prevTile.x) ||
+        tileDeltaX >= TILE_PUBLISH_HYSTERESIS ||
+        tileDeltaY >= TILE_PUBLISH_HYSTERESIS) &&
+      (tileX !== prevTile.x || tileY !== prevTile.y);
 
     applyProjection(projection, currentCharacter, tileChanged);
 
@@ -275,13 +255,16 @@ export const ViewportSystem: React.FC<ViewportProps> = (
     }
   });
 
-  const viewportContext = {
-    setViewportState,
-    updateViewportState,
-    viewportState,
-    projectionRef,
-    displayPositionRef
-  };
+  const viewportContext = useMemo(
+    () => ({
+      setViewportState,
+      updateViewportState,
+      viewportState,
+      projectionRef,
+      displayPositionRef
+    }),
+    [setViewportState, updateViewportState, viewportState]
+  );
 
   return (
     <ViewportContext.Provider value={viewportContext}>

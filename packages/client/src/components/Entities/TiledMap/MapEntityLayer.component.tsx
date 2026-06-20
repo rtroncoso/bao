@@ -1,10 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { Container, Sprite } from '@inlet/react-pixi';
 import { Rectangle as PixiRectangle } from 'pixi.js';
 import { useSelector } from 'react-redux';
 
 import { getTexture, Graphic, tileCoordsToScreen, TILE_SIZE } from '@bao/core';
 import { Animation } from '@bao/client/components/Pixi';
+import { getGameServerState } from '@bao/client/lib/game-server-state';
 import { useGameContext } from '@bao/client/components/Game/Game.context';
 import {
   useMapContext,
@@ -50,14 +51,32 @@ const buildHitArea = (graphic: Graphic) => {
   return new PixiRectangle(0, 0, width, height);
 };
 
+const useHitAreaCache = () => {
+  const cacheRef = useRef(new Map<number, PixiRectangle>());
+
+  return (entityId: number, graphic: Graphic) => {
+    const cached = cacheRef.current.get(entityId);
+    if (cached) {
+      return cached;
+    }
+
+    const hitArea = buildHitArea(graphic);
+    cacheRef.current.set(entityId, hitArea);
+    return hitArea;
+  };
+};
+
 export interface MapEntityLayerProps {
   mapId: number;
   mapWorldOffset?: { x: number; y: number };
+  /** Neighbor map: server objects only (trees, signs), no NPCs or interaction. */
+  borderOnly?: boolean;
 }
 
 export const MapEntityLayer: React.FC<MapEntityLayerProps> = ({
   mapId,
-  mapWorldOffset = { x: 0, y: 0 }
+  mapWorldOffset = { x: 0, y: 0 },
+  borderOnly = false
 }) => {
   const graphics = useSelector((state: State) => selectGraphics(state));
   const { mapState } = useMapContext();
@@ -65,16 +84,23 @@ export const MapEntityLayer: React.FC<MapEntityLayerProps> = ({
   const { viewportState } = useViewportContext();
   const { onNpcClick, onObjectClick, isPlayerAdjacentTo } =
     useMapInteractionContext();
+  const getHitArea = useHitAreaCache();
 
   const viewport = viewportState.projection;
 
-  const currentMap = gameState?.serverState?.maps?.get(String(mapId));
+  const currentMap =
+    getGameServerState()?.maps?.get(String(mapId)) ??
+    gameState.room?.state.maps?.get(String(mapId));
 
   const entitiesGroup = mapState?.groups[ENTITIES_LAYER];
 
   const npcs = useMemo(() => {
-    if (!currentMap?.npcs || !viewport) {
-      return currentMap?.npcs ? [...currentMap.npcs] : [];
+    if (borderOnly || !currentMap?.npcs) {
+      return [];
+    }
+
+    if (!viewport) {
+      return [...currentMap.npcs];
     }
 
     return [...currentMap.npcs].filter((entity) =>
@@ -89,6 +115,7 @@ export const MapEntityLayer: React.FC<MapEntityLayerProps> = ({
       )
     );
   }, [
+    borderOnly,
     currentMap?.npcs,
     viewport.x,
     viewport.y,
@@ -164,10 +191,10 @@ export const MapEntityLayer: React.FC<MapEntityLayerProps> = ({
         }
 
         const { x, y } = tileCoordsToScreen(entity.x, entity.y, graphic);
-        const isDoor = entity.objectType === DOOR;
+        const isDoor = !borderOnly && entity.objectType === DOOR;
         const canInteract =
           isDoor && isPlayerAdjacentTo(mapId, entity.x, entity.y);
-        const hitArea = buildHitArea(graphic);
+        const hitArea = getHitArea(entity.id, graphic);
 
         const handlePointerTap = () => {
           if (isDoor && canInteract) {

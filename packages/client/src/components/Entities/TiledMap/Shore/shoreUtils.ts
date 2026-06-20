@@ -409,6 +409,10 @@ export const applyShoreSpriteOverlap = (
   waterBleed = SHORE_WATER_BLEED_PX,
   landBleed = SHORE_LAND_BLEED_PX
 ): void => {
+  if (!sprite?.scale || sprite.destroyed) {
+    return;
+  }
+
   let left = 0;
   let top = 0;
   let right = TILE_SIZE;

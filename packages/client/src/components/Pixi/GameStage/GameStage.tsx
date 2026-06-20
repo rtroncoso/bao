@@ -41,7 +41,20 @@ export const GameStage = ({ width, height, children }: GameStageProps) => {
 
   return (
     <div className="h-full w-full">
-      <Stage width={width} height={height} onUnmount={destroyApp}>
+      <Stage
+        width={width}
+        height={height}
+        onUnmount={destroyApp}
+        options={{
+          antialias: false,
+          autoDensity: true,
+          powerPreference: 'high-performance',
+          resolution:
+            typeof window !== 'undefined'
+              ? Math.min(window.devicePixelRatio || 1, 1.5)
+              : 1
+        }}
+      >
         {children}
       </Stage>
     </div>

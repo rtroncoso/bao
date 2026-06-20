@@ -1,10 +1,7 @@
 import { getQuadrant, Heading, TILE_SIZE, TILED_MAP_SIZE } from '@bao/core';
-import { AO_FOOTSTEP_1, AO_FOOTSTEP_2 } from '@bao/core/constants/audio';
 import { CharacterState } from '@bao/server/schema/CharacterState';
 import { TilePosition } from '@/schema/MapState';
 import { WorldRoom } from '@/rooms/WorldRoom';
-
-import { broadcastWorldSfx } from './worldSfx';
 
 export interface BlockedTile {
   tile: TilePosition;
@@ -15,7 +12,6 @@ export class MovementSystem {
   protected room?: WorldRoom;
   protected blockedTiles = new Map<string, BlockedTile>();
   private interestKeyBySession = new Map<string, string>();
-  private footstepPhaseBySession = new Map<string, boolean>();
 
   constructor(room?: WorldRoom) {
     this.room = room;
@@ -40,26 +36,6 @@ export class MovementSystem {
 
   public unblockCharacter(character: CharacterState) {
     this.unblockTile(character.tile, character.mapId);
-    if (character.sessionId) {
-      this.footstepPhaseBySession.delete(character.sessionId);
-    }
-  }
-
-  private emitFootstep(character: CharacterState) {
-    if (!this.room || !character.sessionId) {
-      return;
-    }
-
-    const useFirst =
-      this.footstepPhaseBySession.get(character.sessionId) ?? true;
-    this.footstepPhaseBySession.set(character.sessionId, !useFirst);
-
-    broadcastWorldSfx(this.room, {
-      sfxId: useFirst ? AO_FOOTSTEP_1 : AO_FOOTSTEP_2,
-      mapId: character.mapId,
-      x: character.tile.x,
-      y: character.tile.y
-    });
   }
 
   public isTileBlocked(
@@ -267,14 +243,11 @@ export class MovementSystem {
         const wasMoving = character.isMoving;
         this.handleStopMovement(character, inputs);
 
-        let crossedTile = false;
-
         if (character.tile.x !== Math.floor(character.x / TILE_SIZE)) {
           this.unblockTile(character.tile, character.mapId);
           character.tile.x = Math.floor(character.x / TILE_SIZE);
           this.blockTile(character.tile, character);
           this.updateMapInterest(character);
-          crossedTile = true;
         }
 
         if (character.tile.y !== Math.floor(character.y / TILE_SIZE)) {
@@ -282,11 +255,6 @@ export class MovementSystem {
           character.tile.y = Math.floor(character.y / TILE_SIZE);
           this.blockTile(character.tile, character);
           this.updateMapInterest(character);
-          crossedTile = true;
-        }
-
-        if (crossedTile) {
-          this.emitFootstep(character);
         }
 
         if (character.isMoving && character.targetTile) {

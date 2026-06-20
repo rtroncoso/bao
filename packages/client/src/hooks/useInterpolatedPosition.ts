@@ -1,5 +1,5 @@
 import { useTick } from '@inlet/react-pixi';
-import { MutableRefObject, useLayoutEffect, useRef } from 'react';
+import { MutableRefObject, useRef } from 'react';
 import lerp from 'lerp';
 
 import { TILE_SIZE } from '@bao/core';
@@ -12,15 +12,18 @@ export interface InterpolatedPosition {
   y: number;
 }
 
+/** Lerp toward live target read each tick (no React re-render per position patch). */
 export const useInterpolatedPosition = (
-  targetX: number,
-  targetY: number,
-  enabled = true
+  getTarget: () => { x: number; y: number }
 ): MutableRefObject<InterpolatedPosition> => {
-  const positionRef = useRef<InterpolatedPosition>({ x: targetX, y: targetY });
+  const positionRef = useRef<InterpolatedPosition>({ x: 0, y: 0 });
   const initializedRef = useRef(false);
+  const getTargetRef = useRef(getTarget);
+  getTargetRef.current = getTarget;
 
-  useLayoutEffect(() => {
+  useTick(() => {
+    const { x: targetX, y: targetY } = getTargetRef.current();
+
     if (!initializedRef.current) {
       positionRef.current.x = targetX;
       positionRef.current.y = targetY;
@@ -34,11 +37,6 @@ export const useInterpolatedPosition = (
     if (dx > SNAP_DISTANCE_PX || dy > SNAP_DISTANCE_PX) {
       positionRef.current.x = targetX;
       positionRef.current.y = targetY;
-    }
-  }, [targetX, targetY]);
-
-  useTick(() => {
-    if (!enabled) {
       return;
     }
 

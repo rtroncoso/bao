@@ -73,6 +73,11 @@ const getShoreTileCoords = (sprite: Sprite): { x: number; y: number } => {
 
 const easing = new Ease({});
 
+const isSpriteRenderable = (
+  sprite: Sprite | AnimatedSprite | undefined | null
+): sprite is Sprite | AnimatedSprite =>
+  Boolean(sprite && !sprite.destroyed && sprite.scale);
+
 const detachShoreSprite = (sprite: Sprite): void => {
   sprite.filters = null;
   sprite.filterArea = null;
@@ -101,19 +106,57 @@ export const createAnimationPool = (size: number): AnimatedSprite[] => {
   );
 };
 
+const POOLED_DESTROY_KEY = '__baoPooledDestroy';
+
+const releaseSpriteToPool = <T extends Sprite | AnimatedSprite>(
+  sprite: T,
+  pool: T[]
+): void => {
+  if (sprite.parent) {
+    sprite.parent.removeChild(sprite);
+  }
+
+  sprite.filters = null;
+  sprite.filterArea = null;
+  sprite.visible = false;
+  sprite.renderable = false;
+  sprite.parentGroup = null;
+
+  if (sprite instanceof AnimatedSprite) {
+    sprite.gotoAndStop(0);
+  }
+
+  if (!pool.includes(sprite)) {
+    pool.push(sprite);
+  }
+};
+
 const bindPooledDestroy = <T extends Sprite | AnimatedSprite>(
   sprite: T,
-  pool: T[],
-  baseDestroy: typeof Sprite.prototype.destroy
-) => {
-  sprite.destroy = function destroy(
-    options?: boolean | import('pixi.js').IDestroyOptions
-  ) {
-    if (!pool.includes(sprite)) {
-      pool.push(sprite);
-    }
-    return baseDestroy.call(this, options);
+  pool: T[]
+): void => {
+  if ((sprite as T & { [POOLED_DESTROY_KEY]?: boolean })[POOLED_DESTROY_KEY]) {
+    return;
+  }
+
+  (sprite as T & { [POOLED_DESTROY_KEY]?: boolean })[POOLED_DESTROY_KEY] = true;
+  sprite.destroy = function destroy() {
+    releaseSpriteToPool(sprite, pool);
   };
+};
+
+const takeFromPool = <T extends Sprite | AnimatedSprite>(
+  pool: T[],
+  create: () => T
+): T => {
+  while (pool.length > 0) {
+    const candidate = pool.pop();
+    if (isSpriteRenderable(candidate)) {
+      return candidate;
+    }
+  }
+
+  return create();
 };
 
 export const getSpriteFromPoolOrNew = (
@@ -122,16 +165,19 @@ export const getSpriteFromPoolOrNew = (
   spritesPool: Sprite[]
 ): Sprite | AnimatedSprite => {
   if (graphic?.frames?.length > 0) {
-    const sprite = animationsPool.pop() || new AnimatedSprite([Texture.EMPTY]);
-    bindPooledDestroy(sprite, animationsPool, AnimatedSprite.prototype.destroy);
+    const sprite = takeFromPool(
+      animationsPool,
+      () => new AnimatedSprite([Texture.EMPTY])
+    );
+    bindPooledDestroy(sprite, animationsPool);
     sprite.textures = graphic.frames.map(getTexture);
     sprite.animationSpeed = graphic.speed;
     sprite.gotoAndPlay(0);
     return sprite;
   }
 
-  const sprite = spritesPool.pop() || new Sprite(Texture.EMPTY);
-  bindPooledDestroy(sprite, spritesPool, Sprite.prototype.destroy);
+  const sprite = takeFromPool(spritesPool, () => new Sprite(Texture.EMPTY));
+  bindPooledDestroy(sprite, spritesPool);
   sprite.texture = getTexture(graphic);
   return sprite;
 };
@@ -293,6 +339,15 @@ export const ensureShoreSpritesInViewport = (
   return { ...viewport, [layerKey]: ids };
 };
 
+/** Border maps only need TMX shore-layer sprites in the viewport pass. */
+export const pickShoreLayerViewport = (
+  viewport: ObjectsInViewport
+): ObjectsInViewport => {
+  const layerKey = String(TMX_SHORE_SPRITE_LAYER);
+  const ids = viewport[layerKey];
+  return ids ? { [layerKey]: ids } : {};
+};
+
 export const getObjectsInViewport = (
   spatialGrid: SpatialHashGrid<TmxObject>,
   bounds: Rectangle
@@ -410,7 +465,7 @@ export const renderSpriteLayers = (
         return;
       }
 
-      if (child instanceof Sprite) {
+      if (child instanceof Sprite && isSpriteRenderable(child)) {
         detachShoreSprite(child);
         shoreLayer.removeChild(child);
       }
@@ -422,7 +477,7 @@ export const renderSpriteLayers = (
     .forEach((id) => {
       const sprite =
         cache[id] ?? cache[String(id)] ?? cache[Number(id as string)];
-      if (!sprite) {
+      if (!isSpriteRenderable(sprite)) {
         return;
       }
 
