@@ -83,15 +83,18 @@ let lastMapId: number | null = null;
 let lastCharacterSessionsKey = '';
 
 const characterSessionsKey = (
-  characters: CharacterState[] | undefined
+  characters: Iterable<CharacterState> | undefined | null
 ): string => {
-  if (!characters?.length) {
+  if (!characters) {
     return '';
   }
 
-  return characters
-    .map((character) => character.sessionId ?? String(character.id))
-    .join('|');
+  const parts: string[] = [];
+  for (const character of characters) {
+    parts.push(character.sessionId ?? String(character.id));
+  }
+
+  return parts.join('|');
 };
 
 const computePatchContext = (

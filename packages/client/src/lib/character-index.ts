@@ -3,7 +3,7 @@ import { CharacterState } from '@bao/server/schema/CharacterState';
 const sessionCharacterIndex = new Map<string, CharacterState>();
 
 export const rebuildCharacterIndex = (
-  characters: CharacterState[] | undefined
+  characters: Iterable<CharacterState> | undefined | null
 ): void => {
   sessionCharacterIndex.clear();
   if (!characters) {
