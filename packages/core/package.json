@@ -12,8 +12,8 @@
     "dev": "pnpm run start",
     "build": "pnpm run clean && tsc",
     "start": "nodemon --watch src --exec pnpm run build",
-    "test": "pnpm run build && mocha --require ./test/setup.js --colors ./test/*.spec.js",
-    "test:watch": "pnpm run build && mocha --require ./test/setup.js --colors -w ./test/*.spec.js",
+    "test": "pnpm run build && node --import tsx ./node_modules/mocha/bin/_mocha --require ./test/setup.ts --colors ./test/*.spec.ts",
+    "test:watch": "pnpm run build && node --import tsx ./node_modules/mocha/bin/_mocha --require ./test/setup.ts --colors -w ./test/*.spec.ts",
     "test:cover": "cross-env NODE_ENV=test nyc mocha --colors test/*.js"
   },
   "files": [
@@ -40,6 +40,7 @@
     "nodemon": "^1.19.1",
     "nyc": "^14.1.0",
     "rimraf": "^4.1.1",
+    "tsx": "^4.19.0",
     "yargs": "^13.2.2"
   }
 }

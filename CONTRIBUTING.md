@@ -49,4 +49,4 @@ npx bao seed apply
 npx bao deploy
 ```
 
-Map meta sidecars (`*.meta.json`) are required for seeding maps. Generated SQL in `packages/assets/seeds/` is gitignored.
+Map meta sidecars (`*.meta.json`) are required for seeding maps. Generated SQL in `packages/assets/seeds/` is gitignored. CLI source is in `packages/cli`.

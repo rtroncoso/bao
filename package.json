@@ -22,10 +22,11 @@
     "packages/api/src/**/*.{js,ts,jsx,tsx}": "prettier --write",
     "packages/client/src/**/*.{js,ts,jsx,tsx}": "prettier --write",
     "packages/colyseus/src/**/*.{js,ts,jsx,tsx}": "prettier --write",
-    "packages/ui/src/**/*.{ts,tsx}": "prettier --write"
+    "packages/ui/src/**/*.{ts,tsx}": "prettier --write",
+    "packages/cli/src/**/*.{js,ts,jsx,tsx}": "prettier --write"
   },
   "devDependencies": {
-    "@bao/assets": "workspace:*",
+    "@bao/cli": "workspace:*",
     "cross-env": "^7.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^9.2.1",

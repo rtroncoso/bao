@@ -31,12 +31,12 @@ pnpm db:migrate
 pnpm dev
 ```
 
-World data (maps, NPCs, objects) is managed with the **`bao` CLI** from [`@bao/assets`](packages/assets/README.md):
+World data (maps, NPCs, objects) is managed with the **`bao` CLI** from [`@bao/cli`](packages/cli/README.md):
 
 ```sh
 npx bao convert maps --maps 34   # legacy maps → client JSON + meta sidecars
 npx bao seed apply               # generate SQL and load MySQL
 ```
 
-See [`packages/assets/README.md`](packages/assets/README.md) for full CLI usage, seed options, and the end-to-end asset workflow. API/database details: [`packages/api/README.md`](packages/api/README.md).
+See [`packages/cli/README.md`](packages/cli/README.md) for full CLI usage. Static assets live in [`packages/assets`](packages/assets/README.md). API/database details: [`packages/api/README.md`](packages/api/README.md).
 

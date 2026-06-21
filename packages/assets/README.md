@@ -1,161 +1,47 @@
 # @bao/assets
 
-Asset tooling for the Bao monorepo — map conversion, world database seeding, and S3 deploy.
+Static game assets for the Bao monorepo — maps, textures, audio manifests, init data, and AO dat inputs.
 
-## CLI
+The **CLI tooling** (convert, seed, deploy) lives in [`@bao/cli`](../cli/README.md).
 
-From the **repo root** (after `pnpm install`):
+## Local dev server
+
+Serves `public/` on port **8787** with CORS (used by `@bao/client` via `NEXT_PUBLIC_BAO_ASSETS`):
 
 ```bash
-npx bao                  # help (same output as below)
-npx bao help
+pnpm --filter @bao/assets dev
+```
+
+Or via root `pnpm dev` (turbo includes this package).
+
+## CLI commands
+
+From the **repo root**:
+
+```bash
 npx bao convert maps --maps 34
 npx bao seed
 npx bao seed apply
+npx bao deploy --environment staging
 ```
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│  bao — Bao monorepo asset tooling                                │
-└──────────────────────────────────────────────────────────────────┘
+See [`packages/cli/README.md`](../cli/README.md) for full CLI usage.
 
-Usage:
-  npx bao                         Show this help
-  bao <command> [subcommand] [options]
+## Layout
 
-Commands:
-  seed                 Generate idempotent world seed SQL
-  seed apply           Generate seed SQL and apply to MySQL
-  convert maps         Convert legacy maps → Tiled JSON + worlds.json
-  deploy               Deploy public/ assets to S3
-
-Quick start (from repo root):
-  pnpm install
-  cp .env.example .env
-  pnpm dev:db && pnpm db:migrate
-  npx bao convert maps --maps 34
-  npx bao seed apply
-
-Seed options:
-  --dats <dir>         AO Dat source (default: public/dats)
-  --maps-meta <dir>    Map meta sidecars (default: public/maps)
-  --output <dir>       SQL output directory (default: seeds/)
-  --only <types>       Subset: objects,npcs,spells,maps,cities,balance,crafting,faction,config
-  --apply              Apply to MySQL after generate (alias: seed apply)
-  --dry-run            Parse and log counts only
-  --debug              Verbose logging
-
-Convert maps options:
-  --maps <ids>         Comma-separated map ids (e.g. 1,34)
-  --all                Convert all legacy maps in input directory
-  --worlds             Emit worlds/worlds.json (default: on)
-  --no-worlds          Skip worlds/worlds.json generation
-  --meta               Emit per-map *.meta.json sidecars (default: on)
-  --no-meta            Skip per-map meta sidecars
-  --input <dir>        Legacy maps directory (default: public/maps/old)
-  --output <dir>       Baked maps output (default: public/maps)
-  --init <dir>         Init JSON directory (default: public/init)
-  --public <dir>       Public assets root (default: public)
-  --tilesets-type <t>  Tileset spritesheet type (default: tilesets)
-  --no-crop            Skip border crop when converting
-  --validate           Fail if server spawns are misaligned with baked sprites
-  --dry-run            Log conversion without writing files
-  --debug              Verbose logging
-```
-
-`npx bao` resolves the workspace CLI without a global install. Equivalent pnpm scripts:
-
-| Script | Command |
-|--------|---------|
-| `pnpm convert:maps` | `npx bao convert maps` |
-| `pnpm convert:audio` | `npx bao convert audio` |
-| `pnpm db:seed` | `npx bao seed` |
-| `pnpm db:seed:apply` | `npx bao seed apply` |
-
-Pass extra flags after `--` when using pnpm scripts, e.g. `pnpm convert:maps -- --maps 34`.
-
-## Setup workflow
-
-1. **Configure env** — copy `.env.example` → `.env` at repo root (`MYSQL_*`, `JWT_SECRET`).
-2. **Start MySQL** — `pnpm dev:db`
-3. **Migrate** — `pnpm db:migrate` ([details](../api/README.md))
-4. **Copy AO Dat files** — into `public/dats/` ([file list](public/dats/README.md))
-5. **Convert maps** — `npx bao convert maps --maps 34` (writes `public/maps/*.json`, `*.meta.json`, `public/worlds/worlds.json`). Run `convert maps` before `seed`. Use `--validate` to catch spawn/bake X-offset regressions.
-6. **Seed database** — `npx bao seed apply` (writes `seeds/*.sql`, then applies to MySQL)
-7. **Import audio** (optional) — `npx bao convert audio --source /path/to/AO/client --music 5,101 --sfx 21,22,23,24,28,29,34 --ui click` (requires `fluidsynth` + `ffmpeg` for MIDI → OGG; set `BAO_SOUND_FONT` if needed)
-
-Map meta sidecars (`*.meta.json`) are required for the maps importer. Without them, `04_maps.sql` is skipped.
-
-### Convert audio
-
-```bash
-npx bao convert audio \
-  --source /path/to/AO/client \
-  --all
-```
-
-Or import a subset:
-
-```bash
-npx bao convert audio \
-  --source /path/to/AO/client \
-  --music 5,101 \
-  --sfx 21,22,23,24,28,29,34 \
-  --ui click
-```
-
-Writes `public/audio/` and updates `manifest.json`. MP3 files are copied as-is; MIDI tracks are rendered to OGG via FluidSynth + ffmpeg.
-
-## Input / output
-
-| Path | Role |
-|------|------|
-| `public/dats/` | AO `server/Dat` files (not in git) |
-| `public/maps/old/` | Legacy `MapaN.{dat,inf,map}` sources |
-| `public/maps/` | Baked Tiled JSON + `*.meta.json` sidecars |
-| `public/worlds/worlds.json` | Map grid for neighbor loading |
-| `seeds/` | Generated SQL (gitignored except `.gitkeep`) |
-
-## Seed output files
-
-| File | Source |
-|------|--------|
-| `01_objects.sql` | `obj.dat` |
-| `02_spells.sql` | `Hechizos.dat` |
-| `03_npcs.sql` | `NPCs.dat` |
-| `04_maps.sql` | `*.meta.json` |
-| `05_cities.sql` | `Ciudades.Dat` |
-| `06_balance.sql` | `Balance.dat` |
-| `07_crafting.sql` | Herrero / Carpintero dats |
-| `08_faction.sql` | `ArmadurasFaccionarias.dat` |
-| `09_config.sql` | Motd, Help, forbidden names, GM summon NPCs |
-
-Re-running `npx bao seed` is idempotent — safe to regenerate and re-apply.
+| Path | Purpose |
+|------|---------|
+| `public/` | Baked assets consumed by client and CDN |
+| `public/dats/` | AO `.dat` sources (gitignored) |
+| `public/maps/old/` | Legacy map files for conversion |
+| `seeds/` | Generated SQL (gitignored) |
+| `scripts/` | Graphics pipeline shell helpers |
 
 ## Deploy
 
 ```bash
-npx bao deploy
-npx bao deploy --sync-all          # force re-upload every object (e.g. after metadata/CORS fixes)
-npx bao deploy --environment production --sync-all
-# or
-pnpm staging
-pnpm production
+pnpm --filter @bao/assets staging
+pnpm --filter @bao/assets production
 ```
 
-S3 credentials: repo root `.env` (`AWS_S3_*`). CloudFront cache invalidation runs after sync when `AWS_CLOUDFRONT_DISTRIBUTION_ID` is set — only uploaded or removed objects are invalidated in a single request (falls back to `/*` if over 3,000 paths). Optional overlay: `.env.staging` / `.env.production` in repo root or this package.
-
-Deploy also applies an S3 bucket CORS rule (`GET`, `HEAD`, `AllowedHeaders: *`) so browsers can preflight cross-origin asset requests. S3 answers OPTIONS preflights automatically when the requested method is listed in `AllowedMethods` — do not include `OPTIONS` in the bucket rule (PutBucketCors rejects it).
-
-### CloudFront CORS (production)
-
-Response header policies (`Managed-CORS-S3Origin`, `Managed-CORS-With-Preflight`) add `Access-Control-Allow-Origin` on **GET** responses, but preflight **OPTIONS** requests are answered by S3 and fail with 403 unless the bucket CORS rule above is in place.
-
-On the CloudFront distribution for `bao-assets.*`:
-
-1. **Allowed HTTP methods** — `GET, HEAD, OPTIONS` (not GET/HEAD only).
-2. **Origin request policy** — managed `CORS-S3Origin` (forwards `Origin`, `Access-Control-Request-Method`, `Access-Control-Request-Headers` to S3).
-3. **Response headers policy** — `Managed-CORS-S3Origin` or `Managed-CORS-With-Preflight`.
-4. **Invalidate** `/*` after changing policies or bucket CORS.
-
-Set `NEXT_PUBLIC_BAO_ASSETS=https://bao-assets.rtroncoso.com` in Vercel — **not** `https://bao.rtroncoso.com` (that host serves the PWA `manifest.json`, not game assets).
+These delegate to `@bao/cli deploy` with the appropriate environment overlay.
