@@ -28,3 +28,13 @@ yarn-error.log*
 # Generated seed SQL (only .gitkeep is tracked)
 seeds/*
 !seeds/.gitkeep
+
+# AO 13.0 legacy inputs (gitignored; only .gitkeep is tracked)
+public/dats/*
+!public/dats/.gitkeep
+public/audio/*
+!public/audio/.gitkeep
+public/maps/*
+!public/maps/.gitkeep
+public/worlds/*
+!public/worlds/.gitkeep

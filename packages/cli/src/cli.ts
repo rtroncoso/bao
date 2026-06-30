@@ -176,9 +176,9 @@ convertCmd
 convertCmd
   .command("audio")
   .description("Import AO WAV/MIDI/MP3 → public/audio + manifest")
-  .requiredOption(
+  .option(
     "--source <dir>",
-    "AO client root (contains WAV/, MIDI/, MP3/)"
+    "Legacy audio root (contains WAV/, MIDI/, MP3/; default: public/audio/legacy)"
   )
   .option("--all", "Import all discovered audio")
   .option("--music <ids>", "Comma-separated music ids")
@@ -196,7 +196,9 @@ convertCmd
         .filter(Boolean);
 
     const options: ConvertAudioOptions = {
-      sourceDir: path.resolve(String(opts.source)),
+      sourceDir: path.resolve(
+        (opts.source as string | undefined) ?? paths.audioLegacyDir
+      ),
       publicDir: (opts.public as string | undefined) ?? paths.publicDir,
       music: parseList(opts.music),
       sfx: parseList(opts.sfx),

@@ -21,7 +21,7 @@ Quick start (from repo root):
   npx bao seed apply
 
 Seed options:
-  --dats <dir>         AO Dat source (default: public/dats)
+  --dats <dir>         AO Dat source (default: public/dats/legacy)
   --maps-meta <dir>    Map meta sidecars (default: public/maps)
   --output <dir>       SQL output directory (default: seeds/)
   --only <types>       Subset: objects,npcs,spells,maps,cities,balance,crafting,faction,config
@@ -36,7 +36,7 @@ Convert maps options:
   --no-worlds          Skip worlds/worlds.json generation
   --meta               Emit per-map *.meta.json sidecars (default: on)
   --no-meta            Skip per-map meta sidecars
-  --input <dir>        Legacy maps directory (default: public/maps/old)
+  --input <dir>        Legacy maps directory (default: public/maps/legacy)
   --output <dir>       Baked maps output (default: public/maps)
   --init <dir>         Init JSON directory (default: public/init)
   --public <dir>       Public assets root (default: public)
@@ -47,7 +47,7 @@ Convert maps options:
   --debug              Verbose logging
 
 Convert audio options:
-  --source <dir>       AO client root (contains WAV/, MIDI/, MP3/)
+  --source <dir>       Legacy audio root with WAV/, MIDI/, MP3/ (default: public/audio/legacy)
   --all                Import all MIDI/MP3 music, numeric WAV sfx, named UI wavs
   --music <ids>        Comma-separated music ids (e.g. 5,101)
   --sfx <ids>          Comma-separated sfx ids (e.g. 21,22,23,24)

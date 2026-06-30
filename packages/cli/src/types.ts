@@ -25,7 +25,7 @@ export interface ConvertMapsOptions {
 }
 
 export interface ConvertAudioOptions {
-  sourceDir: string;
+  sourceDir?: string;
   publicDir?: string;
   music?: string[];
   sfx?: string[];

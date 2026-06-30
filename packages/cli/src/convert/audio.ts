@@ -1,7 +1,12 @@
 import fs from "fs";
 import path from "path";
-import { spawnSync } from "child_process";
 
+import { formatSpawnFailure, runTool } from "../lib/spawnTool.js";
+import {
+  DEFAULT_SOUND_FONT_NAME,
+  findSoundFont,
+  soundFontSearchSummary,
+} from "../lib/soundFont.js";
 import type { ConvertAudioOptions } from "../types.js";
 
 const parseIdList = (value?: string) =>
@@ -99,13 +104,19 @@ const findUiWav = (wavDir: string, name: string) => {
 const convertMidiToOgg = ({
   midiPath,
   oggPath,
+  soundFont,
   dryRun,
   debug,
+  warnedFluidsynth,
+  warnedFfmpeg,
 }: {
   midiPath: string;
   oggPath: string;
+  soundFont: string | null;
   dryRun: boolean;
   debug: boolean;
+  warnedFluidsynth: { value: boolean };
+  warnedFfmpeg: { value: boolean };
 }): boolean | "ogg" | "mp3" => {
   const wavPath = oggPath.replace(/\.ogg$/i, ".wav");
 
@@ -118,55 +129,74 @@ const convertMidiToOgg = ({
 
   ensureDir(path.dirname(oggPath));
 
-  const sf2Candidates = [
-    process.env.BAO_SOUND_FONT,
-    "/opt/homebrew/Cellar/fluid-synth/2.5.4/share/fluid-synth/sf2/VintageDreamsWaves-v2.sf2",
-    "/usr/share/sounds/sf2/FluidR3_GM.sf2",
-    "/usr/local/share/fluidsynth/default.sf2",
-  ].filter(Boolean) as string[];
-
-  const soundFont = sf2Candidates.find((candidate) => fs.existsSync(candidate));
-
   if (!soundFont) {
-    console.warn(
-      `[bao] skipping MIDI ${midiPath}: no soundfont found (set BAO_SOUND_FONT)`
-    );
     return false;
   }
 
-  const fluidsynth = spawnSync(
+  const fluidsynthArgs = [
+    "-ni",
+    "-q",
+    "-r",
+    "44100",
+    "-F",
+    wavPath,
+    soundFont,
+    midiPath,
+  ];
+  const { executable: fluidsynthExe, result: fluidsynth } = runTool(
     "fluidsynth",
-    ["-ni", "-r", "44100", "-F", wavPath, soundFont, midiPath],
-    { stdio: debug ? "inherit" : "pipe", timeout: 120_000 }
+    fluidsynthArgs,
+    { debug }
   );
+  const rendered = fs.existsSync(wavPath) && fs.statSync(wavPath).size > 0;
 
-  if (fluidsynth.status !== 0) {
-    console.warn(`[bao] fluidsynth failed for ${midiPath}`);
+  if (!rendered) {
+    if (!warnedFluidsynth.value) {
+      console.warn(
+        `[bao] fluidsynth failed for ${midiPath}\n${formatSpawnFailure(
+          fluidsynthExe,
+          fluidsynthArgs,
+          fluidsynth
+        )}`
+      );
+      warnedFluidsynth.value = true;
+    }
     return false;
   }
 
   const mp3Path = oggPath.replace(/\.ogg$/i, ".mp3");
-  let ffmpeg = spawnSync(
+  const ffmpegArgs = [
+    "-y",
+    "-i",
+    wavPath,
+    "-c:a",
+    "libvorbis",
+    "-q:a",
+    "6",
+    oggPath,
+  ];
+  let { executable: ffmpegExe, result: ffmpeg } = runTool(
     "ffmpeg",
-    ["-y", "-i", wavPath, "-c:a", "libvorbis", "-q:a", "6", oggPath],
-    { stdio: debug ? "inherit" : "pipe", timeout: 120_000 }
+    ffmpegArgs,
+    {
+      debug,
+    }
   );
 
   if (ffmpeg.status !== 0) {
-    ffmpeg = spawnSync(
-      "ffmpeg",
-      [
-        "-y",
-        "-i",
-        wavPath,
-        "-codec:a",
-        "libmp3lame",
-        "-qscale:a",
-        "4",
-        mp3Path,
-      ],
-      { stdio: debug ? "inherit" : "pipe", timeout: 120_000 }
-    );
+    const mp3Args = [
+      "-y",
+      "-i",
+      wavPath,
+      "-codec:a",
+      "libmp3lame",
+      "-qscale:a",
+      "4",
+      mp3Path,
+    ];
+    ({ executable: ffmpegExe, result: ffmpeg } = runTool("ffmpeg", mp3Args, {
+      debug,
+    }));
 
     if (ffmpeg.status === 0 && fs.existsSync(mp3Path)) {
       if (fs.existsSync(wavPath)) {
@@ -175,7 +205,16 @@ const convertMidiToOgg = ({
       return "mp3";
     }
 
-    console.warn(`[bao] ffmpeg failed for ${midiPath}`);
+    if (!warnedFfmpeg.value) {
+      console.warn(
+        `[bao] ffmpeg failed for ${midiPath}\n${formatSpawnFailure(
+          ffmpegExe,
+          mp3Args,
+          ffmpeg
+        )}`
+      );
+      warnedFfmpeg.value = true;
+    }
     if (fs.existsSync(wavPath)) {
       fs.unlinkSync(wavPath);
     }
@@ -241,6 +280,18 @@ export const convertAudio = async (options: ConvertAudioOptions) => {
     debug = false,
   } = options;
 
+  if (!sourceDir) {
+    throw new Error(
+      "No legacy audio source — copy AO WAV/, MIDI/, and MP3/ into public/audio/legacy/ or pass --source"
+    );
+  }
+
+  if (!fs.existsSync(sourceDir)) {
+    throw new Error(
+      `Legacy audio source not found: ${sourceDir} (copy AO WAV/, MIDI/, and MP3/ there or pass --source)`
+    );
+  }
+
   let musicIds = music;
   let sfxIds = sfx;
   let uiNames = ui;
@@ -276,6 +327,10 @@ export const convertAudio = async (options: ConvertAudioOptions) => {
 
   const manifestMusic: Record<string, string> = {};
   const manifestSfx: Record<string, string> = {};
+  const soundFont = findSoundFont({ legacyDir: sourceDir });
+  let warnedNoSoundFont = false;
+  const warnedFluidsynth = { value: false };
+  const warnedFfmpeg = { value: false };
 
   for (const id of musicIds) {
     const midiPath = path.join(midiDir, `${id}.mid`);
@@ -287,16 +342,31 @@ export const convertAudio = async (options: ConvertAudioOptions) => {
       copyFile(mp3Path, mp3Dest, dryRun, debug);
       manifestMusic[id] = `audio/music/${id}.mp3`;
     } else if (fs.existsSync(midiPath)) {
-      const converted = convertMidiToOgg({
-        midiPath,
-        oggPath: oggDest,
-        dryRun,
-        debug,
-      });
-      if (converted === "ogg" || dryRun) {
-        manifestMusic[id] = `audio/music/${id}.ogg`;
-      } else if (converted === "mp3") {
-        manifestMusic[id] = `audio/music/${id}.mp3`;
+      if (!soundFont && !dryRun) {
+        if (!warnedNoSoundFont) {
+          console.warn(
+            `[bao] skipping MIDI conversion: place ${DEFAULT_SOUND_FONT_NAME} in the legacy audio folder or set BAO_SOUND_FONT`
+          );
+          if (debug) {
+            console.warn(soundFontSearchSummary({ legacyDir: sourceDir }));
+          }
+          warnedNoSoundFont = true;
+        }
+      } else {
+        const converted = convertMidiToOgg({
+          midiPath,
+          oggPath: oggDest,
+          soundFont,
+          dryRun,
+          debug,
+          warnedFluidsynth,
+          warnedFfmpeg,
+        });
+        if (converted === "ogg" || dryRun) {
+          manifestMusic[id] = `audio/music/${id}.ogg`;
+        } else if (converted === "mp3") {
+          manifestMusic[id] = `audio/music/${id}.mp3`;
+        }
       }
     } else {
       console.warn(`[bao] music id ${id}: no .mid or .mp3 in source`);

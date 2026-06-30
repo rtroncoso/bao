@@ -7,6 +7,7 @@ export interface ProjectPaths {
   publicDir: string;
   seedsDir: string;
   datsDir: string;
+  audioLegacyDir: string;
   mapsMetaDir: string;
   mapsInputDir: string;
   mapsOutputDir: string;
@@ -25,9 +26,10 @@ export function resolveProjectPaths(startDir?: string): ProjectPaths {
       return {
         publicDir: assetsPublic,
         seedsDir: assetsSeeds,
-        datsDir: path.join(assetsPublic, "dats"),
+        datsDir: path.join(assetsPublic, "dats", "legacy"),
+        audioLegacyDir: path.join(assetsPublic, "audio", "legacy"),
         mapsMetaDir: path.join(assetsPublic, "maps"),
-        mapsInputDir: path.join(assetsPublic, "maps", "old"),
+        mapsInputDir: path.join(assetsPublic, "maps", "legacy"),
         mapsOutputDir: path.join(assetsPublic, "maps"),
         initDir: path.join(assetsPublic, "init"),
       };
@@ -41,9 +43,10 @@ export function resolveProjectPaths(startDir?: string): ProjectPaths {
   return {
     publicDir,
     seedsDir: path.join(cwd, "seeds"),
-    datsDir: path.join(publicDir, "dats"),
+    datsDir: path.join(publicDir, "dats", "legacy"),
+    audioLegacyDir: path.join(publicDir, "audio", "legacy"),
     mapsMetaDir: path.join(publicDir, "maps"),
-    mapsInputDir: path.join(publicDir, "maps", "old"),
+    mapsInputDir: path.join(publicDir, "maps", "legacy"),
     mapsOutputDir: path.join(publicDir, "maps"),
     initDir: path.join(publicDir, "init"),
   };

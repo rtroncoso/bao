@@ -9,12 +9,13 @@ From the repo root after `pnpm install`:
 ```bash
 npx bao                  # help
 npx bao convert maps --maps 34
+npx bao convert audio --all
 npx bao seed
 npx bao seed apply
 npx bao deploy --environment staging
 ```
 
-Root scripts (`pnpm db:seed`, `pnpm convert:maps`, etc.) invoke this package via the `bao` bin.
+Root scripts (`pnpm db:seed`, `pnpm convert:maps`, `pnpm convert:audio`, etc.) invoke this package via the `bao` bin.
 
 ## Global install (future)
 
@@ -37,7 +38,17 @@ bao --help
 
 ## Path defaults
 
-When run from the bao monorepo, the CLI defaults to [`packages/assets/public`](../assets/public) and [`packages/assets/seeds`](../assets/seeds). Outside the monorepo, it uses `./public` and `./seeds` relative to the current working directory. Override with `--public`, `--dats`, `--output`, etc.
+When run from the bao monorepo, the CLI defaults to [`packages/assets/public`](../assets/public) and [`packages/assets/seeds`](../assets/seeds). Legacy AO 13.0 inputs use `legacy/` subfolders:
+
+| Default path | Purpose |
+|--------------|---------|
+| `public/maps/legacy/` | Map conversion input (`--input`) |
+| `public/audio/legacy/` | Audio conversion input (`--source`) |
+| `public/dats/legacy/` | Dat seed input (`--dats`) |
+
+Outside the monorepo, the same layout is expected under `./public`. Override any path with `--public`, `--input`, `--source`, `--dats`, `--output`, etc.
+
+Step-by-step conversion instructions (where to copy AO 13.0 files, what each command produces): [`packages/assets/README.md`](../assets/README.md).
 
 ## Development
 

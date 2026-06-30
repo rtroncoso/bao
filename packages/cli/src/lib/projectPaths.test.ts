@@ -12,7 +12,13 @@ describe("resolveProjectPaths", () => {
     expect(paths.publicDir).toBe(path.join(repoRoot, "packages/assets/public"));
     expect(paths.seedsDir).toBe(path.join(repoRoot, "packages/assets/seeds"));
     expect(paths.datsDir).toBe(
-      path.join(repoRoot, "packages/assets/public/dats")
+      path.join(repoRoot, "packages/assets/public/dats/legacy")
+    );
+    expect(paths.mapsInputDir).toBe(
+      path.join(repoRoot, "packages/assets/public/maps/legacy")
+    );
+    expect(paths.audioLegacyDir).toBe(
+      path.join(repoRoot, "packages/assets/public/audio/legacy")
     );
   });
 
