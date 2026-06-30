@@ -35,8 +35,9 @@ World data (maps, NPCs, objects) is managed with the **`bao` CLI** from [`@bao/c
 
 ```sh
 npx bao convert maps --maps 34   # legacy maps → client JSON + meta sidecars
+npx bao convert audio --all      # legacy AO audio → public/audio + manifest
 npx bao seed apply               # generate SQL and load MySQL
 ```
 
-See [`packages/cli/README.md`](packages/cli/README.md) for full CLI usage. Static assets live in [`packages/assets`](packages/assets/README.md). API/database details: [`packages/api/README.md`](packages/api/README.md).
+See [`packages/assets/README.md`](packages/assets/README.md) for where to place AO 13.0 legacy files. CLI reference: [`packages/cli/README.md`](packages/cli/README.md).
 

@@ -1,6 +1,6 @@
 import { TilePosition } from '@/schema/MapState';
 import { ArraySchema, Schema, type } from '@colyseus/schema';
-import { TILE_SIZE } from '@bao/core';
+import { DEFAULT_CHARACTER_SPEED, TILE_SIZE } from '@bao/core';
 
 export class CharacterState extends Schema {
   @type('int32')
@@ -16,7 +16,7 @@ export class CharacterState extends Schema {
   public heading = 0;
 
   @type('uint8')
-  public speed = 64;
+  public speed = DEFAULT_CHARACTER_SPEED;
 
   @type('uint16')
   public bodyId?: number;

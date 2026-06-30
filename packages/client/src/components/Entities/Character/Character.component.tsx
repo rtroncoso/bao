@@ -47,7 +47,11 @@ const RemoteCharacterMotion: React.FC<RemoteCharacterMotionProps> = ({
 }) => {
   const positionRef = useInterpolatedPosition(() => ({
     x: characterRef.current.x,
-    y: characterRef.current.y
+    y: characterRef.current.y,
+    heading: characterRef.current.heading,
+    speed: characterRef.current.speed,
+    isMoving: characterRef.current.isMoving,
+    targetTile: characterRef.current.targetTile
   }));
 
   useTick(() => {

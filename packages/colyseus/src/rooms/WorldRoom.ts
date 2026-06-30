@@ -18,6 +18,10 @@ import { MapEntitySystem } from '@bao/server/systems/MapEntitySystem';
 import { MapTransitionSystem } from '@bao/server/systems/MapTransitionSystem';
 import { MovementSystem } from '@bao/server/systems';
 import { CharacterState } from '@/schema/CharacterState';
+import {
+  MOVEMENT_PATCH_INTERVAL_MS,
+  MOVEMENT_SIMULATION_DELTA_MS
+} from '@bao/core';
 
 export class WorldRoom extends Room<WorldRoomState> {
   movementSystem: MovementSystem;
@@ -36,7 +40,8 @@ export class WorldRoom extends Room<WorldRoomState> {
     this.mapRegistry = new MapRegistry(this);
     this.mapTransitionSystem = new MapTransitionSystem(this, this.mapRegistry);
     this.state.characters = new ArraySchema<CharacterState>();
-    this.setSimulationInterval(this.update);
+    this.setPatchRate(MOVEMENT_PATCH_INTERVAL_MS);
+    this.setSimulationInterval(this.update, MOVEMENT_SIMULATION_DELTA_MS);
 
     this.onMessage('input', (client, message: InputParameters) => {
       this.dispatcher.dispatch(new OnInputCommand(), {

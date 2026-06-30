@@ -151,8 +151,8 @@
     "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
     "test:watch": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "prettier": "prettier -w \"src/**/*.{js,ts,jsx,tsx}\"",
-    "prettier:check": "prettier --check \"src/**/*.{js,ts,jsx,tsx}\""
+    "prettier": "prettier -w \"{app,pages,src}/**/*.{js,ts,jsx,tsx}\"",
+    "prettier:check": "prettier --check \"{app,pages,src}/**/*.{js,ts,jsx,tsx}\""
   },
   "browserslist": {
     "production": [

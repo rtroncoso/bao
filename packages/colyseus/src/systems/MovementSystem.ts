@@ -1,4 +1,13 @@
-import { getQuadrant, Heading, TILE_SIZE, TILED_MAP_SIZE } from '@bao/core';
+import {
+  getQuadrant,
+  headingDirection,
+  headingFromMovementKey,
+  Heading,
+  movementInputs,
+  movementStepPixels,
+  TILE_SIZE,
+  TILED_MAP_SIZE
+} from '@bao/core';
 import { CharacterState } from '@bao/server/schema/CharacterState';
 import { TilePosition } from '@/schema/MapState';
 import { WorldRoom } from '@/rooms/WorldRoom';
@@ -160,22 +169,11 @@ export class MovementSystem {
   }
 
   public static getCharacterHeading(key: string) {
-    return key === 's'
-      ? Heading.SOUTH
-      : key === 'd'
-      ? Heading.EAST
-      : key === 'w'
-      ? Heading.NORTH
-      : key === 'a'
-      ? Heading.WEST
-      : null;
+    return headingFromMovementKey(key);
   }
 
   public static getCharacterDirection(heading: Heading) {
-    return {
-      x: heading === Heading.WEST ? -1 : heading === Heading.EAST ? 1 : 0,
-      y: heading === Heading.NORTH ? -1 : heading === Heading.SOUTH ? 1 : 0
-    };
+    return headingDirection(heading);
   }
 
   public update(deltaTime: number) {
@@ -183,10 +181,8 @@ export class MovementSystem {
     const { state } = this.room;
 
     for (const character of state.characters) {
-      const speed = character.speed * (1 / deltaTime);
-      const inputs: string[] = character.inputs.filter((key) =>
-        ['a', 'd', 'w', 's'].includes(key)
-      );
+      const stepPixels = movementStepPixels(character.speed, deltaTime);
+      const inputs = movementInputs(character.inputs);
 
       if (inputs.length && !character.isMoving) {
         const [key] = inputs;
@@ -216,8 +212,8 @@ export class MovementSystem {
           character.heading
         );
         const velocity = {
-          x: speed * direction.x,
-          y: speed * direction.y
+          x: stepPixels * direction.x,
+          y: stepPixels * direction.y
         };
 
         const x = character.x + velocity.x;

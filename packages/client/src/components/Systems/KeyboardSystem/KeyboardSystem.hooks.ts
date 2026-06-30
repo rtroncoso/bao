@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useChatContext } from 'src/components/Chat';
 
+import { movementInputRef } from '@bao/client/lib/movement-input';
+
 const EMPTY_KEYS: string[] = [];
 
 export function useKeyPress(targetKey: string) {
@@ -39,6 +41,7 @@ export function usePressedKeys() {
 
   useEffect(() => {
     if (state.focused) {
+      movementInputRef.current = [];
       setKeys([]);
     }
   }, [state.focused]);
@@ -50,7 +53,14 @@ export function usePressedKeys() {
       }
 
       const lower = key.toLowerCase();
-      setKeys((prev) => (prev.includes(lower) ? prev : [...prev, lower]));
+      setKeys((prev) => {
+        if (prev.includes(lower)) {
+          return prev;
+        }
+        const next = [...prev, lower];
+        movementInputRef.current = next;
+        return next;
+      });
     };
 
     const upHandler = ({ key }: KeyboardEvent) => {
@@ -59,10 +69,17 @@ export function usePressedKeys() {
       }
 
       const lower = key.toLowerCase();
-      setKeys((prev) => prev.filter((k) => k !== lower));
+      setKeys((prev) => {
+        const next = prev.filter((k) => k !== lower);
+        movementInputRef.current = next;
+        return next;
+      });
     };
 
-    const blurHandler = () => setKeys([]);
+    const blurHandler = () => {
+      movementInputRef.current = [];
+      setKeys([]);
+    };
 
     window.addEventListener('blur', blurHandler);
     window.addEventListener('keydown', downHandler);

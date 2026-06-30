@@ -1,13 +1,14 @@
 import React, {
   createContext,
   useContext,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef
 } from 'react';
 import { Container, useTick } from '@inlet/react-pixi';
 import { Container as PixiContainer, Filter } from 'pixi.js';
-import lerp from 'lerp';
+import { useSelector } from 'react-redux';
 
 import { DebugGridSystem } from '@bao/client/components/Systems/DebugSystem';
 import { useGameDebugPortal } from '@bao/client/components/Entities/TiledMap/useGameDebugPortal';
@@ -24,12 +25,21 @@ import { App } from '@bao/core/constants/game';
 import { TILE_SIZE } from '@bao/core';
 import { CharacterState } from '@bao/server/schema/CharacterState';
 import {
-  getCharacterWorldPixels,
+  getMapWorldOffset,
   useWorldContext
 } from '@bao/client/components/Systems/WorldSystem';
+import {
+  localCharacterRef,
+  gameServerStateRef,
+  subscribeGamePatch
+} from '@bao/client/lib/game-server-state';
+import { blockedTilesState } from '@bao/client/lib/blocked-tiles-state';
+import { localMovementPredictor } from '@bao/client/lib/local-movement-prediction';
+import { movementInputRef } from '@bao/client/lib/movement-input';
 import { worldViewportRef } from '@bao/client/lib/world-viewport';
-import { localCharacterRef } from '@bao/client/lib/game-server-state';
 import { resolveLocalCharacter } from '@bao/client/lib/resolve-local-character';
+import { selectManifest } from '@bao/client/queries';
+import { State } from '@bao/client/store';
 
 export { resolveLocalCharacter };
 
@@ -61,7 +71,6 @@ export interface ViewportContextState {
   displayPositionRef: React.MutableRefObject<Vector2>;
 }
 
-const DISPLAY_LERP = 1 / 3;
 const SNAP_DISTANCE_PX = TILE_SIZE * 2;
 /** Publish React viewport state every N tile steps (sub-tile motion stays Pixi-only). */
 const TILE_PUBLISH_HYSTERESIS = 2;
@@ -105,6 +114,9 @@ export const ViewportSystem: React.FC<ViewportProps> = (
   const { state } = useGameContext();
   const { worlds, currentMapId } = useWorldContext();
   const { room, characterId, debug } = state;
+  const manifest = useSelector((reduxState: State) =>
+    selectManifest(reduxState)
+  );
   const { children, overlay } = props;
 
   useGameDebugPortal(Boolean(debug), projectionRef);
@@ -150,9 +162,10 @@ export const ViewportSystem: React.FC<ViewportProps> = (
   };
 
   const snapCameraToCharacter = (character: CharacterState) => {
-    const worldPixels = getCharacterWorldPixels(character, worlds);
-    displayPositionRef.current.x = worldPixels.x;
-    displayPositionRef.current.y = worldPixels.y;
+    localMovementPredictor.reset(character);
+    const mapOffset = getMapWorldOffset(character.mapId ?? 34, worlds);
+    displayPositionRef.current.x = mapOffset.x + character.x;
+    displayPositionRef.current.y = mapOffset.y + character.y;
     snapCameraToDisplay(character);
   };
 
@@ -192,7 +205,42 @@ export const ViewportSystem: React.FC<ViewportProps> = (
     snapCameraToCharacter(currentCharacter);
   }, [room?.sessionId, characterId, worlds, currentMapId]);
 
-  useTick((delta = 1) => {
+  useEffect(() => {
+    if (!room) {
+      blockedTilesState.clear();
+      return;
+    }
+
+    const syncPrediction = () => {
+      const character = localCharacterRef.current;
+      if (character) {
+        localMovementPredictor.reconcile(character);
+      }
+      blockedTilesState.syncOccupancy(
+        gameServerStateRef.current?.characters,
+        room.sessionId
+      );
+    };
+
+    syncPrediction();
+    return subscribeGamePatch(syncPrediction);
+  }, [room]);
+
+  useEffect(() => {
+    const mapId = localCharacterRef.current?.mapId;
+    if (!mapId) {
+      return;
+    }
+
+    const mapPath = manifest?.maps?.[String(mapId)];
+    if (!mapPath) {
+      return;
+    }
+
+    void blockedTilesState.ensureMapLoaded(mapId, mapPath);
+  }, [manifest?.maps, room?.sessionId, currentMapId]);
+
+  useTick(() => {
     const currentCharacter = localCharacterRef.current;
     if (!currentCharacter) {
       return;
@@ -201,31 +249,28 @@ export const ViewportSystem: React.FC<ViewportProps> = (
     if (currentCharacter.mapId !== lastSnappedMapIdRef.current) {
       lastSnappedMapIdRef.current = currentCharacter.mapId ?? null;
       snapCameraToCharacter(currentCharacter);
+      const mapPath = manifest?.maps?.[String(currentCharacter.mapId)];
+      if (mapPath) {
+        void blockedTilesState.ensureMapLoaded(currentCharacter.mapId, mapPath);
+      }
       return;
     }
 
-    const worldPixels = getCharacterWorldPixels(currentCharacter, worlds);
-    const targetX = worldPixels.x;
-    const targetY = worldPixels.y;
-    const dx = Math.abs(displayPositionRef.current.x - targetX);
-    const dy = Math.abs(displayPositionRef.current.y - targetY);
+    blockedTilesState.syncOccupancy(
+      gameServerStateRef.current?.characters,
+      room?.sessionId
+    );
 
-    if (dx > SNAP_DISTANCE_PX || dy > SNAP_DISTANCE_PX) {
-      displayPositionRef.current.x = targetX;
-      displayPositionRef.current.y = targetY;
-    } else {
-      const t = 1 - Math.pow(1 - DISPLAY_LERP, delta);
-      displayPositionRef.current.x = lerp(
-        displayPositionRef.current.x,
-        targetX,
-        t
-      );
-      displayPositionRef.current.y = lerp(
-        displayPositionRef.current.y,
-        targetY,
-        t
-      );
-    }
+    const mapOffset = getMapWorldOffset(currentCharacter.mapId ?? 34, worlds);
+    const predicted = localMovementPredictor.advance(
+      movementInputRef.current,
+      blockedTilesState
+    );
+    const targetX = mapOffset.x + predicted.x;
+    const targetY = mapOffset.y + predicted.y;
+
+    displayPositionRef.current.x = targetX;
+    displayPositionRef.current.y = targetY;
 
     const { width, height } = projectionRef.current;
     const x = displayPositionRef.current.x - width / 2;
