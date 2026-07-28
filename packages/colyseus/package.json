@@ -8,7 +8,7 @@
     "build": "tsc",
     "dev": "node scripts/wait-for-api.mjs && pnpm run start",
     "start": "ts-node-dev -r tsconfig-paths/register src/index.ts",
-    "start:prod": "node dist/index.js",
+    "start:prod": "node dist/colyseus/src/index.js",
     "loadtest": "colyseus-loadtest loadtest/example.ts --room my_room --numClients 2",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "prettier -w \"src/**/*.{js,ts,jsx,tsx}\"",
