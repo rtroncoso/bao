@@ -41,7 +41,10 @@ pm2 startOrReload \
 pm2 save
 
 echo "Validating local services..."
-sleep 5
+sleep 10
+
+echo "Waiting for bao-api on port 9000..."
+
 curl \
   --fail \
   --silent \
@@ -51,24 +54,17 @@ curl \
   http://127.0.0.1:9000/healthcheck \
   >/dev/null
 
+echo "bao-api is listening on port 9000."
 echo "Waiting for bao-server on port 7666..."
 
-SERVER_READY=false
-
-for attempt in {1..30}; do
-  if ss -lntH 'sport = :7666' | grep -q .; then
-    SERVER_READY=true
-    break
-  fi
-
-  sleep 1
-done
-
-if [[ "$SERVER_READY" != "true" ]]; then
-  echo "bao-server is not listening on port 7666 after 30 seconds."
-  pm2 logs bao-server --lines 100 --nostream
-  exit 1
-fi
+curl \
+  --fail \
+  --silent \
+  --show-error \
+  --retry 10 \
+  --retry-delay 2 \
+  http://127.0.0.1:7666/colyseus \
+  >/dev/null
 
 echo "bao-server is listening on port 7666."
 
