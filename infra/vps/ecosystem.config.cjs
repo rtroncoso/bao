@@ -19,7 +19,7 @@ module.exports = {
       name: 'bao-server',
       cwd: '/var/www/bao',
       script: 'pnpm',
-      args: '--filter @bao/server start:prod',
+      args: '--filter @bao/server start',
       interpreter: 'none',
       env: {
         NODE_ENV: 'production',
