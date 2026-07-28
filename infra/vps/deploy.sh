@@ -28,7 +28,7 @@ echo "Installing dependencies..."
 pnpm install --frozen-lockfile
 
 echo "Building workspace..."
-pnpm build
+pnpm --filter='!@bao/client' build
 
 echo "Applying database migrations..."
 pnpm db:migrate
@@ -41,6 +41,7 @@ pm2 startOrReload \
 pm2 save
 
 echo "Validating local services..."
+sleep 5
 curl \
   --fail \
   --silent \
