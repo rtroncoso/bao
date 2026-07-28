@@ -51,13 +51,26 @@ curl \
   http://127.0.0.1:9000/healthcheck \
   >/dev/null
 
-# The game server root may return a non-2xx response depending on Colyseus,
-# so verify the port rather than assuming a specific HTTP route.
-if ! ss -lnt | grep -qE '127\.0\.0\.1:7666|0\.0\.0\.0:7666|\*:7666'; then
-  echo "bao-server is not listening on port 7666."
+echo "Waiting for bao-server on port 7666..."
+
+SERVER_READY=false
+
+for attempt in {1..30}; do
+  if ss -lntH 'sport = :7666' | grep -q .; then
+    SERVER_READY=true
+    break
+  fi
+
+  sleep 1
+done
+
+if [[ "$SERVER_READY" != "true" ]]; then
+  echo "bao-server is not listening on port 7666 after 30 seconds."
   pm2 logs bao-server --lines 100 --nostream
   exit 1
 fi
+
+echo "bao-server is listening on port 7666."
 
 sudo nginx -t
 sudo systemctl reload nginx
