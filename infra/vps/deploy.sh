@@ -41,32 +41,50 @@ pm2 startOrReload \
 pm2 save
 
 echo "Validating local services..."
-sleep 10
+sleep 5
+
 
 echo "Waiting for bao-api on port 9000..."
+for i in {1..30}; do
+  if curl \
+      --fail \
+      --silent \
+      http://127.0.0.1:9000/colyseus \
+      >/dev/null; then
+    echo "bao-api is listening on port 9000."
+    break
+  fi
 
-curl \
-  --fail \
-  --silent \
-  --show-error \
-  --retry 10 \
-  --retry-delay 2 \
-  http://127.0.0.1:9000/healthcheck \
-  >/dev/null
+  if [[ "$i" -eq 30 ]]; then
+    echo "Timed out waiting for bao-api."
+    pm2 logs bao-api --lines 100 --nostream
+    exit 1
+  fi
 
-echo "bao-api is listening on port 9000."
+  echo "Attempt $i/30..."
+  sleep 2
+done
+
 echo "Waiting for bao-server on port 7666..."
+for i in {1..30}; do
+  if curl \
+      --fail \
+      --silent \
+      http://127.0.0.1:7666/colyseus \
+      >/dev/null; then
+    echo "bao-server is listening on port 7666."
+    break
+  fi
 
-curl \
-  --fail \
-  --silent \
-  --show-error \
-  --retry 10 \
-  --retry-delay 2 \
-  http://127.0.0.1:7666/colyseus \
-  >/dev/null
+  if [[ "$i" -eq 30 ]]; then
+    echo "Timed out waiting for bao-server."
+    pm2 logs bao-server --lines 100 --nostream
+    exit 1
+  fi
 
-echo "bao-server is listening on port 7666."
+  echo "Attempt $i/30..."
+  sleep 2
+done
 
 sudo nginx -t
 sudo systemctl reload nginx
